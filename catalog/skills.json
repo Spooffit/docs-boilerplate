@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "skills": [
     {
+      "id": "docs-init",
+      "name": "Initialize a docs repository through the shared CLI",
+      "source": "skills/docs-init/SKILL.md",
+      "destination": ".agents/skills/docs-init/SKILL.md"
+    },
+    {
       "id": "docs-review",
       "name": "Review documentation consistency and links",
       "source": "skills/docs-review/SKILL.md",
@@ -18,6 +24,12 @@
       "name": "Document architecture decisions",
       "source": "skills/docs-architecture/SKILL.md",
       "destination": ".agents/skills/docs-architecture/SKILL.md"
+    },
+    {
+      "id": "docs-testing",
+      "name": "Document and review test strategy and evidence",
+      "source": "skills/docs-testing/SKILL.md",
+      "destination": ".agents/skills/docs-testing/SKILL.md"
     }
   ]
 }
