@@ -32,6 +32,7 @@ grep -q "dotnet/testing.md" "$temp/minimal/docs/catalog.md"
 [[ ! -e "$temp/minimal/docs/testing/strategy.md" ]]
 [[ ! -e "$temp/minimal/.agents" ]]
 [[ ! -e "$temp/minimal/docs/templates/blazor-frontend-feature.md" ]]
+[[ ! -e "$temp/minimal/docs/standards/ui" ]]
 if grep -q "blazor/components.md" "$temp/minimal/docs/catalog.md"; then echo "Unselected standard leaked into catalog"; exit 1; fi
 [[ -f "$temp/minimal/index.html" ]]
 run init --name Headless --description "No site viewer" --output "$temp/headless" --profiles dotnet --site none --non-interactive
@@ -114,6 +115,7 @@ run init --name Components --description 'UI component tests' --output "$temp/co
 run validate --output "$temp/components"
 [[ -f "$temp/components/docs/standards/blazor/bunit.md" ]]
 [[ -f "$temp/components/docs/standards/blazor/components.md" ]]
+[[ -f "$temp/components/docs/standards/ui/forms-and-accessibility.md" ]]
 [[ -f "$temp/components/docs/standards/blazor/index.md" ]]
 [[ -f "$temp/components/docs/templates/blazor-frontend-feature.md" ]]
 [[ -f "$temp/components/docs/standards/dotnet/project-files.md" ]]

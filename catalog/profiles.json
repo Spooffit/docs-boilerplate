@@ -67,7 +67,8 @@
       "name": "Blazor",
       "status": "available",
       "requires": [
-        "dotnet"
+        "dotnet",
+        "ui-accessibility"
       ],
       "files": [
         "docs/standards/blazor/components.md",
@@ -243,6 +244,16 @@
         "docs/standards/blazor/bunit.md"
       ],
       "category": "testing"
+    },
+    {
+      "id": "ui-accessibility",
+      "name": "Accessible UI forms and feedback",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/ui/forms-and-accessibility.md"
+      ],
+      "category": "frontend-practice"
     }
   ]
 }

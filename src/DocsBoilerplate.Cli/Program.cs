@@ -806,7 +806,7 @@ static class DocsCli
         var categories = new HashSet<string>(StringComparer.Ordinal)
         {
             "backend", "frontend", "data-access", "ui", "architecture", "modeling", "testing",
-            "web", "validation", "database", "application-pattern", "messaging", "query-pattern"
+            "web", "validation", "database", "application-pattern", "messaging", "query-pattern", "frontend-practice"
         };
         foreach (var profile in data.Profiles)
         {
