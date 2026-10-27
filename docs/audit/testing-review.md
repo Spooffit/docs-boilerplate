@@ -45,3 +45,7 @@ status: active
 ## Open review work
 
 Evaluate the full text of each old standard for any residual contradictory requirements, including specific package APIs. Add compiling examples only with an executable demonstration suite, not unverified snippets.
+
+## Inventory reconciliation (2026-10-27)
+
+The eight original test-standard documents S04 and S09–S15 are now explicitly recorded as **reviewed-targeted** in the legacy inventory, with a common consolidated standard and opt-in runner/infrastructure profiles. This does not certify that every historical library snippet is compatible with its latest version; unverified code examples should remain source material until executable checks are added.

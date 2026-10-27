@@ -30,3 +30,11 @@ The generator copies only these reusable blank templates. They are **not automat
 ## Remaining
 
 Audit remaining templates and decide whether further project-specific examples deserve migration. Perform rendered Markdown reviews and any compile checks if future templates include actual source examples.
+
+## Further template deduplication review (2026-10-27)
+
+Both `technical/backend/templates/module.md` and `technical/frontend/templates/module.md` were checked and are textually identical. The same is true for the two `question.md` variants. These should **not** become separate generated canonical templates: the single base `docs/templates/module.md` and `docs/templates/question.md` cover their portable semantics.
+
+The old business `adr.md` and `standard.md` are also covered by the new base `docs/templates/adr.md` and `docs/templates/standard.md`. Old template README files were reviewed for project-specific references and general authoring advice; source-specific ID conventions and fixed runtime technologies are not universally required.
+
+Source files remain preserved until cleanup; `reviewed-targeted` indicates classification, **not** exhaustive verification of all linked project documents.
