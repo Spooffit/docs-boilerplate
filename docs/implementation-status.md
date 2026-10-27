@@ -17,7 +17,7 @@ status: active
 - Optional documentation modules: glossary, requirements, API, integrations, security, testing, operations.
 - Optional agent skills: docs-review, docs-maintain, docs-architecture, docs-init, docs-testing.
 - A canonical `docs/` source tree, generated content/navigation catalog and Docsify (single HTML shell).
-- A CLI validator for generated-file manifests, unresolved initialization placeholders and basic local Markdown links.
+- A CLI validator for generated-file manifests, unresolved initialization placeholders, basic local Markdown links, kebab-case filenames, YAML frontmatter, folder indexes and llms.txt references.
 - GitHub Actions build and end-to-end smoke suite (including Docsify-shell checks and local .NET Tool installation).
 
 ## Known limitations
@@ -25,9 +25,9 @@ status: active
 - Full historical documentation has **not** been migrated or technically audited file-by-file.
 - Unit test suite, property-based checks and detailed diagnostics remain limited.
 - Safe hash-based updates are implemented. Full three-way content merging is deliberately not attempted; concurrent author and template changes require manual resolution.
-- Markdown parsing is intentionally simple; it does not fully verify Markdown anchors, image references or every link dialect.
+- Markdown and frontmatter parsing are deliberately scoped; they do not fully verify Markdown anchors, every image/link dialect or arbitrary YAML syntax.
 - Catalog preflight detects unknown or cyclic dependencies, case-insensitive destination collisions and reserved output paths. A formal JSON Schema and protection against concurrent hostile filesystem changes are still outstanding.
-- No publication or browser-based editing workflow.
+- No automated publication or browser-based editing workflow; Docsify is only a browser-side reader.
 - The Docsify browser view depends on CDN availability and a local/static HTTP server; full headless-browser interaction tests remain outstanding.
 
 ## Next steps

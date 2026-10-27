@@ -16,7 +16,7 @@ This is a generator repository under staged migration. The reusable source lives
 3. Modify the smallest appropriate source. Do not copy project-specific requirements into standards or tool-dependent procedures into AGENTS.md.
 4. Add or update catalog manifest entries for selectable content. All available profiles must have actual reusable files and clear dependencies.
 5. Update tests for new profile combinations, negative cases, missing links and idempotency.
-6. Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh`. For site changes, run the strict Zensical build as in CI.
+6. Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh`. For site changes, verify that Docsify's root index.html and Markdown routes work through a local HTTP server; the CI smoke test checks HTTP delivery.
 7. Inspect the generated repository, not merely its individual templates. Never claim a check that has not been executed.
 8. Commit a logically complete change using Conventional Commits.
 
@@ -37,9 +37,9 @@ Make normative requirements verifiable and explain their applicability. Do not r
 - Keep template output deterministic. A dry-run must remain read-only.
 - Treat untrusted paths, symlinks, file collisions and malformed manifest data as errors.
 - Keep every generated internal Markdown link valid in the smallest profile combination.
-- Keep optional dependencies optional; creating a Markdown-only repository must not require Zensical, Docker, AI or an interactive terminal.
+- Keep optional dependencies optional; creating a Markdown-only repository must not require a site builder, Docker, AI or an interactive terminal.
 - Keep platform-specific guidance gated by profile selection.
-- Generated site output and test artifacts must not be committed.
+- No static-site output is generated. Keep test artifacts and experimental build outputs out of Git.
 
 ## Legacy source material
 

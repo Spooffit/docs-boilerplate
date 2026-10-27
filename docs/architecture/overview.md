@@ -9,7 +9,7 @@ status: active
 
 ## Products
 
-**Template repository** contains the CLI, profile registry, reusable content, agent workflows and quality checks. **Generated repository** contains `README.md`, `docs/`, `standards/`, `.agents/skills/` when selected, `AGENTS.md`, and the machine-readable `docs.config.json`.
+**Template repository** contains the CLI, profile registry, reusable content, agent workflows and quality checks. **Generated repository** contains `README.md`, `AGENTS.md`, `llms.txt`, `docs/` (with indexes and frontmatter), `.agents/skills/` when selected, an optional root Docsify `index.html`, and the machine-readable `docs.config.json`.
 
 ## Components
 
@@ -45,7 +45,7 @@ Profiles carry `available` status. Planned profiles are discoverable but cannot 
 
 ## Safety and lifecycle
 
-No writes occur during preview or validation. Initialization refuses nonempty output folders unless they contain an identical generated plan; an identical re-run must not modify documents. For migration, add an explicit future update command with ownership checks, not force-overwrite defaults.
+No writes occur during preview or validation. Initialization refuses nonempty output folders unless they contain an identical generated plan; an identical re-run must not modify documents. The existing `update` command enforces fingerprint-based ownership and requires `--apply` to change files.
 
 ## Update lifecycle
 

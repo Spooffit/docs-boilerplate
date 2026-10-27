@@ -13,4 +13,6 @@ Welcome to the documentation. Read the [project overview](project/overview.md), 
 
 Explore the [generated documentation catalog](catalog.md) to find every selected standard and template.
 
+The authoritative project instructions start at the root [AGENTS.md](../AGENTS.md) and [llms.txt](../llms.txt).
+
 The project overview describes verified requirements. Architecture decisions are recorded in ADRs. Template examples are not implementation facts.

@@ -13,7 +13,7 @@ A work-in-progress **Docs-as-Code repository generator**, not yet a fully migrat
 
 The reusable implementation lives in [`catalog/`](catalog/), [`src/`](src/) and [`docs/`](docs/). The original documentation repository is **intentionally still present** in `business/`, `technical/`, `milestones/` and older root indexes. Those documents remain input to the migration audit and **are not copied into generated projects**. Do not treat their project-specific claims as boilerplate.
 
-Read the [baseline audit](docs/audit/2026-10-27.md), [architecture](docs/architecture/overview.md), [ADR](docs/decisions/0001-composable-profiles.md), [generator instructions](docs/generator.md), and [implementation status](docs/implementation-status.md).
+Read [llms.txt](llms.txt), the [documentation index](docs/index.md), and the [authoring conventions](catalog/base/docs/standards/documentation.md). Also read the [baseline audit](docs/audit/2026-10-27.md), [architecture](docs/architecture/overview.md), [ADR](docs/decisions/0001-composable-profiles.md), [generator instructions](docs/generator.md), and [implementation status](docs/implementation-status.md).
 
 ## Quick start
 
@@ -26,7 +26,7 @@ dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/demo
 ```
 
-Run `dotnet build src/DocsBoilerplate.Cli` and `bash tests/smoke.sh` before relying on the generator. CI is defined at `.github/workflows/docs-generator.yml`.
+Run `dotnet build src/DocsBoilerplate.Cli` and `bash tests/smoke.sh` before relying on the generator. For local human viewing of a generated repository, run `python -m http.server 3000` from its root and visit `http://localhost:3000/`; opening `index.html` via `file://` is unreliable. CI is defined at `.github/workflows/docs-generator.yml`.
 
 ## What it does
 
@@ -39,7 +39,7 @@ Run `dotnet build src/DocsBoilerplate.Cli` and `bash tests/smoke.sh` before rely
 
 ## Current limitations
 
-This repository is undergoing a staged migration. The legacy content still requires technical review. The first opt-in Zensical site is integrated. A full template library, comprehensive unit testing, advanced manifest constraints and automated upgrades are still pending. See [implementation status](docs/implementation-status.md).
+This repository is undergoing a staged migration. The legacy content still requires technical review. The default human viewer is Docsify: one index.html and no site build. Generated repositories include llms.txt, standard frontmatter and directory indexes. Historical source review, comprehensive unit tests, formal manifest schemas and strong concurrent-filesystem guarantees remain incomplete. See [implementation status](docs/implementation-status.md).
 
 ## Contributing
 

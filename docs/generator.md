@@ -12,8 +12,8 @@ Requires .NET 10 SDK. Repository-root usage:
 ```sh
 dotnet run --project src/DocsBoilerplate.Cli -- list
 dotnet run --project src/DocsBoilerplate.Cli -- doctor
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site zensical --non-interactive --dry-run
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site zensical --non-interactive
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive --dry-run
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/example
 ```
 
@@ -21,7 +21,7 @@ dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/exam
 
 ## Safety
 
-`--dry-run` prints the file plan without writing. Initialization refuses changed generated files and does not overwrite user-created documents. An identical re-run succeeds even if the repository also contains user-authored files or static-site build output. The generated `docs.config.json` records exact selection and file ownership. `validate` checks selection consistency, missing owned files, unresolved template tokens and basic relative Markdown links.
+`--dry-run` prints the file plan without writing. Initialization refuses changed generated files and does not overwrite user-created documents. An identical re-run succeeds even if the repository also contains unrelated user-authored files. The generated `docs.config.json` records exact selection and file ownership. `validate` checks selection consistency, missing owned files, unresolved template tokens and basic relative Markdown links.
 
 Advanced update/merge behavior is not yet implemented. Initialize into a fresh or previously initialized folder.
 
