@@ -195,7 +195,8 @@
       "status": "available",
       "requires": [],
       "files": [
-        "docs/standards/postgresql/persistence.md"
+        "docs/standards/postgresql/persistence.md",
+        "docs/templates/postgresql-migration.md"
       ],
       "category": "database"
     },

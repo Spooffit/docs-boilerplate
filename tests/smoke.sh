@@ -52,6 +52,7 @@ run validate --output "$temp/web"
 [[ -f "$temp/web/docs/standards/aspnet/mvc-controllers.md" ]]
 [[ -f "$temp/web/docs/standards/dotnet/fluentvalidation.md" ]]
 [[ -f "$temp/web/docs/standards/postgresql/persistence.md" ]]
+[[ -f "$temp/web/docs/templates/postgresql-migration.md" ]]
 [[ -f "$temp/web/docs/standards/architecture/cqrs.md" ]]
 [[ -f "$temp/web/docs/standards/dotnet/project-files.md" ]]
 [[ -f "$temp/web/docs/standards/dotnet/ef-core.md" ]]
@@ -84,6 +85,7 @@ run validate --output "$temp/api"
 run init --name Storage --description 'Database docs' --output "$temp/storage" --profiles postgresql --non-interactive
 run validate --output "$temp/storage"
 [[ -f "$temp/storage/docs/standards/postgresql/persistence.md" ]]
+[[ -f "$temp/storage/docs/templates/postgresql-migration.md" ]]
 [[ ! -e "$temp/storage/docs/standards/dotnet" ]]
 
 [[ -f "$temp/web/index.html" ]]

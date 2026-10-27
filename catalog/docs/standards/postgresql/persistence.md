@@ -32,6 +32,39 @@ For operations requiring an atomic change to multiple rows or tables, use a data
 - Distinguish empty, absent and nullable values in API/domain conversion.
 - Use `timestamptz` for instants that represent absolute time; define time zone display policy separately.
 
+## Controlled production schema evolution
+
+Before running a migration, establish the database owner, real existing data, supported application/client versions, deployment topology and backup/restore requirements. Do not assume data can be deleted simply because an old project once had disposable development environments.
+
+Where rolling upgrades require compatibility, consider:
+
+1. **Expand:** add compatible schema objects before new consumers require them.
+2. **Backfill:** move existing data in bounded, restartable batches with verified constraints.
+3. **Switch:** deploy writers and readers in a reviewed order, including background workers and older clients.
+4. **Contract:** remove obsolete objects only after consumers and retention gates are satisfied.
+
+This is an optional deployment strategy, not four mandatory steps for every migration. A migration that works on an empty database may fail or block on real data.
+
+### PostgreSQL DDL safety
+
+- Review the actual `ALTER TABLE` subcommands, their table/index locks, scans, potential rewrites and long transactions. Many forms require `ACCESS EXCLUSIVE` unless documented otherwise.
+- Choose suitable `lock_timeout`/`statement_timeout`; monitor transaction duration, lock waits, disk/WAL, replication lag and any prolonged blocking.
+- `CREATE INDEX CONCURRENTLY` is an option for live systems but cannot run inside a transaction block. Interrupted builds can leave invalid indexes that need explicit recovery and verification.
+- Some constraints support `NOT VALID` followed by `VALIDATE CONSTRAINT`. Confirm support and behavior for the exact PostgreSQL version and type of constraint; don't generalize to every DDL statement.
+- PostgreSQL's transactional DDL does **not** mean every migration operation can run inside one transaction. Plan exceptions explicitly.
+
+### Execution, compatibility and rollback
+
+Decide which deployment component owns the migration. Do not let multiple service replicas race to apply the same schema changes at startup. Independently owned schemas and migrations need explicit coordination where they share a database.
+
+Preserve already-applied migrations, including historical data conversions and constraints. Code rollback does not automatically reverse a destructive schema or data change. Review backup restoration, forward recovery and compatibility across old/new application releases.
+
+Test against a production-like database and representative existing rows. Record real evidence for migrations, query plans, constraints, data completeness, partial failures and rollback. An EF Core migration compiling is not proof that the provider SQL or old-client behavior is safe.
+
+Use the [PostgreSQL migration plan](../../templates/postgresql-migration.md) for changes requiring a documented rollout. Its existence is not proof of successful execution.
+
+References: [PostgreSQL ALTER TABLE](https://www.postgresql.org/docs/current/sql-altertable.html), [CREATE INDEX](https://www.postgresql.org/docs/current/sql-createindex.html), [EF Core migration deployment](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying).
+
 ## Schema changes and operations
 
 Review migrations for data loss, table rewrites, lock impact, backward compatibility and rolling deployment sequencing. Do not auto-run destructive schema migrations in production simply because an application starts.

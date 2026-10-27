@@ -37,6 +37,14 @@ Review schema diffs and data transformation for loss, locks and deployment order
 
 Do not modify previously applied migration snapshots as a shortcut for changing a live schema; coordinate expand/contract migrations for zero-downtime needs.
 
+## Deployment-time migration review
+
+Review the SQL generated for the actual database provider and the deployment impact before applying EF Core migrations. Valid C# and a changed `ModelSnapshot` do not prove that historical data, constraints, locks or existing consumers remain safe.
+
+Separate migration authoring from production execution. Choose a reviewed SQL script, migration bundle or other controlled deployment procedure instead of assuming that every replica should run migrations at startup. When rolling deployment is required, test compatibility of old/new application versions with the intermediate schema.
+
+Do not rewrite applied migrations or make their historic behavior depend on mutable current constants. Explicitly plan destructive data changes and remember that rolling back application code does not roll back deleted data. EF Core does not imply PostgreSQL or any one database-specific DDL rule.
+
 ## Test evidence
 
 Test actual migrations, mappings, SQL translation, provider-specific features, transactions and concurrency against the intended database. An in-memory substitute is useful only for narrower logic checks, not database fidelity.
