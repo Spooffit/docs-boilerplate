@@ -37,3 +37,18 @@ jobs:
           "$RUNNER_TEMP/docs-tool/docs-boilerplate" init --name ToolDemo --description "Tool installation smoke test" --output "$RUNNER_TEMP/tool-demo" --profiles dotnet --non-interactive
           "$RUNNER_TEMP/docs-tool/docs-boilerplate" validate --output "$RUNNER_TEMP/tool-demo"
           "$RUNNER_TEMP/docs-tool/docs-boilerplate" update --output "$RUNNER_TEMP/tool-demo" --apply
+
+  windows-generator:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build on Windows
+        run: dotnet build src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release
+      - name: Smoke-test CLI on Windows
+        shell: pwsh
+        run: ./tests/windows-smoke.ps1

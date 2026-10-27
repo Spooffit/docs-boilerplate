@@ -18,7 +18,7 @@ status: active
 - Optional agent skills: docs-review, docs-maintain, docs-architecture, docs-init, docs-testing.
 - A canonical `docs/` source tree, generated content/navigation catalog and Docsify (single HTML shell).
 - A CLI validator for generated-file manifests, unresolved initialization placeholders, basic local Markdown links, kebab-case filenames, YAML frontmatter, folder indexes and llms.txt references.
-- GitHub Actions build and end-to-end smoke suite (including Docsify-shell checks and local .NET Tool installation).
+- GitHub Actions build and end-to-end smoke suite (including Docsify-shell checks, local .NET Tool installation and Windows CLI smoke tests).
 
 ## Known limitations
 
