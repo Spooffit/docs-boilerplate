@@ -1,6 +1,6 @@
 # .NET testing standard
 
-**Applicability:** software projects using .NET. This is a technology baseline, not a requirement to install every named testing tool. Project-specific suites and release gates belong in the [project testing strategy](../../testing/strategy.md) **only if that optional module was selected**; otherwise record them in the project's architecture/README as needed.
+**Applicability:** software projects using .NET. This is a technology baseline, not a requirement to install every named testing tool. Project-specific suites and release gates belong in the project testing strategy at `docs/testing/strategy.md` **if that optional module was selected**; otherwise record them in the project's architecture/README as needed.
 
 ## 1. Definitions and boundaries
 
