@@ -14,6 +14,8 @@ function Assert-Fail {
     param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Options)
     & dotnet run --no-build --configuration Release --project $project -- @Options
     if ($LASTEXITCODE -eq 0) { throw "Command unexpectedly succeeded: $($Options -join ' ')" }
+    # PowerShell GitHub Actions treats any remaining nonzero native exit as job failure.
+    $global:LASTEXITCODE = 0
 }
 
 try {
