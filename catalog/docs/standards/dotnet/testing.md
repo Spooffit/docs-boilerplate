@@ -64,6 +64,20 @@ For ASP.NET Core, `WebApplicationFactory` is a useful application-level host for
 
 For container-based dependencies, use Testcontainers or an equivalent controlled fixture when appropriate. Prefer dynamically assigned resource names and ports, pinned images and automatic cleanup. See the optional Testcontainers profile.
 
+## Architecture-test boundaries
+
+Architecture tests check **adopted, enforceable dependency rules** in assemblies, namespaces and project references without starting databases, brokers or containers. If a project has explicitly chosen a layered or bounded-context style, test the agreed allowed dependency directions and the separation of public contracts from private infrastructure.
+
+Do not invent Domain/Application/Infrastructure assemblies to satisfy a boilerplate test, and do not freeze a historical architectural rule after the project's approved structure has changed. A shared architecture-testing helper can evaluate rules, but actual assembly names and accepted constraints belong to the specific project. The mere presence of a test library without effective assertions is not architectural coverage.
+
+## End-to-end journeys and optional Aspire testing
+
+End-to-end testing demonstrates the complete **externally observable journey through the actual dependencies required for that scenario**, which may involve one deployable application or several. Run the necessary path, not every service in the solution by default. Prefer black-box inputs and results to assertions on private handlers, repository calls or mock invocation counts.
+
+When the application actually uses an Aspire AppHost, its `Aspire.Hosting.Testing` infrastructure can orchestrate the existing application graph through `DistributedApplicationTestingBuilder`. Select the **optional `aspire-testing` profile** for that tooling; do not duplicate a maintained AppHost graph with an unrelated manually assembled Testcontainers topology merely for tests. Aspire is not a required dependency of ordinary .NET testing or a replacement for `WebApplicationFactory` when the intended SUT is a single ASP.NET Core application.
+
+For eventual outcomes, use a bounded deadline, observable condition, meaningful timeout diagnostics and cancellation. E2E jobs need their own fixture lifecycle and isolated state; resource-heavy parallelism must be bounded based on real CI capacity. A mocked internal sequence does not establish real distributed behavior.
+
 ## 5. Test selection and CI execution
 
 - Keep quick unit/architecture checks independently runnable from infrastructure-heavy suites.

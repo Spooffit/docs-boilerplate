@@ -287,6 +287,18 @@
         "docs/standards/http/contract-verification.md"
       ],
       "category": "web"
+    },
+    {
+      "id": "aspire-testing",
+      "name": "Aspire AppHost distributed application testing",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/aspire-testing.md"
+      ],
+      "category": "testing"
     }
   ]
 }

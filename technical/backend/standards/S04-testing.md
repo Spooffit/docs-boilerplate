@@ -68,4 +68,4 @@ Microsoft формулирует эту рекомендацию для Unit tes
 
 ## Подробные стандарты
 
-[Architecture](S09-architecture-tests.md) · [Unit](S10-unit-tests.md) · [Integration](S11-integration-tests.md) · [Functional](S12-functional-tests.md) · [E2E](S13-e2e-tests.md) · [Окружения](S14-test-environments.md) · [Test engineering](S15-test-engineering.md).
+[Architecture (migrated)](../../../catalog/docs/standards/dotnet/testing.md) · [Unit](S10-unit-tests.md) · [Integration](S11-integration-tests.md) · [Functional](S12-functional-tests.md) · [E2E (migrated)](../../../catalog/docs/standards/dotnet/testing.md) · [Окружения](S14-test-environments.md) · [Test engineering](S15-test-engineering.md).

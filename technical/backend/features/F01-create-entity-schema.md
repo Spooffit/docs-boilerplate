@@ -993,7 +993,7 @@ Duplicate schema key и HTTP optimistic conflict — разные ошибки. 
 Post-Demo delivery policy acceptance: default/explicit modes, nested Lists/Objects, reject setting у String/unknown enum, real PostgreSQL save/read и generated-client round-trip. Старые `/1` golden bytes неизменны, исторический effective default не перезаписывает Published. Это future checks после согласования Q37 carriers/profile, не результат существующего Demo suite.
 
 
-Это стратегия target-проверок, не отчёт о выполненных тестах. Применяются [S04](../standards/S04-testing.md), [S09](../standards/S09-architecture-tests.md), [S10](../standards/S10-unit-tests.md), [S11](../standards/S11-integration-tests.md), [S12](../standards/S12-functional-tests.md), [S14](../standards/S14-test-environments.md).
+Это стратегия target-проверок, не отчёт о выполненных тестах. Применяются [S04](../standards/S04-testing.md), [Architecture testing (migrated)](../../../catalog/docs/standards/dotnet/testing.md), [S10](../standards/S10-unit-tests.md), [S11](../standards/S11-integration-tests.md), [S12](../standards/S12-functional-tests.md), [S14](../standards/S14-test-environments.md).
 
 
 | Уровень | SUT / реальные зависимости / doubles | Собственные данные, изоляция и cleanup |

@@ -20,11 +20,11 @@
 | S06 | — | [Работа с API](technical/frontend/standards/S06-api-client.md) |
 | S07 | — | [Доступность интерфейса](technical/frontend/standards/S07-accessibility.md) |
 | S08 | — | [Тестирование клиента: Blazor/bUnit, FSD и браузерные проверки](technical/frontend/standards/S08-testing.md) |
-| S09 | [Архитектурные тесты](technical/backend/standards/S09-architecture-tests.md) | — |
+| S09 | [Архитектурные тесты: базовый .NET-стандарт](catalog/docs/standards/dotnet/testing.md) | — |
 | S10 | [Unit tests](technical/backend/standards/S10-unit-tests.md) | — |
 | S11 | [Integration tests](technical/backend/standards/S11-integration-tests.md) | — |
 | S12 | [Functional tests](technical/backend/standards/S12-functional-tests.md) | — |
-| S13 | [E2E tests](technical/backend/standards/S13-e2e-tests.md) | — |
+| S13 | [E2E: .NET-стандарт и опциональный Aspire](catalog/docs/standards/dotnet/testing.md) | — |
 | S14 | [Окружения, изоляция и параллельность](technical/backend/standards/S14-test-environments.md) | — |
 | S15 | [Test engineering и проверка изменений](technical/backend/standards/S15-test-engineering.md) | — |
 | S16 | [REST: реализация HTTP API](technical/backend/standards/S16-rest.md) | — |

@@ -49,3 +49,12 @@ Evaluate the full text of each old standard for any residual contradictory requi
 ## Inventory reconciliation (2026-10-27)
 
 The eight original test-standard documents S04 and S09–S15 are now explicitly recorded as **reviewed-targeted** in the legacy inventory, with a common consolidated standard and opt-in runner/infrastructure profiles. This does not certify that every historical library snippet is compatible with its latest version; unverified code examples should remain source material until executable checks are added.
+
+## Focused S09/S13 source migration (2026-10-28)
+
+The entire original `S09-architecture-tests.md` and `S13-e2e-tests.md` sources were inspected before removal.
+
+- **S09:** enforce adopted architecture constraints without Docker, use real assembly/project dependency rules, keep domain-specific project names out of shared testing helpers and do not treat a testing-library dependency as architectural test coverage. Now explicitly preserved in `catalog/docs/standards/dotnet/testing.md`.
+- **S13:** test the smallest real distributed consumer journey end-to-end with externally visible assertions, independent fixture lifecycle, bounded async conditions and cleanup. General boundary guidance is in `catalog/docs/standards/dotnet/testing.md`; AppHost-specific guidance is **only** in the opt-in `catalog/docs/standards/dotnet/aspire-testing.md`, and its package APIs are linked to current Microsoft documentation.
+
+S09 had recognized inbound links from `standards.md`, `technical/backend/standards/S04-testing.md` and `technical/backend/features/F01-create-entity-schema.md`. S13's identified links from the root catalog and S04 were migrated. The legacy reference checker is an independent deletion gate for any additional incoming Markdown links. Removed files remain in Git history; this migration does not imply that older application tests actually ran.

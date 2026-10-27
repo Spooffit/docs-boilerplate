@@ -152,6 +152,17 @@ run validate --output "$temp/assets"
 run update --output "$temp/assets" --apply
 run validate --output "$temp/assets"
 
+# Aspire testing is opt-in, requires .NET and does not select TUnit, Testcontainers, or a broker.
+run init --name AspireApp --description 'AppHost scenarios' --output "$temp/aspire" --profiles aspire-testing --non-interactive
+run validate --output "$temp/aspire"
+[[ -f "$temp/aspire/docs/standards/dotnet/testing.md" ]]
+[[ -f "$temp/aspire/docs/standards/dotnet/aspire-testing.md" ]]
+[[ ! -f "$temp/aspire/docs/standards/dotnet/tunit.md" ]]
+[[ ! -f "$temp/aspire/docs/standards/dotnet/testcontainers.md" ]]
+[[ ! -f "$temp/aspire/docs/standards/dotnet/masstransit-rabbitmq.md" ]]
+run update --output "$temp/aspire" --apply
+run validate --output "$temp/aspire"
+
 # bUnit requires Blazor, but does not implicitly choose MudBlazor.
 run init --name Components --description 'UI component tests' --output "$temp/components" --profiles bunit --non-interactive
 run validate --output "$temp/components"
