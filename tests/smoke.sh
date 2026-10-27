@@ -125,6 +125,40 @@ run init --name All --description "Full stack" --output "$temp/full-stack" --pro
 run validate --output "$temp/full-stack"
 [[ -f "$temp/full-stack/index.html" ]]
 
+# A previously generated Zensical project migrates to Docsify without deleting legacy files.
+cp -a "$temp/minimal" "$temp/legacy-zensical"
+python3 - "$temp/legacy-zensical" <<'PY'
+from hashlib import sha256
+import json
+from pathlib import Path
+import sys
+root = Path(sys.argv[1])
+config_path = root / "docs.config.json"
+config = json.loads(config_path.read_text(encoding="utf-8"))
+(root / "index.html").unlink()
+legacy = b'[project]\nsite_name = "Minimal"\n'
+(root / "zensical.toml").write_bytes(legacy)
+config["Site"] = "zensical"
+config["GeneratedFiles"].remove("index.html")
+config["GeneratedFiles"].append("zensical.toml")
+config["GeneratedFiles"].sort()
+del config["GeneratedHashes"]["index.html"]
+config["GeneratedHashes"]["zensical.toml"] = sha256(legacy).hexdigest()
+config_path.write_text(json.dumps(config), encoding="utf-8")
+PY
+run update --output "$temp/legacy-zensical" --apply
+run validate --output "$temp/legacy-zensical"
+[[ -f "$temp/legacy-zensical/index.html" ]]
+[[ -f "$temp/legacy-zensical/zensical.toml" ]]
+python3 - "$temp/legacy-zensical/docs.config.json" <<'PY'
+import json,sys
+with open(sys.argv[1],encoding="utf-8") as f: data=json.load(f)
+assert data["Site"] == "docsify"
+assert "index.html" in data["GeneratedFiles"]
+assert "zensical.toml" not in data["GeneratedFiles"]
+PY
+
+
 # An identical repeated initialization must not alter authored extra files.
 echo 'custom' > "$temp/project/my-notes.txt"
 run init "${args[@]}"
