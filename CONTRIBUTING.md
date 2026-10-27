@@ -45,6 +45,8 @@ Make normative requirements verifiable and explain their applicability. Do not r
 
 The repository originated from a different documentation project. Its old `business/`, `technical/`, `milestones/` and root catalogs are **source material**, not a normative part of the generator. See [legacy inventory](docs/audit/legacy-inventory.csv), [baseline audit](docs/audit/2026-10-27.md) and [testing review](docs/audit/testing-review.md).
 
+Review [the project-source triage](docs/audit/project-source-triage.md) before removing any historical file. Every new historical file must be inventoried; CI checks source preservation and classifications.
+
 The original contributing guide is preserved under `docs/legacy/CONTRIBUTING.md`. Preserve other legacy files until their content has been reviewed and decisions to extract, generalize or discard are recorded. Remove only after that review, never as indiscriminate cleanup.
 
 ## Pull requests and direct commits

@@ -38,4 +38,4 @@ status: active
 4. Extend the catalog only with tested and documented technologies.
 5. Review and remove historical project content only after extraction or recorded rejection.
 
-The baseline now has a path-level inventory at `docs/audit/legacy-inventory.csv`. Entries are unreviewed unless explicitly covered in a separate audit. This inventory is not proof of content extraction.
+The baseline now has a path-level inventory at `docs/audit/legacy-inventory.csv` and a grouped [project-source triage](audit/project-source-triage.md). Entries remain unreviewed unless explicitly covered in a separate audit. CI checks that listed sources exist and that newly added historical documents are inventoried. This inventory is not proof of content extraction.
