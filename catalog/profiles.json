@@ -275,6 +275,17 @@
         "docs/standards/storage/object-storage.md"
       ],
       "category": "storage"
+    },
+    {
+      "id": "http-contracts",
+      "name": "HTTP client contracts and compatibility",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/http/client-contracts.md",
+        "docs/standards/http/contract-verification.md"
+      ],
+      "category": "web"
     }
   ]
 }

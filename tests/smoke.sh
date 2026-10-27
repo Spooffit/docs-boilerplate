@@ -61,6 +61,18 @@ run validate --output "$temp/web"
 [[ ! -e "$temp/web/docs/standards/dotnet/tunit.md" ]]
 run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles aspnet-mvc,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
 
+# HTTP contract guidance can be selected by any client, without .NET or MVC.
+run init --name HttpConsumer --description 'Contract-driven client' --output "$temp/http-consumer" --profiles http-contracts --modules api --non-interactive
+run validate --output "$temp/http-consumer"
+[[ -f "$temp/http-consumer/docs/standards/http/client-contracts.md" ]]
+[[ -f "$temp/http-consumer/docs/standards/http/contract-verification.md" ]]
+[[ -f "$temp/http-consumer/docs/architecture/api.md" ]]
+[[ ! -e "$temp/http-consumer/docs/standards/dotnet" ]]
+[[ ! -e "$temp/http-consumer/docs/standards/aspnet" ]]
+[[ ! -e "$temp/http-consumer/docs/standards/postgresql" ]]
+run update --output "$temp/http-consumer" --apply
+run validate --output "$temp/http-consumer"
+
 # Base ASP.NET Core does not silently add MVC or FluentValidation.
 run init --name Api --description 'Minimal HTTP API' --output "$temp/api" --profiles aspnet-core --non-interactive
 run validate --output "$temp/api"
