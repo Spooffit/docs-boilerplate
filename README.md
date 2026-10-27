@@ -24,7 +24,7 @@ Run `dotnet build src/DocsBoilerplate.Cli` and `bash tests/smoke.sh` before rely
 ## What it does
 
 - Generates Markdown documentation from a minimal portable base.
-- Includes only requested, available technology profiles and their prerequisites.
+- Includes only requested, available technology profiles and their prerequisites, with optional ASP.NET Core/MVC, PostgreSQL, FluentValidation and CQRS standards.
 - Lists planned, unavailable technologies explicitly.
 - Supports interactive prompts, non-interactive flags, selectable documentation modules and optional Agent Skills.
 - Offers a read-only dry run and refuses to overwrite modified existing files.

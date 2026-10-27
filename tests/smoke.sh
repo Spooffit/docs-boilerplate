@@ -18,6 +18,41 @@ run validate --output "$temp/minimal"
 [[ ! -e "$temp/minimal/.agents" ]]
 [[ ! -f "$temp/minimal/zensical.toml" ]]
 
+# Optional HTTP and persistence profiles must compose without implicit extra libraries.
+run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles aspnet-mvc,fluentvalidation,postgresql,cqrs,ef-core --site zensical --non-interactive
+run validate --output "$temp/web"
+[[ -f "$temp/web/docs/standards/aspnet/http-api.md" ]]
+[[ -f "$temp/web/docs/standards/aspnet/errors-and-validation.md" ]]
+[[ -f "$temp/web/docs/standards/aspnet/mvc-controllers.md" ]]
+[[ -f "$temp/web/docs/standards/dotnet/fluentvalidation.md" ]]
+[[ -f "$temp/web/docs/standards/postgresql/persistence.md" ]]
+[[ -f "$temp/web/docs/standards/architecture/cqrs.md" ]]
+[[ -f "$temp/web/docs/standards/dotnet/project-files.md" ]]
+[[ -f "$temp/web/docs/standards/dotnet/ef-core.md" ]]
+[[ ! -e "$temp/web/docs/standards/blazor" ]]
+[[ ! -e "$temp/web/docs/standards/dotnet/dapper.md" ]]
+[[ ! -e "$temp/web/docs/standards/dotnet/testcontainers.md" ]]
+[[ ! -e "$temp/web/docs/standards/dotnet/tunit.md" ]]
+run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles aspnet-mvc,fluentvalidation,postgresql,cqrs,ef-core --site zensical --non-interactive
+
+# Base ASP.NET Core does not silently add MVC or FluentValidation.
+run init --name Api --description 'Minimal HTTP API' --output "$temp/api" --profiles aspnet-core --non-interactive
+run validate --output "$temp/api"
+[[ -f "$temp/api/docs/standards/aspnet/http-api.md" ]]
+[[ ! -e "$temp/api/docs/standards/aspnet/mvc-controllers.md" ]]
+[[ ! -e "$temp/api/docs/standards/dotnet/fluentvalidation.md" ]]
+
+# A database profile is usable without assuming a particular language or ORM.
+run init --name Storage --description 'Database docs' --output "$temp/storage" --profiles postgresql --non-interactive
+run validate --output "$temp/storage"
+[[ -f "$temp/storage/docs/standards/postgresql/persistence.md" ]]
+[[ ! -e "$temp/storage/docs/standards/dotnet" ]]
+
+if command -v zensical >/dev/null; then
+    ( cd "$temp/web" && zensical build --strict )
+    [[ -f "$temp/web/site/index.html" ]]
+fi
+
 # Testing add-ons are independent and resolved through their .NET prerequisite.
 run init --name Addons --description 'Testing tools' --output "$temp/addons" --profiles tunit,testcontainers --non-interactive
 run validate --output "$temp/addons"

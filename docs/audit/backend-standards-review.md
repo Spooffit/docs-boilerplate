@@ -1,0 +1,49 @@
+# Technical standards migration: .NET, HTTP APIs and persistence
+
+- Date: 2026-10-27
+- Scope: focused content review of S01, S02, S03, S16, S18, S20, S23 and S24. Reviewed repository text and checked critical framework behavior against official documentation. This is **not** a full review of every feature or legacy standard.
+- Destination: reusable documentation profiles in `catalog/docs/standards/`; all source files remain untouched.
+
+## Findings by original file
+
+| Original | Decision | Destination / qualification |
+| --- | --- | --- |
+| `S01-dotnet-conventions.md` | Generalize | `dotnet/conventions.md`; layering rules are conditional on architecture |
+| `S02-persistence.md` | Decompose | `dotnet/ef-core.md` and `postgresql/persistence.md`; Ardalis.Specification and the aggregate-constraints naming convention are not unconditional |
+| `S03-validation-and-errors.md` | Decompose | `aspnet/errors-and-validation.md`; FluentValidation moves to an optional profile |
+| `S16-rest.md` | Decompose | `aspnet/http-api.md` and `aspnet/mvc-controllers.md`; CQRS buses, result mapping and versioned routing remain opt-in application decisions |
+| `S18-fluent-validation.md` | Retain selectively | `dotnet/fluentvalidation.md`, selectable separately; avoid obsolete MVC auto-validation assumptions |
+| `S20-cqrs.md` | Generalize | `architecture/cqrs.md`; handler directory placement cannot be universally mandated |
+| `S23-csproj.md` | Generalize | `dotnet/project-files.md`; keep deterministic XML/project conventions without requiring every project to be packaged |
+| `S24-code-formatting.md` | Replace | Formatting should follow actual tool capabilities; source heading incorrectly says `S23` and cannot be mechanically reused |
+
+## Key corrections
+
+1. **Framework neutrality.** ASP.NET Core does not require MVC, CQRS buses, a particular response mapper, `FluentValidation`, or API URL versioning.
+2. **Validation semantics.** The old standard requires FluentValidation for every .NET request. Current FluentValidation documentation states its older MVC auto-validation pipeline is not recommended for new projects and is incompatible with async rules. If used, explicit `ValidateAsync` is supported.
+3. **Concurrency.** The old persistence rule assumes `<AggregateName>Constraints` and Ardalis.Specification. Those may be useful when selected, but they are not universal. EF Core optimistic concurrency tokens require a response strategy and unique constraint violations are not always concurrency exceptions.
+4. **PostgreSQL.** Isolation and migration semantics belong in a database-specific profile, independently of the .NET provider selected.
+5. **CQRS.** The old instruction that every query handler must live inside `EntityFramework.Persistence` is a particular deployment and layering decision, not a definition of CQRS.
+6. **Build metadata.** The old csproj convention includes fixed property ordering and `PackageId` even for many internal projects; use only when the role warrants it.
+7. **Authority.** Project-specific routes, broker names, permission policies and module identities must not enter general-purpose standards.
+
+## Verified source documentation
+
+- [ASP.NET Core API errors](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0)
+- [ASP.NET Core OpenAPI generation](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-10.0)
+- [FluentValidation ASP.NET integration](https://docs.fluentvalidation.net/en/latest/aspnet.html)
+- [FluentValidation asynchronous rules](https://docs.fluentvalidation.net/en/latest/async.html)
+- [EF Core concurrency](https://learn.microsoft.com/en-us/ef/core/saving/concurrency)
+- [EF Core async behavior](https://learn.microsoft.com/en-us/ef/core/miscellaneous/async)
+- [PostgreSQL isolation](https://www.postgresql.org/docs/current/transaction-iso.html)
+
+## Validation expectations
+
+The smoke suite should generate combinations with MVC, its prerequisites, PostgreSQL, EF Core and FluentValidation, validate the repository and build an opt-in site. It must also generate plain ASP.NET Core without MVC, and PostgreSQL without a .NET runtime profile.
+
+## Remaining migration work
+
+- Review the unprocessed S05-S08 and S17, S19, S21-S22 and frontend standards for technical correctness.
+- Evaluate whether optional Ardalis.Specification, MassTransit and API Versioning deserve distinct profiles after checking their current APIs.
+- Add compiling examples with dedicated build tests before describing them as tested examples.
+- Preserve all legacy source content until the migration decisions are complete.

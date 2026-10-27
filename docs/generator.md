@@ -33,3 +33,13 @@ Static builds are local and are **not** automatically published. Zensical is cur
 ## Validation status
 
 CI runs a .NET 10 Release build, non-interactive end-to-end smoke test, optional Zensical build and negative tests. Check the latest GitHub Actions result rather than assuming the source code has passed.
+
+## Optional backend guidance
+
+Use `--profiles aspnet-core` for framework-neutral ASP.NET Core HTTP guidance. Select `aspnet-mvc` only when the application uses MVC controllers. FluentValidation, PostgreSQL and CQRS are independent opt-in profiles; dependencies (such as `aspnet-mvc` requiring `aspnet-core` and `dotnet`) are resolved automatically. A minimal `dotnet` project does not acquire MVC, a database or a command/query bus.
+
+Example:
+
+```sh
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --description "Backend documentation" --output ./scratch/backend --profiles aspnet-mvc,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
+```
