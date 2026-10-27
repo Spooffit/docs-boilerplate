@@ -43,6 +43,18 @@ Generated SDK code should be reproducible from its pinned contract and generator
 
 When a generated client needs a missing API capability, change and review the **actual server contract** or explicitly implement an adapter. Do not maintain an unnoticed second, divergent copy of the public contract.
 
+## Per-operation evidence comparison
+
+For complex contracts or partially implemented API migrations, document the same operation across distinct authorities without copying all fields:
+
+| Operation | Accepted target source | Existing source/contract version | Generated client status | Runtime/test evidence | Unresolved mismatch |
+| --- | --- | --- | --- | --- | --- |
+| [Real operation] | [Approved requirement or Not established] | [Commit and actual schema or Not verified] | [Generated from pinned version or Not verified] | [Executed contract test or Not verified] | [Exact difference] |
+
+A controller file found in a historical archive is not proof that its replacement route exists. A proposed public contract does not become current simply because a design review accepted it. The client generator and the deployed service can lag the source schema independently.
+
+If original source links point outside the current repository or to missing files, record them as **unverified evidence dependencies**, not as a passing implementation check. Do not use a broken citation to justify new endpoints, DTOs or error mappings.
+
 ## Versioned rollout and verification matrix
 
 | Scenario | Intended behavior | Test boundary | Evidence |

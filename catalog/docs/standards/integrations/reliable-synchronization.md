@@ -52,6 +52,16 @@ A reconciliation process may republish authoritative snapshots, perform a comple
 
 Distinguish reconciliation being *scheduled* from source messages being *published*, consumer updates being *applied* and final state being *verified*.
 
+## Durable operation receipts and staged continuation (when applicable)
+
+Some multi-stage workflows need **command execution identity** independently of the entity, message, event or content hash. If an API supports original-result replay after an uncertain response, document the operation's scope, trusted actor, request identity, meaningful input comparison, retained original result and durable commit boundary.
+
+A confirmed retry of the *same* accepted operation should not silently perform a fresh Create, publish, moderation, history append or other business mutation. A new user intent may legitimately create a second artifact with equal content, so content hashes must not be used as universal deduplication keys. Define operation-retention limits and the behavior when the original outcome is no longer known.
+
+For workflows divided by a job, human approval, broker, or independent owner, identify each stage's durable identity/inputs, terminal outcomes, continuation prerequisites and separately committed side effects. If a worker crashes or another writer supersedes its input, the resumed worker must verify its accepted correlation and actual current constraints before changing state. A later stage cannot reuse a previous transaction's lock or assume another owner's facts remained fresh.
+
+An owning resource token and a separate *user-visible comparison basis* may have different freshness semantics. Confirm business consent against the relevant versioned inputs when the actual use case requires it; matching own `ETag` alone does not prove cross-owner consistency.
+
 ## Operational evidence
 
 Record poison/quarantined events, unresolved dependencies, retry budgets, last received/applied versions, lag, reconciliation attempts and recoverable checkpoints as appropriate. Do not expose credentials, raw personal data or sensitive event payloads through diagnostics.

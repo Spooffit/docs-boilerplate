@@ -37,7 +37,7 @@ The [targeted versioning/lifecycle review](audit/versioned-lifecycle-review.md) 
 
 ## Next steps
 
-1. Perform semantic reviews and recorded extraction/rejection decisions for structurally screened documents; distinguish accepted designs from actual source/test evidence.
+1. Perform semantic reviews and recorded extraction/rejection decisions for structurally screened documents; see [Q15/Q20 evidence and feature-contract review](audit/q15-q20-evidence-review.md) for a cross-source example. Distinguish accepted designs from actual source/test evidence, especially when links resolve outside the repository.
 2. Revisit unreviewed legacy engineering documents and decide whether to extract, refactor or drop each rule.
 3. Add robust tests for file and symlink safety, profile composition and package distribution.
 4. Extend the catalog only with tested and documented technologies.

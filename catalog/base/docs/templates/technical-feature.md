@@ -62,6 +62,14 @@ Identify cancellation, timeout, idempotency and side-effect behavior where relev
 
 [Separate the accepted intended design from **verified current code**. If a repository snapshot, commit, migration, API document or test result was inspected, record its actual reference and scope. Otherwise write "Not verified" rather than describing a planned interface as implemented. A correct contract specification does not prove that client SDKs or deployments currently conform.]
 
+## Source and contract evidence (when applicable)
+
+| Claim | Accepted target authority | Observed code/contract (version) | Verified execution | Unresolved gap |
+| --- | --- | --- | --- | --- |
+| [One meaningful interface or state transition] | [Real decision link or Not established] | [Inspected commit/schema or Not verified] | [Test/build/deployment evidence or Not verified] | [Explicit discrepancy] |
+
+[Do not equate a target API design or linked file path with implemented behavior. Check relative links, resolve external-repository source references and distinguish an unknown current implementation from an accepted future requirement. Remove this section for trivial changes without external contracts.]
+
 ## Testing and acceptance evidence
 
 | Requirement or risk | Actual SUT | Test scope / dependency fidelity | Observable assertion | Evidence |

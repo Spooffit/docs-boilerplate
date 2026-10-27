@@ -44,6 +44,14 @@ Ask whether the documentation accidentally equates any of these different events
 
 These are **examples of distinctions to evaluate**, not universal requirements that every project has all these stages.
 
+## Source evidence and claim authority
+
+Before calling a specification "implemented" or "verified", identify **which repository, version/ref and actual source/test** supports the claim. A historical snapshot, proposed API table, published schema, generated SDK and current service endpoint do not represent equivalent evidence.
+
+If a document links to source code outside the repository, resolve and inspect the exact checkout before treating it as a technical fact. A relative link to a missing file is an **unresolved evidence dependency**; do not silently replace it with an invented endpoint or approval.
+
+When changes span HTTP contracts, storage and asynchronous workflows, distinguish **accepted target design**, **observed source**, **verified deployed behavior** and **tests that actually ran**. Keep unknowns marked "Not verified"; an accepted architectural decision does not imply corresponding implementation exists.
+
 ## Verification
 
 Review links, stage labels, actual accepted states and feature/technical acceptance traceability. The CLI validates names, frontmatter and some local links, but cannot infer product correctness, decision approval or whether an implementation exists.
