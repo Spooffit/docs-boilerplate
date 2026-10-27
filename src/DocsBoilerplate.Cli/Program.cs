@@ -276,9 +276,20 @@ static class DocsCli
     private static string[] DirectoryNames(IEnumerable<string> files) =>
         files.Where(path => path.StartsWith("docs/", StringComparison.Ordinal)
             && path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
-            .Select(path => Path.GetDirectoryName(path.Replace('/', Path.DirectorySeparatorChar))!
-                .Replace(Path.DirectorySeparatorChar, '/'))
-            .Where(folder => folder != "docs")
+            .SelectMany(path =>
+            {
+                var dirs = new List<string>();
+                var directory = Path.GetDirectoryName(path.Replace('/', Path.DirectorySeparatorChar));
+                while (directory is not null)
+                {
+                    var portable = directory.Replace(Path.DirectorySeparatorChar, '/');
+                    if (portable == "docs" || !portable.StartsWith("docs/", StringComparison.Ordinal))
+                        break;
+                    dirs.Add(portable);
+                    directory = Path.GetDirectoryName(directory);
+                }
+                return dirs;
+            })
             .Distinct(StringComparer.Ordinal)
             .Order(StringComparer.Ordinal)
             .ToArray();
