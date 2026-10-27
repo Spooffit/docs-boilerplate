@@ -54,6 +54,10 @@ Identify cancellation, timeout, idempotency and side-effect behavior where relev
 
 [Record selected authentication/authorization and data protection only when applicable; do not prescribe an architecture by default. Specify actual logs, traces, metrics or audit needs if known.]
 
+## Target design versus observed implementation
+
+[Separate the accepted intended design from **verified current code**. If a repository snapshot, commit, migration, API document or test result was inspected, record its actual reference and scope. Otherwise write "Not verified" rather than describing a planned interface as implemented. A correct contract specification does not prove that client SDKs or deployments currently conform.]
+
 ## Testing and acceptance evidence
 
 | Requirement or risk | Actual SUT | Test scope / dependency fidelity | Observable assertion | Evidence |

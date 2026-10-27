@@ -30,7 +30,7 @@ They describe a particular content-management product's routes, users, bounded c
 | Milestone plans and artifacts | 6 | Keep only as examples of decision/acceptance structure if they pass review |
 | Root legacy feature/module/question/standard lists | 4 | Treat as navigation for the old project, not current template navigation |
 
-Totals count 151 entries. Files can be marked `screened-structure` after a scoped headings/intro review, but **this is not a complete semantic audit or deletion approval**. Only evidence-backed content review can advance files to `reviewed-targeted` or `reviewed-complete`; unresolved files remain `pending`.
+Totals count 151 entries. Files can be marked `screened-structure` after a scoped headings/intro review, but **this is not a complete semantic audit or deletion approval**. See [business screening](business-specification-screening.md), [technical features](technical-feature-screening.md) and [technical modules/questions](technical-module-question-screening.md) for precise scope. Only evidence-backed content review can advance files to `reviewed-targeted` or `reviewed-complete`; unresolved files remain `pending`.
 
 ## Deletion gate
 

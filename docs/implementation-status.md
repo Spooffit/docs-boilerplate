@@ -34,7 +34,7 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 
 ## Next steps
 
-1. Perform detailed semantic reviews of structurally screened business and technical feature records, modules and questions; retain source content until extraction and deletion decisions are recorded.
+1. Perform detailed semantic reviews of structurally screened business and technical features, modules and questions; separate agreed designs from actual source/test evidence before deciding which historical documents can be removed.
 2. Revisit unreviewed legacy engineering documents and decide whether to extract, refactor or drop each rule.
 3. Add robust tests for file and symlink safety, profile composition and package distribution.
 4. Extend the catalog only with tested and documented technologies.
