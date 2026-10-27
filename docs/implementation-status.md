@@ -36,6 +36,8 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 
 The [targeted versioning/lifecycle review](audit/versioned-lifecycle-review.md) preserves the reusable documentation concerns without imposing the old product's runtime behavior.
 
+Unit, integration and functional testing guidance has been consolidated after a scoped S10–S12 source review; linked historical copies are retained until inbound references are migrated.
+
 ## Next steps
 
 1. Perform semantic reviews and recorded extraction/rejection decisions for structurally screened documents; see [Q15/Q20 evidence and feature-contract review](audit/q15-q20-evidence-review.md) for a cross-source example. Distinguish accepted designs from actual source/test evidence, especially when links resolve outside the repository.

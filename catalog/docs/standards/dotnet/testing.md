@@ -78,6 +78,34 @@ When the application actually uses an Aspire AppHost, its `Aspire.Hosting.Testin
 
 For eventual outcomes, use a bounded deadline, observable condition, meaningful timeout diagnostics and cancellation. E2E jobs need their own fixture lifecycle and isolated state; resource-heavy parallelism must be bounded based on real CI capacity. A mocked internal sequence does not establish real distributed behavior.
 
+## Unit, integration and functional test depth
+
+These three boundaries can use similar code and still **prove different claims**. Do not classify them only by whether a test happens to use HTTP or a mock.
+
+### Unit: isolated decision and component behavior
+
+Use an isolated component or a small set of interacting rules as the SUT. Domain value objects, business policies, validators and application handlers with controlled substitutes can qualify. Avoid real databases, brokers, containers and other external infrastructure in this category.
+
+Tests should establish their own input and expectations, run independently and ordinarily tolerate parallel execution. Assert outputs, state changes and errors that express the component's contract. An assertion that a mocked persistence adapter was called does **not** establish correct SQL, transaction behavior or durable writes.
+
+Avoid a universal naming mandate imported from another repository. If the team adopts `MethodUnderTest_Scenario_ExpectedBehavior`, use it consistently for the adopted suite. For tests of a workflow rather than one method, an operation or rule name is more informative than an implementation-private method name.
+
+### Integration: concrete technical adapters and their real dependencies
+
+Use the actual provider where correctness depends on its behavior. PostgreSQL constraints, EF Core/Dapper SQL, broker serialization, routing/topology, object-store metadata and network failure handling are not validated by substituting an in-memory implementation.
+
+Integration tests may deliberately observe technical internals: inspect SQL rows, schema metadata, queues, exchanges, delivery headers or adapter state when these **are the integration boundary under test**. This is not permission to expose those internals through a public API. Start only the dependencies needed by the adapter: testing one repository does not require the full distributed application graph.
+
+Where a disposable dependency is required, select an appropriate provisioner such as the independently chosen Testcontainers profile, then isolate resource names and mutable data. The particular container library, image, broker or ORM is not implied by .NET alone. Failed mandatory dependency startup is an actual failed verification, not a silent `Skipped` success.
+
+### Functional: one deployable application's public behavior
+
+Exercise the real external interface of one application and verify a consumer-observable outcome. For an ASP.NET Core API, a project may use `WebApplicationFactory` to run that application with realistic dependencies; the factory itself does not implement PostgreSQL, broker or storage services.
+
+Do not replace a public HTTP request with a direct handler invocation and still claim request binding, filters, authorization and serialization were tested. Prefer observable outcomes over assertions on internal handler invocation counts. Limited database inspection can be a deliberate diagnostic or necessary assertion when no suitable public observation exists; document that exception rather than turning functional tests into adapter tests.
+
+Prepare and clean up test data independently from integration and end-to-end suites. Wait for async outcomes using bounded, meaningful conditions rather than fixed sleeps. A single application can contain several modules or bounded contexts without automatically making its functional test a distributed E2E test.
+
 ## 5. Test selection and CI execution
 
 - Keep quick unit/architecture checks independently runnable from infrastructure-heavy suites.

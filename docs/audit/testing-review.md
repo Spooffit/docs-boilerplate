@@ -58,3 +58,17 @@ The entire original `S09-architecture-tests.md` and `S13-e2e-tests.md` sources w
 - **S13:** test the smallest real distributed consumer journey end-to-end with externally visible assertions, independent fixture lifecycle, bounded async conditions and cleanup. General boundary guidance is in `catalog/docs/standards/dotnet/testing.md`; AppHost-specific guidance is **only** in the opt-in `catalog/docs/standards/dotnet/aspire-testing.md`, and its package APIs are linked to current Microsoft documentation.
 
 S09 had recognized inbound links from `standards.md`, `technical/backend/standards/S04-testing.md` and `technical/backend/features/F01-create-entity-schema.md`. S13's identified links from the root catalog and S04 were migrated. The legacy reference checker is an independent deletion gate for any additional incoming Markdown links. Removed files remain in Git history; this migration does not imply that older application tests actually ran.
+
+## Focused S10/S11/S12 review (2026-10-28)
+
+The remaining original unit, integration and functional testing standards were read in full and compared with the now-explicitly scoped guidance in `catalog/docs/standards/dotnet/testing.md`.
+
+| Source | Retained guidance | Intentionally not made universal |
+| --- | --- | --- |
+| S10 Unit | Independent isolated logic, fakes only for component-level claims, no required infrastructure and parallel-friendly tests | Mandatory exact method-name-based test naming for every .NET repository |
+| S11 Integration | Real provider fidelity; infrastructure-specific white/gray-box observations; focused graph, isolated disposable resources | Mandatory Testcontainers, PostgreSQL, RabbitMQ, or one container per method |
+| S12 Functional | Public application interface, observable result, `WebApplicationFactory` where appropriate and bounded async observations | Mandatory ASP.NET Core, `WebApplicationFactory`, broker or ORM for all functional tests |
+
+The three original sources remain in the historical tree at this stage. Their incoming references from S04, S11/S12, the old catalog and possibly other legacy documents must be rechecked and rewritten before deletion. The new guidance is a reusable interpretation, **not** a claim that code/tests from the predecessor repository were verified.
+
+The proposed next cleanup is to migrate live incoming references to the new scope and remove S10–S12 only after the link-graph deletion gate reports no remaining references and the source-specific decision is recorded in the removal ledger.
