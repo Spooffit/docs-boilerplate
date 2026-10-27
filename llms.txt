@@ -1,0 +1,20 @@
+# Docs Boilerplate
+
+> Agent-first Docs-as-Code repository template and CLI. Markdown content and composable standards are the source of truth; the browser viewer is secondary.
+
+Read `AGENTS.md` before changing content. The historical `business/`, `technical/` and `milestones/` trees are migration inputs, not reusable generated project documentation.
+
+## Essential
+
+- [Repository instructions](AGENTS.md)
+- [Project overview](README.md)
+- [Documentation index](docs/index.md)
+- [Generator usage](docs/generator.md)
+- [Implementation status](docs/implementation-status.md)
+- [Documentation authoring convention](catalog/base/docs/standards/documentation.md)
+
+## Architecture and decisions
+
+- [Architecture overview](docs/architecture/overview.md)
+- [Design decisions](docs/decisions/index.md)
+- [Migration status](docs/audit/index.md)
