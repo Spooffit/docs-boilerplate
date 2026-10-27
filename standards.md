@@ -12,7 +12,7 @@
 
 | ID | Бэкенд | Фронтенд |
 | --- | --- | --- |
-| S01 | [Соглашения .NET](technical/backend/standards/S01-dotnet-conventions.md) | — |
+| S01 | [.NET conventions, migrated reusable profile](catalog/docs/standards/dotnet/conventions.md) | — |
 | S02 | [Хранение и целостность](technical/backend/standards/S02-persistence.md) | — |
 | S03 | [Валидация и ошибки](technical/backend/standards/S03-validation-and-errors.md) | — |
 | S04 | [Общая модель тестирования](technical/backend/standards/S04-testing.md) | — |
@@ -34,7 +34,7 @@
 | S20 | [CQRS: размещение обработчиков](technical/backend/standards/S20-cqrs.md) | — |
 | S21 | [Ограничения агрегатов: единый источник в Domain](technical/backend/standards/S21-aggregate-constraints.md) | — |
 | S22 | [MassTransit / RabbitMQ EventBus topology](technical/backend/standards/S22-eventbus-topology.md) | — |
-| S23 | [Структура `.csproj`](technical/backend/standards/S23-csproj.md) | — |
+| S23 | [.NET project files, migrated reusable profile](catalog/docs/standards/dotnet/project-files.md) | — |
 
 
 [Фичи](features.md) · [Модули](modules.md) · [Вопросы](questions.md) · [Правила ведения](CONTRIBUTING.md).

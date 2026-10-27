@@ -126,7 +126,7 @@ technical/backend/questions/Q30-content-synchronization.md,project-source,review
 technical/backend/questions/Q31-schema-code-generation.md,project-source,screened-structure,63345
 technical/backend/questions/Q33-sync-resume-transport.md,project-source,reviewed-targeted,56253
 technical/backend/questions/Q39-schema-content-selection.md,project-source,screened-structure,9537
-technical/backend/standards/S01-dotnet-conventions.md,candidate-technology-standard,reviewed-targeted,2671
+technical/backend/standards/S01-dotnet-conventions.md,candidate-technology-standard,removed-cleanup,2671
 technical/backend/standards/S02-persistence.md,candidate-technology-standard,reviewed-targeted,5405
 technical/backend/standards/S03-validation-and-errors.md,candidate-technology-standard,reviewed-targeted,3803
 technical/backend/standards/S04-testing.md,candidate-technology-standard,reviewed-targeted,9702
@@ -144,7 +144,7 @@ technical/backend/standards/S19-specifications.md,candidate-technology-standard,
 technical/backend/standards/S20-cqrs.md,candidate-technology-standard,reviewed-targeted,314
 technical/backend/standards/S21-aggregate-constraints.md,candidate-technology-standard,reviewed-targeted,30457
 technical/backend/standards/S22-eventbus-topology.md,candidate-technology-standard,reviewed-targeted,8390
-technical/backend/standards/S23-csproj.md,candidate-technology-standard,reviewed-targeted,6062
+technical/backend/standards/S23-csproj.md,candidate-technology-standard,removed-cleanup,6062
 technical/backend/standards/S24-code-formatting.md,candidate-technology-standard,removed-cleanup,585
 technical/backend/templates/backend-feature.md,candidate-template,reviewed-targeted,15181
 technical/backend/templates/module.md,candidate-template,reviewed-targeted,1218

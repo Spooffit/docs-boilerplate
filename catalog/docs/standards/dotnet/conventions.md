@@ -16,7 +16,19 @@ status: active
 - Follow the project's chosen package-version strategy. Central Package Management is optional.
 - Do not require CQRS, DDD, or a particular controller framework unless independently adopted.
 
-**Review:** build with warnings inspected; run tests; verify layering and cancellation with code review.
+## Responsibility boundaries when explicitly adopted
+
+In a project that **chooses** domain/application/presentation/infrastructure separation, the domain owns its invariants; application coordinates use cases through approved abstractions; presentation converts external requests/results at the boundary; infrastructure implements persistence and integration adapters. An ordinary .NET library need not invent these layers. Make dependency direction agree with the architecture actually accepted by the project.
+
+Do not expose a domain aggregate as the public API merely because it serializes. Mapping an external DTO must not bypass domain invariants or replace the application's own authorization and ownership checks. A syntactically valid identifier does not establish that a resource exists or that a caller may access it.
+
+Distinguish a technical resource identifier, meaningful domain key, displayed name and version number where the project uses them. Their scope and lifecycle may differ: do not silently substitute one for another in persistence mappings or HTTP contracts.
+
+## Verification evidence
+
+Verify the **current source**, not stale build output. Report executed build/test commands and their actual results. Pre-existing binaries or a historical CI screenshot do not establish that the current checkout compiled or that its domain invariants were tested.
+
+**Review:** build with warnings inspected; run tests; verify any selected layering and cancellation with code review.
 
 ## Formatting changed C# source
 
