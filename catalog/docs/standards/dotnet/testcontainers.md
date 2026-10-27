@@ -25,6 +25,14 @@ status: active
 - Docker access, private image registry permissions and container runtime compatibility are explicit CI prerequisites.
 - Avoid shared mutable databases, queues and schemas across parallel jobs without isolation.
 
+## Logical isolation when sharing containers
+
+One disposable PostgreSQL container may serve multiple tests **only if** each concurrently writing scope owns a distinct database, or another isolation mechanism demonstrably prevents collisions. Database reset tools are for safely sequenced scopes: do not reset a shared mutable database while other tests are still running against it.
+
+A RabbitMQ test fixture can use a separate virtual host per independent parallel scope so production-like exchange/queue names can remain stable inside that scope. Isolate bindings and consumer state. Prefer a separate container for tests of broker-wide configuration, plugins, policies, node restarts or whole-broker recovery.
+
+Start and dispose resources according to the **actual fixture owner**. Resource Reaper helps with abandoned containers but does not substitute for correctly disposing databases, vhosts and other logical resources. Choose a CI-wide concurrency budget after measuring the sum of Integration/Functional/E2E workloads, not from a fixed boilerplate number.
+
 ## Distinguish test scopes
 
 Use real dependencies when testing provider behavior, migrations, SQL, routing, serialization and failure recovery. Not every unit test needs Testcontainers, and not every functional test needs the entire distributed application.

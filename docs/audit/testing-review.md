@@ -79,3 +79,11 @@ All three complete source files were compared with the consolidated .NET testing
 
 All recognized references from surviving Markdown (S10: 6, S11: 6, S12: 6) were migrated to exact sections, not just the document root. The older source's unconditional Testcontainers/WebApplicationFactory choices and exact naming convention remain **optional** where appropriate, not global requirements. The three sources are marked `removed-cleanup`. Their previous tests were not rerun or certified here.
 
+
+## Complete S14/S15 extraction, pending retirement (2026-10-28)
+
+Both remaining original sources were inspected in full. S14 distinguishes physical versus logical fixture isolation (database per parallel worker, RabbitMQ vhost per worker when applicable), resource reuse with safe reset, cleanup after errors and separately budgeted heavy-suite parallelism. These rules are now in the core `catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism`, while provider-specific sharing recommendations are in the **optional** Testcontainers profile.
+
+S15 addresses reusable **technical** test fixtures, eventual-consistency polling, independent data, incremental migration of old test suites and truthful validation of what ran. Its portable contents are now in `catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration`. Its fixed BuildingBlocks location, exact test naming and specific toolchain are explicitly **not** made mandatory for all .NET projects.
+
+S14/S15 remain physically present until their incoming Markdown references and non-link mentions have been reconciled. This focused review is not execution of predecessor tests and does not authorize deletion without the link gate.

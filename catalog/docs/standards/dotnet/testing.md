@@ -110,6 +110,27 @@ Prepare and clean up test data independently from integration and end-to-end sui
 
 Treat the chosen `WebApplicationFactory` host as one application's in-process public boundary, not proof of reverse-proxy routing or live multi-service deployment. For asynchronous functional outcomes, assert an observable condition with a bounded deadline, cancellation and meaningful timeout diagnostics instead of relying on an arbitrary delay.
 
+## Test environment ownership and bounded parallelism
+
+For suites using real infrastructure, identify a resource owner **per test run and isolation scope**. Logical isolation can be sufficient and faster than starting a separate physical container for every method, provided parallel writers cannot share mutable state or reset it underneath each other.
+
+- Database tests may use a separate database per fixture/parallel worker or a dedicated instance where behavior requires it. A reset between **sequential** tests does not protect a database against concurrent test writers or reset operations.
+- Broker tests may use isolated virtual hosts or resource namespaces and unique queues/bindings per parallel scope. A dedicated broker is appropriate if the SUT changes node-level configuration, plugins, global policies or tests restart/recovery of the broker itself.
+- Share heavyweight resources only within an explicitly owned run and guarantee cleanup of exactly what that run created. Suite A must not depend on suite B's preexisting database, queue, container or setup.
+- Provisioning follows `Create → Start → Wait for readiness → Configure → Use → Cleanup → Dispose`; also handle failures during setup or tests. Use dynamically assigned ports/names when the selected tooling supports them.
+
+Tune expensive suite concurrency according to real runner capacity, not magic global limits. Prefer the selected test framework's supported parallelism controls over introducing an unrelated scheduler. Unit and architecture suites must not be throttled merely because integration or E2E workloads are resource-heavy. When suites share one CI host, verify **aggregate** concurrency as well as limits per suite.
+
+## Shared testing infrastructure and safe migration
+
+Share only **repeated technical plumbing**, such as resource provisioning, polling/assertion helpers, connection settings and teardown logic. Create a shared testing library when multiple tests genuinely benefit; don't prebuild a speculative hierarchy of database/broker/Aspire fixtures. Keep feature-specific data builders, users, authorization policy fixtures and domain expectations near the tests that own them.
+
+For eventually consistent outcomes, poll the **observable outcome**, with a deadline, cancellation, a meaningful interval and timeout diagnostics. Waiting an arbitrary duration does not assert that work completed.
+
+Before migrating an existing suite, inventory its real SUT, test platform, ignored/skipped tests, environment variables, current fixtures, inherited project settings and CI invocation. Move or split tests according to the actual verification boundary, not just filenames. Preserve existing coverage unless a test is shown to be obsolete; do not silently turn a dependency startup failure into a passed skip. Running and migrating test infrastructure does not automatically authorize production business-logic, API, schema or topology changes.
+
+Run every suite independently and then together, including parallel scenarios and negative setup/cleanup paths where appropriate. State the actual runner commands and observed results; do not present a migrated fixture or planned test list as executed proof.
+
 ## 5. Test selection and CI execution
 
 - Keep quick unit/architecture checks independently runnable from infrastructure-heavy suites.
