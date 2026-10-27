@@ -32,3 +32,4 @@ jobs:
           "$RUNNER_TEMP/docs-tool/docs-boilerplate" doctor
           "$RUNNER_TEMP/docs-tool/docs-boilerplate" init --name ToolDemo --description "Tool installation smoke test" --output "$RUNNER_TEMP/tool-demo" --profiles dotnet --non-interactive
           "$RUNNER_TEMP/docs-tool/docs-boilerplate" validate --output "$RUNNER_TEMP/tool-demo"
+          "$RUNNER_TEMP/docs-tool/docs-boilerplate" update --output "$RUNNER_TEMP/tool-demo" --apply

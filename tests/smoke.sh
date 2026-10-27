@@ -332,6 +332,20 @@ if run update --output "$temp/unmanaged-project" --catalog "$temp/catalog-collis
 fi
 grep -q 'my personal note' "$temp/unmanaged-project/docs/standards/dotnet/user-note.md"
 
+# Corrupt v2 fingerprints must fail validation even if all files still exist.
+cp -a "$temp/minimal" "$temp/invalid-hashes"
+python3 - "$temp/invalid-hashes/docs.config.json" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p,encoding="utf-8") as f: data=json.load(f)
+data["GeneratedHashes"].pop(next(iter(data["GeneratedHashes"])))
+with open(p,"w",encoding="utf-8") as f: json.dump(data,f)
+PY
+if run validate --output "$temp/invalid-hashes" --catalog "$temp/catalog-retire"; then
+    echo "Malformed update fingerprint manifest was accepted"; exit 1
+fi
+
+
 # Old repositories cannot safely adopt historical ownership without the original file hashes.
 cp -a "$temp/minimal" "$temp/legacy-project"
 python3 - "$temp/legacy-project/docs.config.json" <<'PY'

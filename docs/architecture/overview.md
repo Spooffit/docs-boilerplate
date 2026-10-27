@@ -39,3 +39,7 @@ Profiles carry `available` status. Planned profiles are discoverable but cannot 
 ## Safety and lifecycle
 
 No writes occur during preview or validation. Initialization refuses nonempty output folders unless they contain an identical generated plan; an identical re-run must not modify documents. For migration, add an explicit future update command with ownership checks, not force-overwrite defaults.
+
+## Update lifecycle
+
+Newly generated repositories track original template SHA-256 fingerprints. The `update` command renders the saved selection against a newer catalog, previews safe changes, and applies updates only with an explicit `--apply` flag. Concurrent author and template edits cause a conflict and leave files untouched. Retired files are preserved. Repositories without fingerprints need manual migration. See [ADR 0003](../decisions/0003-fingerprint-update.md).

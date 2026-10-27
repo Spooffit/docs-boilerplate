@@ -17,7 +17,7 @@
 
 - Full historical documentation has **not** been migrated or technically audited file-by-file.
 - Unit test suite, property-based checks and detailed diagnostics remain limited.
-- No safe three-way update/merge process after initialization.
+- Safe hash-based updates are implemented. Full three-way content merging is deliberately not attempted; concurrent author and template changes require manual resolution.
 - Markdown parsing is intentionally simple; it does not fully verify Markdown anchors, image references or every link dialect.
 - Catalog preflight detects unknown or cyclic dependencies, case-insensitive destination collisions and reserved output paths. A formal JSON Schema and protection against concurrent hostile filesystem changes are still outstanding.
 - No publication or browser-based editing workflow.
