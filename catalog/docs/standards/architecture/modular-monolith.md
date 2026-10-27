@@ -1,3 +1,10 @@
+---
+title: "Modular monolith"
+description: "Applicable engineering standard"
+kind: standard
+status: active
+---
+
 # Modular monolith
 
 **Applies to:** projects that explicitly select a modular-monolith architecture.

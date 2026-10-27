@@ -1,3 +1,10 @@
+---
+title: "CQRS application pattern"
+description: "Applicable engineering standard"
+kind: standard
+status: active
+---
+
 # CQRS application pattern
 
 **Applies to:** systems that deliberately separate write commands from read queries. This pattern is optional and does not imply microservices, event sourcing or separate databases.

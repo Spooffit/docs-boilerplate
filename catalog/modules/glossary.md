@@ -1,3 +1,10 @@
+---
+title: "Project glossary"
+description: "Project-specific document scaffold"
+kind: project
+status: draft
+---
+
 # Project glossary
 
 This document records project-specific domain terms. Include a term only after verifying it with the domain or product owner.

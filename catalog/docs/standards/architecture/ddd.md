@@ -1,3 +1,10 @@
+---
+title: "Domain-Driven Design"
+description: "Applicable engineering standard"
+kind: standard
+status: active
+---
+
 # Domain-Driven Design
 
 **Applies to:** projects deliberately using DDD modeling techniques.

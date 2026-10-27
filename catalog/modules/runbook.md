@@ -1,3 +1,10 @@
+---
+title: "Operations runbook"
+description: "Project-specific document scaffold"
+kind: project
+status: draft
+---
+
 # Operations runbook
 
 ## Service and environment

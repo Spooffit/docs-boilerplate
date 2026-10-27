@@ -1,3 +1,10 @@
+---
+title: "Testing strategy"
+description: "Project-specific document scaffold"
+kind: project
+status: draft
+---
+
 # Testing strategy
 
 ## Risk and scope

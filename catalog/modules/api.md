@@ -1,3 +1,10 @@
+---
+title: "API design"
+description: "Project-specific document scaffold"
+kind: project
+status: draft
+---
+
 # API design
 
 ## Consumers and responsibilities

@@ -1,3 +1,10 @@
+---
+title: "Requirements"
+description: "Project-specific document scaffold"
+kind: project
+status: draft
+---
+
 # Requirements
 
 ## Goals and stakeholders

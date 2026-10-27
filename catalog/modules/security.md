@@ -1,3 +1,10 @@
+---
+title: "Security architecture"
+description: "Project-specific document scaffold"
+kind: project
+status: draft
+---
+
 # Security architecture
 
 ## Assets and trust boundaries

@@ -1,3 +1,10 @@
+---
+title: "Observability"
+description: "Project-specific document scaffold"
+kind: project
+status: draft
+---
+
 # Observability
 
 ## Signals and ownership

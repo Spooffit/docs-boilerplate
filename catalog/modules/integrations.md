@@ -1,3 +1,10 @@
+---
+title: "Integration architecture"
+description: "Project-specific document scaffold"
+kind: project
+status: draft
+---
+
 # Integration architecture
 
 ## Integration inventory
