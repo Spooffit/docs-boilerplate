@@ -252,7 +252,7 @@ static class DocsCli
         sb.AppendLine();
         var byId = profiles.Profiles.ToDictionary(p => p.Id, StringComparer.Ordinal);
         foreach (var id in selected.Order(StringComparer.Ordinal))
-            sb.AppendLine($"- **{byId[id].Name}** (\`{id}\`)");
+            sb.AppendLine($"- **{byId[id].Name}** (`{id}`)");
         sb.AppendLine();
         sb.AppendLine("## Available documents");
         sb.AppendLine();
