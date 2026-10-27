@@ -11,7 +11,7 @@ internal static class DocumentMetadata
     public static void AssertFileName(string path)
     {
         var filename = Path.GetFileName(path);
-        if (filename is "README.md" or "AGENTS.md" or "SKILL.md")
+        if (filename is "README.md" or "AGENTS.md" or "SKILL.md" or "CONTRIBUTING.md")
             return;
         if (!FilePattern.IsMatch(filename))
             throw new InvalidOperationException($"Expected kebab-case Markdown filename: {path}");

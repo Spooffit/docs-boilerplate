@@ -14,7 +14,7 @@ status: active
 - The **Markdown files**, not the website viewer, are the authoritative project documentation.
 - Read the root `llms.txt` as a curated entry point and `AGENTS.md` for instructions. Neither replaces the referenced source documents or explicit project decisions.
 - Every directory under `docs/` containing Markdown documents must have `index.md` summarizing its purpose and linking to its contents. Keep links relative to the containing document. The generator creates initial indexes; editors update them after creating, moving or deleting pages.
-- Documentation files use lowercase **kebab-case** (e.g. `api-versioning.md`) and `index.md` for directory overviews. Established tool-specific entrypoints `README.md`, `AGENTS.md`, and `SKILL.md` are explicit exceptions; do not rename them.
+- Documentation files use lowercase **kebab-case** (e.g. `api-versioning.md`) and `index.md` for directory overviews. Established tool-specific entrypoints `README.md`, `AGENTS.md`, `SKILL.md` and `CONTRIBUTING.md` are explicit well-known exceptions; do not rename them.
 - Do not invent a mandatory identifier scheme for features, ADRs or business requirements. Use existing project IDs where adopted; otherwise use descriptive kebab-case filenames.
 
 ## Frontmatter

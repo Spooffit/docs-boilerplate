@@ -16,5 +16,5 @@ This repository is a **generator under migration**. Do not confuse historical so
 - Never fabricate project decisions, compatibility, test outcomes or supported profile status.
 - New profiles require an explicit available/planned status, dependency checks, manifest entries and smoke tests.
 - After changes, build the CLI and run `bash tests/smoke.sh` in an environment with .NET SDK 10.
-- Keep documentation in English, with relative links, YAML frontmatter and lowercase kebab-case names. Provide an `index.md` in every active documentation directory, except special format directories. See `catalog/base/docs/standards/documentation.md`. Do not silently overwrite existing generated project files.
+- Keep documentation in English, with relative links, YAML frontmatter and lowercase kebab-case names (except tool-recognized `README.md`, `AGENTS.md`, `SKILL.md` and `CONTRIBUTING.md`). Provide an `index.md` in every active documentation directory, except special format directories. See `catalog/base/docs/standards/documentation.md`. Do not silently overwrite existing generated project files.
 - The agent may use `.agents/skills/docs-review/SKILL.md` to review documentation changes.

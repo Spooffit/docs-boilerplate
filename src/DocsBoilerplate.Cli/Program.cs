@@ -655,7 +655,7 @@ static class DocsCli
             var text = await File.ReadAllTextAsync(file);
             var relativeName = Path.GetRelativePath(output, file).Replace('\\', '/');
             var basename = Path.GetFileName(relativeName);
-            if (basename is not ("README.md" or "AGENTS.md" or "SKILL.md")
+            if (basename is not ("README.md" or "AGENTS.md" or "SKILL.md" or "CONTRIBUTING.md")
                 && !System.Text.RegularExpressions.Regex.IsMatch(basename, "^[a-z0-9]+(?:-[a-z0-9]+)*\\.md$"))
                 errors.Add($"Markdown filename must be kebab-case: {relativeName}");
             if (!DocumentMetadata.IsValid(text, basename == "SKILL.md"))
