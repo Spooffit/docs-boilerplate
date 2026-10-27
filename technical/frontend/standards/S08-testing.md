@@ -20,7 +20,7 @@ bUnit — библиотека тестирования Razor-компонент
 | Razor-компонент либо ограниченная композиция компонентов | bUnit; реальные компоненты внутри SUT, doubles внешних сервисов | Rendering, parameters, пользовательские события, callbacks и наблюдаемые состояния |
 | HTTP adapter / generated client / serialization | Отдельная проверка API-границы; controlled HttpMessageHandler для unit, реальный тестовый HTTP server для integration | Запрос/ответ, headers, ошибки и cancellation; не весь backend workflow |
 | Browser-dependent поведение самостоятельного UI | Реальный браузер; рекомендуется Playwright for .NET | JS/DOM, navigation, focus/keyboard, загрузка приложения и browser network behavior |
-| Полный сценарий UI → API → необходимые реальные зависимости | E2E по S04/S13 | Совместная работа приложений; mocks API не заменяют эту проверку |
+| Полный сценарий UI → API → необходимые реальные зависимости | E2E по выбранной общей классификации тестирования | Совместная работа приложений; mocks API не заменяют эту проверку |
 | Зависимости слоёв и срезов | Architecture tests | Соблюдение FSD и публичных границ без запуска браузера |
 
 Тест с несколькими дочерними компонентами и fake API остаётся компонентной проверкой. Он не объявляется серверным Integration или полным E2E только из-за размера страницы. Browser test с подменённым API доказывает клиентское поведение; для E2E нужен реальный согласованный контур.
@@ -119,7 +119,7 @@ bUnit не исполняет JavaScript и не подтверждает browse
 
 Критерий приёмки и наличие теста не являются результатом его запуска. Поддержка нового поведения не объявляется реализованной без проверки соответствующего клиентского пути.
 
-[Общая модель тестирования](../../backend/standards/S04-testing.md) · [E2E tests](../../backend/standards/S13-e2e-tests.md) · [Данные и ожидания](../../backend/standards/S15-test-engineering.md).
+[Общая модель тестирования](../../backend/standards/S04-testing.md) · [E2E tests, migrated .NET baseline](../../../catalog/docs/standards/dotnet/testing.md) · [Данные и ожидания](../../backend/standards/S15-test-engineering.md).
 
 ## Основания и официальные источники
 
