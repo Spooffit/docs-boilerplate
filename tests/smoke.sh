@@ -116,6 +116,49 @@ if command -v zensical >/dev/null; then
     run init "${args[@]}"
 fi
 
+# Reject unknown flags, missing values and invalid boolean-flag values.
+if run init --name Flag --description Test --output "$temp/flag" --profiles dotnet --foo bar --non-interactive; then
+    echo "Unknown CLI option was accepted"; exit 1
+fi
+if run init --name Flag --description Test --output --profiles dotnet --non-interactive; then
+    echo "Missing option value was accepted"; exit 1
+fi
+if run init --name Flag --description Test --output "$temp/flag" --profiles dotnet --dry-run false --non-interactive; then
+    echo "Boolean flag value was accepted"; exit 1
+fi
+
+# Reject symlinked output roots and symlinks nested inside output trees.
+mkdir -p "$temp/external"
+printf 'sentinel\n' > "$temp/external/keep.txt"
+ln -s "$temp/external" "$temp/output-link"
+if run init --name Linked --description Test --output "$temp/output-link" --profiles dotnet --non-interactive; then
+    echo "Symlink output root was accepted"; exit 1
+fi
+mkdir -p "$temp/poison"
+ln -s "$temp/external" "$temp/poison/docs"
+if run init --name Poison --description Test --output "$temp/poison" --profiles dotnet --non-interactive; then
+    echo "Nested symlink in target directory was accepted"; exit 1
+fi
+ln -s "$temp/external" "$temp/minimal/docs/external-link"
+if run validate --output "$temp/minimal"; then
+    echo "Validation followed or accepted an output symlink"; exit 1
+fi
+rm "$temp/minimal/docs/external-link"
+[[ "$(cat "$temp/external/keep.txt")" == "sentinel" ]]
+
+# Catalog paths must not contain parent traversal or point at symlinks.
+cp -a catalog "$temp/catalog-invalid"
+python3 - "$temp/catalog-invalid/profiles.json" <<'PY'
+import json,sys
+path=sys.argv[1]
+with open(path,encoding="utf-8") as f: data=json.load(f)
+data["profiles"][0]["files"][0] = "../outside.md"
+with open(path,"w",encoding="utf-8") as f: json.dump(data,f)
+PY
+if run doctor --catalog "$temp/catalog-invalid"; then
+    echo "Unsafe catalog path was accepted"; exit 1
+fi
+
 # A manifest missing owned files must be rejected.
 cp "$temp/project/docs.config.json" "$temp/original.json"
 python3 - "$temp/project/docs.config.json" <<'PY'

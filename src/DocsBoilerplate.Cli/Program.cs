@@ -14,13 +14,14 @@ static class DocsCli
         try
         {
             var command = args.FirstOrDefault()?.ToLowerInvariant() ?? "help";
-            var flags = ParseFlags(args.Skip(1).ToArray());
+            var flags = ParseFlags(args.Skip(1).ToArray(), command);
             var catalog = Path.GetFullPath(flags.GetValueOrDefault("catalog")
                 ?? Path.Combine(AppContext.BaseDirectory, "catalog"));
             if (!Directory.Exists(catalog))
                 catalog = Path.GetFullPath(flags.GetValueOrDefault("catalog") ?? "catalog");
             if (!Directory.Exists(catalog))
                 throw new InvalidOperationException("Catalog not found. Supply --catalog PATH or run from the repository root.");
+            SafeFiles.AssertNoLinks(catalog);
             var profiles = JsonSerializer.Deserialize<Catalog>(await File.ReadAllTextAsync(Path.Combine(catalog, "profiles.json")), Json)
                 ?? throw new InvalidOperationException("Invalid profile catalog.");
             var skills = JsonSerializer.Deserialize<SkillCatalog>(await File.ReadAllTextAsync(Path.Combine(catalog, "skills.json")), Json)
@@ -158,7 +159,7 @@ static class DocsCli
         if (site is not ("none" or "zensical"))
             throw new InvalidOperationException($"Unknown documentation site: {site}");
         var expected = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var full in Directory.GetFiles(Path.Combine(catalog, "base"), "*", SearchOption.AllDirectories))
+        foreach (var full in SafeFiles.Enumerate(Path.Combine(catalog, "base")))
         {
             var relative = Path.GetRelativePath(Path.Combine(catalog, "base"), full).Replace('\\', '/');
             Add(relative, (await File.ReadAllTextAsync(full))
@@ -169,7 +170,7 @@ static class DocsCli
         {
             var profile = available.Profiles.Single(x => x.Id == id);
             foreach (var path in profile.Files)
-                Add(path, await File.ReadAllTextAsync(Path.Combine(catalog, path.Replace('/', Path.DirectorySeparatorChar))));
+                Add(path, await File.ReadAllTextAsync(SafePath(catalog, path)));
         }
         foreach (var id in skillIds)
         {
@@ -189,8 +190,9 @@ static class DocsCli
             skillIds.Order(StringComparer.Ordinal).ToArray(), moduleIds.Order(StringComparer.Ordinal).ToArray(),
             site, expected.Keys.Order(StringComparer.Ordinal).ToArray());
         Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
-        if (Directory.Exists(output) && new DirectoryInfo(output).Attributes.HasFlag(FileAttributes.ReparsePoint))
-            throw new IOException("The destination must not be a symbolic link.");
+        SafeFiles.AssertNoLinks(output);
+        if (Directory.Exists(output))
+            _ = SafeFiles.Enumerate(output).ToArray(); // Refuse links anywhere in an existing destination.
         var existing = Directory.Exists(output) ? Directory.GetFileSystemEntries(output) : [];
         if (existing.Length > 0)
         {
@@ -252,7 +254,10 @@ static class DocsCli
 
     private static async Task<int> ValidateAsync(string output, string catalog, Catalog profiles, SkillCatalog skills, ModuleCatalog modules)
     {
-        var configPath = Path.Combine(output, ConfigName);
+        SafeFiles.AssertNoLinks(output);
+        // Inspect all entries first; recursion must never follow reparse points or symlinks.
+        _ = SafeFiles.Enumerate(output).ToArray();
+        var configPath = SafePath(output, ConfigName);
         if (!File.Exists(configPath))
             throw new IOException("Missing docs.config.json.");
         var config = JsonSerializer.Deserialize<ProjectConfig>(await File.ReadAllTextAsync(configPath), Json)
@@ -270,7 +275,7 @@ static class DocsCli
             throw new IOException($"Unknown site configuration: {config.Site}");
         var errors = new List<string>();
         var required = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var path in Directory.GetFiles(Path.Combine(catalog, "base"), "*", SearchOption.AllDirectories))
+        foreach (var path in SafeFiles.Enumerate(Path.Combine(catalog, "base")))
             required.Add(Path.GetRelativePath(Path.Combine(catalog, "base"), path).Replace('\\', '/'));
         foreach (var id in resolved)
             foreach (var path in profiles.Profiles.Single(p => p.Id == id).Files)
@@ -298,7 +303,7 @@ static class DocsCli
             var target = SafePath(output, path);
             if (!File.Exists(target)) errors.Add($"Missing generated file: {path}");
         }
-        foreach (var file in Directory.GetFiles(output, "*.md", SearchOption.AllDirectories))
+        foreach (var file in SafeFiles.Enumerate(output).Where(x => x.EndsWith(".md", StringComparison.OrdinalIgnoreCase)))
         {
             var text = await File.ReadAllTextAsync(file);
             if (text.Contains("{{PROJECT_", StringComparison.Ordinal))
@@ -313,8 +318,12 @@ static class DocsCli
                 var outputRoot = Path.GetFullPath(output).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
                 if (!target.StartsWith(outputRoot, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
                     errors.Add($"Relative link escapes repository in {file}: {link}");
-                else if (!File.Exists(target))
-                    errors.Add($"Broken relative link in {file}: {link}");
+                else
+                {
+                    SafeFiles.AssertNoLinks(target);
+                    if (!File.Exists(target))
+                        errors.Add($"Broken relative link in {file}: {link}");
+                }
             }
         }
         foreach (var error in errors)
@@ -429,26 +438,34 @@ static class DocsCli
         }
     }
 
-    private static string SafePath(string root, string relative)
-    {
-        if (Path.IsPathRooted(relative) || relative.Split('/', '\\').Any(x => x is "." or ".."))
-            throw new IOException($"Unsafe relative path: {relative}");
-        var path = Path.GetFullPath(Path.Combine(root, relative));
-        var prefix = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-        if (!path.StartsWith(prefix, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
-            throw new IOException($"Path escapes output directory: {relative}");
-        return path;
-    }
+    private static string SafePath(string root, string relative) => SafeFiles.Child(root, relative);
 
-    private static Dictionary<string, string> ParseFlags(string[] args)
+    private static Dictionary<string, string> ParseFlags(string[] args, string command)
     {
+        string[] allowed = command switch
+        {
+            "init" => ["catalog", "name", "description", "output", "profiles", "skills", "modules", "site", "dry-run", "non-interactive"],
+            "validate" => ["catalog", "output"],
+            "list" or "doctor" or "help" => ["catalog"],
+            _ => []
+        };
+        var booleans = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "dry-run", "non-interactive" };
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         for (var i = 0; i < args.Length; i++)
         {
-            if (!args[i].StartsWith("--", StringComparison.Ordinal)) throw new ArgumentException($"Unknown argument: {args[i]}");
+            if (!args[i].StartsWith("--", StringComparison.Ordinal) || args[i].Length <= 2)
+                throw new ArgumentException($"Unexpected argument: {args[i]}");
             var key = args[i][2..];
-            if (!result.TryAdd(key, i + 1 < args.Length && !args[i + 1].StartsWith("--", StringComparison.Ordinal) ? args[++i] : "true"))
-                throw new ArgumentException($"Repeated option: {key}");
+            if (!allowed.Contains(key, StringComparer.OrdinalIgnoreCase))
+                throw new ArgumentException($"Unknown option for {command}: --{key}");
+            var isBoolean = booleans.Contains(key);
+            if (isBoolean && i + 1 < args.Length && !args[i + 1].StartsWith("--", StringComparison.Ordinal))
+                throw new ArgumentException($"--{key} is a flag and does not accept a value.");
+            if (!isBoolean && (i + 1 >= args.Length || args[i + 1].StartsWith("--", StringComparison.Ordinal)))
+                throw new ArgumentException($"--{key} requires a value.");
+            var value = isBoolean ? "true" : args[++i];
+            if (!result.TryAdd(key, value))
+                throw new ArgumentException($"Repeated option: --{key}");
         }
         return result;
     }

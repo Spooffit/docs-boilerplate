@@ -5,7 +5,7 @@
 - A baseline structural audit and architecture ADRs.
 - Reusable Markdown catalog and available/planned technology profiles, including opt-in ASP.NET Core, MVC, FluentValidation, PostgreSQL, CQRS, MassTransit/RabbitMQ, Ardalis.Specification and bUnit.
 - A .NET 10 + Spectre.Console CLI with interactive prompts and non-interactive flags, packable as a local .NET Tool.
-- Dependency resolution, profile availability checks, dry-run planning and existing-file protection.
+- Dependency resolution, profile availability checks, dry-run planning and existing-file protection; reject symlinks and invalid catalog/output paths in single-writer scenarios.
 - Optional documentation modules: glossary, requirements, API, integrations, security, testing, operations.
 - Optional agent skills: docs-review, docs-maintain, docs-architecture, docs-init, docs-testing.
 - A canonical `docs/` source tree and opt-in Zensical configuration.
@@ -18,7 +18,7 @@
 - Unit test suite, property-based checks and detailed diagnostics remain limited.
 - No safe three-way update/merge process after initialization.
 - Markdown parsing is intentionally simple; it does not fully verify Markdown anchors, image references or every link dialect.
-- Schema/catalog validation needs more formal contracts and compatibility rules.
+- Schema/catalog validation needs more formal contracts and compatibility rules; TOCTOU races against concurrent hostile filesystem changes are not solved.
 - No publication or browser-based editing workflow.
 - Site tool remains an early-release Zensical dependency. Verify CI before claiming compatibility.
 
