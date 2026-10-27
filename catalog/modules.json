@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "modules": [
+    {
+      "id": "glossary",
+      "name": "Project terminology and shared language",
+      "files": [
+        {
+          "source": "modules/glossary.md",
+          "destination": "docs/project/glossary.md"
+        }
+      ]
+    },
+    {
+      "id": "requirements",
+      "name": "Functional and non-functional requirements",
+      "files": [
+        {
+          "source": "modules/requirements.md",
+          "destination": "docs/project/requirements.md"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "name": "Public API design and compatibility notes",
+      "files": [
+        {
+          "source": "modules/api.md",
+          "destination": "docs/architecture/api.md"
+        }
+      ]
+    },
+    {
+      "id": "integrations",
+      "name": "Integration boundaries and contracts",
+      "files": [
+        {
+          "source": "modules/integrations.md",
+          "destination": "docs/architecture/integrations.md"
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security model and decisions",
+      "files": [
+        {
+          "source": "modules/security.md",
+          "destination": "docs/architecture/security.md"
+        }
+      ]
+    },
+    {
+      "id": "testing",
+      "name": "Project testing strategy",
+      "files": [
+        {
+          "source": "modules/testing.md",
+          "destination": "docs/testing/strategy.md"
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "name": "Operations runbook and observability",
+      "files": [
+        {
+          "source": "modules/runbook.md",
+          "destination": "docs/operations/runbook.md"
+        },
+        {
+          "source": "modules/observability.md",
+          "destination": "docs/operations/observability.md"
+        }
+      ]
+    }
+  ]
+}
