@@ -17,6 +17,10 @@ status: template
 
 [State boundaries, preconditions and explicitly excluded responsibilities. Distinguish accepted scope from proposals.]
 
+## Delivery stage and decision status
+
+[Identify which behaviors are approved for the specific milestone or release. Mark deferred behaviors separately. A feature's future MVP scope is not automatically part of its current Demo or production contract. Record accepted decisions and unresolved choices with links to actual decision records.]
+
 ## Main scenario
 
 1. [Trigger: user or system action with known preconditions.]
@@ -38,4 +42,4 @@ status: template
 
 ## Dependencies and open decisions
 
-[Link related feature, ADR or open-question records by their real paths. Leave unresolved decisions explicitly pending rather than inventing routes, field types or permissions.]
+[Link real parent-module, technical specification, milestone, ADR and question files only when they exist. Identify which document owns each contract or rule. Leave unresolved decisions explicitly pending rather than inventing routes, field types or permissions. When a question is resolved, update affected normative specifications and record that propagation.]

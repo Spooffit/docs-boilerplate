@@ -27,7 +27,13 @@ status: template
 
 ## Resolution
 
-Pending. [Once actually decided, record the confirmed answer, decision date and where normative documentation was updated.]
+**Decision status:** Pending.
+
+[Once the responsible authority actually decides, record the confirmed answer, evidence and decision date. A question document may contain an accepted decision; its filename alone does not mean it is still open. Keep a separate list of any remaining unresolved implementation details. Do not call a statement accepted simply because it appears in historical notes.]
+
+## Propagation and verification
+
+[For each actually affected feature, module, architecture specification or milestone: link the existing target, record whether its normative text has been updated, and identify missing changes. A decision is not implemented merely because the answer was written here.]
 
 ## Affected documents
 

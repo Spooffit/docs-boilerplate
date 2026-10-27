@@ -25,7 +25,11 @@ status: template
 
 ## Cross-feature behavior
 
-[Describe handoffs and sequencing only where needed to understand the combined result.]
+[Describe handoffs and sequencing only where needed to understand the combined result. Distinguish module-as-documentation grouping, module-as-runtime boundary and domain bounded context; they are not necessarily the same unit. Link each owned public interface to its authoritative contract instead of restating fields.]
+
+## Delivery stage and ownership
+
+[Identify confirmed ownership of mutable state, public read interfaces and work assigned to each delivery milestone. Note explicitly when work is not included in the current milestone.]
 
 ## Open decisions
 

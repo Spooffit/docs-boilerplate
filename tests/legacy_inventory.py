@@ -14,7 +14,7 @@ TYPES = {
     "candidate-template",
     "root-config-or-guidance",
 }
-STATES = {"pending", "reviewed-targeted", "reviewed-complete", "rejected"}
+STATES = {"pending", "screened-structure", "reviewed-targeted", "reviewed-complete", "rejected"}
 ROOT_SOURCE_FILES = {"features.md", "modules.md", "questions.md", "standards.md"}
 
 
