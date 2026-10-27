@@ -10,7 +10,7 @@ dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --descriptio
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/example
 ```
 
-`--profiles` accepts comma-separated available profile IDs; dependencies are resolved automatically. `--modules` and `--skills` are independently optional. Use `list` for supported values and planned profiles. Omit flags for interactive prompts.
+`--profiles` accepts comma-separated available profile IDs; dependencies are resolved automatically. `--modules` and `--skills` are independently optional. Use `list` for supported values and planned profiles. Omit flags for interactive prompts. The TUI first asks for backend and frontend, then only asks about data access, UI libraries and testing tools when relevant; architecture and modeling are independent. Unsupported profiles remain visible through `list` but cannot be selected.
 
 ## Safety
 

@@ -9,7 +9,8 @@
       "files": [
         "docs/standards/dotnet/conventions.md",
         "docs/standards/dotnet/testing.md"
-      ]
+      ],
+      "category": "backend"
     },
     {
       "id": "tunit",
@@ -20,7 +21,8 @@
       ],
       "files": [
         "docs/standards/dotnet/tunit.md"
-      ]
+      ],
+      "category": "testing"
     },
     {
       "id": "testcontainers",
@@ -31,7 +33,8 @@
       ],
       "files": [
         "docs/standards/dotnet/testcontainers.md"
-      ]
+      ],
+      "category": "testing"
     },
     {
       "id": "ef-core",
@@ -42,7 +45,8 @@
       ],
       "files": [
         "docs/standards/dotnet/ef-core.md"
-      ]
+      ],
+      "category": "data-access"
     },
     {
       "id": "dapper",
@@ -53,7 +57,8 @@
       ],
       "files": [
         "docs/standards/dotnet/dapper.md"
-      ]
+      ],
+      "category": "data-access"
     },
     {
       "id": "blazor",
@@ -64,7 +69,8 @@
       ],
       "files": [
         "docs/standards/blazor/components.md"
-      ]
+      ],
+      "category": "frontend"
     },
     {
       "id": "mudblazor",
@@ -75,7 +81,8 @@
       ],
       "files": [
         "docs/standards/blazor/mudblazor.md"
-      ]
+      ],
+      "category": "ui"
     },
     {
       "id": "modular-monolith",
@@ -84,7 +91,8 @@
       "requires": [],
       "files": [
         "docs/standards/architecture/modular-monolith.md"
-      ]
+      ],
+      "category": "architecture"
     },
     {
       "id": "ddd",
@@ -93,28 +101,32 @@
       "requires": [],
       "files": [
         "docs/standards/architecture/ddd.md"
-      ]
+      ],
+      "category": "modeling"
     },
     {
       "id": "go",
       "name": "Go",
       "status": "planned",
       "requires": [],
-      "files": []
+      "files": [],
+      "category": "backend"
     },
     {
       "id": "angular",
       "name": "Angular",
       "status": "planned",
       "requires": [],
-      "files": []
+      "files": [],
+      "category": "frontend"
     },
     {
       "id": "react",
       "name": "React",
       "status": "planned",
       "requires": [],
-      "files": []
+      "files": [],
+      "category": "frontend"
     },
     {
       "id": "blazorise",
@@ -123,7 +135,8 @@
       "requires": [
         "blazor"
       ],
-      "files": []
+      "files": [],
+      "category": "ui"
     },
     {
       "id": "custom-ui",
@@ -132,7 +145,8 @@
       "requires": [
         "blazor"
       ],
-      "files": []
+      "files": [],
+      "category": "ui"
     }
   ]
 }

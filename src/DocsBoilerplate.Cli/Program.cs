@@ -63,6 +63,44 @@ static class DocsCli
         }
     }
 
+    private static string[] PromptProfiles(Catalog catalog)
+    {
+        var selected = new HashSet<string>(StringComparer.Ordinal);
+
+        string PickOne(string title, string category)
+        {
+            var choices = catalog.Profiles.Where(x => x.Category == category && x.Status == "available")
+                .Select(x => x.Id).Order(StringComparer.Ordinal).ToArray();
+            return AnsiConsole.Prompt(new SelectionPrompt<string>().Title(title)
+                .AddChoices(new[] { "none" }.Concat(choices)));
+        }
+
+        void PickMany(string title, string category)
+        {
+            var choices = catalog.Profiles.Where(x => x.Category == category && x.Status == "available")
+                .Select(x => x.Id).Order(StringComparer.Ordinal).ToArray();
+            if (choices.Length == 0) return;
+            var picks = AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title(title).AddChoices(choices));
+            selected.UnionWith(picks);
+        }
+
+        var backend = PickOne("Backend technology:", "backend");
+        if (backend != "none") selected.Add(backend);
+        var frontend = PickOne("Frontend technology:", "frontend");
+        if (frontend != "none") selected.Add(frontend);
+
+        if (backend == "dotnet" || frontend == "blazor")
+            PickMany("Data access technologies (optional):", "data-access");
+        if (frontend == "blazor")
+            PickMany("Blazor UI libraries (optional):", "ui");
+        PickMany("Architecture styles (optional):", "architecture");
+        PickMany("Domain modeling approaches (optional):", "modeling");
+        if (backend == "dotnet" || frontend == "blazor")
+            PickMany("Testing libraries (optional):", "testing");
+
+        return selected.Order(StringComparer.Ordinal).ToArray();
+    }
+
     private static async Task<int> InitializeAsync(Dictionary<string, string> args, string catalog, Catalog available, SkillCatalog skillCatalog, ModuleCatalog moduleCatalog)
     {
         var unattended = args.ContainsKey("non-interactive");
@@ -81,8 +119,7 @@ static class DocsCli
             ? listed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             : unattended || Console.IsInputRedirected
                 ? throw new InvalidOperationException("--profiles is required for non-interactive initialization.")
-                : AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title("Technology and architecture profiles:")
-                    .AddChoices(available.Profiles.Where(x => x.Status == "available").Select(x => x.Id))).ToArray();
+                : PromptProfiles(available);
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description))
             throw new InvalidOperationException("Project name and description must be nonempty.");
         if (name.Contains("{{", StringComparison.Ordinal) || description.Contains("{{", StringComparison.Ordinal))
@@ -361,8 +398,14 @@ static class DocsCli
         }
         if (data.Profiles.GroupBy(x => x.Id, StringComparer.Ordinal).Any(x => x.Count() > 1))
             throw new InvalidOperationException("Duplicate profile IDs.");
+        var categories = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "backend", "frontend", "data-access", "ui", "architecture", "modeling", "testing"
+        };
         foreach (var profile in data.Profiles)
         {
+            if (!categories.Contains(profile.Category))
+                throw new InvalidOperationException($"Unknown profile category: {profile.Id} / {profile.Category}");
             if (profile.Status is not ("available" or "planned"))
                 throw new InvalidOperationException($"Invalid profile status: {profile.Id}");
             if (profile.Status == "planned" && profile.Files.Length != 0)
@@ -398,7 +441,7 @@ static class DocsCli
     }
 
     private sealed record Catalog(int SchemaVersion, Profile[] Profiles);
-    private sealed record Profile(string Id, string Name, string Status, string[] Requires, string[] Files);
+    private sealed record Profile(string Id, string Name, string Status, string[] Requires, string[] Files, string Category);
     private sealed record SkillCatalog(int SchemaVersion, Skill[] Skills);
     private sealed record Skill(string Id, string Name, string Source, string Destination);
     private sealed record ModuleCatalog(int SchemaVersion, Module[] Modules);
