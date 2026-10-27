@@ -246,4 +246,103 @@ echo '[escape](../../../../escape.md)' >> "$temp/project/docs/project/overview.m
 if run validate --output "$temp/project"; then
     echo "Escaping link was accepted"; exit 1
 fi
+
+# Updates default to preview. The manifest contains expected template bytes, not user modifications.
+run update --output "$temp/minimal"
+run update --output "$temp/minimal" --apply
+echo 'authored architecture note' >> "$temp/minimal/docs/architecture/overview.md"
+cp -a catalog "$temp/catalog-update"
+printf '\n## Newly provided guidance\n\nChecked update path.\n' >> "$temp/catalog-update/base/docs/project/overview.md"
+cp "$temp/minimal/docs/project/overview.md" "$temp/before-project.md"
+run update --output "$temp/minimal" --catalog "$temp/catalog-update"
+cmp "$temp/before-project.md" "$temp/minimal/docs/project/overview.md"
+run update --output "$temp/minimal" --catalog "$temp/catalog-update" --apply
+grep -q 'Newly provided guidance' "$temp/minimal/docs/project/overview.md"
+grep -q 'authored architecture note' "$temp/minimal/docs/architecture/overview.md"
+run validate --output "$temp/minimal" --catalog "$temp/catalog-update"
+run update --output "$temp/minimal" --catalog "$temp/catalog-update" --apply
+
+# New owned paths may be added, including a regenerated navigation document.
+cp -a "$temp/catalog-update" "$temp/catalog-addition"
+cat > "$temp/catalog-addition/docs/standards/dotnet/new-guidance.md" <<'DOC'
+# New guidance
+
+The newly installed document is part of the selected profile.
+DOC
+python3 - "$temp/catalog-addition/profiles.json" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p,encoding="utf-8") as f: data=json.load(f)
+next(p for p in data["profiles"] if p["id"]=="dotnet")["files"].append("docs/standards/dotnet/new-guidance.md")
+with open(p,"w",encoding="utf-8") as f: json.dump(data,f)
+PY
+run update --output "$temp/minimal" --catalog "$temp/catalog-addition" --apply
+run validate --output "$temp/minimal" --catalog "$temp/catalog-addition"
+[[ -f "$temp/minimal/docs/standards/dotnet/new-guidance.md" ]]
+grep -q 'dotnet/new-guidance.md' "$temp/minimal/docs/catalog.md"
+grep -q 'authored architecture note' "$temp/minimal/docs/architecture/overview.md"
+
+# A retired template is left in place, but no longer tracked by the new manifest.
+cp -a "$temp/catalog-addition" "$temp/catalog-retire"
+python3 - "$temp/catalog-retire/profiles.json" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p,encoding="utf-8") as f: data=json.load(f)
+next(p for p in data["profiles"] if p["id"]=="dotnet")["files"].remove("docs/standards/dotnet/new-guidance.md")
+with open(p,"w",encoding="utf-8") as f: json.dump(data,f)
+PY
+run update --output "$temp/minimal" --catalog "$temp/catalog-retire" --apply
+run validate --output "$temp/minimal" --catalog "$temp/catalog-retire"
+[[ -f "$temp/minimal/docs/standards/dotnet/new-guidance.md" ]]
+if grep -q 'dotnet/new-guidance.md' "$temp/minimal/docs/catalog.md"; then
+    echo "Retired profile file remains in generated navigation"; exit 1
+fi
+
+# Competing edits of the same owned file must block the entire update.
+cp -a "$temp/minimal" "$temp/conflict-project"
+printf '\nUser-owned change\n' >> "$temp/conflict-project/docs/project/overview.md"
+cp -a "$temp/catalog-update" "$temp/catalog-conflict"
+printf '\n## Upstream changed again\n' >> "$temp/catalog-conflict/base/docs/project/overview.md"
+cp "$temp/conflict-project/docs.config.json" "$temp/conflict-config.json"
+if run update --output "$temp/conflict-project" --catalog "$temp/catalog-conflict" --apply; then
+    echo "Competing user/template edits were overwritten"; exit 1
+fi
+cmp "$temp/conflict-config.json" "$temp/conflict-project/docs.config.json"
+grep -q 'User-owned change' "$temp/conflict-project/docs/project/overview.md"
+if grep -q 'Upstream changed again' "$temp/conflict-project/docs/project/overview.md"; then
+    echo "Conflicting upstream change was applied"; exit 1
+fi
+
+# An unmanaged file can never be silently adopted just because the new template wants its path.
+cp -a "$temp/minimal" "$temp/unmanaged-project"
+cp -a "$temp/catalog-retire" "$temp/catalog-collision-update"
+cat > "$temp/catalog-collision-update/docs/standards/dotnet/user-note.md" <<'DOC'
+# The proposed new standard
+DOC
+python3 - "$temp/catalog-collision-update/profiles.json" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p,encoding="utf-8") as f: data=json.load(f)
+next(p for p in data["profiles"] if p["id"]=="dotnet")["files"].append("docs/standards/dotnet/user-note.md")
+with open(p,"w",encoding="utf-8") as f: json.dump(data,f)
+PY
+echo 'my personal note' > "$temp/unmanaged-project/docs/standards/dotnet/user-note.md"
+if run update --output "$temp/unmanaged-project" --catalog "$temp/catalog-collision-update" --apply; then
+    echo "Unmanaged file was adopted without explicit consent"; exit 1
+fi
+grep -q 'my personal note' "$temp/unmanaged-project/docs/standards/dotnet/user-note.md"
+
+# Old repositories cannot safely adopt historical ownership without the original file hashes.
+cp -a "$temp/minimal" "$temp/legacy-project"
+python3 - "$temp/legacy-project/docs.config.json" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p,encoding="utf-8") as f: data=json.load(f)
+del data["GeneratedHashes"]
+with open(p,"w",encoding="utf-8") as f: json.dump(data,f)
+PY
+if run update --output "$temp/legacy-project" --catalog "$temp/catalog-retire" --apply; then
+    echo "Legacy unfingerprinted repository was overwritten"; exit 1
+fi
+
 echo "Smoke tests passed."

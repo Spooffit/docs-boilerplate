@@ -53,3 +53,27 @@ Additional optional profiles: `masstransit-rabbitmq`, `ardalis-specification`, a
 ## Generated navigation
 
 Every new repository receives `docs/catalog.md`, a deterministic navigation list built from the actual selected profiles, optional modules and templates. The documentation homepage links to it. Planned or unselected standards never appear in this catalog. After initialization this is a normal Markdown document that project owners can maintain; no implicit update overwrites it.
+
+## Updating a generated repository
+
+New repositories record SHA-256 fingerprints for all generated files in `docs.config.json`. These fingerprints describe **original template bytes**, not the user's subsequent edits. Update re-renders the selected profiles, skills, modules and site option against a newer catalog.
+
+```sh
+docs-boilerplate update --output ./my-docs
+docs-boilerplate update --output ./my-docs --apply
+docs-boilerplate validate --output ./my-docs
+```
+
+`update` is preview-only by default. `--apply` must be specified to write changes. It will:
+
+- Update a file only when it still matches the original recorded hash, or leave it unchanged if the new template is already present.
+- Preserve local edits when the upstream template has not changed.
+- Reject changes if both a user and the template modified the same file; **no writes occur when a preflight conflict exists**.
+- Reject collisions with newly proposed paths that are already user-owned.
+- Add new files when selected profiles gain documentation.
+- Preserve retired files, but remove their paths from managed ownership and regenerated navigation. No automatic deletion.
+- Record new fingerprints and update `docs.config.json` last; attempt rollback of completed writes if a write fails.
+
+Repositories generated before fingerprints were introduced cannot be updated automatically. Their original bytes cannot be proven, so upgrade by initializing a new output and manually reviewing the diffs. There is no unconditional `--force`.
+
+**Limits:** This is a safe single-writer workflow, not a fully transactional filesystem migration. A system crash, sudden power loss, or a hostile process racing on the same filesystem may interrupt the operation. Commit project changes to Git and review the preview before applying.
