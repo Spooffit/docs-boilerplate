@@ -1,3 +1,10 @@
+---
+title: "PostgreSQL persistence and migrations"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # PostgreSQL persistence and migrations
 
 **Applies to:** projects using PostgreSQL, independent of programming language and ORM.

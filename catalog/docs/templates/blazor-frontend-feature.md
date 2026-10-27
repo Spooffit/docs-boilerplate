@@ -1,3 +1,10 @@
+---
+title: "Blazor frontend feature: [Capability]"
+description: "Reusable writing template"
+kind: template
+status: template
+---
+
 # Blazor frontend feature: [Capability]
 
 > **Use:** Describe the UI structure and behavior of one feature. This template is opt-in through the Blazor profile. It does not require MudBlazor, FSD, NSwag, a central state store or a particular hosting/rendering model.

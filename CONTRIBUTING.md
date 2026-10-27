@@ -1,3 +1,10 @@
+---
+title: "Contributing to Docs Boilerplate"
+description: "Repository documentation and guidance"
+kind: guide
+status: active
+---
+
 # Contributing to Docs Boilerplate
 
 This is a generator repository under staged migration. The reusable source lives in `catalog/`, the .NET CLI in `src/`, and test scripts in `tests/`.

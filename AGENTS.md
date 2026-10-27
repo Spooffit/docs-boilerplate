@@ -1,3 +1,10 @@
+---
+title: "Instructions for agents"
+description: "Repository documentation and guidance"
+kind: guide
+status: active
+---
+
 # Instructions for agents
 
 This repository is a **generator under migration**. Do not confuse historical source documents with the new canonical content.

@@ -1,3 +1,10 @@
+---
+title: "Testcontainers for .NET"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # Testcontainers for .NET
 
 **Applicability:** test suites that use Testcontainers for .NET with disposable container infrastructure.

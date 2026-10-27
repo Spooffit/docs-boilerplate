@@ -1,3 +1,10 @@
+---
+title: "Backend feature: [Capability]"
+description: "Reusable writing template"
+kind: template
+status: template
+---
+
 # Backend feature: [Capability]
 
 > **Use:** Template for one feature's server responsibilities in a .NET project. Only include layers and libraries actually selected. Do not introduce DDD, CQRS, repositories, messaging, EF Core, OpenAPI or extra abstractions merely to complete a section.

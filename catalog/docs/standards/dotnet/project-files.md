@@ -1,3 +1,10 @@
+---
+title: ".NET project files and dependency conventions"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # .NET project files and dependency conventions
 
 **Applies to:** C#/.NET repositories using SDK-style project files.

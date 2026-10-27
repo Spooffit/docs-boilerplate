@@ -1,3 +1,10 @@
+---
+title: "Docs Boilerplate"
+description: "Repository documentation and guidance"
+kind: index
+status: active
+---
+
 # Docs Boilerplate
 
 A work-in-progress **Docs-as-Code repository generator**, not yet a fully migrated template.

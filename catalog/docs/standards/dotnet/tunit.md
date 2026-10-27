@@ -1,3 +1,10 @@
+---
+title: "TUnit and Microsoft.Testing.Platform"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # TUnit and Microsoft.Testing.Platform
 
 **Applicability:** .NET projects that explicitly choose TUnit.
