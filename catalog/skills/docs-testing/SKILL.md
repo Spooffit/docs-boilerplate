@@ -1,14 +1,14 @@
 ---
 name: docs-testing
-description: Document testing scopes and evidence based on the system under test and selected technology standards without inventing tool requirements.
+description: Review testing strategy and evidence against the actual system under test without imposing unselected tooling.
 ---
 
-# Review testing documentation
+# Review test strategy
 
-1. Read `docs.config.json`, `docs/standards/dotnet/testing.md` if the .NET profile is selected, and the actual test project structure if available.
-2. Identify the system under test for each suite: isolated component, real integration boundary, public application interface, UI component, deployed user journey or contract.
-3. Compare intended risks to assertions, fixture isolation, cleanup, timeout behavior and CI evidence.
-4. Treat TUnit, Testcontainers, bUnit, WebApplicationFactory and Aspire Testing as opt-in choices. Apply their profile standards only when selected.
-5. Update `docs/testing/strategy.md` if the project uses the testing module; otherwise create a project document only when needed and avoid duplicating normative standards.
-6. Distinguish tests that ran from tests merely proposed. Never claim coverage or platform compatibility without supporting results.
-7. Run repository validation and provide concrete findings with paths and remaining evidence gaps.
+1. Read `llms.txt`, `docs.config.json`, the project test strategy where selected and the applicable technology standards.
+2. Identify the actual system under test for every suite: isolated rule, infrastructure interaction, public application behavior, UI component, integration contract or deployed journey.
+3. Confirm asserted outcomes, failure paths, fixture lifecycle, isolation, retry/timeout behavior and CI evidence from actual code and jobs.
+4. Treat TUnit, Testcontainers, bUnit, Aspire Testing and specific runner platforms as independently selected options. Never claim compatibility without executing the relevant toolchain.
+5. Update `docs/testing/strategy.md` when present. For a new document, use YAML frontmatter, kebab-case naming and a parent `index.md` entry.
+6. Distinguish passing evidence from proposed tests; coverage percentage alone does not establish behavior quality.
+7. Run project documentation validation and, when available, actual test commands. Report observable results with paths and gaps, never invented passing checks.

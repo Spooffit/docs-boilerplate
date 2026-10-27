@@ -1,15 +1,16 @@
 ---
 name: docs-review
-description: Review repository documentation for link integrity, duplication, contradictions, unsupported claims and technology-profile applicability.
+description: Review agent-first documentation for evidence, applicability, navigation, metadata, and safe updates.
 ---
 
 # Review documentation
 
-1. Read `README.md`, `docs.config.json` and the affected documents.
-2. Identify which standards are in force from the selected profiles. Distinguish project facts, decisions, examples and unconfirmed questions.
-3. Inspect neighboring documents and links; do not rewrite unrelated sections.
-4. Report issues with paths and reproducible evidence, separating blockers from suggestions.
-5. Run the repository's documentation validator if available. Do not claim a successful check without its output.
-6. Recommend or apply minimal consistent changes; preserve human-authored decisions.
+1. Read `llms.txt`, `AGENTS.md`, `docs/index.md` and `docs.config.json` to establish project context and selected profiles.
+2. Inspect only relevant documents and their authoritative references. Separate accepted decisions, requirements, implementation evidence, examples and unresolved questions.
+3. Check YAML frontmatter, lowercase kebab-case filenames, directory `index.md` files and relative links. Preserve `README.md`, `AGENTS.md`, `SKILL.md` and `CONTRIBUTING.md` when those well-known names are applicable.
+4. Compare each normative rule with its declared technology scope. A selected optional library does not imply unrelated architectures or dependencies.
+5. Look for duplicated rules, stale links, broken anchors and contradictions. `docs/catalog.md` and `llms.txt` are navigation aids, not replacements for canonical sources.
+6. Run `docs-boilerplate validate --output <directory>` where available. Report manual checks separately from automated checks and identify what the validator cannot establish.
+7. Provide file-specific findings, impact and safe next steps. Do not rewrite approved project decisions without supporting evidence.
 
-Normative rules remain in `docs/standards/`; this skill is only a workflow.
+Never infer that a passing link/metadata check proves technical correctness or security.
