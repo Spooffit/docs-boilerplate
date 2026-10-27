@@ -10,7 +10,7 @@ status: active
 ## Implemented
 
 - A baseline structural audit and architecture ADRs.
-- Reusable Markdown catalog and available/planned technology profiles, including opt-in ASP.NET Core, MVC, FluentValidation, PostgreSQL, CQRS, MassTransit/RabbitMQ, Ardalis.Specification, bUnit, accessible UI forms, and language-neutral integration reliability.
+- Reusable Markdown catalog and available/planned technology profiles, including opt-in ASP.NET Core, MVC, FluentValidation, PostgreSQL, CQRS, MassTransit/RabbitMQ, Ardalis.Specification, bUnit, accessible UI forms, language-neutral integration reliability, and object storage.
 - A .NET 10 + Spectre.Console CLI with interactive prompts and non-interactive flags, packable as a local .NET Tool.
 - Dependency resolution, profile availability checks, dry-run planning and existing-file protection; reject symlinks and invalid catalog/output paths in single-writer scenarios.
 - Preview-first updates using original generated file fingerprints, preflight conflict detection, additive files and no automatic deletion.

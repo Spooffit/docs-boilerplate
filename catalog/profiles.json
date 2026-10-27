@@ -265,6 +265,16 @@
         "docs/standards/integrations/versioned-transfers.md"
       ],
       "category": "integration"
+    },
+    {
+      "id": "object-storage",
+      "name": "Object storage and safe binary delivery",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/storage/object-storage.md"
+      ],
+      "category": "storage"
     }
   ]
 }

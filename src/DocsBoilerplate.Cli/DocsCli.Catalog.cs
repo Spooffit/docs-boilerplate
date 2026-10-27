@@ -94,7 +94,7 @@ static partial class DocsCli
         var categories = new HashSet<string>(StringComparer.Ordinal)
         {
             "backend", "frontend", "data-access", "ui", "architecture", "modeling", "testing",
-            "web", "validation", "database", "application-pattern", "messaging", "integration", "query-pattern", "frontend-practice"
+            "web", "validation", "database", "application-pattern", "messaging", "integration", "storage", "query-pattern", "frontend-practice"
         };
         foreach (var profile in data.Profiles)
         {

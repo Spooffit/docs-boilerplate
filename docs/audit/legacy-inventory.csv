@@ -120,7 +120,7 @@ technical/backend/questions/Q17-publication-availability.md,project-source,scree
 technical/backend/questions/Q18-activation-history.md,project-source,screened-structure,4162
 technical/backend/questions/Q19-content-hashes.md,project-source,reviewed-targeted,39597
 technical/backend/questions/Q20-persistence-and-migration.md,project-source,reviewed-targeted,138581
-technical/backend/questions/Q21-media-storage.md,project-source,screened-structure,28806
+technical/backend/questions/Q21-media-storage.md,project-source,reviewed-targeted,28806
 technical/backend/questions/Q23-source-synchronization.md,project-source,reviewed-targeted,49981
 technical/backend/questions/Q30-content-synchronization.md,project-source,reviewed-targeted,25117
 technical/backend/questions/Q31-schema-code-generation.md,project-source,screened-structure,63345

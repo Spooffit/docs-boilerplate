@@ -127,6 +127,17 @@ grep -q 'integrations/versioned-transfers.md' "$temp/sync/docs/catalog.md"
 run update --output "$temp/sync" --apply
 run validate --output "$temp/sync"
 
+# Storage guidance is independent of provider, language and specific HTTP stack.
+run init --name Assets --description 'Binary storage' --output "$temp/assets" --profiles object-storage --non-interactive
+run validate --output "$temp/assets"
+[[ -f "$temp/assets/docs/standards/storage/object-storage.md" ]]
+[[ -f "$temp/assets/docs/standards/storage/index.md" ]]
+[[ ! -e "$temp/assets/docs/standards/dotnet" ]]
+[[ ! -e "$temp/assets/docs/standards/postgresql" ]]
+[[ ! -e "$temp/assets/docs/standards/integrations" ]]
+run update --output "$temp/assets" --apply
+run validate --output "$temp/assets"
+
 # bUnit requires Blazor, but does not implicitly choose MudBlazor.
 run init --name Components --description 'UI component tests' --output "$temp/components" --profiles bunit --non-interactive
 run validate --output "$temp/components"
