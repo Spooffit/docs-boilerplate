@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "profiles": [
+    {
+      "id": "dotnet",
+      "name": ".NET / C#",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "standards/dotnet/conventions.md",
+        "standards/dotnet/testing.md"
+      ]
+    },
+    {
+      "id": "ef-core",
+      "name": "Entity Framework Core",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "standards/dotnet/ef-core.md"
+      ]
+    },
+    {
+      "id": "dapper",
+      "name": "Dapper",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "standards/dotnet/dapper.md"
+      ]
+    },
+    {
+      "id": "blazor",
+      "name": "Blazor",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "standards/blazor/components.md"
+      ]
+    },
+    {
+      "id": "mudblazor",
+      "name": "MudBlazor",
+      "status": "available",
+      "requires": [
+        "blazor"
+      ],
+      "files": [
+        "standards/blazor/mudblazor.md"
+      ]
+    },
+    {
+      "id": "modular-monolith",
+      "name": "Modular Monolith",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "standards/architecture/modular-monolith.md"
+      ]
+    },
+    {
+      "id": "ddd",
+      "name": "Domain-Driven Design",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "standards/architecture/ddd.md"
+      ]
+    },
+    {
+      "id": "go",
+      "name": "Go",
+      "status": "planned",
+      "requires": [],
+      "files": []
+    },
+    {
+      "id": "angular",
+      "name": "Angular",
+      "status": "planned",
+      "requires": [],
+      "files": []
+    },
+    {
+      "id": "react",
+      "name": "React",
+      "status": "planned",
+      "requires": [],
+      "files": []
+    },
+    {
+      "id": "blazorise",
+      "name": "Blazorise",
+      "status": "planned",
+      "requires": [
+        "blazor"
+      ],
+      "files": []
+    },
+    {
+      "id": "custom-ui",
+      "name": "Custom Blazor UI library",
+      "status": "planned",
+      "requires": [
+        "blazor"
+      ],
+      "files": []
+    }
+  ]
+}
