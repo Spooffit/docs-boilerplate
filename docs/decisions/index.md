@@ -8,7 +8,6 @@ status: active
 # Architecture decisions
 
 - [Composable profiles](0001-composable-profiles.md)
-- [Zensical, superseded](0002-optional-zensical-site.md)
 - [Fingerprint-based updates](0003-fingerprint-update.md)
 - [Docsify viewer](0004-docsify-viewer.md)
 

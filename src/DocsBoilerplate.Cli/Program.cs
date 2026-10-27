@@ -431,17 +431,15 @@ static class DocsCli
             throw new IOException("Duplicate profiles in configuration.");
         var skillIds = ResolveSkills(oldConfig.Skills, skills);
         var moduleIds = ResolveModules(oldConfig.Modules, modules);
-        if (oldConfig.Site is not ("none" or "docsify" or "zensical"))
+        if (oldConfig.Site is not ("none" or "docsify"))
             throw new IOException($"Unsupported site: {oldConfig.Site}");
         if (string.IsNullOrWhiteSpace(oldConfig.Name) || string.IsNullOrWhiteSpace(oldConfig.Description))
             throw new IOException("Missing project identity in configuration.");
 
-        // Legacy Zensical projects can move to Docsify without touching author-owned Markdown.
-        var site = oldConfig.Site == "zensical" ? "docsify" : oldConfig.Site;
         var expected = await RenderAsync(catalog, profiles, skills, modules,
-            oldConfig.Name, oldConfig.Description, output, profileIds, skillIds, moduleIds, site);
+            oldConfig.Name, oldConfig.Description, output, profileIds, skillIds, moduleIds, oldConfig.Site);
         var newConfig = BuildConfig(oldConfig.Name, oldConfig.Description,
-            profileIds, skillIds, moduleIds, site, expected);
+            profileIds, skillIds, moduleIds, oldConfig.Site, expected);
         var newConfigContent = JsonSerializer.Serialize(newConfig, Json) + Environment.NewLine;
 
         var oldPaths = new HashSet<string>(oldConfig.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
@@ -605,7 +603,7 @@ static class DocsCli
         var moduleIds = ResolveModules(config.Modules, modules);
         if (moduleIds.Count != config.Modules.Length)
             throw new IOException("Duplicate documentation module IDs.");
-        if (config.Site is not ("none" or "docsify" or "zensical"))
+        if (config.Site is not ("none" or "docsify"))
             throw new IOException($"Unknown site configuration: {config.Site}");
         var errors = new List<string>();
         var required = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -635,8 +633,6 @@ static class DocsCli
             errors.Add("Duplicate generated llms.txt path.");
         if (config.Site == "docsify" && !required.Add("index.html"))
             errors.Add("Duplicate site configuration path: index.html");
-        if (config.Site == "zensical" && !required.Add("zensical.toml"))
-            errors.Add("Duplicate legacy site configuration path: zensical.toml");
         var declared = new HashSet<string>(config.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
         if (declared.Count != config.GeneratedFiles.Length || !declared.SetEquals(required))
             errors.Add("GeneratedFiles manifest does not match selected profiles, base documents and skills.");

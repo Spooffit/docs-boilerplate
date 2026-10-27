@@ -23,7 +23,7 @@ dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/exam
 
 `--dry-run` prints the file plan without writing. Initialization refuses changed generated files and does not overwrite user-created documents. An identical re-run succeeds even if the repository also contains unrelated user-authored files. The generated `docs.config.json` records exact selection and file ownership. `validate` checks selection consistency, missing owned files, unresolved template tokens and basic relative Markdown links.
 
-Advanced update/merge behavior is not yet implemented. Initialize into a fresh or previously initialized folder.
+Updates with fingerprint-based conflict detection are supported (see below). Automatic three-way merges and arbitrary site-engine migrations are intentionally not supported.
 
 ## Optional website: Docsify
 
@@ -37,7 +37,7 @@ python -m http.server 3000
 
 Then open `http://localhost:3000/`. Python is used only to serve files and is not required by the generator. Alternatively host the unchanged repository on an ordinary static file server. Docsify's JavaScript and CSS load from a CDN, so the viewer needs network access unless assets are intentionally self-hosted. Markdown and agent workflows remain usable offline.
 
-On legacy repos initialized with `--site zensical`, `update` will propose switching to Docsify while **retaining** the old `zensical.toml` file for manual cleanup. No source files are silently deleted.
+Only `docsify` and `none` are supported. If an older repository stores a different site identifier, initialize a fresh repository and review the Markdown diff manually; the CLI does not run or migrate retired site engines.
 
 ## Validation status
 

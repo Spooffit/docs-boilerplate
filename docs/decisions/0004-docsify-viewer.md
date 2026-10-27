@@ -16,7 +16,7 @@ The repository is designed primarily for AI agents reading Markdown source. A st
 
 ## Decision
 
-Replace the opt-in Zensical build with Docsify, a browser-side Markdown renderer. Fresh repositories include a single root `index.html` by default; `--site none` disables it. Markdown remains in `docs/`, with `docs/index.md` as the home page and `index.md` files for directory overviews. The viewer loads Docsify from CDN and uses `basePath: "docs/"` and `relativePath: true`. Do not require a Docsify CLI, npm package, build tree, underscore navigation files or a separate content repository.
+Use Docsify as the only built-in browser-side Markdown renderer. Fresh repositories include a single root `index.html` by default; `--site none` disables it. Markdown remains in `docs/`, with `docs/index.md` as the home page and `index.md` files for directory overviews. The viewer loads Docsify from CDN and uses `basePath: "docs/"` and `relativePath: true`. Do not require a Docsify CLI, npm package, build tree, underscore navigation files or a separate content repository.
 
 ## Tradeoffs
 
@@ -24,10 +24,9 @@ Replace the opt-in Zensical build with Docsify, a browser-side Markdown renderer
 - The viewer uses CDN-delivered assets; offline browser viewing would require separately hosted assets.
 - Client-rendered pages differ from pre-rendered HTML in indexability and JavaScript requirements.
 - `llms.txt` and original Markdown remain readable independently of Docsify.
-- Keep history of old Zensical decision in `0002-optional-zensical-site.md` but mark it superseded.
 
-## Migration
+## Previously generated repositories
 
-On update, legacy selected `zensical` becomes `docsify`. Retired `zensical.toml` is **not automatically deleted**. The update previews changes and applies fingerprint conflict rules as before.
+The only supported site selections are `docsify` and `none`. Other saved site identifiers are deliberately rejected. For an old project, generate a new Docsify repository and reconcile documentation manually in Git; the updater never silently deletes or rewrites content it cannot safely identify.
 
 References: https://docsify.js.org/ , https://github.com/docsifyjs/docsify/blob/develop/docs/configuration.md , https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS/Errors/CORSRequestNotHttp
