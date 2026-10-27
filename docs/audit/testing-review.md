@@ -1,3 +1,10 @@
+---
+title: "Testing standard migration review"
+description: "Historic and ongoing source analysis"
+kind: audit
+status: active
+---
+
 # Testing standard migration review
 
 - Date: 2026-10-27

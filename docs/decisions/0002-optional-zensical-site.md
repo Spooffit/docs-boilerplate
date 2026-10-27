@@ -1,3 +1,10 @@
+---
+title: "ADR 0002: Opt-in Zensical documentation site"
+description: "Documented architectural decision"
+kind: adr
+status: superseded
+---
+
 # ADR 0002: Opt-in Zensical documentation site
 
 - Status: Superseded by [ADR 0004](0004-docsify-viewer.md)

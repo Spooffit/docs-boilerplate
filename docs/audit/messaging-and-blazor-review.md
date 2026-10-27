@@ -1,3 +1,10 @@
+---
+title: "Messaging, query specifications and Blazor: migration decisions"
+description: "Historic and ongoing source analysis"
+kind: audit
+status: active
+---
+
 # Messaging, query specifications and Blazor: migration decisions
 
 - Date: 2026-10-27

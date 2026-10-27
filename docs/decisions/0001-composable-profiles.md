@@ -1,3 +1,10 @@
+---
+title: "ADR 0001: Composable, declarative documentation profiles"
+description: "Documented architectural decision"
+kind: adr
+status: active
+---
+
 # ADR 0001: Composable, declarative documentation profiles
 
 - Status: Accepted

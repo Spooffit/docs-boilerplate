@@ -1,3 +1,10 @@
+---
+title: "ADR 0004: Markdown-first Docsify viewer"
+description: "Documented architectural decision"
+kind: adr
+status: active
+---
+
 # ADR 0004: Markdown-first Docsify viewer
 
 - Status: Accepted

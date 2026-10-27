@@ -1,3 +1,10 @@
+---
+title: "Documentation template migration: first extraction"
+description: "Historic and ongoing source analysis"
+kind: audit
+status: active
+---
+
 # Documentation template migration: first extraction
 
 - Date: 2026-10-27

@@ -1,3 +1,10 @@
+---
+title: "Documentation template architecture"
+description: "Maintainer documentation"
+kind: guide
+status: active
+---
+
 # Documentation template architecture
 
 ## Products

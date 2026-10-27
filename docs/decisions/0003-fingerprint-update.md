@@ -1,3 +1,10 @@
+---
+title: "ADR 0003: Preview-first, fingerprint-checked updates"
+description: "Documented architectural decision"
+kind: adr
+status: active
+---
+
 # ADR 0003: Preview-first, fingerprint-checked updates
 
 - Status: Accepted

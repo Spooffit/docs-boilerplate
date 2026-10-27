@@ -1,3 +1,10 @@
+---
+title: "Generator CLI"
+description: "Maintainer documentation"
+kind: guide
+status: active
+---
+
 # Generator CLI
 
 Requires .NET 10 SDK. Repository-root usage:

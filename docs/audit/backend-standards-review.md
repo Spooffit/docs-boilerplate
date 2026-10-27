@@ -1,3 +1,10 @@
+---
+title: "Technical standards migration: .NET, HTTP APIs and persistence"
+description: "Historic and ongoing source analysis"
+kind: audit
+status: active
+---
+
 # Technical standards migration: .NET, HTTP APIs and persistence
 
 - Date: 2026-10-27

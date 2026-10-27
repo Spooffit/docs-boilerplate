@@ -1,3 +1,10 @@
+---
+title: "Implementation status"
+description: "Maintainer documentation"
+kind: guide
+status: active
+---
+
 # Implementation status
 
 ## Implemented
