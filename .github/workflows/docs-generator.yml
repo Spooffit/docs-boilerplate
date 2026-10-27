@@ -1,0 +1,22 @@
+name: Docs generator
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  generator:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build
+        run: dotnet build src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release
+      - name: Smoke-test generation
+        run: bash tests/smoke.sh
