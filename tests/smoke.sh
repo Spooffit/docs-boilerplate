@@ -33,7 +33,11 @@ grep -q "dotnet/testing.md" "$temp/minimal/docs/catalog.md"
 [[ ! -e "$temp/minimal/.agents" ]]
 [[ ! -e "$temp/minimal/docs/templates/blazor-frontend-feature.md" ]]
 if grep -q "blazor/components.md" "$temp/minimal/docs/catalog.md"; then echo "Unselected standard leaked into catalog"; exit 1; fi
-[[ ! -f "$temp/minimal/index.html" ]]
+[[ -f "$temp/minimal/index.html" ]]
+run init --name Headless --description "No site viewer" --output "$temp/headless" --profiles dotnet --site none --non-interactive
+run validate --output "$temp/headless"
+[[ ! -e "$temp/headless/index.html" ]]
+[[ -f "$temp/headless/llms.txt" ]]
 
 # Optional HTTP and persistence profiles must compose without implicit extra libraries.
 run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles aspnet-mvc,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
