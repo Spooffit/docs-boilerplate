@@ -114,6 +114,19 @@ run validate --output "$temp/integration"
 [[ ! -e "$temp/integration/docs/standards/dotnet/ef-core.md" ]]
 [[ ! -e "$temp/integration/docs/standards/postgresql" ]]
 
+# Language-neutral reliable synchronization does not bring in an ORM, .NET, or broker.
+run init --name Sync --description "Cross-system state replication" --output "$temp/sync" --profiles integration-reliability --modules integrations --non-interactive
+run validate --output "$temp/sync"
+[[ -f "$temp/sync/docs/standards/integrations/reliable-synchronization.md" ]]
+[[ -f "$temp/sync/docs/standards/integrations/versioned-transfers.md" ]]
+[[ -f "$temp/sync/docs/architecture/integrations.md" ]]
+[[ -f "$temp/sync/docs/standards/integrations/index.md" ]]
+[[ ! -e "$temp/sync/docs/standards/dotnet" ]]
+[[ ! -e "$temp/sync/docs/standards/postgresql" ]]
+grep -q 'integrations/versioned-transfers.md' "$temp/sync/docs/catalog.md"
+run update --output "$temp/sync" --apply
+run validate --output "$temp/sync"
+
 # bUnit requires Blazor, but does not implicitly choose MudBlazor.
 run init --name Components --description 'UI component tests' --output "$temp/components" --profiles bunit --non-interactive
 run validate --output "$temp/components"

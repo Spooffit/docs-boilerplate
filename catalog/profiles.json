@@ -254,6 +254,17 @@
         "docs/standards/ui/forms-and-accessibility.md"
       ],
       "category": "frontend-practice"
+    },
+    {
+      "id": "integration-reliability",
+      "name": "Reliable integration and resumable synchronization",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/integrations/reliable-synchronization.md",
+        "docs/standards/integrations/versioned-transfers.md"
+      ],
+      "category": "integration"
     }
   ]
 }
