@@ -1,1 +1,6 @@
-﻿.idea
+.idea/
+.vs/
+**/bin/
+**/obj/
+**/TestResults/
+scratch/
