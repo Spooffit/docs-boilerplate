@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Spectre.Console;
@@ -186,6 +187,7 @@ static class DocsCli
         if (site == "zensical")
             Add("zensical.toml", (await File.ReadAllTextAsync(SafePath(catalog, "sites/zensical.toml")))
                 .Replace("{{PROJECT_NAME_TOML}}", JsonSerializer.Serialize(name), StringComparison.Ordinal));
+        Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available));
         var config = new ProjectConfig(name, description, ids.Order(StringComparer.Ordinal).ToArray(),
             skillIds.Order(StringComparer.Ordinal).ToArray(), moduleIds.Order(StringComparer.Ordinal).ToArray(),
             site, expected.Keys.Order(StringComparer.Ordinal).ToArray());
@@ -237,6 +239,33 @@ static class DocsCli
             if (!expected.TryAdd(path, value))
                 throw new InvalidOperationException($"Conflicting output file: {path}");
         }
+    }
+
+    private static string BuildDocumentCatalog(Dictionary<string, string> files, IEnumerable<string> selected, Catalog profiles)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("# Documentation catalog");
+        sb.AppendLine();
+        sb.AppendLine("This index is generated from the selected profiles and modules. It lists the documents actually installed during initialization; project owners may extend it after initialization.");
+        sb.AppendLine();
+        sb.AppendLine("## Selected profiles");
+        sb.AppendLine();
+        var byId = profiles.Profiles.ToDictionary(p => p.Id, StringComparer.Ordinal);
+        foreach (var id in selected.Order(StringComparer.Ordinal))
+            sb.AppendLine($"- **{byId[id].Name}** (\`{id}\`)");
+        sb.AppendLine();
+        sb.AppendLine("## Available documents");
+        sb.AppendLine();
+        foreach (var path in files.Keys.Where(p => p.StartsWith("docs/", StringComparison.Ordinal)
+                && p.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+                .Order(StringComparer.Ordinal))
+        {
+            var headline = files[path].Split('\n').FirstOrDefault(line => line.StartsWith("# ", StringComparison.Ordinal));
+            var title = headline is null ? Path.GetFileNameWithoutExtension(path) : headline[2..].Trim();
+            title = title.Replace("[", "\\[", StringComparison.Ordinal).Replace("]", "\\]", StringComparison.Ordinal);
+            sb.AppendLine($"- [{title}]({path["docs/".Length..]})");
+        }
+        return sb.ToString();
     }
 
     private static async Task<bool> IsIdenticalAsync(string output, Dictionary<string, string> expected)
@@ -292,6 +321,8 @@ static class DocsCli
                 if (!required.Add(file.Destination))
                     errors.Add($"Duplicate module output path: {file.Destination}");
         }
+        if (!required.Add("docs/catalog.md"))
+            errors.Add("Duplicate generated documentation catalog path.");
         if (config.Site == "zensical")
             if (!required.Add("zensical.toml"))
                 errors.Add("Duplicate site configuration path: zensical.toml");

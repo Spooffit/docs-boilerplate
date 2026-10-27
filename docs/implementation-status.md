@@ -8,7 +8,7 @@
 - Dependency resolution, profile availability checks, dry-run planning and existing-file protection; reject symlinks and invalid catalog/output paths in single-writer scenarios.
 - Optional documentation modules: glossary, requirements, API, integrations, security, testing, operations.
 - Optional agent skills: docs-review, docs-maintain, docs-architecture, docs-init, docs-testing.
-- A canonical `docs/` source tree and opt-in Zensical configuration.
+- A canonical `docs/` source tree, generated content/navigation catalog and opt-in Zensical configuration.
 - A CLI validator for generated-file manifests, unresolved initialization placeholders and basic local Markdown links.
 - GitHub Actions build and end-to-end smoke suite (including optional site build and local .NET Tool installation).
 

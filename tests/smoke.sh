@@ -13,11 +13,14 @@ run list
 # A genuinely minimal repo must not contain dangling links to optional modules.
 run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
 run validate --output "$temp/minimal"
+[[ -f "$temp/minimal/docs/catalog.md" ]]
+grep -q "dotnet/testing.md" "$temp/minimal/docs/catalog.md"
 [[ -f "$temp/minimal/docs/standards/dotnet/testing.md" ]]
 [[ -f "$temp/minimal/docs/templates/dotnet-backend-feature.md" ]]
 [[ ! -e "$temp/minimal/docs/testing/strategy.md" ]]
 [[ ! -e "$temp/minimal/.agents" ]]
 [[ ! -e "$temp/minimal/docs/templates/blazor-frontend-feature.md" ]]
+if grep -q "blazor/components.md" "$temp/minimal/docs/catalog.md"; then echo "Unselected standard leaked into catalog"; exit 1; fi
 [[ ! -f "$temp/minimal/zensical.toml" ]]
 
 # Optional HTTP and persistence profiles must compose without implicit extra libraries.
@@ -71,6 +74,8 @@ run init "${args[@]}"
 run validate --output "$temp/project"
 [[ -f "$temp/project/docs/standards/dotnet/ef-core.md" ]]
 [[ -f "$temp/project/docs/standards/blazor/mudblazor.md" ]]
+grep -q "blazor/mudblazor.md" "$temp/project/docs/catalog.md"
+grep -q "testing/strategy.md" "$temp/project/docs/catalog.md"
 [[ -f "$temp/project/docs/testing/strategy.md" ]]
 [[ -f "$temp/project/docs/operations/observability.md" ]]
 [[ -f "$temp/project/.agents/skills/docs-review/SKILL.md" ]]

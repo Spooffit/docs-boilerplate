@@ -49,3 +49,7 @@ Additional optional profiles: `masstransit-rabbitmq`, `ardalis-specification`, a
 ## Catalog integrity
 
 `doctor` performs a whole-catalog preflight: all published profile dependencies must resolve without cycles, every profile/module/skill destination must be unique (case-insensitively for cross-platform use), and generated project paths cannot escape the repository. This validation occurs **before** output creation and also rejects collisions in currently unselected profiles.
+
+## Generated navigation
+
+Every new repository receives `docs/catalog.md`, a deterministic navigation list built from the actual selected profiles, optional modules and templates. The documentation homepage links to it. Planned or unselected standards never appear in this catalog. After initialization this is a normal Markdown document that project owners can maintain; no implicit update overwrites it.
