@@ -26,13 +26,13 @@ Run `dotnet build src/DocsBoilerplate.Cli` and `bash tests/smoke.sh` before rely
 - Generates Markdown documentation from a minimal portable base.
 - Includes only requested, available technology profiles and their prerequisites.
 - Lists planned, unavailable technologies explicitly.
-- Supports interactive prompts and non-interactive flags.
+- Supports interactive prompts, non-interactive flags, selectable documentation modules and optional Agent Skills.
 - Offers a read-only dry run and refuses to overwrite modified existing files.
 - Validates generated-file presence, unresolved base fields and simple relative Markdown links.
 
 ## Current limitations
 
-This repository is undergoing a staged migration. The legacy content still requires technical review. A website, full template library, comprehensive test coverage, advanced manifest constraints, automated upgrades and optional agent skills selection are not yet delivered. See [implementation status](docs/implementation-status.md).
+This repository is undergoing a staged migration. The legacy content still requires technical review. The first opt-in Zensical site is integrated. A full template library, comprehensive unit testing, advanced manifest constraints and automated upgrades are still pending. See [implementation status](docs/implementation-status.md).
 
 ## Contributing
 

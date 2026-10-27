@@ -1,15 +1,35 @@
-# CLI (early working slice)
+# Generator CLI
 
-Requires .NET 10 SDK. Use the root working directory or pass `--catalog` to point to the reusable catalog:
+Requires .NET 10 SDK. Repository-root usage:
 
 ```sh
 dotnet run --project src/DocsBoilerplate.Cli -- list
 dotnet run --project src/DocsBoilerplate.Cli -- doctor
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --non-interactive --dry-run
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --non-interactive
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site zensical --non-interactive --dry-run
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site zensical --non-interactive
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/example
 ```
 
-Omit init flags for interactive prompts. Profiles are resolved from `catalog/profiles.json` with dependencies, and unsupported profiles are explicitly rejected. A nonempty output directory is rejected unless contents match precisely. The dry-run prints planned files without writing anything.
+`--profiles` accepts comma-separated available profile IDs; dependencies are resolved automatically. `--modules` and `--skills` are independently optional. Use `list` for supported values and planned profiles. Omit flags for interactive prompts.
 
-This implementation is intentionally a **first vertical slice**, not the completed specification. Template authoring and full update/merge semantics, advanced validation, independent CLI test suite, static site, skills, and packaging verification remain pending. .NET 10 SDK is not available in the current execution environment; compilation and runtime tests have not yet been performed.
+## Safety
+
+`--dry-run` prints the file plan without writing. Initialization refuses changed generated files and does not overwrite user-created documents. An identical re-run succeeds even if the repository also contains user-authored files or static-site build output. The generated `docs.config.json` records exact selection and file ownership. `validate` checks selection consistency, missing owned files, unresolved template tokens and basic relative Markdown links.
+
+Advanced update/merge behavior is not yet implemented. Initialize into a fresh or previously initialized folder.
+
+## Optional static site
+
+Select `--site zensical` to produce `zensical.toml`. All documentation lives under `docs/`, including selected engineering standards; no duplicates are copied for the site. Install Zensical separately (CI currently pins 0.0.73), then use:
+
+```sh
+cd scratch/example
+zensical serve
+zensical build --strict
+```
+
+Static builds are local and are **not** automatically published. Zensical is currently an early-release dependency; pin and re-test on upgrades.
+
+## Validation status
+
+CI runs a .NET 10 Release build, non-interactive end-to-end smoke test, optional Zensical build and negative tests. Check the latest GitHub Actions result rather than assuming the source code has passed.

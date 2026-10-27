@@ -140,6 +140,8 @@ static class DocsCli
             skillIds.Order(StringComparer.Ordinal).ToArray(), moduleIds.Order(StringComparer.Ordinal).ToArray(),
             site, expected.Keys.Order(StringComparer.Ordinal).ToArray());
         Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
+        if (Directory.Exists(output) && new DirectoryInfo(output).Attributes.HasFlag(FileAttributes.ReparsePoint))
+            throw new IOException("The destination must not be a symbolic link.");
         var existing = Directory.Exists(output) ? Directory.GetFileSystemEntries(output) : [];
         if (existing.Length > 0)
         {
@@ -188,13 +190,14 @@ static class DocsCli
 
     private static async Task<bool> IsIdenticalAsync(string output, Dictionary<string, string> expected)
     {
-        var files = Directory.GetFiles(output, "*", SearchOption.AllDirectories)
-            .Select(p => Path.GetRelativePath(output, p).Replace('\\', '/')).Order(StringComparer.Ordinal).ToArray();
-        if (!files.SequenceEqual(expected.Keys.Order(StringComparer.Ordinal), StringComparer.Ordinal))
-            return false;
+        // User-authored additional files and site build outputs must not turn a safe no-op into a conflict.
+        // Every owned/generated file still has to match byte-for-byte.
         foreach (var (path, content) in expected)
-            if (await File.ReadAllTextAsync(SafePath(output, path)) != content)
+        {
+            var file = SafePath(output, path);
+            if (!File.Exists(file) || await File.ReadAllTextAsync(file) != content)
                 return false;
+        }
         return true;
     }
 
@@ -257,7 +260,11 @@ static class DocsCli
                 if (Uri.TryCreate(link, UriKind.Absolute, out _) || link.StartsWith('#') || link.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
                     continue;
                 var decoded = Uri.UnescapeDataString(link);
-                if (!File.Exists(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file)!, decoded))))
+                var target = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file)!, decoded));
+                var outputRoot = Path.GetFullPath(output).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+                if (!target.StartsWith(outputRoot, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+                    errors.Add($"Relative link escapes repository in {file}: {link}");
+                else if (!File.Exists(target))
                     errors.Add($"Broken relative link in {file}: {link}");
             }
         }
