@@ -14,8 +14,10 @@ run list
 run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
 run validate --output "$temp/minimal"
 [[ -f "$temp/minimal/docs/standards/dotnet/testing.md" ]]
+[[ -f "$temp/minimal/docs/templates/dotnet-backend-feature.md" ]]
 [[ ! -e "$temp/minimal/docs/testing/strategy.md" ]]
 [[ ! -e "$temp/minimal/.agents" ]]
+[[ ! -e "$temp/minimal/docs/templates/blazor-frontend-feature.md" ]]
 [[ ! -f "$temp/minimal/zensical.toml" ]]
 
 # Optional HTTP and persistence profiles must compose without implicit extra libraries.
@@ -93,6 +95,7 @@ run init --name Components --description 'UI component tests' --output "$temp/co
 run validate --output "$temp/components"
 [[ -f "$temp/components/docs/standards/blazor/bunit.md" ]]
 [[ -f "$temp/components/docs/standards/blazor/components.md" ]]
+[[ -f "$temp/components/docs/templates/blazor-frontend-feature.md" ]]
 [[ -f "$temp/components/docs/standards/dotnet/project-files.md" ]]
 [[ ! -e "$temp/components/docs/standards/blazor/mudblazor.md" ]]
 

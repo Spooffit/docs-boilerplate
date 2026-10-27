@@ -65,9 +65,9 @@ business/questions/Q38-bulk-version-freeze-and-release-preparation.md,project-so
 business/questions/Q39-schema-content-selection.md,project-source,pending,9526
 business/templates/README.md,candidate-template,pending,12703
 business/templates/adr.md,candidate-template,pending,901
-business/templates/business-feature.md,candidate-template,pending,1981
-business/templates/module.md,candidate-template,pending,1218
-business/templates/question.md,candidate-template,pending,684
+business/templates/business-feature.md,candidate-template,reviewed-targeted,1981
+business/templates/module.md,candidate-template,reviewed-targeted,1218
+business/templates/question.md,candidate-template,reviewed-targeted,684
 business/templates/standard.md,candidate-template,pending,3098
 features.md,project-source,pending,7888
 milestones/README.md,project-source,pending,3937
@@ -79,8 +79,8 @@ milestones/production/production.md,project-source,pending,6280
 modules.md,project-source,pending,2421
 questions.md,project-source,pending,6476
 shared/templates/README.md,candidate-template,pending,12703
-shared/templates/adr.md,candidate-template,pending,901
-shared/templates/standard.md,candidate-template,pending,3098
+shared/templates/adr.md,candidate-template,reviewed-targeted,901
+shared/templates/standard.md,candidate-template,reviewed-targeted,3098
 standards.md,project-source,pending,3683
 technical/backend/AGENTS.md,project-source,pending,6898
 technical/backend/README.md,project-source,pending,4745
@@ -146,7 +146,7 @@ technical/backend/standards/S21-aggregate-constraints.md,candidate-technology-st
 technical/backend/standards/S22-eventbus-topology.md,candidate-technology-standard,reviewed-targeted,8390
 technical/backend/standards/S23-csproj.md,candidate-technology-standard,reviewed-targeted,6062
 technical/backend/standards/S24-code-formatting.md,candidate-technology-standard,reviewed-targeted,585
-technical/backend/templates/backend-feature.md,candidate-template,pending,15181
+technical/backend/templates/backend-feature.md,candidate-template,reviewed-targeted,15181
 technical/backend/templates/module.md,candidate-template,pending,1218
 technical/backend/templates/question.md,candidate-template,pending,684
 technical/frontend/AGENTS.md,project-source,pending,5759
@@ -192,6 +192,6 @@ technical/frontend/standards/S05-ui-and-forms.md,candidate-technology-standard,p
 technical/frontend/standards/S06-api-client.md,candidate-technology-standard,reviewed-targeted,5910
 technical/frontend/standards/S07-accessibility.md,candidate-technology-standard,pending,1729
 technical/frontend/standards/S08-testing.md,candidate-technology-standard,reviewed-targeted,24354
-technical/frontend/templates/frontend-feature.md,candidate-template,pending,31880
+technical/frontend/templates/frontend-feature.md,candidate-template,reviewed-targeted,31880
 technical/frontend/templates/module.md,candidate-template,pending,1218
 technical/frontend/templates/question.md,candidate-template,pending,684
