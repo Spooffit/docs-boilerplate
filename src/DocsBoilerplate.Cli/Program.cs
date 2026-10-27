@@ -23,24 +23,30 @@ static class DocsCli
                 throw new InvalidOperationException("Catalog not found. Supply --catalog PATH or run from the repository root.");
             var profiles = JsonSerializer.Deserialize<Catalog>(await File.ReadAllTextAsync(Path.Combine(catalog, "profiles.json")), Json)
                 ?? throw new InvalidOperationException("Invalid profile catalog.");
-            ValidateCatalog(catalog, profiles);
+            var skills = JsonSerializer.Deserialize<SkillCatalog>(await File.ReadAllTextAsync(Path.Combine(catalog, "skills.json")), Json)
+                ?? throw new InvalidOperationException("Invalid skill catalog.");
+            ValidateCatalog(catalog, profiles, skills);
             switch (command)
             {
                 case "list":
+                    AnsiConsole.MarkupLine("[bold]Profiles[/]");
                     foreach (var profile in profiles.Profiles)
                         AnsiConsole.MarkupLine($"[{(profile.Status == "available" ? "green" : "yellow")}]{Markup.Escape(profile.Id)}[/]  {Markup.Escape(profile.Name)}  ({profile.Status})");
+                    AnsiConsole.MarkupLine("[bold]Agent skills[/]");
+                    foreach (var skill in skills.Skills)
+                        AnsiConsole.MarkupLine($"[green]{Markup.Escape(skill.Id)}[/]  {Markup.Escape(skill.Name)}");
                     return 0;
                 case "init":
-                    return await InitializeAsync(flags, catalog, profiles);
+                    return await InitializeAsync(flags, catalog, profiles, skills);
                 case "validate":
-                    return await ValidateAsync(Path.GetFullPath(flags.GetValueOrDefault("output") ?? "."), catalog, profiles);
+                    return await ValidateAsync(Path.GetFullPath(flags.GetValueOrDefault("output") ?? "."), catalog, profiles, skills);
                 case "doctor":
                     AnsiConsole.MarkupLine("[green]OK[/] Catalog loaded and profile paths validated.");
                     AnsiConsole.WriteLine($"Catalog: {catalog}");
                     return 0;
                 default:
                     AnsiConsole.WriteLine("Commands: init, list, validate, doctor");
-                    AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--dry-run] [--non-interactive] [--catalog PATH]");
+                    AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--dry-run] [--non-interactive] [--catalog PATH]");
                     AnsiConsole.WriteLine("validate: --output PATH [--catalog PATH]");
                     return command == "help" ? 0 : 2;
             }
@@ -52,7 +58,7 @@ static class DocsCli
         }
     }
 
-    private static async Task<int> InitializeAsync(Dictionary<string, string> args, string catalog, Catalog available)
+    private static async Task<int> InitializeAsync(Dictionary<string, string> args, string catalog, Catalog available, SkillCatalog skillCatalog)
     {
         var unattended = args.ContainsKey("non-interactive");
         string Ask(string key, string prompt)
@@ -77,6 +83,13 @@ static class DocsCli
         if (name.Contains("{{", StringComparison.Ordinal) || description.Contains("{{", StringComparison.Ordinal))
             throw new InvalidOperationException("Template placeholder markers are not permitted in input.");
         var ids = ResolveProfiles(selection, available);
+        var requestedSkills = args.TryGetValue("skills", out var requested)
+            ? requested.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            : unattended || Console.IsInputRedirected
+                ? Array.Empty<string>()
+                : AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title("Optional agent skills:")
+                    .AddChoices(skillCatalog.Skills.Select(x => x.Id))).ToArray();
+        var skillIds = ResolveSkills(requestedSkills, skillCatalog);
         var expected = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var full in Directory.GetFiles(Path.Combine(catalog, "base"), "*", SearchOption.AllDirectories))
         {
@@ -91,7 +104,13 @@ static class DocsCli
             foreach (var path in profile.Files)
                 Add(path, await File.ReadAllTextAsync(Path.Combine(catalog, path.Replace('/', Path.DirectorySeparatorChar))));
         }
-        var config = new ProjectConfig(name, description, ids.Order(StringComparer.Ordinal).ToArray(), expected.Keys.Order(StringComparer.Ordinal).ToArray());
+        foreach (var id in skillIds)
+        {
+            var skill = skillCatalog.Skills.Single(x => x.Id == id);
+            Add(skill.Destination, await File.ReadAllTextAsync(SafePath(catalog, skill.Source)));
+        }
+        var config = new ProjectConfig(name, description, ids.Order(StringComparer.Ordinal).ToArray(),
+            skillIds.Order(StringComparer.Ordinal).ToArray(), expected.Keys.Order(StringComparer.Ordinal).ToArray());
         Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
         var existing = Directory.Exists(output) ? Directory.GetFileSystemEntries(output) : [];
         if (existing.Length > 0)
@@ -151,7 +170,7 @@ static class DocsCli
         return true;
     }
 
-    private static async Task<int> ValidateAsync(string output, string catalog, Catalog profiles)
+    private static async Task<int> ValidateAsync(string output, string catalog, Catalog profiles, SkillCatalog skills)
     {
         var configPath = Path.Combine(output, ConfigName);
         if (!File.Exists(configPath))
@@ -161,7 +180,24 @@ static class DocsCli
         var resolved = ResolveProfiles(config.Profiles, profiles);
         if (resolved.Count != config.Profiles.Length)
             throw new IOException("Invalid profile count.");
+        var skillIds = ResolveSkills(config.Skills, skills);
+        if (skillIds.Count != config.Skills.Length)
+            throw new IOException("Duplicate skill IDs.");
         var errors = new List<string>();
+        var required = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var path in Directory.GetFiles(Path.Combine(catalog, "base"), "*", SearchOption.AllDirectories))
+            required.Add(Path.GetRelativePath(Path.Combine(catalog, "base"), path).Replace('\\', '/'));
+        foreach (var id in resolved)
+            foreach (var path in profiles.Profiles.Single(p => p.Id == id).Files)
+                if (!required.Add(path)) errors.Add($"Duplicate catalog output path: {path}");
+        foreach (var id in skillIds)
+        {
+            var skill = skills.Skills.Single(p => p.Id == id);
+            if (!required.Add(skill.Destination)) errors.Add($"Duplicate skill output path: {skill.Destination}");
+        }
+        var declared = new HashSet<string>(config.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
+        if (declared.Count != config.GeneratedFiles.Length || !declared.SetEquals(required))
+            errors.Add("GeneratedFiles manifest does not match selected profiles, base documents and skills.");
         foreach (var path in config.GeneratedFiles)
         {
             var target = SafePath(output, path);
@@ -211,10 +247,39 @@ static class DocsCli
         }
     }
 
-    private static void ValidateCatalog(string catalog, Catalog data)
+    private static HashSet<string> ResolveSkills(IEnumerable<string> selected, SkillCatalog catalog)
     {
-        if (data.SchemaVersion != 1)
+        var byId = catalog.Skills.ToDictionary(s => s.Id, StringComparer.Ordinal);
+        var resolved = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var id in selected)
+        {
+            if (!byId.ContainsKey(id))
+                throw new InvalidOperationException($"Unknown agent skill: {id}");
+            if (!resolved.Add(id))
+                throw new InvalidOperationException($"Duplicate agent skill: {id}");
+        }
+        return resolved;
+    }
+
+    private static void ValidateCatalog(string catalog, Catalog data, SkillCatalog skills)
+    {
+        if (data.SchemaVersion != 1 || skills.SchemaVersion != 1)
             throw new InvalidOperationException("Unsupported catalog schema version.");
+        if (skills.Skills.GroupBy(x => x.Id, StringComparer.Ordinal).Any(x => x.Count() > 1))
+            throw new InvalidOperationException("Duplicate skill IDs.");
+        var destinations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var skill in skills.Skills)
+        {
+            if (string.IsNullOrWhiteSpace(skill.Id) || string.IsNullOrWhiteSpace(skill.Name))
+                throw new InvalidOperationException("Skill identifiers and names must be nonempty.");
+            if (!destinations.Add(skill.Destination))
+                throw new InvalidOperationException($"Duplicate skill destination: {skill.Destination}");
+            if (!skill.Destination.StartsWith(".agents/skills/", StringComparison.Ordinal)
+                || !skill.Destination.EndsWith("/SKILL.md", StringComparison.Ordinal))
+                throw new InvalidOperationException($"Invalid skill destination: {skill.Destination}");
+            if (!File.Exists(SafePath(catalog, skill.Source)))
+                throw new IOException($"Missing agent skill source: {skill.Source}");
+        }
         if (data.Profiles.GroupBy(x => x.Id, StringComparer.Ordinal).Any(x => x.Count() > 1))
             throw new InvalidOperationException("Duplicate profile IDs.");
         foreach (var profile in data.Profiles)
@@ -255,5 +320,7 @@ static class DocsCli
 
     private sealed record Catalog(int SchemaVersion, Profile[] Profiles);
     private sealed record Profile(string Id, string Name, string Status, string[] Requires, string[] Files);
-    private sealed record ProjectConfig(string Name, string Description, string[] Profiles, string[] GeneratedFiles);
+    private sealed record SkillCatalog(int SchemaVersion, Skill[] Skills);
+    private sealed record Skill(string Id, string Name, string Source, string Destination);
+    private sealed record ProjectConfig(string Name, string Description, string[] Profiles, string[] Skills, string[] GeneratedFiles);
 }

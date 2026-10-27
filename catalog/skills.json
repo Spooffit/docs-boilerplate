@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "skills": [
+    {
+      "id": "docs-review",
+      "name": "Review documentation consistency and links",
+      "source": "skills/docs-review/SKILL.md",
+      "destination": ".agents/skills/docs-review/SKILL.md"
+    },
+    {
+      "id": "docs-maintain",
+      "name": "Maintain project documentation",
+      "source": "skills/docs-maintain/SKILL.md",
+      "destination": ".agents/skills/docs-maintain/SKILL.md"
+    },
+    {
+      "id": "docs-architecture",
+      "name": "Document architecture decisions",
+      "source": "skills/docs-architecture/SKILL.md",
+      "destination": ".agents/skills/docs-architecture/SKILL.md"
+    }
+  ]
+}
