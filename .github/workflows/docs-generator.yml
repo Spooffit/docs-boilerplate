@@ -20,6 +20,8 @@ jobs:
         run: dotnet build src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release
       - name: Focused .NET contract tests
         run: dotnet run --configuration Release --project tests/DocsBoilerplate.ContractTests/DocsBoilerplate.ContractTests.csproj
+      - name: Check smoke script syntax
+        run: bash -n tests/smoke.sh
       - name: Smoke-test generation and Docsify shell
         run: bash tests/smoke.sh
       - uses: actions/setup-python@v7
