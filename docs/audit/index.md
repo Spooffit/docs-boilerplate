@@ -25,5 +25,6 @@ These reports distinguish examined documentation from historical source material
 - [Versioned resource lifecycle extraction](versioned-lifecycle-review.md)
 - [Integration reliability, canonical representations and resume](integration-reliability-extraction.md)
 - [Object storage and media lifecycle extraction](object-storage-extraction.md)
+- [HTTP contracts, API clients and safe database migrations](http-persistence-extraction.md)
 - [Owner decisions deferred until engineering is complete](owner-decision-backlog.md)
 - [Seven placeholder removals and deletion checks](legacy-removals.md)
