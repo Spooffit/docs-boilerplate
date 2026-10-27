@@ -40,6 +40,10 @@ status: template
 
 [Link the canonical domain glossary and contract only if they actually exist. Do not duplicate field definitions from the authoritative schema.]
 
+## Technical implementation
+
+[Link a technical-feature specification only if this capability needs separate implementation detail. For complex behavior, use the optional `technical-feature.md` template or a technology-specific variant. Do not duplicate implementation details in this business document.]
+
 ## Dependencies and open decisions
 
 [Link real parent-module, technical specification, milestone, ADR and question files only when they exist. Identify which document owns each contract or rule. Leave unresolved decisions explicitly pending rather than inventing routes, field types or permissions. When a question is resolved, update affected normative specifications and record that propagation.]

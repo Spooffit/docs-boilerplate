@@ -31,6 +31,10 @@ status: template
 
 [Identify confirmed ownership of mutable state, public read interfaces and work assigned to each delivery milestone. Note explicitly when work is not included in the current milestone.]
 
+## Specification map
+
+[Where a feature has separate business, backend, client or integration specifications, link their existing documents. A missing technical document is not necessarily a defect; create one only where the implementation complexity warrants it.]
+
 ## Open decisions
 
 [Record unresolved cross-cutting design decisions and link to their authoritative question/ADR.]
