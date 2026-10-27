@@ -1,79 +1,39 @@
-# Документация проекта
+# Docs Boilerplate
 
-Репозиторий хранит описание продукта и спецификации по трём направлениям: бизнес, бэкенд и фронтенд. Один вопрос, одна фича или одно соглашение описываются в своём файле. Каталоги связывают документы, но не заменяют их содержание.
+A work-in-progress **Docs-as-Code repository generator**, not yet a fully migrated template.
 
-## Структура
+## Current state
 
-```text
-.
-├── README.md
-├── AGENTS.md
-├── CONTRIBUTING.md
-├── features.md
-├── modules.md
-├── questions.md
-├── standards.md
-├── milestones/
-│   ├── README.md
-│   ├── demo.md
-│   ├── mvp.md
-│   └── production.md
-├── business/
-│   ├── README.md
-│   ├── product.md
-│   ├── glossary.md
-│   ├── features/FXX-*.md
-│   ├── modules/MXX-*.md
-│   ├── questions/QXX-*.md
-│   └── adr/ADRXX-*.md
-├── technical/
-│   ├── backend/
-│   │   ├── README.md
-│   │   ├── AGENTS.md
-│   │   ├── architecture.md
-│   │   ├── features/FXX-*.md
-│   │   ├── modules/MXX-*.md
-│   │   ├── questions/QXX-*.md
-│   │   ├── standards/SXX-*.md
-│   │   └── adr/ADRXX-*.md
-│   └── frontend/
-│       ├── README.md
-│       ├── AGENTS.md
-│       ├── architecture.md
-│       ├── features/FXX-*.md
-│       ├── modules/MXX-*.md
-│       ├── questions/QXX-*.md
-│       ├── standards/SXX-*.md
-│       └── adr/ADRXX-*.md
-├── templates/
-└── archive/
+The reusable implementation lives in [`catalog/`](catalog/), [`src/`](src/) and [`docs/`](docs/). The original documentation repository is **intentionally still present** in `business/`, `technical/`, `milestones/` and older root indexes. Those documents remain input to the migration audit and **are not copied into generated projects**. Do not treat their project-specific claims as boilerplate.
+
+Read the [baseline audit](docs/audit/2026-10-27.md), [architecture](docs/architecture/overview.md), [ADR](docs/decisions/0001-composable-profiles.md), [generator instructions](docs/generator.md), and [implementation status](docs/implementation-status.md).
+
+## Quick start
+
+Requires .NET SDK 10:
+
+```sh
+dotnet run --project src/DocsBoilerplate.Cli -- list
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example project" --output ./scratch/demo --profiles dotnet,ef-core,blazor,mudblazor --non-interactive --dry-run
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example project" --output ./scratch/demo --profiles dotnet,ef-core,blazor,mudblazor --non-interactive
+dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/demo
 ```
 
-Папки `features`, `modules` и `questions` находятся непосредственно в своём разделе. Группировка по теме задаётся картой модуля, а не дополнительным деревом папок. Документ стороны создаётся только при наличии её собственной ответственности.
+Run `dotnet build src/DocsBoilerplate.Cli` and `bash tests/smoke.sh` before relying on the generator. CI is defined at `.github/workflows/docs-generator.yml`.
 
-## Каталоги
+## What it does
 
-| Каталог | Для чего используется |
-| --- | --- |
-| [Фичи](features.md) | Найти функцию и сопоставить её бизнесовое, серверное и интерфейсное описание. |
-| [Модули](modules.md) | Увидеть, какие функции образуют целый модуль и как его рассматривают разные стороны. |
-| [Вопросы](questions.md) | Найти неуточнённое решение и отдельный файл вопроса в ответственном разделе. |
-| [Стандарты](standards.md) | Найти общие технические соглашения, применимые к реализации. |
-| [Milestones Demo/MVP/Production](milestones/README.md) | Каталог, текущий milestone и отдельные описания состава Demo/MVP/Production; не статусы задач. |
+- Generates Markdown documentation from a minimal portable base.
+- Includes only requested, available technology profiles and their prerequisites.
+- Lists planned, unavailable technologies explicitly.
+- Supports interactive prompts and non-interactive flags.
+- Offers a read-only dry run and refuses to overwrite modified existing files.
+- Validates generated-file presence, unresolved base fields and simple relative Markdown links.
 
-## Обозначения
+## Current limitations
 
-| Обозначение | Значение |
-| --- | --- |
-| `MXX` | Модуль сайта, административной панели, серверной области или клиентского приложения. Объясняет результат совместной работы фич и содержит их карту. |
-| `FXX` | Функциональная спецификация отдельной фичи или сквозного блока. Один ID сохраняется между разделами. |
-| `QXX` | Отдельный открытый вопрос. Полное содержание и ответ хранятся в одном ответственном разделе. |
-| `SXX` | Общий стандарт разработки, независимый от проекта. Проектная специфика запрещена, включая примеры и ссылки. Номер постоянен. |
-| `ADR` | Architecture Decision Record: проблема, принятое архитектурное решение и его последствия. |
-| `standards/` | Независимые от проекта технические соглашения; их применение описывается в F/M-документах, которые ссылаются на стандарты. |
-| `Уточняется` | Вопрос не решён. Это не разрешение агенту самостоятельно придумать поведение. |
-| `[Заполнить: …]` | Подсказка в переиспользуемом шаблоне, не продуктовое требование. |
+This repository is undergoing a staged migration. The legacy content still requires technical review. A website, full template library, comprehensive test coverage, advanced manifest constraints, automated upgrades and optional agent skills selection are not yet delivered. See [implementation status](docs/implementation-status.md).
 
-Номера служат стабильными идентификаторами, а не приоритетами или статусами реализации. Ссылки внутри репозитория относительные; локальные `file:///`-пути не используются.
+## Contributing
 
-Правила изменения находятся в [руководстве автора](CONTRIBUTING.md), правила работы агента в [инструкции агента](AGENTS.md). [Шаблоны](templates/README.md) служат для новых документов, [архив](archive/README.md) хранит исторические материалы, не текущие требования.
+Keep normative standards technology-scoped, project details in generated project documents, and agent workflows free of copied technical rules. New available profiles must include real content and tests.
