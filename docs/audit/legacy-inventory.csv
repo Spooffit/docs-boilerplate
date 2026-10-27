@@ -140,10 +140,10 @@ technical/backend/standards/S15-test-engineering.md,candidate-technology-standar
 technical/backend/standards/S16-rest.md,candidate-technology-standard,reviewed-targeted,36346
 technical/backend/standards/S17-data-flows.md,candidate-technology-standard,pending,11944
 technical/backend/standards/S18-fluent-validation.md,candidate-technology-standard,reviewed-targeted,10001
-technical/backend/standards/S19-specifications.md,candidate-technology-standard,pending,8882
+technical/backend/standards/S19-specifications.md,candidate-technology-standard,reviewed-targeted,8882
 technical/backend/standards/S20-cqrs.md,candidate-technology-standard,reviewed-targeted,314
 technical/backend/standards/S21-aggregate-constraints.md,candidate-technology-standard,pending,30457
-technical/backend/standards/S22-eventbus-topology.md,candidate-technology-standard,pending,8390
+technical/backend/standards/S22-eventbus-topology.md,candidate-technology-standard,reviewed-targeted,8390
 technical/backend/standards/S23-csproj.md,candidate-technology-standard,reviewed-targeted,6062
 technical/backend/standards/S24-code-formatting.md,candidate-technology-standard,reviewed-targeted,585
 technical/backend/templates/backend-feature.md,candidate-template,pending,15181
@@ -189,9 +189,9 @@ technical/frontend/questions/Q29-unity-client-package.md,project-source,pending,
 technical/frontend/questions/Q32-sdk-package-distribution.md,project-source,pending,50898
 technical/frontend/questions/Q37-launcher-asset-delivery.md,project-source,pending,16155
 technical/frontend/standards/S05-ui-and-forms.md,candidate-technology-standard,pending,2399
-technical/frontend/standards/S06-api-client.md,candidate-technology-standard,pending,5910
+technical/frontend/standards/S06-api-client.md,candidate-technology-standard,reviewed-targeted,5910
 technical/frontend/standards/S07-accessibility.md,candidate-technology-standard,pending,1729
-technical/frontend/standards/S08-testing.md,candidate-technology-standard,pending,24354
+technical/frontend/standards/S08-testing.md,candidate-technology-standard,reviewed-targeted,24354
 technical/frontend/templates/frontend-feature.md,candidate-template,pending,31880
 technical/frontend/templates/module.md,candidate-template,pending,1218
 technical/frontend/templates/question.md,candidate-template,pending,684

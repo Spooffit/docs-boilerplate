@@ -43,3 +43,5 @@ Example:
 ```sh
 dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --description "Backend documentation" --output ./scratch/backend --profiles aspnet-mvc,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
 ```
+
+Additional optional profiles: `masstransit-rabbitmq`, `ardalis-specification`, and `bunit`. Selecting bUnit requires Blazor, but not MudBlazor. Selecting MassTransit with RabbitMQ does not imply a database or a particular outbox implementation. Each profile installs only its applicable standard.

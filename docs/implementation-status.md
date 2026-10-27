@@ -3,7 +3,7 @@
 ## Implemented
 
 - A baseline structural audit and architecture ADRs.
-- Reusable Markdown catalog and available/planned technology profiles, including opt-in ASP.NET Core, MVC, FluentValidation, PostgreSQL and CQRS.
+- Reusable Markdown catalog and available/planned technology profiles, including opt-in ASP.NET Core, MVC, FluentValidation, PostgreSQL, CQRS, MassTransit/RabbitMQ, Ardalis.Specification and bUnit.
 - A .NET 10 + Spectre.Console CLI with interactive prompts and non-interactive flags, packable as a local .NET Tool.
 - Dependency resolution, profile availability checks, dry-run planning and existing-file protection.
 - Optional documentation modules: glossary, requirements, API, integrations, security, testing, operations.
@@ -24,8 +24,8 @@
 
 ## Next steps
 
-1. Continue detailed migration of MassTransit/RabbitMQ, advanced Blazor guidance, architecture constraints and old feature-template content.
-2. Revisit all remaining legacy engineering documents and decide whether to extract, refactor or drop each rule.
+1. Continue detailed migration of architecture constraints, advanced integration contracts and historical feature templates.
+2. Revisit unreviewed legacy engineering documents and decide whether to extract, refactor or drop each rule.
 3. Add robust tests for file and symlink safety, profile composition and package distribution.
 4. Extend the catalog only with tested and documented technologies.
 5. Review and remove historical project content only after extraction or recorded rejection.

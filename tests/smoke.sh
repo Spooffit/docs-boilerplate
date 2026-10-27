@@ -79,6 +79,30 @@ run validate --output "$temp/project"
 [[ ! -e "$temp/project/catalog" ]]
 [[ -f "$temp/project/zensical.toml" ]]
 
+# Messaging and query specifications stay opt-in and do not imply a particular database.
+run init --name Integration --description 'Message handling' --output "$temp/integration" --profiles masstransit-rabbitmq,ardalis-specification --non-interactive
+run validate --output "$temp/integration"
+[[ -f "$temp/integration/docs/standards/dotnet/masstransit-rabbitmq.md" ]]
+[[ -f "$temp/integration/docs/standards/dotnet/ardalis-specification.md" ]]
+[[ -f "$temp/integration/docs/standards/dotnet/conventions.md" ]]
+[[ ! -e "$temp/integration/docs/standards/dotnet/ef-core.md" ]]
+[[ ! -e "$temp/integration/docs/standards/postgresql" ]]
+
+# bUnit requires Blazor, but does not implicitly choose MudBlazor.
+run init --name Components --description 'UI component tests' --output "$temp/components" --profiles bunit --non-interactive
+run validate --output "$temp/components"
+[[ -f "$temp/components/docs/standards/blazor/bunit.md" ]]
+[[ -f "$temp/components/docs/standards/blazor/components.md" ]]
+[[ -f "$temp/components/docs/standards/dotnet/project-files.md" ]]
+[[ ! -e "$temp/components/docs/standards/blazor/mudblazor.md" ]]
+
+if command -v zensical >/dev/null; then
+    run init --name All --description 'Full stack' --output "$temp/full-stack" --profiles aspnet-mvc,ef-core,postgresql,fluentvalidation,cqrs,masstransit-rabbitmq,ardalis-specification,blazor,mudblazor,bunit --site zensical --non-interactive
+    run validate --output "$temp/full-stack"
+    ( cd "$temp/full-stack" && zensical build --strict )
+    [[ -f "$temp/full-stack/site/index.html" ]]
+fi
+
 # An identical repeated initialization must not alter authored extra files.
 echo 'custom' > "$temp/project/my-notes.txt"
 run init "${args[@]}"
