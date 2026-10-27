@@ -17,3 +17,4 @@ These reports distinguish examined documentation from historical source material
 - [Template review](template-migration-review.md)
 - [Data flows and UI standards](data-flows-ui-review.md)
 - [Historic project material and deletion gates](project-source-triage.md)
+- [Architecture and milestone extraction](architecture-milestone-extraction.md)

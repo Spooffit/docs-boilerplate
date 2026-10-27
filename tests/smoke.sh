@@ -29,6 +29,7 @@ grep -q "docs/standards/dotnet/index.md" "$temp/minimal/llms.txt"
 grep -q "dotnet/testing.md" "$temp/minimal/docs/catalog.md"
 [[ -f "$temp/minimal/docs/standards/dotnet/testing.md" ]]
 [[ -f "$temp/minimal/docs/templates/dotnet-backend-feature.md" ]]
+[[ -f "$temp/minimal/docs/templates/milestone.md" ]]
 [[ ! -e "$temp/minimal/docs/testing/strategy.md" ]]
 [[ ! -e "$temp/minimal/.agents" ]]
 [[ ! -e "$temp/minimal/docs/templates/blazor-frontend-feature.md" ]]

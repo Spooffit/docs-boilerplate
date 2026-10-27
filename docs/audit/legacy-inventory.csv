@@ -39,7 +39,7 @@ business/modules/M04-publishing.md,project-source,pending,13966
 business/modules/M05-delivery.md,project-source,pending,19833
 business/modules/M06-staff-workflow.md,project-source,pending,9150
 business/modules/M07-schema-tooling.md,project-source,pending,7038
-business/product.md,project-source,pending,19548
+business/product.md,project-source,reviewed-targeted,19548
 business/questions/Q01-license-rights.md,project-source,pending,5598
 business/questions/Q02-policy-changes.md,project-source,pending,2591
 business/questions/Q03-renewal-and-multiple-licenses.md,project-source,pending,5067
@@ -73,7 +73,7 @@ features.md,project-source,pending,7888
 milestones/README.md,project-source,pending,3937
 milestones/demo/demo-acceptance.md,project-source,pending,18571
 milestones/demo/demo-readiness.md,project-source,pending,16944
-milestones/demo/demo.md,project-source,pending,13393
+milestones/demo/demo.md,project-source,reviewed-targeted,13393
 milestones/mvp/mvp.md,project-source,pending,24139
 milestones/production/production.md,project-source,pending,6280
 modules.md,project-source,pending,2421
@@ -85,7 +85,7 @@ standards.md,project-source,pending,3683
 technical/backend/AGENTS.md,project-source,pending,6898
 technical/backend/README.md,project-source,pending,4745
 technical/backend/adr/README.md,project-source,pending,128
-technical/backend/architecture.md,project-source,pending,26430
+technical/backend/architecture.md,project-source,reviewed-targeted,26430
 technical/backend/archive/README.md,project-source,pending,205
 technical/backend/features/F01-create-entity-schema.md,project-source,pending,123790
 technical/backend/features/F02-create-schema-version.md,project-source,pending,93174
@@ -152,7 +152,7 @@ technical/backend/templates/question.md,candidate-template,reviewed-targeted,684
 technical/frontend/AGENTS.md,project-source,pending,5759
 technical/frontend/README.md,project-source,pending,9065
 technical/frontend/adr/README.md,project-source,pending,128
-technical/frontend/architecture.md,project-source,pending,12621
+technical/frontend/architecture.md,project-source,reviewed-targeted,12621
 technical/frontend/archive/README.md,project-source,pending,205
 technical/frontend/features/F01-create-entity-schema.md,project-source,pending,61729
 technical/frontend/features/F02-create-schema-version.md,project-source,pending,55835

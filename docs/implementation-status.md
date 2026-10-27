@@ -34,7 +34,7 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 
 ## Next steps
 
-1. Review remaining legacy testing, module/question templates and historical feature documents for useful reusable guidance.
+1. Continue targeted reviews of historical feature, module and question documents; the original architecture and demo milestone have now supplied reusable architecture and milestone patterns.
 2. Revisit unreviewed legacy engineering documents and decide whether to extract, refactor or drop each rule.
 3. Add robust tests for file and symlink safety, profile composition and package distribution.
 4. Extend the catalog only with tested and documented technologies.
