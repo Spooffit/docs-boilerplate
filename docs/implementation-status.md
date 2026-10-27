@@ -9,9 +9,9 @@
 - Preview-first updates using original generated file fingerprints, preflight conflict detection, additive files and no automatic deletion.
 - Optional documentation modules: glossary, requirements, API, integrations, security, testing, operations.
 - Optional agent skills: docs-review, docs-maintain, docs-architecture, docs-init, docs-testing.
-- A canonical `docs/` source tree, generated content/navigation catalog and opt-in Zensical configuration.
+- A canonical `docs/` source tree, generated content/navigation catalog and Docsify (single HTML shell).
 - A CLI validator for generated-file manifests, unresolved initialization placeholders and basic local Markdown links.
-- GitHub Actions build and end-to-end smoke suite (including optional site build and local .NET Tool installation).
+- GitHub Actions build and end-to-end smoke suite (including Docsify-shell checks and local .NET Tool installation).
 
 ## Known limitations
 
@@ -21,7 +21,7 @@
 - Markdown parsing is intentionally simple; it does not fully verify Markdown anchors, image references or every link dialect.
 - Catalog preflight detects unknown or cyclic dependencies, case-insensitive destination collisions and reserved output paths. A formal JSON Schema and protection against concurrent hostile filesystem changes are still outstanding.
 - No publication or browser-based editing workflow.
-- Site tool remains an early-release Zensical dependency. Verify CI before claiming compatibility.
+- The Docsify browser view depends on CDN availability and a local/static HTTP server; full headless-browser interaction tests remain outstanding.
 
 ## Next steps
 

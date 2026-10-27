@@ -54,8 +54,8 @@ static class DocsCli
                     AnsiConsole.WriteLine($"Catalog: {catalog}");
                     return 0;
                 default:
-                    AnsiConsole.WriteLine("Commands: init, list, validate, doctor");
-                    AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--modules glossary,testing] [--site zensical] [--dry-run] [--non-interactive] [--catalog PATH]");
+                    AnsiConsole.WriteLine("Commands: init, update, list, validate, doctor");
+                    AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--modules glossary,testing] [--site docsify|none] [--dry-run] [--non-interactive] [--catalog PATH]");
                     AnsiConsole.WriteLine("validate: --output PATH [--catalog PATH]");
                     AnsiConsole.WriteLine("update: --output PATH [--apply] [--catalog PATH] (previews by default)");
                     return command == "help" ? 0 : 2;
@@ -157,10 +157,10 @@ static class DocsCli
                     .AddChoices(moduleCatalog.Modules.Select(x => x.Id))).ToArray();
         var moduleIds = ResolveModules(requestedModules, moduleCatalog);
         var site = args.GetValueOrDefault("site") ?? (unattended || Console.IsInputRedirected
-            ? "none"
+            ? "docsify"
             : AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Documentation site:")
-                .AddChoices("none", "zensical")));
-        if (site is not ("none" or "zensical"))
+                .AddChoices("docsify", "none")));
+        if (site is not ("none" or "docsify"))
             throw new InvalidOperationException($"Unknown documentation site: {site}");
         var expected = await RenderAsync(catalog, available, skillCatalog, moduleCatalog,
             name, description, output, ids, skillIds, moduleIds, site);
@@ -240,9 +240,9 @@ static class DocsCli
             foreach (var file in module.Files)
                 Add(file.Destination, await File.ReadAllTextAsync(SafePath(catalog, file.Source)));
         }
-        if (site == "zensical")
-            Add("zensical.toml", (await File.ReadAllTextAsync(SafePath(catalog, "sites/zensical.toml")))
-                .Replace("{{PROJECT_NAME_TOML}}", JsonSerializer.Serialize(name), StringComparison.Ordinal));
+        if (site == "docsify")
+            Add("index.html", (await File.ReadAllTextAsync(SafePath(catalog, "sites/docsify.html")))
+                .Replace("{{PROJECT_NAME_JSON}}", JsonSerializer.Serialize(name), StringComparison.Ordinal));
         Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available));
         return expected;
         void Add(string path, string value)
@@ -347,15 +347,17 @@ static class DocsCli
             throw new IOException("Duplicate profiles in configuration.");
         var skillIds = ResolveSkills(oldConfig.Skills, skills);
         var moduleIds = ResolveModules(oldConfig.Modules, modules);
-        if (oldConfig.Site is not ("none" or "zensical"))
+        if (oldConfig.Site is not ("none" or "docsify" or "zensical"))
             throw new IOException($"Unsupported site: {oldConfig.Site}");
         if (string.IsNullOrWhiteSpace(oldConfig.Name) || string.IsNullOrWhiteSpace(oldConfig.Description))
             throw new IOException("Missing project identity in configuration.");
 
+        // Legacy Zensical projects can move to Docsify without touching author-owned Markdown.
+        var site = oldConfig.Site == "zensical" ? "docsify" : oldConfig.Site;
         var expected = await RenderAsync(catalog, profiles, skills, modules,
-            oldConfig.Name, oldConfig.Description, output, profileIds, skillIds, moduleIds, oldConfig.Site);
+            oldConfig.Name, oldConfig.Description, output, profileIds, skillIds, moduleIds, site);
         var newConfig = BuildConfig(oldConfig.Name, oldConfig.Description,
-            profileIds, skillIds, moduleIds, oldConfig.Site, expected);
+            profileIds, skillIds, moduleIds, site, expected);
         var newConfigContent = JsonSerializer.Serialize(newConfig, Json) + Environment.NewLine;
 
         var oldPaths = new HashSet<string>(oldConfig.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
@@ -519,7 +521,7 @@ static class DocsCli
         var moduleIds = ResolveModules(config.Modules, modules);
         if (moduleIds.Count != config.Modules.Length)
             throw new IOException("Duplicate documentation module IDs.");
-        if (config.Site is not ("none" or "zensical"))
+        if (config.Site is not ("none" or "docsify" or "zensical"))
             throw new IOException($"Unknown site configuration: {config.Site}");
         var errors = new List<string>();
         var required = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -542,9 +544,10 @@ static class DocsCli
         }
         if (!required.Add("docs/catalog.md"))
             errors.Add("Duplicate generated documentation catalog path.");
-        if (config.Site == "zensical")
-            if (!required.Add("zensical.toml"))
-                errors.Add("Duplicate site configuration path: zensical.toml");
+        if (config.Site == "docsify" && !required.Add("index.html"))
+            errors.Add("Duplicate site configuration path: index.html");
+        if (config.Site == "zensical" && !required.Add("zensical.toml"))
+            errors.Add("Duplicate legacy site configuration path: zensical.toml");
         var declared = new HashSet<string>(config.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
         if (declared.Count != config.GeneratedFiles.Length || !declared.SetEquals(required))
             errors.Add("GeneratedFiles manifest does not match selected profiles, base documents and skills.");
@@ -729,7 +732,7 @@ static class DocsCli
                 throw new InvalidOperationException($"Invalid skill ID: {skill.Id}");
             Own(skill.Destination, $"skill {skill.Id}");
         }
-        Own("zensical.toml", "site");
+        Own("index.html", "site");
 
         var byId = data.Profiles.ToDictionary(x => x.Id, StringComparer.Ordinal);
         foreach (var profile in data.Profiles)

@@ -1,6 +1,6 @@
 # ADR 0002: Opt-in Zensical documentation site
 
-- Status: Accepted for the initial site implementation
+- Status: Superseded by [ADR 0004](0004-docsify-viewer.md)
 - Date: 2026-10-27
 
 ## Context

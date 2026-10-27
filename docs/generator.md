@@ -18,21 +18,23 @@ dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/exam
 
 Advanced update/merge behavior is not yet implemented. Initialize into a fresh or previously initialized folder.
 
-## Optional static site
+## Optional website: Docsify
 
-Select `--site zensical` to produce `zensical.toml`. All documentation lives under `docs/`, including selected engineering standards; no duplicates are copied for the site. Install Zensical separately (CI currently pins 0.0.73), then use:
+The default generated repository includes only a root `index.html` using Docsify and the existing Markdown under `docs/`. It adds **no build directory, Node dependencies, Python packages or generated HTML**. Pass `--site none` to omit the viewer.
+
+Docsify requests Markdown over HTTP. **Do not rely on double-clicking `index.html` via `file://`**, which commonly fails due to modern browser CORS restrictions. For a local preview, from the generated repository root run:
 
 ```sh
-cd scratch/example
-zensical serve
-zensical build --strict
+python -m http.server 3000
 ```
 
-Static builds are local and are **not** automatically published. Zensical is currently an early-release dependency; pin and re-test on upgrades.
+Then open `http://localhost:3000/`. Python is used only to serve files and is not required by the generator. Alternatively host the unchanged repository on an ordinary static file server. Docsify's JavaScript and CSS load from a CDN, so the viewer needs network access unless assets are intentionally self-hosted. Markdown and agent workflows remain usable offline.
+
+On legacy repos initialized with `--site zensical`, `update` will propose switching to Docsify while **retaining** the old `zensical.toml` file for manual cleanup. No source files are silently deleted.
 
 ## Validation status
 
-CI runs a .NET 10 Release build, non-interactive end-to-end smoke test, optional Zensical build and negative tests. Check the latest GitHub Actions result rather than assuming the source code has passed.
+CI runs a .NET 10 Release build, non-interactive end-to-end smoke test, Docsify entrypoint checks and negative tests. Check the latest GitHub Actions result rather than assuming the source code has passed.
 
 ## Optional backend guidance
 
