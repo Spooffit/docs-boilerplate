@@ -52,3 +52,7 @@ Deleting files from Git **does not erase them from repository history**. This au
 - Whether large linked historical examples have enduring educational value or should remain only in history.
 
 Do not ask for those choices during mechanical schema/test/inventory maintenance. Present them together when the engineering blocks are complete.
+
+## Completion of structural screening
+
+The inventory now has no unscreened entries, but `screened-structure` is explicitly **not** a completed content audit. The scope and result of the final 27-file pass are in [root and milestone screening](root-milestone-screening.md). Before cleanup, source owners must review substantive technical content, decide which examples merit retention, and satisfy each deletion gate above. Owner-dependent choices are collected in the [deferred decision backlog](owner-decision-backlog.md).

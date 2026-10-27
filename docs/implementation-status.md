@@ -24,7 +24,7 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 
 ## Known limitations
 
-- Full historical documentation has **not** been migrated or technically audited file-by-file.
+- Every original inventory entry now has a structural disposition, but **full technical/semantic migration is not complete**. No historical file has been approved for deletion by this pass.
 - Focused no-extra-package .NET contract tests now cover profile resolution, navigation, metadata, hashes, safe paths and symlinks on Linux and Windows. A full dedicated testing-framework suite, property-based checks and detailed diagnostics remain outstanding.
 - Safe hash-based updates are implemented. Full three-way content merging is deliberately not attempted; concurrent author and template changes require manual resolution.
 - Markdown and frontmatter parsing are deliberately scoped; they do not fully verify Markdown anchors, every image/link dialect or arbitrary YAML syntax.
@@ -34,10 +34,10 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 
 ## Next steps
 
-1. Perform detailed semantic reviews of structurally screened business and technical features, modules and questions; separate agreed designs from actual source/test evidence before deciding which historical documents can be removed.
+1. Perform semantic reviews and recorded extraction/rejection decisions for structurally screened documents; distinguish accepted designs from actual source/test evidence.
 2. Revisit unreviewed legacy engineering documents and decide whether to extract, refactor or drop each rule.
 3. Add robust tests for file and symlink safety, profile composition and package distribution.
 4. Extend the catalog only with tested and documented technologies.
 5. Review and remove historical project content only after extraction or recorded rejection.
 
-The baseline now has a path-level inventory at `docs/audit/legacy-inventory.csv` and a grouped [project-source triage](audit/project-source-triage.md). Entries remain unreviewed unless explicitly covered in a separate audit. CI checks that listed sources exist and that newly added historical documents are inventoried. This inventory is not proof of content extraction.
+The baseline now has a path-level inventory at `docs/audit/legacy-inventory.csv` and grouped [project-source triage](audit/project-source-triage.md). All entries are at least structurally screened; targeted extraction and completed source reviews are separate states. CI checks that listed sources exist and that newly added historical documents are inventoried. This inventory is not proof of content extraction.
