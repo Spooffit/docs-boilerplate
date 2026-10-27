@@ -3,6 +3,9 @@ site_name = {{PROJECT_NAME_TOML}}
 docs_dir = "docs"
 site_dir = "site"
 use_directory_urls = true
+exclude_docs = """
+!/templates/
+"""
 
 [project.markdown_extensions]
 pymdownx.superfences.custom_fences = [
