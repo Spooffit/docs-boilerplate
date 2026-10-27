@@ -29,3 +29,5 @@
 3. Add robust tests for file and symlink safety, profile composition and package distribution.
 4. Extend the catalog only with tested and documented technologies.
 5. Review and remove historical project content only after extraction or recorded rejection.
+
+The baseline now has a path-level inventory at `docs/audit/legacy-inventory.csv`. Entries are unreviewed unless explicitly covered in a separate audit. This inventory is not proof of content extraction.

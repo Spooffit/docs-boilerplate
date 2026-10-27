@@ -36,4 +36,4 @@ This repository is undergoing a staged migration. The legacy content still requi
 
 ## Contributing
 
-Keep normative standards technology-scoped, project details in generated project documents, and agent workflows free of copied technical rules. New available profiles must include real content and tests.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for the full development workflow and legacy preservation policy. Keep normative standards technology-scoped, project details in generated project documents, and agent workflows free of copied technical rules. New available profiles must include real content and tests.

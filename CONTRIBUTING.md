@@ -1,88 +1,45 @@
-# Как вести документацию
+# Contributing to Docs Boilerplate
 
-## Куда помещать содержание
+This is a generator repository under staged migration. The reusable source lives in `catalog/`, the .NET CLI in `src/`, and test scripts in `tests/`.
 
-| Содержание | Место |
-| --- | --- |
-| Цели и словарь продукта | `business/product.md`, `business/glossary.md` |
-| Сценарий и наблюдаемый результат | `business/features/FXX-*.md` |
-| Подробная серверная реализация, потоки, модели, API и тестовая стратегия | `technical/backend/features/FXX-*.md` |
-| Взаимодействие пользователя, состояния UI и использование API | `technical/frontend/features/FXX-*.md` |
-| Назначение модуля, совместный результат и карта фич | `modules/MXX-*.md` внутри соответствующего раздела |
-| Неизвестное и ответ на него | `questions/QXX-*.md` у владельца вопроса |
-| Общее техническое соглашение | `standards/SXX-*.md` своей стороны |
-| Причина выбора и последствия | `adr/ADRXX-*.md` своей стороны |
+## Change workflow
 
-Отдельного раздела контрактов нет. Параметры и ответы серверной операции описываются в серверной фиче или задаются существующей формальной спецификацией, на которую она ссылается. Фронтенд описывает использование, не ведёт вторую копию форматов.
+1. Check [implementation status](docs/implementation-status.md) and the accepted [architecture ADR](docs/decisions/0001-composable-profiles.md).
+2. Identify what is canonical: `catalog/base/` for always-generated docs, `catalog/docs/standards/` for selectable technical standards, `catalog/modules/` for additional project documents, and `catalog/skills/` for optional agent procedures.
+3. Modify the smallest appropriate source. Do not copy project-specific requirements into standards or tool-dependent procedures into AGENTS.md.
+4. Add or update catalog manifest entries for selectable content. All available profiles must have actual reusable files and clear dependencies.
+5. Update tests for new profile combinations, negative cases, missing links and idempotency.
+6. Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh`. For site changes, run the strict Zensical build as in CI.
+7. Inspect the generated repository, not merely its individual templates. Never claim a check that has not been executed.
+8. Commit a logically complete change using Conventional Commits.
 
-## Идентификаторы
+## Documentation ownership
 
-Сохраняйте один F-ID и короткое имя фичи во всех разделах. Связанные представления одного модуля используют один M-ID. Для каждого отдельного вопроса выбирайте свободный Q-ID по общему каталогу; у вопроса один основной файл. S-ID уникален в каталоге стандартов. Номера не обозначают очередь задач или состояние реализации.
+- **Standard:** reusable, technology-scoped normative rule in `catalog/docs/standards/`.
+- **Template:** adaptable structure that does not assert project facts.
+- **Documentation module:** optional project-specific document initialized with editorial guidance.
+- **ADR:** reason for a technical decision, including alternatives and consequences.
+- **Agent Skill:** a reproducible workflow referencing standards instead of copying them.
+- **Project configuration:** explicit selected profiles, modules, skills, site and owned output file list.
 
-DF01, DF02 и далее являются локальными идентификаторами потоков внутри фичи. Во внешних ссылках указывайте фичу и поток вместе. Идентификаторы тестовых сценариев могут иметь вид FXX-U01, FXX-I01 или FXX-FN01; они связывают тест с потоком, но не вводят ещё один каталог задач.
+Make normative requirements verifiable and explain their applicability. Do not require libraries or architecture styles solely because they exist in the catalog.
 
-## Фичи и модули
+## Compatibility and safety
 
-Сначала определите результат функции в бизнесе, затем собственные обязанности затронутых сторон. Не создавайте документы непричастной стороны ради полной таблицы.
+- Do not silently replace existing user-authored files.
+- Keep template output deterministic. A dry-run must remain read-only.
+- Treat untrusted paths, symlinks, file collisions and malformed manifest data as errors.
+- Keep every generated internal Markdown link valid in the smallest profile combination.
+- Keep optional dependencies optional; creating a Markdown-only repository must not require Zensical, Docker, AI or an interactive terminal.
+- Keep platform-specific guidance gated by profile selection.
+- Generated site output and test artifacts must not be committed.
 
-Модуль объясняет, какой результат возникает при совместной работе функций, где проходит его граница и как связаны переходы между функциями. Внутри модуля нужна карта фич, но не копия их сценариев, проверок и API. Если отдельный модуль стороны не определён, не придумывайте его.
+## Legacy source material
 
-### Полнота backend-спецификации
+The repository originated from a different documentation project. Its old `business/`, `technical/`, `milestones/` and root catalogs are **source material**, not a normative part of the generator. See [legacy inventory](docs/audit/legacy-inventory.csv), [baseline audit](docs/audit/2026-10-27.md) and [testing review](docs/audit/testing-review.md).
 
-Используйте [шаблон серверной фичи](templates/backend-feature.md). Опишите конкретные модели, владение и инварианты; commands/queries и контракты; транспортную таблицу; внутреннюю обработку каждого потока; обязанности слоёв и регистрацию; хранение, транзакции и конкуренцию; события и частичные сбои; диагностику; тестовую стратегию; последовательность реализации и техническую приёмку.
+The original contributing guide is preserved under `docs/legacy/CONTRIBUTING.md`. Preserve other legacy files until their content has been reviewed and decisions to extract, generalize or discard are recorded. Remove only after that review, never as indiscriminate cleanup.
 
-Внешний API-раздел отвечает на вопросы потребителя. Внутренний dataflow раскрывает алгоритм handler и работу с доменом/хранилищем. Они находятся в одной фиче, но не повторяют содержание друг друга. Не заменяйте реализацию словами «проверить и сохранить» и не вставляйте весь код вместо объяснения существенных гарантий.
+## Pull requests and direct commits
 
-Тестовая стратегия связывает поток и правило с конкретным SUT, окружением, входными данными и наблюдаемым результатом. Общая классификация берётся из S04, детали категорий и изоляции из S09–S15. Количество BC не определяет количество развёртываемых приложений и категорию теста.
-
-Различайте факты из исходников, согласованную цель и предложенное техническое имя. Неизвестные routes, DTO, ограничения и решения оставляйте со ссылкой на вопрос. Пример другой фичи не является основанием переносить её бизнес-логику или HTTP-контракт.
-
-## Вопросы
-
-Полный вопрос, известные ограничения и ответ находятся в отдельном Q-файле. Размещайте бизнесовый вопрос в бизнесе, серверный в бэкенде, интерфейсный во фронтенде. Тему и модуль указывайте ссылками. Сквозной вопрос не требует нескольких редактируемых копий; каталог показывает его владельца.
-
-До ответа оставляйте `Уточняется`. После ответа обновите соответствующие F/M/ADR-документы, чтобы вопрос не стал единственным источником действующего правила. Ответ о конкретном проекте не переносится в стандарты. Изменение общего стандарта оформляется отдельно и сохраняет независимость от проекта.
-
-## Проектные документы и независимые стандарты
-
-Модули, фичи, вопросы и ADR описывают конкретные условия и решения проекта с точки зрения своего раздела. В них указываются реальные объекты, сценарии, ограничения и открытые вопросы; неизвестное остаётся как `Уточняется`.
-
-**В стандартах запрещена любая специфика проекта, без исключений, в том числе в примерах, примечаниях и ссылках.** Стандарты содержат только общие, переиспользуемые соглашения разработки. В них нельзя помещать названия продукта и его модулей, конкретные бизнес-правила, перечень проектных сущностей, текущие миграции, проектные переменные окружения, адреса, конфигурации, сведения о состоянии реализации и ссылки на конкретные F/M/Q/ADR-документы.
-
-Техническая область применения допустима: например, .NET, ASP.NET Core, PostgreSQL или RabbitMQ. Это не требование использовать технологию в любом проекте. Условия применимости описываются через тип системы или технологии, а не через название конкретного приложения.
-
-Связь направлена от проектного документа к стандарту. Применение стандарта, конкретные проверки и исключения описываются в F/M/ADR-документах, неизвестное в Q-документах. Сам стандарт не становится каталогом потребляющих его фич.
-
-Проверка перед сохранением: стандарт должен оставаться понятным и применимым в другом проекте подходящего технического типа без замены имён, бизнес-правил и ссылок. Простая замена имени продукта на слова «наш проект» не делает правило независимым.
-
-## ADR
-
-ADR описывает конкретную проблему, выбор и последствия для проекта; текущее поведение остаётся в спецификациях. Не называйте обязательным инструмент, который пока только рассматривается.
-
-## Этапы и результаты обсуждения
-
-В [каталоге milestones](milestones/README.md) перечислены Demo, MVP и Production и указан текущий milestone. Файлы demo.md/mvp.md/production.md в этой папке описывают цели, состав и глубину входящих фич; соответствие существующим F/M-документам сохраняется. Подтверждённые цели отделяются от рабочего предложения состава. Не переносить сюда GitLab-задачи, исполнителей и статусы реализации; один модуль/фича может участвовать в нескольких этапах с разной глубиной.
-
-После каждого разобранного пункта/блока обновляйте спецификации и ответы в Q-файлах, затем каталоги и связанные представления сторон. Принятое правило должно присутствовать в F/M-документе, а не только в ответе на вопрос. При изменении через Drive проверяйте запись чтением; не выдавайте локально подготовленный документ за сохранённый.
-
-Наличие исходников не исключает фичу из аналитики. На бэкенде раскрываются алгоритмы и необходимые модели с полями; на фронтенде описываются страницы/экраны, features/widgets/entities/shared, владение состоянием и логическая компоновка без реализации вёрстки. Подробные формы находятся в действующих шаблонах сторон.
-
-## Каталоги и ссылки
-
-Обновляйте [каталог фич](features.md), [модулей](modules.md), [вопросов](questions.md) и [стандартов](standards.md). Используйте осмысленные подписи ссылок вместо «README.md». Пути относительные, названия файлов на латинице, основной текст на русском.
-
-После переноса проверьте все входящие ссылки. Для неопределённого документа пишите `Уточняется`, не создавайте неработающую ссылку. Вспомогательный README внутри каждой папки не обязателен.
-
-## Проверка редакции
-
-Проверьте размещение по владельцу, отсутствие дублирования правил, карты фич модулей, открытие относительных ссылок и сохранность заглушек. В backend-фиче сопоставьте DF-потоки, обработчики, модели, ошибки и тесты; требования не должны теряться при переходе между разделами. Не изменяйте историю и исходники ради перестановки документации.
-
-## Нормативность feature-документов
-
-Feature-документ (`business/features`, `technical/backend/features`, `technical/frontend/features`) описывает **последнее согласованное состояние** фичи.
-
-Запрещено накапливать внутри feature хронологические секции вида `Решение блока N`, `Уточнение блока N`, старые отменённые варианты и последовательность обсуждений. Новое решение переписывает соответствующий нормативный раздел.
-
-История выбора, альтернативы и происхождение решения остаются в `questions/` либо ADR. Feature может дать ссылку на связанный Q/ADR, но не копирует журнал переговоров.
-
-Backend feature описывает реализацию по физическим слоям проекта: `Domain`, `Application.Abstractions`, `Application`, `Api`, `EntityFramework`, `EntityFramework.Persistence` и используемые external adapters (`S3`, `RabbitMQ/MassTransit`, `HTTP` и т.д.). Для каждого слоя указываются конкретные типы, поля, методы, ports, mappings и ответственность; общая фраза «реализовать по Clean Architecture» спецификацией не считается.
+Work may be committed directly to `main` where authorized, but all published commits must preserve history, run relevant checks and clearly distinguish implemented behavior from roadmap items.
