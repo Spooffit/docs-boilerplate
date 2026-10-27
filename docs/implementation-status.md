@@ -23,7 +23,7 @@ status: active
 ## Known limitations
 
 - Full historical documentation has **not** been migrated or technically audited file-by-file.
-- Unit test suite, property-based checks and detailed diagnostics remain limited.
+- Focused no-extra-package .NET contract tests now cover profile resolution, navigation, metadata, hashes, safe paths and symlinks on Linux and Windows. A full dedicated testing-framework suite, property-based checks and detailed diagnostics remain outstanding.
 - Safe hash-based updates are implemented. Full three-way content merging is deliberately not attempted; concurrent author and template changes require manual resolution.
 - Markdown and frontmatter parsing are deliberately scoped; they do not fully verify Markdown anchors, every image/link dialect or arbitrary YAML syntax.
 - Catalog preflight detects unknown/cyclic dependencies and case-insensitive destination collisions. Formal JSON Schemas now specify the catalogs and generated configuration, with schema-level checks in CI; the CLI itself still uses the built-in validation and full hostile-concurrent-filesystem safety remains outstanding.

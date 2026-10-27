@@ -65,10 +65,10 @@ static partial class DocsCli
             content.Keys.Order(StringComparer.Ordinal).ToArray(), hashes);
     }
 
-    private static string Hash(string content) =>
+    internal static string Hash(string content) =>
         Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(content))).ToLowerInvariant();
 
-    private static string[] DirectoryNames(IEnumerable<string> files) =>
+    internal static string[] DirectoryNames(IEnumerable<string> files) =>
         files.Where(path => path.StartsWith("docs/", StringComparison.Ordinal)
             && path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             .SelectMany(path =>
@@ -123,7 +123,7 @@ static partial class DocsCli
         return heading is null ? Path.GetFileNameWithoutExtension(path) : heading[2..].Trim();
     }
 
-    private static string BuildLlmsIndex(string projectName, string summary, Dictionary<string, string> files)
+    internal static string BuildLlmsIndex(string projectName, string summary, Dictionary<string, string> files)
     {
         var sb = new StringBuilder();
         sb.AppendLine("# " + projectName.Replace('\n', ' ').Replace('\r', ' '));
@@ -148,7 +148,7 @@ static partial class DocsCli
         return sb.ToString();
     }
 
-    private static string BuildDocumentCatalog(Dictionary<string, string> files, IEnumerable<string> selected, Catalog profiles)
+    internal static string BuildDocumentCatalog(Dictionary<string, string> files, IEnumerable<string> selected, Catalog profiles)
     {
         var sb = new StringBuilder();
         sb.AppendLine("# Documentation catalog");

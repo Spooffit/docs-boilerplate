@@ -18,6 +18,8 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Build
         run: dotnet build src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release
+      - name: Focused .NET contract tests
+        run: dotnet run --configuration Release --project tests/DocsBoilerplate.ContractTests/DocsBoilerplate.ContractTests.csproj
       - name: Smoke-test generation and Docsify shell
         run: bash tests/smoke.sh
       - uses: actions/setup-python@v7
@@ -49,6 +51,8 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Build on Windows
         run: dotnet build src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release
+      - name: Focused .NET contract tests on Windows
+        run: dotnet run --configuration Release --project tests/DocsBoilerplate.ContractTests/DocsBoilerplate.ContractTests.csproj
       - name: Smoke-test CLI on Windows
         shell: pwsh
         run: ./tests/windows-smoke.ps1

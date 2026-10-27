@@ -5,7 +5,7 @@ using Spectre.Console;
 
 static partial class DocsCli
 {
-    private static HashSet<string> ResolveProfiles(IEnumerable<string> selected, Catalog catalog)
+    internal static HashSet<string> ResolveProfiles(IEnumerable<string> selected, Catalog catalog)
     {
         var byId = catalog.Profiles.ToDictionary(p => p.Id, StringComparer.Ordinal);
         var result = new HashSet<string>(StringComparer.Ordinal);
@@ -27,7 +27,7 @@ static partial class DocsCli
         }
     }
 
-    private static HashSet<string> ResolveSkills(IEnumerable<string> selected, SkillCatalog catalog)
+    internal static HashSet<string> ResolveSkills(IEnumerable<string> selected, SkillCatalog catalog)
     {
         var byId = catalog.Skills.ToDictionary(s => s.Id, StringComparer.Ordinal);
         var resolved = new HashSet<string>(StringComparer.Ordinal);
@@ -41,7 +41,7 @@ static partial class DocsCli
         return resolved;
     }
 
-    private static HashSet<string> ResolveModules(IEnumerable<string> selected, ModuleCatalog catalog)
+    internal static HashSet<string> ResolveModules(IEnumerable<string> selected, ModuleCatalog catalog)
     {
         var byId = catalog.Modules.ToDictionary(m => m.Id, StringComparer.Ordinal);
         var result = new HashSet<string>(StringComparer.Ordinal);
@@ -190,12 +190,12 @@ static partial class DocsCli
 
     private static string SafePath(string root, string relative) => SafeFiles.Child(root, relative);
 
-    private sealed record Catalog(int SchemaVersion, Profile[] Profiles);
-    private sealed record Profile(string Id, string Name, string Status, string[] Requires, string[] Files, string Category);
-    private sealed record SkillCatalog(int SchemaVersion, Skill[] Skills);
-    private sealed record Skill(string Id, string Name, string Source, string Destination);
-    private sealed record ModuleCatalog(int SchemaVersion, Module[] Modules);
-    private sealed record Module(string Id, string Name, ModuleFile[] Files);
-    private sealed record ModuleFile(string Source, string Destination);
+    internal sealed record Catalog(int SchemaVersion, Profile[] Profiles);
+    internal sealed record Profile(string Id, string Name, string Status, string[] Requires, string[] Files, string Category);
+    internal sealed record SkillCatalog(int SchemaVersion, Skill[] Skills);
+    internal sealed record Skill(string Id, string Name, string Source, string Destination);
+    internal sealed record ModuleCatalog(int SchemaVersion, Module[] Modules);
+    internal sealed record Module(string Id, string Name, ModuleFile[] Files);
+    internal sealed record ModuleFile(string Source, string Destination);
     private sealed record ProjectConfig(string Name, string Description, string[] Profiles, string[] Skills, string[] Modules, string Site, string[] GeneratedFiles, Dictionary<string, string>? GeneratedHashes = null);
 }
