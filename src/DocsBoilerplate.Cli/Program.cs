@@ -66,6 +66,7 @@ static class DocsCli
     private static string[] PromptProfiles(Catalog catalog)
     {
         var selected = new HashSet<string>(StringComparer.Ordinal);
+        var frontendChoice = "none";
 
         string PickOne(string title, string category)
         {
@@ -77,7 +78,8 @@ static class DocsCli
 
         void PickMany(string title, string category)
         {
-            var choices = catalog.Profiles.Where(x => x.Category == category && x.Status == "available")
+            var choices = catalog.Profiles.Where(x => x.Category == category && x.Status == "available"
+                && !(x.Id == "bunit" && frontendChoice != "blazor"))
                 .Select(x => x.Id).Order(StringComparer.Ordinal).ToArray();
             if (choices.Length == 0) return;
             var picks = AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title(title).AddChoices(choices));
@@ -87,6 +89,7 @@ static class DocsCli
         var backend = PickOne("Backend technology:", "backend");
         if (backend != "none") selected.Add(backend);
         var frontend = PickOne("Frontend technology:", "frontend");
+        frontendChoice = frontend;
         if (frontend != "none") selected.Add(frontend);
 
         if (backend == "dotnet" || frontend == "blazor")
@@ -96,6 +99,8 @@ static class DocsCli
             PickMany("HTTP API frameworks (optional):", "web");
             PickMany("Validation libraries (optional):", "validation");
             PickMany("Databases (optional):", "database");
+            PickMany("Message transports / frameworks (optional):", "messaging");
+            PickMany("Query composition libraries (optional):", "query-pattern");
         }
         if (frontend == "blazor")
             PickMany("Blazor UI libraries (optional):", "ui");
@@ -408,7 +413,7 @@ static class DocsCli
         var categories = new HashSet<string>(StringComparer.Ordinal)
         {
             "backend", "frontend", "data-access", "ui", "architecture", "modeling", "testing",
-            "web", "validation", "database", "application-pattern"
+            "web", "validation", "database", "application-pattern", "messaging", "query-pattern"
         };
         foreach (var profile in data.Profiles)
         {

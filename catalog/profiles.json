@@ -205,6 +205,42 @@
         "docs/standards/architecture/cqrs.md"
       ],
       "category": "application-pattern"
+    },
+    {
+      "id": "masstransit-rabbitmq",
+      "name": "MassTransit + RabbitMQ",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/masstransit-rabbitmq.md"
+      ],
+      "category": "messaging"
+    },
+    {
+      "id": "ardalis-specification",
+      "name": "Ardalis.Specification",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/ardalis-specification.md"
+      ],
+      "category": "query-pattern"
+    },
+    {
+      "id": "bunit",
+      "name": "bUnit component testing",
+      "status": "available",
+      "requires": [
+        "blazor"
+      ],
+      "files": [
+        "docs/standards/blazor/bunit.md"
+      ],
+      "category": "testing"
     }
   ]
 }
