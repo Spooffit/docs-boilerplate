@@ -34,3 +34,12 @@ The audit looked for explicit repository references to these removed filenames, 
 The legacy inventory retains the seven paths as `removed-cleanup` so subsequent audits cannot silently confuse historical removal with an original file that never existed.
 
 This review does **not** authorize removal of any substantive feature, module, technical standard, question, product glossary or milestone. Later removals must receive individual disposition and evidence before editing this allowlist.
+
+## Follow-up removal: C# formatter rule
+
+- Removed path: `technical/backend/standards/S24-code-formatting.md`.
+- Source inspection: the entire file was a 339-byte instruction to run `dotnet format --include` after changing C# files. Its title incorrectly used `S23` even though the filename was `S24`, colliding with the separate project-file standard.
+- Inbound-reference check: the full Markdown graph reported **zero** incoming documents to the S24 path. The old root `standards.md` indexed S01–S23, not S24. The link checker does not prove absence of every plain-text or HTML mention.
+- Migrated value: the formatting-and-verification rule now lives in `catalog/docs/standards/dotnet/conventions.md`, included only with the `.NET` profile. The new version respects actual repository formatter settings and requires reporting when formatting was not executed.
+- Reason: no unique product contract or example needs preserving in the current documentation tree. The original text remains accessible through normal Git history.
+- Deletion gate: no current recognized Markdown link may reference this path; `tests/legacy_link_graph.py` enforces it in CI.

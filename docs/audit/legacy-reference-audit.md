@@ -9,6 +9,12 @@ status: active
 
 This is a dependency assessment, not authorization to delete a document merely because its subject has been migrated.
 
+## First measured result and disposition
+
+The initial scan of **395 Markdown files** found **24 historical technology standards**. **23 had recognized incoming links**; only `technical/backend/standards/S24-code-formatting.md` had none. The number of incoming documents ranged from one (S01) to 31 (S04). All 23 linked standards remain in `main` pending content and dependency review.
+
+S24's entire formatter instruction has now been migrated to the `.NET conventions` catalog source and the old file removed under a recorded individual disposition. Future scans therefore examine 23 surviving standards. This is the only substantive historical standard removed in this phase.
+
 ## Automated check
 
 The script `tests/legacy_link_graph.py` scans Markdown in the repository, resolves ordinary inline links and reference definitions, and reports the number of distinct incoming documents for each legacy Sxx technology standard. It rejects live Markdown links to files marked `removed-cleanup` in the historical inventory.

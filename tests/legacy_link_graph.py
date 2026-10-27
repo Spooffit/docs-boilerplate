@@ -73,6 +73,21 @@ def test_parser():
     assert resolve("docs/audit/index.md", "../../technical/backend/standards/S01.md") == (
         "technical/backend/standards/S01.md")
     assert resolve("docs/audit/index.md", "../../../../etc/passwd") is None
+    # The deletion guard must reject a currently linked removed document.
+    try:
+        assert_no_removed_links({"old.md": {"docs/index.md"}}, ["old.md"])
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError("Removed-file references were incorrectly accepted")
+    assert_no_removed_links({"safe.md": {"docs/index.md"}}, ["old.md"])
+
+
+def assert_no_removed_links(inbound, removed):
+    broken = [(path, sorted(inbound[path])) for path in removed if inbound.get(path)]
+    if broken:
+        raise AssertionError("Current Markdown still links to removed history:\n"
+                             + "\n".join(f"{path} <- {refs}" for path, refs in broken))
 
 
 def analyze():
@@ -92,10 +107,7 @@ def analyze():
                 inbound[target].add(source)
 
     removed = [row["path"] for row in rows if row["content_review"] == "removed-cleanup"]
-    broken = [(path, sorted(inbound[path])) for path in removed if inbound[path]]
-    if broken:
-        raise AssertionError("Current Markdown still links to removed history:\n"
-                             + "\n".join(f"{path} <- {refs}" for path, refs in broken))
+    assert_no_removed_links(inbound, removed)
 
     standards = sorted(row["path"] for row in rows
         if row["classification"] == "candidate-technology-standard"
