@@ -5,9 +5,7 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 from collections import Counter
-from urllib.parse import unquote
-import posixpath
-import re
+from legacy_link_graph import analyze
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs/audit/legacy-inventory.csv"
@@ -58,22 +56,8 @@ def main():
     for path in removed:
         assert f"`{path}`" in report, f"Missing recorded removal rationale for {path}"
 
-    # Guard old and new documentation against inline links to removed paths.
-    # Reference-style links and dynamic references still need manual review.
-    inline = re.compile(r"\\]\\(<?([^\\s)<>]+)>?(?:\\s+[^)]*)?\\)")
-    for doc in ROOT.rglob("*.md"):
-        if ".git" in doc.parts:
-            continue
-        relative = doc.relative_to(ROOT).as_posix()
-        body = doc.read_text(encoding="utf-8-sig")
-        for match in inline.finditer(body):
-            target = unquote(match.group(1)).split("#", 1)[0].split("?", 1)[0]
-            if not target or "://" in target or target.startswith(("#", "/")):
-                continue
-            normalized = posixpath.normpath(posixpath.join(posixpath.dirname(relative), target))
-            assert normalized not in removed, (
-                f"Markdown link to removed historical file: {relative} -> {normalized}"
-            )
+    # Reuse the tested link resolver for deletion safety.
+    analyze()
 
     print(f"Legacy inventory: {len(paths)} entries")
     for (category, state), amount in sorted(counts.items()):

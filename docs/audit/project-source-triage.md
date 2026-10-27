@@ -37,7 +37,7 @@ Totals count 151 entries. Files can be marked `screened-structure` after a scope
 A historical file can be removed from `main` only after:
 
 1. Recording which genuinely reusable rules and template shapes have been extracted (or why nothing needs extraction).
-2. Verifying no canonical catalog standard or generated template links to it.
+2. Auditing incoming links with `tests/legacy_link_graph.py` and manually inspecting unsupported link variants; verifying no generated catalog files depend on it.
 3. Checking that generated projects contain no historical product identifiers, feature numbers, roles, environment addresses or specific contracts.
 4. Ensuring any example retained in the boilerplate is clearly anonymized, technology-relevant, optional and actually educational.
 5. Updating the inventory with a definite disposition, removing stale references, and passing CI.

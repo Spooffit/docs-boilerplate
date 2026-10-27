@@ -17,6 +17,7 @@ These reports distinguish examined documentation from historical source material
 - [Template review](template-migration-review.md)
 - [Data flows and UI standards](data-flows-ui-review.md)
 - [Historic project material and deletion gates](project-source-triage.md)
+- [Legacy incoming links and deletion readiness](legacy-reference-audit.md)
 - [Architecture and milestone extraction](architecture-milestone-extraction.md)
 - [Business feature, module and question structural screening](business-specification-screening.md)
 - [Backend and frontend technical feature screening](technical-feature-screening.md)
