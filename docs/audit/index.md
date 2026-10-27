@@ -22,4 +22,5 @@ These reports distinguish examined documentation from historical source material
 - [Backend and frontend technical feature screening](technical-feature-screening.md)
 - [Technical modules and question screening](technical-module-question-screening.md)
 - [Root, navigation and milestones](root-milestone-screening.md)
+- [Versioned resource lifecycle extraction](versioned-lifecycle-review.md)
 - [Owner decisions deferred until engineering is complete](owner-decision-backlog.md)

@@ -36,6 +36,10 @@ For nontrivial cases, describe **only** the steps required by the actual use cas
 
 A DB commit and a broker publish are not magically one atomic event. Multiple stores have independent commits unless a concrete coordination mechanism says otherwise. Do not claim exactly-once delivery by default.
 
+## Stateful transitions
+
+Where a workflow includes edits, immutable versions, publication or destructive changes, apply the [conditional stateful-workflow checklist](stateful-workflows.md) rather than assuming a basic CRUD lifecycle.
+
 ## Repeat and recovery semantics
 
 For flows where retries matter, document idempotency scope, deduplication window, message acknowledgements, ordering, stale input and partial failure recovery. Explain how users or operators distinguish a failed write from a lost acknowledgement.

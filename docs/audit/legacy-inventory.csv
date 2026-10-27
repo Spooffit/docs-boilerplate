@@ -9,9 +9,9 @@ business/README.md,project-source,screened-structure,1928
 business/adr/README.md,project-source,screened-structure,166
 business/archive/README.md,project-source,screened-structure,205
 business/features/F01-create-entity-schema.md,project-source,screened-structure,20131
-business/features/F02-create-schema-version.md,project-source,screened-structure,11008
-business/features/F03-publish-schema-version.md,project-source,screened-structure,11978
-business/features/F04-entity-instances.md,project-source,screened-structure,22319
+business/features/F02-create-schema-version.md,project-source,reviewed-targeted,11008
+business/features/F03-publish-schema-version.md,project-source,reviewed-targeted,11978
+business/features/F04-entity-instances.md,project-source,reviewed-targeted,22319
 business/features/F05-media-assets.md,project-source,screened-structure,10079
 business/features/F06-product-catalog.md,project-source,screened-structure,17793
 business/features/F07-product-content-assignment.md,project-source,screened-structure,17941
@@ -47,8 +47,8 @@ business/questions/Q04-withdrawn-publications.md,project-source,screened-structu
 business/questions/Q05-initial-publication.md,project-source,screened-structure,7121
 business/questions/Q06-automatic-promotion.md,project-source,screened-structure,9045
 business/questions/Q07-exclusions-and-local-content.md,project-source,screened-structure,25383
-business/questions/Q08-keys-and-drafts.md,project-source,screened-structure,20301
-business/questions/Q09-editing-and-deletion.md,project-source,screened-structure,27123
+business/questions/Q08-keys-and-drafts.md,project-source,reviewed-targeted,20301
+business/questions/Q09-editing-and-deletion.md,project-source,reviewed-targeted,27123
 business/questions/Q10-permissions-and-isolation.md,project-source,screened-structure,15875
 business/questions/Q11-catalog-ownership.md,project-source,screened-structure,6428
 business/questions/Q12-media-and-retention.md,project-source,screened-structure,3743
@@ -60,7 +60,7 @@ business/questions/Q27-catalog-archiving.md,project-source,screened-structure,63
 business/questions/Q28-content-review-scope.md,project-source,screened-structure,14733
 business/questions/Q34-schema-field-semantics.md,project-source,screened-structure,54741
 business/questions/Q35-value-constraints.md,project-source,screened-structure,12014
-business/questions/Q36-entity-instance-lifecycle.md,project-source,screened-structure,29230
+business/questions/Q36-entity-instance-lifecycle.md,project-source,reviewed-targeted,29230
 business/questions/Q38-bulk-version-freeze-and-release-preparation.md,project-source,screened-structure,6346
 business/questions/Q39-schema-content-selection.md,project-source,screened-structure,9526
 business/templates/README.md,candidate-template,reviewed-targeted,12703

@@ -32,6 +32,8 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 - No automated publication or browser-based editing workflow; Docsify is only a browser-side reader.
 - The Docsify browser view depends on CDN availability and a local/static HTTP server; full headless-browser interaction tests remain outstanding.
 
+The [targeted versioning/lifecycle review](audit/versioned-lifecycle-review.md) preserves the reusable documentation concerns without imposing the old product's runtime behavior.
+
 ## Next steps
 
 1. Perform semantic reviews and recorded extraction/rejection decisions for structurally screened documents; distinguish accepted designs from actual source/test evidence.

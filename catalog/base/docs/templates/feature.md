@@ -27,6 +27,10 @@ status: template
 2. [Describe externally observable steps without prescribing an unapproved implementation.]
 3. [Describe the completed result.]
 
+## Lifecycle and history (when applicable)
+
+[If this feature actually saves drafts, publishes, archives or removes dependencies, describe the observable differences and historical consequences. Do not assume these states exist in every project.]
+
 ## Alternate and failure scenarios
 
 [What changes if input is invalid, access is denied, a resource is missing, state conflicts or a dependency fails? Define outcomes where known.]

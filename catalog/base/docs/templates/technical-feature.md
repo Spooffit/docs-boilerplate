@@ -46,6 +46,10 @@ Do not require fixed Domain/Application/Infrastructure or FSD folder structures 
 
 Identify cancellation, timeout, idempotency and side-effect behavior where relevant. A client timeout is not proof that server writes rolled back.
 
+## State and version history (when applicable)
+
+[For actual versioned or multi-writer resources, describe the selected baseline, concurrent update behavior, history and destructive impact. See the [stateful-workflow checklist](../standards/stateful-workflows.md). Delete this section for stateless features.]
+
 ## State and failure handling
 
 [For UI or SDK features, describe state ownership and user-visible progress. For backend/integration features, describe conflict handling, transaction rollback, external dependency failure and safe diagnostics. Distinguish invalid inputs, forbidden work, missing resources and concurrent changes.]
