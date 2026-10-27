@@ -15,3 +15,4 @@ These reports distinguish examined documentation from historical source material
 - [Test standards](testing-review.md)
 - [Messaging and Blazor](messaging-and-blazor-review.md)
 - [Template review](template-migration-review.md)
+- [Data flows and UI standards](data-flows-ui-review.md)
