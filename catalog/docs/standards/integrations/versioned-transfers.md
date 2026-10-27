@@ -51,4 +51,4 @@ Clarify what is committed together: staged data, installed snapshot, group membe
 
 Verify cancellation, expiry, worker takeover, stale generation, interrupted streams, mismatched digests, replays, missing records and cross-version client compatibility against real implementations.
 
-References: [RFC 9110 HTTP range semantics](https://www.rfc-editor.org/rfc/rfc9110.html#section-14), [stateful workflow review](../../stateful-workflows.md).
+References: [RFC 9110 HTTP range semantics](https://www.rfc-editor.org/rfc/rfc9110.html#section-14), [stateful workflow review](../stateful-workflows.md).

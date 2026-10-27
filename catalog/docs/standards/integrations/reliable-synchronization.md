@@ -58,4 +58,4 @@ Record poison/quarantined events, unresolved dependencies, retry budgets, last r
 
 Test out-of-order arrivals, duplicate event identities, contradictory equal versions, crash between receipt and apply, missing parents, replay after retention expiry and recovery from unacknowledged side effects. Use the actual transport and persistence systems for integration guarantees.
 
-References: [MassTransit outbox concepts](https://masstransit.io/documentation/patterns/transactional-outbox), [AWS transactional outbox guidance](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html), [data-flow documentation](../../data-flows.md).
+References: [MassTransit outbox concepts](https://masstransit.io/documentation/patterns/transactional-outbox), [AWS transactional outbox guidance](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html), [data-flow documentation](../data-flows.md).
