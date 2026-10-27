@@ -12,6 +12,28 @@
       ]
     },
     {
+      "id": "tunit",
+      "name": "TUnit / Microsoft.Testing.Platform",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/tunit.md"
+      ]
+    },
+    {
+      "id": "testcontainers",
+      "name": "Testcontainers for .NET",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/testcontainers.md"
+      ]
+    },
+    {
       "id": "ef-core",
       "name": "Entity Framework Core",
       "status": "available",
