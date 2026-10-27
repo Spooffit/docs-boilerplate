@@ -8,7 +8,8 @@
       "requires": [],
       "files": [
         "docs/standards/dotnet/conventions.md",
-        "docs/standards/dotnet/testing.md"
+        "docs/standards/dotnet/testing.md",
+        "docs/standards/dotnet/project-files.md"
       ],
       "category": "backend"
     },
@@ -147,6 +148,63 @@
       ],
       "files": [],
       "category": "ui"
+    },
+    {
+      "id": "aspnet-core",
+      "name": "ASP.NET Core HTTP APIs",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/aspnet/http-api.md",
+        "docs/standards/aspnet/errors-and-validation.md"
+      ],
+      "category": "web"
+    },
+    {
+      "id": "aspnet-mvc",
+      "name": "ASP.NET Core MVC controllers",
+      "status": "available",
+      "requires": [
+        "aspnet-core"
+      ],
+      "files": [
+        "docs/standards/aspnet/mvc-controllers.md"
+      ],
+      "category": "web"
+    },
+    {
+      "id": "fluentvalidation",
+      "name": "FluentValidation",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/fluentvalidation.md"
+      ],
+      "category": "validation"
+    },
+    {
+      "id": "postgresql",
+      "name": "PostgreSQL",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/postgresql/persistence.md"
+      ],
+      "category": "database"
+    },
+    {
+      "id": "cqrs",
+      "name": "CQRS application pattern",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/architecture/cqrs.md"
+      ],
+      "category": "application-pattern"
     }
   ]
 }

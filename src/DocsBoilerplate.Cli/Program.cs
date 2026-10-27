@@ -91,10 +91,17 @@ static class DocsCli
 
         if (backend == "dotnet" || frontend == "blazor")
             PickMany("Data access technologies (optional):", "data-access");
+        if (backend == "dotnet")
+        {
+            PickMany("HTTP API frameworks (optional):", "web");
+            PickMany("Validation libraries (optional):", "validation");
+            PickMany("Databases (optional):", "database");
+        }
         if (frontend == "blazor")
             PickMany("Blazor UI libraries (optional):", "ui");
         PickMany("Architecture styles (optional):", "architecture");
         PickMany("Domain modeling approaches (optional):", "modeling");
+        PickMany("Application patterns (optional):", "application-pattern");
         if (backend == "dotnet" || frontend == "blazor")
             PickMany("Testing libraries (optional):", "testing");
 
@@ -400,7 +407,8 @@ static class DocsCli
             throw new InvalidOperationException("Duplicate profile IDs.");
         var categories = new HashSet<string>(StringComparer.Ordinal)
         {
-            "backend", "frontend", "data-access", "ui", "architecture", "modeling", "testing"
+            "backend", "frontend", "data-access", "ui", "architecture", "modeling", "testing",
+            "web", "validation", "database", "application-pattern"
         };
         foreach (var profile in data.Profiles)
         {
