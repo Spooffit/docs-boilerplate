@@ -29,6 +29,8 @@ jobs:
         run: |
           python -m pip install "jsonschema>=4.23,<5"
           python tests/schema_contracts.py
+      - name: Check generated-content source hygiene
+        run: python tests/catalog_hygiene.py
       - name: Protect historical migration inventory
         run: python tests/legacy_inventory.py
       - name: Pack and install CLI as local .NET tool

@@ -13,7 +13,7 @@ This is a generator repository under staged migration. The reusable source lives
 
 1. Check [implementation status](docs/implementation-status.md) and the accepted [architecture ADR](docs/decisions/0001-composable-profiles.md).
 2. Identify what is canonical: `catalog/base/` for always-generated docs, `catalog/docs/standards/` for selectable technical standards, `catalog/modules/` for additional project documents, and `catalog/skills/` for optional agent procedures.
-3. Modify the smallest appropriate source. Do not copy project-specific requirements into standards or tool-dependent procedures into AGENTS.md.
+3. Modify the smallest appropriate source. CI also checks that reusable catalog files contain no predecessor-product identifiers (`tests/catalog_hygiene.py`). Do not copy project-specific requirements into standards or tool-dependent procedures into AGENTS.md.
 4. Consult the [CLI code map](docs/architecture/generator-components.md) before changing generator behavior. Add or update catalog manifest entries for selectable content. All available profiles must have actual reusable files and clear dependencies.
 5. Update tests for new profile combinations, negative cases, missing links and idempotency.
 6. Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh`. For site changes, verify that Docsify's root index.html and Markdown routes work through a local HTTP server; the CI smoke test checks HTTP delivery.
