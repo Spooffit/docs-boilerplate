@@ -45,3 +45,7 @@ dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --descriptio
 ```
 
 Additional optional profiles: `masstransit-rabbitmq`, `ardalis-specification`, and `bunit`. Selecting bUnit requires Blazor, but not MudBlazor. Selecting MassTransit with RabbitMQ does not imply a database or a particular outbox implementation. Each profile installs only its applicable standard.
+
+## Catalog integrity
+
+`doctor` performs a whole-catalog preflight: all published profile dependencies must resolve without cycles, every profile/module/skill destination must be unique (case-insensitively for cross-platform use), and generated project paths cannot escape the repository. This validation occurs **before** output creation and also rejects collisions in currently unselected profiles.

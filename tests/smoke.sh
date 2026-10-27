@@ -159,6 +159,42 @@ if run doctor --catalog "$temp/catalog-invalid"; then
     echo "Unsafe catalog path was accepted"; exit 1
 fi
 
+# Reject manifest ambiguity and broken dependencies before any output is created.
+cp -a catalog "$temp/catalog-collision"
+python3 - "$temp/catalog-collision/profiles.json" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p,encoding="utf-8") as f: x=json.load(f)
+x["profiles"][1]["files"].append(x["profiles"][0]["files"][0])
+with open(p,"w",encoding="utf-8") as f: json.dump(x,f)
+PY
+if run doctor --catalog "$temp/catalog-collision"; then
+    echo "Duplicate profile output path accepted"; exit 1
+fi
+cp -a catalog "$temp/catalog-unknown"
+python3 - "$temp/catalog-unknown/profiles.json" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p,encoding="utf-8") as f: x=json.load(f)
+x["profiles"][0]["requires"] = ["ghost-profile"]
+with open(p,"w",encoding="utf-8") as f: json.dump(x,f)
+PY
+if run doctor --catalog "$temp/catalog-unknown"; then
+    echo "Unknown profile dependency accepted"; exit 1
+fi
+cp -a catalog "$temp/catalog-cycle"
+python3 - "$temp/catalog-cycle/profiles.json" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p,encoding="utf-8") as f: x=json.load(f)
+x["profiles"][0]["requires"] = ["tunit"]
+with open(p,"w",encoding="utf-8") as f: json.dump(x,f)
+PY
+if run doctor --catalog "$temp/catalog-cycle"; then
+    echo "Circular profile dependency accepted"; exit 1
+fi
+
+
 # A manifest missing owned files must be rejected.
 cp "$temp/project/docs.config.json" "$temp/original.json"
 python3 - "$temp/project/docs.config.json" <<'PY'

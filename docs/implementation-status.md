@@ -18,7 +18,7 @@
 - Unit test suite, property-based checks and detailed diagnostics remain limited.
 - No safe three-way update/merge process after initialization.
 - Markdown parsing is intentionally simple; it does not fully verify Markdown anchors, image references or every link dialect.
-- Schema/catalog validation needs more formal contracts and compatibility rules; TOCTOU races against concurrent hostile filesystem changes are not solved.
+- Catalog preflight detects unknown or cyclic dependencies, case-insensitive destination collisions and reserved output paths. A formal JSON Schema and protection against concurrent hostile filesystem changes are still outstanding.
 - No publication or browser-based editing workflow.
 - Site tool remains an early-release Zensical dependency. Verify CI before claiming compatibility.
 

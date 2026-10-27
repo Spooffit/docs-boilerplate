@@ -387,7 +387,7 @@ static class DocsCli
     {
         if (data.SchemaVersion != 1 || skills.SchemaVersion != 1 || modules.SchemaVersion != 1)
             throw new InvalidOperationException("Unsupported catalog schema version.");
-        if (modules.Modules.GroupBy(x => x.Id, StringComparer.Ordinal).Any(x => x.Count() > 1))
+        if (modules.Modules.GroupBy(x => x.Id, StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
             throw new InvalidOperationException("Duplicate documentation module IDs.");
         foreach (var module in modules.Modules)
         {
@@ -402,7 +402,7 @@ static class DocsCli
                     throw new IOException($"Missing documentation module source: {file.Source}");
             }
         }
-        if (skills.Skills.GroupBy(x => x.Id, StringComparer.Ordinal).Any(x => x.Count() > 1))
+        if (skills.Skills.GroupBy(x => x.Id, StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
             throw new InvalidOperationException("Duplicate skill IDs.");
         var destinations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var skill in skills.Skills)
@@ -417,7 +417,7 @@ static class DocsCli
             if (!File.Exists(SafePath(catalog, skill.Source)))
                 throw new IOException($"Missing agent skill source: {skill.Source}");
         }
-        if (data.Profiles.GroupBy(x => x.Id, StringComparer.Ordinal).Any(x => x.Count() > 1))
+        if (data.Profiles.GroupBy(x => x.Id, StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
             throw new InvalidOperationException("Duplicate profile IDs.");
         var categories = new HashSet<string>(StringComparer.Ordinal)
         {
@@ -436,6 +436,73 @@ static class DocsCli
                 if (!File.Exists(SafePath(catalog, path)))
                     throw new IOException($"Missing catalog file: {path}");
         }
+
+        // Check the complete catalog, not only the profiles selected for this invocation.
+        // Every available profile is composable, so two entries must never claim one destination.
+        var owners = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        void Own(string relative, string owner)
+        {
+            _ = SafePath(catalog, relative); // Validate portable relative path syntax.
+            if (relative == ConfigName)
+                throw new InvalidOperationException("docs.config.json is reserved for the generator.");
+            if (!owners.TryAdd(relative, owner))
+                throw new InvalidOperationException($"Duplicate output path '{relative}': {owners[relative]} and {owner}");
+        }
+
+        var baseDirectory = Path.Combine(catalog, "base");
+        if (!Directory.Exists(baseDirectory))
+            throw new DirectoryNotFoundException($"Missing catalog base: {baseDirectory}");
+        foreach (var path in SafeFiles.Enumerate(baseDirectory))
+            Own(Path.GetRelativePath(baseDirectory, path).Replace('\\', '/'), "base");
+        foreach (var profile in data.Profiles)
+        {
+            if (string.IsNullOrWhiteSpace(profile.Name)
+                || !System.Text.RegularExpressions.Regex.IsMatch(profile.Id, "^[a-z][a-z0-9-]*$"))
+                throw new InvalidOperationException($"Invalid profile ID or name: {profile.Id}");
+            foreach (var path in profile.Files)
+            {
+                if (!path.StartsWith("docs/", StringComparison.Ordinal))
+                    throw new InvalidOperationException($"Profile output must be under docs/: {profile.Id} / {path}");
+                Own(path, $"profile {profile.Id}");
+            }
+        }
+        foreach (var module in modules.Modules)
+        {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(module.Id, "^[a-z][a-z0-9-]*$"))
+                throw new InvalidOperationException($"Invalid documentation module ID: {module.Id}");
+            foreach (var file in module.Files)
+                Own(file.Destination, $"module {module.Id}");
+        }
+        foreach (var skill in skills.Skills)
+        {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(skill.Id, "^[a-z][a-z0-9-]*$"))
+                throw new InvalidOperationException($"Invalid skill ID: {skill.Id}");
+            Own(skill.Destination, $"skill {skill.Id}");
+        }
+        Own("zensical.toml", "site");
+
+        var byId = data.Profiles.ToDictionary(x => x.Id, StringComparer.Ordinal);
+        foreach (var profile in data.Profiles)
+        {
+            if (profile.Requires.Distinct(StringComparer.Ordinal).Count() != profile.Requires.Length)
+                throw new InvalidOperationException($"Duplicate dependency in profile: {profile.Id}");
+            foreach (var dependency in profile.Requires)
+                if (!byId.ContainsKey(dependency))
+                    throw new InvalidOperationException($"Unknown dependency '{dependency}' in profile '{profile.Id}'.");
+        }
+        var visited = new HashSet<string>(StringComparer.Ordinal);
+        var active = new HashSet<string>(StringComparer.Ordinal);
+        void Visit(string id)
+        {
+            if (visited.Contains(id)) return;
+            if (!active.Add(id))
+                throw new InvalidOperationException($"Cyclic catalog dependency: {id}");
+            foreach (var dependency in byId[id].Requires) Visit(dependency);
+            active.Remove(id);
+            visited.Add(id);
+        }
+        foreach (var profile in data.Profiles) Visit(profile.Id);
+
     }
 
     private static string SafePath(string root, string relative) => SafeFiles.Child(root, relative);
