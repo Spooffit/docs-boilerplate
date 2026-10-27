@@ -1,0 +1,40 @@
+﻿# Каталог стандартов
+
+
+Стандарты содержат только общие соглашения разработки, независимые от проекта. Проектная специфика запрещена также в примерах, примечаниях и ссылках. Конкретные сценарии, применение соглашения и проектные проверки находятся в фичах, модулях, вопросах и ADR, а не внутри стандартов.
+
+
+Область применения может быть технологической: .NET, ASP.NET Core, PostgreSQL, RabbitMQ. Обязательное правило, рекомендация и иллюстративный пример различаются. Номер не является приоритетом.
+
+
+## Карта документов
+
+
+| ID | Бэкенд | Фронтенд |
+| --- | --- | --- |
+| S01 | [Соглашения .NET](technical/backend/standards/S01-dotnet-conventions.md) | — |
+| S02 | [Хранение и целостность](technical/backend/standards/S02-persistence.md) | — |
+| S03 | [Валидация и ошибки](technical/backend/standards/S03-validation-and-errors.md) | — |
+| S04 | [Общая модель тестирования](technical/backend/standards/S04-testing.md) | — |
+| S05 | — | [Интерфейсы и формы](technical/frontend/standards/S05-ui-and-forms.md) |
+| S06 | — | [Работа с API](technical/frontend/standards/S06-api-client.md) |
+| S07 | — | [Доступность интерфейса](technical/frontend/standards/S07-accessibility.md) |
+| S08 | — | [Тестирование клиента: Blazor/bUnit, FSD и браузерные проверки](technical/frontend/standards/S08-testing.md) |
+| S09 | [Архитектурные тесты](technical/backend/standards/S09-architecture-tests.md) | — |
+| S10 | [Unit tests](technical/backend/standards/S10-unit-tests.md) | — |
+| S11 | [Integration tests](technical/backend/standards/S11-integration-tests.md) | — |
+| S12 | [Functional tests](technical/backend/standards/S12-functional-tests.md) | — |
+| S13 | [E2E tests](technical/backend/standards/S13-e2e-tests.md) | — |
+| S14 | [Окружения, изоляция и параллельность](technical/backend/standards/S14-test-environments.md) | — |
+| S15 | [Test engineering и проверка изменений](technical/backend/standards/S15-test-engineering.md) | — |
+| S16 | [REST: реализация HTTP API](technical/backend/standards/S16-rest.md) | — |
+| S17 | [Потоки данных и транспортные взаимодействия](technical/backend/standards/S17-data-flows.md) | — |
+| S18 | [FluentValidation и композиция правил](technical/backend/standards/S18-fluent-validation.md) | — |
+| S19 | [Фильтрация: Ardalis.Specification](technical/backend/standards/S19-specifications.md) | — |
+| S20 | [CQRS: размещение обработчиков](technical/backend/standards/S20-cqrs.md) | — |
+| S21 | [Ограничения агрегатов: единый источник в Domain](technical/backend/standards/S21-aggregate-constraints.md) | — |
+| S22 | [MassTransit / RabbitMQ EventBus topology](technical/backend/standards/S22-eventbus-topology.md) | — |
+| S23 | [Структура `.csproj`](technical/backend/standards/S23-csproj.md) | — |
+
+
+[Фичи](features.md) · [Модули](modules.md) · [Вопросы](questions.md) · [Правила ведения](CONTRIBUTING.md).
