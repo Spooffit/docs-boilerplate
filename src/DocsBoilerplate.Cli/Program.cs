@@ -243,7 +243,10 @@ static class DocsCli
         if (site == "docsify")
             Add("index.html", (await File.ReadAllTextAsync(SafePath(catalog, "sites/docsify.html")))
                 .Replace("{{PROJECT_NAME_JSON}}", JsonSerializer.Serialize(name), StringComparison.Ordinal));
+        // Every documentation directory has a human- and agent-readable index.
+        AddDirectoryIndexes(expected);
         Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available));
+        Add("llms.txt", BuildLlmsIndex(name, description, expected));
         return expected;
         void Add(string path, string value)
         {
@@ -268,6 +271,75 @@ static class DocsCli
 
     private static string Hash(string content) =>
         Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(content))).ToLowerInvariant();
+
+    private static string[] DirectoryNames(IEnumerable<string> files) =>
+        files.Where(path => path.StartsWith("docs/", StringComparison.Ordinal)
+            && path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            .Select(path => Path.GetDirectoryName(path.Replace('/', Path.DirectorySeparatorChar))!
+                .Replace(Path.DirectorySeparatorChar, '/'))
+            .Where(folder => folder != "docs")
+            .Distinct(StringComparer.Ordinal)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+
+    private static void AddDirectoryIndexes(Dictionary<string, string> files)
+    {
+        foreach (var directory in DirectoryNames(files.Keys))
+        {
+            var indexPath = directory + "/index.md";
+            if (files.ContainsKey(indexPath)) continue;
+            var immediateFiles = files.Keys.Where(path => path.StartsWith(directory + "/", StringComparison.Ordinal)
+                && path != indexPath
+                && !path[(directory.Length + 1)..].Contains('/')).Order(StringComparer.Ordinal).ToArray();
+            var subfolders = DirectoryNames(files.Keys)
+                .Where(path => path.StartsWith(directory + "/", StringComparison.Ordinal)
+                    && !path[(directory.Length + 1)..].Contains('/')).ToArray();
+
+            var title = directory.Split('/').Last().Replace('-', ' ');
+            var sb = new StringBuilder();
+            sb.Append(DocumentMetadata.Frontmatter($"Directory: {title}", "Index of documents and subdirectories", "index", "active"));
+            sb.AppendLine($"# {title}");
+            sb.AppendLine();
+            sb.AppendLine("Documents in this directory:");
+            sb.AppendLine();
+            foreach (var sub in subfolders)
+                sb.AppendLine($"- [{sub.Split('/').Last()}]({sub.Split('/').Last()}/index.md)");
+            foreach (var path in immediateFiles)
+                sb.AppendLine($"- [{TitleFromMarkdown(files[path], path)}]({Path.GetFileName(path)})");
+            files.Add(indexPath, sb.ToString());
+        }
+    }
+
+    private static string TitleFromMarkdown(string text, string path)
+    {
+        var heading = text.Split('\n').FirstOrDefault(line => line.StartsWith("# ", StringComparison.Ordinal));
+        return heading is null ? Path.GetFileNameWithoutExtension(path) : heading[2..].Trim();
+    }
+
+    private static string BuildLlmsIndex(string projectName, string summary, Dictionary<string, string> files)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("# " + projectName.Replace('\n', ' ').Replace('\r', ' '));
+        sb.AppendLine();
+        sb.AppendLine("> " + summary.Replace('\n', ' ').Replace('\r', ' '));
+        sb.AppendLine();
+        sb.AppendLine("Read AGENTS.md for agent instructions and docs/index.md for the project home page. These files are the authoritative Markdown sources.");
+        sb.AppendLine();
+        sb.AppendLine("## Essential");
+        sb.AppendLine();
+        foreach (var path in new[] { "AGENTS.md", "docs/index.md", "docs/catalog.md", "docs/project/overview.md", "docs/architecture/overview.md" })
+            if (files.ContainsKey(path))
+                sb.AppendLine($"- [{TitleFromMarkdown(files[path], path)}]({path})");
+        sb.AppendLine();
+        sb.AppendLine("## Reference");
+        sb.AppendLine();
+        foreach (var path in files.Keys.Where(path => path.StartsWith("docs/standards/", StringComparison.Ordinal)
+                && path.EndsWith("/index.md", StringComparison.Ordinal)).Order(StringComparer.Ordinal))
+            sb.AppendLine($"- [{path["docs/".Length..]}]({path})");
+        if (files.ContainsKey("docs/templates/index.md"))
+            sb.AppendLine("- [Authoring templates](docs/templates/index.md)");
+        return sb.ToString();
+    }
 
     private static string BuildDocumentCatalog(Dictionary<string, string> files, IEnumerable<string> selected, Catalog profiles)
     {
@@ -542,8 +614,13 @@ static class DocsCli
                 if (!required.Add(file.Destination))
                     errors.Add($"Duplicate module output path: {file.Destination}");
         }
+        foreach (var directory in DirectoryNames(required))
+            if (!required.Add($"{directory}/index.md"))
+                errors.Add($"Duplicate generated directory index: {directory}/index.md");
         if (!required.Add("docs/catalog.md"))
             errors.Add("Duplicate generated documentation catalog path.");
+        if (!required.Add("llms.txt"))
+            errors.Add("Duplicate generated llms.txt path.");
         if (config.Site == "docsify" && !required.Add("index.html"))
             errors.Add("Duplicate site configuration path: index.html");
         if (config.Site == "zensical" && !required.Add("zensical.toml"))
@@ -556,9 +633,21 @@ static class DocsCli
             var target = SafePath(output, path);
             if (!File.Exists(target)) errors.Add($"Missing generated file: {path}");
         }
-        foreach (var file in SafeFiles.Enumerate(output).Where(x => x.EndsWith(".md", StringComparison.OrdinalIgnoreCase)))
+        var allMarkdown = SafeFiles.Enumerate(output)
+            .Where(x => x.EndsWith(".md", StringComparison.OrdinalIgnoreCase)).ToArray();
+        foreach (var directory in DirectoryNames(allMarkdown.Select(x => Path.GetRelativePath(output, x).Replace('\\', '/'))))
+            if (!File.Exists(SafePath(output, $"{directory}/index.md")))
+                errors.Add($"Missing directory index: {directory}/index.md");
+        foreach (var file in allMarkdown)
         {
             var text = await File.ReadAllTextAsync(file);
+            var relativeName = Path.GetRelativePath(output, file).Replace('\\', '/');
+            var basename = Path.GetFileName(relativeName);
+            if (basename is not ("README.md" or "AGENTS.md" or "SKILL.md")
+                && !System.Text.RegularExpressions.Regex.IsMatch(basename, "^[a-z0-9]+(?:-[a-z0-9]+)*\\.md$"))
+                errors.Add($"Markdown filename must be kebab-case: {relativeName}");
+            if (!DocumentMetadata.IsValid(text, basename == "SKILL.md"))
+                errors.Add($"Invalid or missing YAML frontmatter: {relativeName}");
             if (text.Contains("{{PROJECT_", StringComparison.Ordinal))
                 errors.Add($"Unresolved template field: {file}");
             foreach (System.Text.RegularExpressions.Match match in System.Text.RegularExpressions.Regex.Matches(text, @"\]\(([^)#]+)(?:#[^)]*)?\)"))
@@ -706,7 +795,13 @@ static class DocsCli
         if (!Directory.Exists(baseDirectory))
             throw new DirectoryNotFoundException($"Missing catalog base: {baseDirectory}");
         foreach (var path in SafeFiles.Enumerate(baseDirectory))
-            Own(Path.GetRelativePath(baseDirectory, path).Replace('\\', '/'), "base");
+        {
+            var relative = Path.GetRelativePath(baseDirectory, path).Replace('\\', '/');
+            if (relative.StartsWith("docs/", StringComparison.Ordinal) && relative.EndsWith(".md", StringComparison.OrdinalIgnoreCase)
+                && Path.GetFileName(relative) != "index.md")
+                DocumentMetadata.AssertFileName(relative);
+            Own(relative, "base");
+        }
         foreach (var profile in data.Profiles)
         {
             if (string.IsNullOrWhiteSpace(profile.Name)
@@ -714,6 +809,7 @@ static class DocsCli
                 throw new InvalidOperationException($"Invalid profile ID or name: {profile.Id}");
             foreach (var path in profile.Files)
             {
+                DocumentMetadata.AssertFileName(path);
                 if (!path.StartsWith("docs/", StringComparison.Ordinal))
                     throw new InvalidOperationException($"Profile output must be under docs/: {profile.Id} / {path}");
                 Own(path, $"profile {profile.Id}");
@@ -724,7 +820,10 @@ static class DocsCli
             if (!System.Text.RegularExpressions.Regex.IsMatch(module.Id, "^[a-z][a-z0-9-]*$"))
                 throw new InvalidOperationException($"Invalid documentation module ID: {module.Id}");
             foreach (var file in module.Files)
+            {
+                DocumentMetadata.AssertFileName(file.Destination);
                 Own(file.Destination, $"module {module.Id}");
+            }
         }
         foreach (var skill in skills.Skills)
         {
@@ -733,6 +832,7 @@ static class DocsCli
             Own(skill.Destination, $"skill {skill.Id}");
         }
         Own("index.html", "site");
+        Own("llms.txt", "agent index");
 
         var byId = data.Profiles.ToDictionary(x => x.Id, StringComparer.Ordinal);
         foreach (var profile in data.Profiles)

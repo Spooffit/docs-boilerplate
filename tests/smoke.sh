@@ -22,6 +22,10 @@ assert set(config["GeneratedHashes"]) == set(config["GeneratedFiles"])
 assert all(len(value)==64 for value in config["GeneratedHashes"].values())
 PY
 [[ -f "$temp/minimal/docs/catalog.md" ]]
+[[ -f "$temp/minimal/llms.txt" ]]
+[[ -f "$temp/minimal/docs/standards/index.md" ]]
+[[ -f "$temp/minimal/docs/standards/dotnet/index.md" ]]
+grep -q "docs/standards/dotnet/index.md" "$temp/minimal/llms.txt"
 grep -q "dotnet/testing.md" "$temp/minimal/docs/catalog.md"
 [[ -f "$temp/minimal/docs/standards/dotnet/testing.md" ]]
 [[ -f "$temp/minimal/docs/templates/dotnet-backend-feature.md" ]]
@@ -106,6 +110,7 @@ run init --name Components --description 'UI component tests' --output "$temp/co
 run validate --output "$temp/components"
 [[ -f "$temp/components/docs/standards/blazor/bunit.md" ]]
 [[ -f "$temp/components/docs/standards/blazor/components.md" ]]
+[[ -f "$temp/components/docs/standards/blazor/index.md" ]]
 [[ -f "$temp/components/docs/templates/blazor-frontend-feature.md" ]]
 [[ -f "$temp/components/docs/standards/dotnet/project-files.md" ]]
 [[ ! -e "$temp/components/docs/standards/blazor/mudblazor.md" ]]
