@@ -24,3 +24,4 @@ These reports distinguish examined documentation from historical source material
 - [Root, navigation and milestones](root-milestone-screening.md)
 - [Versioned resource lifecycle extraction](versioned-lifecycle-review.md)
 - [Owner decisions deferred until engineering is complete](owner-decision-backlog.md)
+- [Seven placeholder removals and deletion checks](legacy-removals.md)

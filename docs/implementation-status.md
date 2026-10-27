@@ -24,7 +24,7 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 
 ## Known limitations
 
-- Every original inventory entry now has a structural disposition, but **full technical/semantic migration is not complete**. No historical file has been approved for deletion by this pass.
+- Every original inventory entry now has a structural disposition, but **full technical/semantic migration is not complete**. Only seven empty/placeholder files have been removed under a separate [documented cleanup](audit/legacy-removals.md); substantive historical specifications remain intact.
 - Focused no-extra-package .NET contract tests now cover profile resolution, navigation, metadata, hashes, safe paths and symlinks on Linux and Windows. A full dedicated testing-framework suite, property-based checks and detailed diagnostics remain outstanding.
 - Safe hash-based updates are implemented. Full three-way content merging is deliberately not attempted; concurrent author and template changes require manual resolution.
 - Markdown and frontmatter parsing are deliberately scoped; they do not fully verify Markdown anchors, every image/link dialect or arbitrary YAML syntax.

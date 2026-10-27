@@ -56,3 +56,7 @@ Do not ask for those choices during mechanical schema/test/inventory maintenance
 ## Completion of structural screening
 
 The inventory now has no unscreened entries, but `screened-structure` is explicitly **not** a completed content audit. The scope and result of the final 27-file pass are in [root and milestone screening](root-milestone-screening.md). Before cleanup, source owners must review substantive technical content, decide which examples merit retention, and satisfy each deletion gate above. Owner-dependent choices are collected in the [deferred decision backlog](owner-decision-backlog.md).
+
+## First actual cleanup
+
+Seven zero-value placeholders (an empty MCP file and six empty-directory README stubs) have been removed after their content was inspected. See [recorded removals](legacy-removals.md). The historical inventory retains their entries with state `removed-cleanup`, and CI checks explicit Markdown links to removed files. This does not change the retention policy for substantive source documents.
