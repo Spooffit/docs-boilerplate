@@ -53,3 +53,7 @@ These are potential destinations, not completed line-by-line equivalence proofs.
 
 The last passing baseline recorded **19** surviving technology standards; S10, S11 and S12 had respectively 6, 7 and 6 referring Markdown documents (including S10's own S11 reference). After complete source review, the remaining 18 incoming links were migrated to stable anchors of the consolidated .NET testing standard. The active count is now **16** historical standards if CI passes. This does not alter the original 24-standard baseline or certify the old project's test execution.
 
+
+## S15 shared test engineering source retired (2026-10-28)
+
+The reference graph reported four incoming documents for S15, with five recognized links. All were changed to `catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration` after full source review, before removal. **15** historical candidate-technology standards remain if the link gate and CI pass. The S14 environment standard is still retained due to its much wider incoming-link surface.

@@ -87,3 +87,9 @@ Both remaining original sources were inspected in full. S14 distinguishes physic
 S15 addresses reusable **technical** test fixtures, eventual-consistency polling, independent data, incremental migration of old test suites and truthful validation of what ran. Its portable contents are now in `catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration`. Its fixed BuildingBlocks location, exact test naming and specific toolchain are explicitly **not** made mandatory for all .NET projects.
 
 S14/S15 remain physically present until their incoming Markdown references and non-link mentions have been reconciled. This focused review is not execution of predecessor tests and does not authorize deletion without the link gate.
+
+## Completed S15 source migration (2026-10-28)
+
+The entire 6 KB test-engineering source was examined. Its fixture-sharing, async-polling, ownership, SUT-based migration and clean-run verification principles are now in `catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration`. The shared technical library is created only when reuse is justified; no prescribed BuildingBlocks directory, tester framework or universal naming shape is added.
+
+Five recognized links across four surviving documents, including two frontend S08 mentions, were updated to the exact section. The old source was retired under the deletion gate, and the inventory records `removed-cleanup`. The remaining S14 environment standard retains its independent review/removal gate.

@@ -26,7 +26,7 @@
 | S12 | [Functional tests](catalog/docs/standards/dotnet/testing.md#functional-tests) | — |
 | S13 | [E2E: .NET-стандарт и опциональный Aspire](catalog/docs/standards/dotnet/testing.md) | — |
 | S14 | [Окружения, изоляция и параллельность](technical/backend/standards/S14-test-environments.md) | — |
-| S15 | [Test engineering и проверка изменений](technical/backend/standards/S15-test-engineering.md) | — |
+| S15 | [Test engineering и проверка изменений](catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration) | — |
 | S16 | [REST: реализация HTTP API](technical/backend/standards/S16-rest.md) | — |
 | S17 | [Потоки данных и транспортные взаимодействия](technical/backend/standards/S17-data-flows.md) | — |
 | S18 | [FluentValidation и композиция правил](technical/backend/standards/S18-fluent-validation.md) | — |

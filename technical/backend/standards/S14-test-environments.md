@@ -81,4 +81,4 @@ Cleanup выполняется также после failed test. Созданн
 
 Проверяются самостоятельный и совместный запуск suites, параллельные изменения, отсутствие пересечения данных, реальное соблюдение лимитов и очистка после ошибок. Сбой одного environment не повреждает другой. Infrastructure tests не получают случайную зависимость от порядка выполнения.
 
-[Семантика тестов](S04-testing.md) · [Общие helpers и проверка миграции](S15-test-engineering.md).
+[Семантика тестов](S04-testing.md) · [Общие helpers и проверка миграции](../../../catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration).

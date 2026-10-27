@@ -136,7 +136,7 @@ technical/backend/standards/S11-integration-tests.md,candidate-technology-standa
 technical/backend/standards/S12-functional-tests.md,candidate-technology-standard,removed-cleanup,3512
 technical/backend/standards/S13-e2e-tests.md,candidate-technology-standard,removed-cleanup,3761
 technical/backend/standards/S14-test-environments.md,candidate-technology-standard,reviewed-targeted,8072
-technical/backend/standards/S15-test-engineering.md,candidate-technology-standard,reviewed-targeted,10076
+technical/backend/standards/S15-test-engineering.md,candidate-technology-standard,removed-cleanup,10076
 technical/backend/standards/S16-rest.md,candidate-technology-standard,reviewed-targeted,36346
 technical/backend/standards/S17-data-flows.md,candidate-technology-standard,reviewed-targeted,11944
 technical/backend/standards/S18-fluent-validation.md,candidate-technology-standard,reviewed-targeted,10001

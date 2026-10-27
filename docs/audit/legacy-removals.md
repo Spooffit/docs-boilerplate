@@ -67,3 +67,11 @@ This review does **not** authorize removal of any substantive feature, module, t
 - **Incoming references:** the previous CI graph counted S10: 6, S11: 7 (including S10), S12: 6 distinct referring documents. Eighteen references in surviving Markdown were redirected to the appropriate canonical testing heading, and S10's outgoing reference disappeared with the reviewed source. The deletion gate prohibits recognized links to the retired originals.
 - This documents source migration, not execution of the predecessor project's test suites. Historical copies remain in Git history. HTML/bare-text/dynamic references are outside automated link scanning and require manual review.
 
+
+## S15: shared test engineering and migration
+
+- Removed `technical/backend/standards/S15-test-engineering.md` after full source review. Shared **technical** fixtures and domain-specific builders remain distinct, async outcomes are awaited using observable conditions with bounded deadlines/cancellation, and suite migration must not silently skip tests or change production behavior.
+- Portable rules now live in [shared testing infrastructure and safe migration](../../catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration). Fixed BuildingBlocks placement, mandatory individual test naming, one specific runner or mandatory AppHost layout are **not universal**.
+- The last reference graph showed **four referring documents**. Five recognized Markdown links in `standards.md`, `S04-testing.md`, `S14-test-environments.md`, and `technical/frontend/standards/S08-testing.md` were redirected to the canonical section; S08 contained two separate links.
+- The historical source remains in normal Git history. This source migration is not a claim that the predecessor suite ran or that all its historical CI requirements remain active.
+
