@@ -7,7 +7,7 @@ status: active
 
 # Migration audits
 
-These reports distinguish examined documentation from historical source material. An inventory entry marked `pending` is not proof that the corresponding standard was migrated.
+These reports distinguish examined documentation from historical source material. Every original inventory entry has at least a structural disposition. `screened-structure` is not content-level review, `reviewed-targeted` is not a complete verification, and `removed-cleanup` records individually justified removals.
 
 - [Original baseline](2026-10-27.md)
 - [Full source inventory](legacy-inventory.csv)

@@ -53,7 +53,13 @@ Example:
 dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --description "Backend documentation" --output ./scratch/backend --profiles aspnet-mvc,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
 ```
 
-Additional optional profiles: `masstransit-rabbitmq`, `ardalis-specification`, and `bunit`. Selecting bUnit requires Blazor, but not MudBlazor. Selecting MassTransit with RabbitMQ does not imply a database or a particular outbox implementation. Each profile installs only its applicable standard.
+Additional optional profiles: `masstransit-rabbitmq`, `ardalis-specification`, `bunit`, `http-contracts`, `integration-reliability`, and `object-storage`. These last three are language-neutral and do not imply .NET, an ORM or a particular server. Selecting bUnit requires Blazor, but not MudBlazor. Selecting MassTransit with RabbitMQ does not imply a database or a particular outbox implementation. Each profile installs only its applicable standard.
+
+## Cross-platform HTTP and migration guidance
+
+For clients consuming public HTTP APIs without selecting any backend framework, use `--profiles http-contracts --modules api`. It generates contract verification and client retry/concurrency guidance but no ASP.NET or .NET documents.
+
+For PostgreSQL deployments, `--profiles postgresql` includes a migration rollout planning template at `docs/templates/postgresql-migration.md` alongside database standards. This does not install an ORM or select a release strategy. Confirm locks, data migration, compatibility and rollback for the actual deployed version before performing destructive changes.
 
 ## Catalog integrity
 

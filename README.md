@@ -31,7 +31,7 @@ Run `dotnet build src/DocsBoilerplate.Cli` and `bash tests/smoke.sh` before rely
 ## What it does
 
 - Generates Markdown documentation from a minimal portable base.
-- Includes only requested, available technology profiles and their prerequisites, with optional ASP.NET Core/MVC, PostgreSQL, FluentValidation, CQRS, MassTransit/RabbitMQ, Ardalis.Specification and bUnit standards.
+- Includes only requested, available technology profiles and their prerequisites, with opt-in ASP.NET Core/MVC, PostgreSQL, FluentValidation, CQRS, MassTransit/RabbitMQ, Ardalis.Specification, bUnit, HTTP client contracts, integration reliability and object-storage standards.
 - Lists planned, unavailable technologies explicitly.
 - Supports interactive prompts, non-interactive flags, selectable documentation modules and optional Agent Skills.
 - Offers a read-only dry run, preview-first updates with SHA-256 ownership checks, and refuses conflicting user edits.
@@ -39,7 +39,7 @@ Run `dotnet build src/DocsBoilerplate.Cli` and `bash tests/smoke.sh` before rely
 
 ## Current limitations
 
-This repository is undergoing a staged migration. The legacy content still requires technical review. The default human viewer is Docsify: one index.html and no site build. Generated repositories include llms.txt, standard frontmatter and directory indexes. Historical source review, comprehensive unit tests, formal manifest schemas and strong concurrent-filesystem guarantees remain incomplete. See [implementation status](docs/implementation-status.md).
+This repository is undergoing a staged migration. The legacy content still requires technical review. The default human viewer is Docsify: one index.html and no site build. Generated repositories include llms.txt, standard frontmatter and directory indexes. Historical source review, comprehensive framework-based test coverage and strong concurrent-filesystem guarantees remain incomplete; formal JSON Schemas and focused cross-platform tests are already present. See [implementation status](docs/implementation-status.md).
 
 ## Contributing
 
