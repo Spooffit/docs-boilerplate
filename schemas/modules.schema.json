@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Spooffit/docs-boilerplate/blob/main/schemas/modules.schema.json",
+  "title": "Docs Boilerplate modules manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "modules"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "files"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "files": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "source",
+                "destination"
+              ],
+              "properties": {
+                "source": {
+                  "type": "string",
+                  "pattern": "^modules/[a-z0-9]+(?:-[a-z0-9]+)*\\.md$"
+                },
+                "destination": {
+                  "type": "string",
+                  "pattern": "^docs/(?:[a-z0-9]+(?:-[a-z0-9]+)*/)*[a-z0-9]+(?:-[a-z0-9]+)*\\.md$"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -20,6 +20,13 @@ jobs:
         run: dotnet build src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release
       - name: Smoke-test generation and Docsify shell
         run: bash tests/smoke.sh
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Validate catalog and generated JSON Schema contracts
+        run: |
+          python -m pip install "jsonschema>=4.23,<5"
+          python tests/schema_contracts.py
       - name: Pack and install CLI as local .NET tool
         run: |
           dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release --output "$RUNNER_TEMP/packages"

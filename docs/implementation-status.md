@@ -26,7 +26,7 @@ status: active
 - Unit test suite, property-based checks and detailed diagnostics remain limited.
 - Safe hash-based updates are implemented. Full three-way content merging is deliberately not attempted; concurrent author and template changes require manual resolution.
 - Markdown and frontmatter parsing are deliberately scoped; they do not fully verify Markdown anchors, every image/link dialect or arbitrary YAML syntax.
-- Catalog preflight detects unknown or cyclic dependencies, case-insensitive destination collisions and reserved output paths. A formal JSON Schema and protection against concurrent hostile filesystem changes are still outstanding.
+- Catalog preflight detects unknown/cyclic dependencies and case-insensitive destination collisions. Formal JSON Schemas now specify the catalogs and generated configuration, with schema-level checks in CI; the CLI itself still uses the built-in validation and full hostile-concurrent-filesystem safety remains outstanding.
 - No automated publication or browser-based editing workflow; Docsify is only a browser-side reader.
 - The Docsify browser view depends on CDN availability and a local/static HTTP server; full headless-browser interaction tests remain outstanding.
 
