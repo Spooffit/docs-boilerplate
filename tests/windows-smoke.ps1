@@ -21,7 +21,7 @@ try {
     Invoke-Docs list
 
     $target = Join-Path $root 'generated'
-    Invoke-Docs init --name WindowsSmoke --description 'Windows documentation check' --output $target --profiles dotnet,blazor,mudblazor --site docsify --non-interactive
+    Invoke-Docs init --name WindowsSmoke --description 'Windows documentation check' --output $target --profiles "dotnet,blazor,mudblazor" --site docsify --non-interactive
     Invoke-Docs validate --output $target
     if (-not (Test-Path (Join-Path $target 'index.html'))) { throw 'Missing viewer' }
     if (-not (Test-Path (Join-Path $target 'llms.txt'))) { throw 'Missing agent index' }
