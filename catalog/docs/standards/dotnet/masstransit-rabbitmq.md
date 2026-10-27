@@ -1,3 +1,10 @@
+---
+title: "MassTransit and RabbitMQ messaging"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # MassTransit and RabbitMQ messaging
 
 **Applies to:** .NET applications that deliberately select MassTransit with the RabbitMQ transport. Neither the broker nor this topology is required by .NET or CQRS.

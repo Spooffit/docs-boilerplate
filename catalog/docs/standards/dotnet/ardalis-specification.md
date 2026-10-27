@@ -1,3 +1,10 @@
+---
+title: "Ardalis.Specification conventions"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # Ardalis.Specification conventions
 
 **Applies to:** .NET applications that explicitly select the Ardalis.Specification library for composable query intent.

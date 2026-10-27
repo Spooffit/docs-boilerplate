@@ -1,3 +1,10 @@
+---
+title: "HTTP validation, authorization and error handling"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # HTTP validation, authorization and error handling
 
 **Applies to:** ASP.NET Core HTTP applications.

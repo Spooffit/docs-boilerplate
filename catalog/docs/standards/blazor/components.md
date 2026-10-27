@@ -1,3 +1,10 @@
+---
+title: "Blazor component and UI state guidance"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # Blazor component and UI state guidance
 
 **Applies to:** projects explicitly using Blazor (interactive server, WebAssembly, hybrid or static SSR as actually selected).

@@ -1,3 +1,10 @@
+---
+title: ".NET conventions"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # .NET conventions
 
 **Applies to:** projects using C# and .NET.

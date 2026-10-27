@@ -1,3 +1,10 @@
+---
+title: "FluentValidation conventions"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # FluentValidation conventions
 
 **Applies to:** .NET applications that select FluentValidation. It is **not** mandatory for every .NET project.

@@ -1,3 +1,10 @@
+---
+title: "bUnit component testing"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # bUnit component testing
 
 **Applies to:** Blazor projects that deliberately use bUnit. This profile selects a test library, not a particular rendering mode or production UI component framework.

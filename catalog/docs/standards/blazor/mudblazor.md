@@ -1,3 +1,10 @@
+---
+title: "MudBlazor component library conventions"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # MudBlazor component library conventions
 
 **Applies to:** Blazor applications that explicitly use MudBlazor. Selecting MudBlazor requires Blazor; it does not imply a particular hosting model.

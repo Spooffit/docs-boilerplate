@@ -1,3 +1,10 @@
+---
+title: "ASP.NET Core MVC controller conventions"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # ASP.NET Core MVC controller conventions
 
 **Applies to:** projects that explicitly choose MVC controllers for their HTTP APIs, rather than assuming all ASP.NET Core services use MVC.

@@ -1,3 +1,10 @@
+---
+title: "Dapper data access"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # Dapper data access
 
 **Applies to:** .NET projects that deliberately select Dapper. Dapper is a lightweight object mapper; it does not supply full schema migration or ORM tracking behavior.

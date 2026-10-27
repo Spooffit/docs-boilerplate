@@ -1,3 +1,10 @@
+---
+title: "ASP.NET Core HTTP API design"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # ASP.NET Core HTTP API design
 
 **Applies to:** ASP.NET Core applications exposing HTTP APIs. Covers both MVC controllers and Minimal APIs. A separate MVC profile specifies controller-only conventions.

@@ -1,3 +1,10 @@
+---
+title: "Entity Framework Core persistence"
+description: "Technology-scoped engineering standard"
+kind: standard
+status: active
+---
+
 # Entity Framework Core persistence
 
 **Applies to:** .NET projects that deliberately select EF Core. The target database is a separate choice; selecting EF Core does not imply PostgreSQL.
