@@ -13,6 +13,14 @@ run list
 # A genuinely minimal repo must not contain dangling links to optional modules.
 run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
 run validate --output "$temp/minimal"
+python3 - "$temp/minimal/docs.config.json" <<'PY'
+import json,sys
+with open(sys.argv[1],encoding="utf-8") as stream:
+    config=json.load(stream)
+assert len(config["GeneratedHashes"]) == len(config["GeneratedFiles"])
+assert set(config["GeneratedHashes"]) == set(config["GeneratedFiles"])
+assert all(len(value)==64 for value in config["GeneratedHashes"].values())
+PY
 [[ -f "$temp/minimal/docs/catalog.md" ]]
 grep -q "dotnet/testing.md" "$temp/minimal/docs/catalog.md"
 [[ -f "$temp/minimal/docs/standards/dotnet/testing.md" ]]

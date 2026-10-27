@@ -159,39 +159,10 @@ static class DocsCli
                 .AddChoices("none", "zensical")));
         if (site is not ("none" or "zensical"))
             throw new InvalidOperationException($"Unknown documentation site: {site}");
-        var expected = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var full in SafeFiles.Enumerate(Path.Combine(catalog, "base")))
-        {
-            var relative = Path.GetRelativePath(Path.Combine(catalog, "base"), full).Replace('\\', '/');
-            Add(relative, (await File.ReadAllTextAsync(full))
-                .Replace("{{PROJECT_NAME}}", name, StringComparison.Ordinal)
-                .Replace("{{PROJECT_DESCRIPTION}}", description, StringComparison.Ordinal));
-        }
-        foreach (var id in ids)
-        {
-            var profile = available.Profiles.Single(x => x.Id == id);
-            foreach (var path in profile.Files)
-                Add(path, await File.ReadAllTextAsync(SafePath(catalog, path)));
-        }
-        foreach (var id in skillIds)
-        {
-            var skill = skillCatalog.Skills.Single(x => x.Id == id);
-            Add(skill.Destination, await File.ReadAllTextAsync(SafePath(catalog, skill.Source)));
-        }
-        foreach (var id in moduleIds)
-        {
-            var module = moduleCatalog.Modules.Single(x => x.Id == id);
-            foreach (var file in module.Files)
-                Add(file.Destination, await File.ReadAllTextAsync(SafePath(catalog, file.Source)));
-        }
-        if (site == "zensical")
-            Add("zensical.toml", (await File.ReadAllTextAsync(SafePath(catalog, "sites/zensical.toml")))
-                .Replace("{{PROJECT_NAME_TOML}}", JsonSerializer.Serialize(name), StringComparison.Ordinal));
-        Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available));
-        var config = new ProjectConfig(name, description, ids.Order(StringComparer.Ordinal).ToArray(),
-            skillIds.Order(StringComparer.Ordinal).ToArray(), moduleIds.Order(StringComparer.Ordinal).ToArray(),
-            site, expected.Keys.Order(StringComparer.Ordinal).ToArray());
-        Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
+        var expected = await RenderAsync(catalog, available, skillCatalog, moduleCatalog,
+            name, description, output, ids, skillIds, moduleIds, site);
+        var config = BuildConfig(name, description, ids, skillIds, moduleIds, site, expected);
+        expected.Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
         SafeFiles.AssertNoLinks(output);
         if (Directory.Exists(output))
             _ = SafeFiles.Enumerate(output).ToArray(); // Refuse links anywhere in an existing destination.
@@ -233,6 +204,44 @@ static class DocsCli
         }
         AnsiConsole.MarkupLine("[green]Generated.[/] Run validate to check the result.");
         return 0;
+
+    }
+
+    private static async Task<Dictionary<string, string>> RenderAsync(
+        string catalog, Catalog available, SkillCatalog skillCatalog, ModuleCatalog moduleCatalog,
+        string name, string description, string output, HashSet<string> ids,
+        HashSet<string> skillIds, HashSet<string> moduleIds, string site)
+    {
+        var expected = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var full in SafeFiles.Enumerate(Path.Combine(catalog, "base")))
+        {
+            var relative = Path.GetRelativePath(Path.Combine(catalog, "base"), full).Replace('\\', '/');
+            Add(relative, (await File.ReadAllTextAsync(full))
+                .Replace("{{PROJECT_NAME}}", name, StringComparison.Ordinal)
+                .Replace("{{PROJECT_DESCRIPTION}}", description, StringComparison.Ordinal));
+        }
+        foreach (var id in ids)
+        {
+            var profile = available.Profiles.Single(x => x.Id == id);
+            foreach (var path in profile.Files)
+                Add(path, await File.ReadAllTextAsync(SafePath(catalog, path)));
+        }
+        foreach (var id in skillIds)
+        {
+            var skill = skillCatalog.Skills.Single(x => x.Id == id);
+            Add(skill.Destination, await File.ReadAllTextAsync(SafePath(catalog, skill.Source)));
+        }
+        foreach (var id in moduleIds)
+        {
+            var module = moduleCatalog.Modules.Single(x => x.Id == id);
+            foreach (var file in module.Files)
+                Add(file.Destination, await File.ReadAllTextAsync(SafePath(catalog, file.Source)));
+        }
+        if (site == "zensical")
+            Add("zensical.toml", (await File.ReadAllTextAsync(SafePath(catalog, "sites/zensical.toml")))
+                .Replace("{{PROJECT_NAME_TOML}}", JsonSerializer.Serialize(name), StringComparison.Ordinal));
+        Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available));
+        return expected;
         void Add(string path, string value)
         {
             SafePath(output, path);
@@ -240,6 +249,22 @@ static class DocsCli
                 throw new InvalidOperationException($"Conflicting output file: {path}");
         }
     }
+
+    private static ProjectConfig BuildConfig(
+        string name, string description, IEnumerable<string> ids, IEnumerable<string> skills,
+        IEnumerable<string> modules, string site, Dictionary<string, string> content)
+    {
+        var hashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var (path, value) in content.OrderBy(x => x.Key, StringComparer.Ordinal))
+            hashes.Add(path, Hash(value));
+        return new ProjectConfig(name, description,
+            ids.Order(StringComparer.Ordinal).ToArray(), skills.Order(StringComparer.Ordinal).ToArray(),
+            modules.Order(StringComparer.Ordinal).ToArray(), site,
+            content.Keys.Order(StringComparer.Ordinal).ToArray(), hashes);
+    }
+
+    private static string Hash(string content) =>
+        Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(content))).ToLowerInvariant();
 
     private static string BuildDocumentCatalog(Dictionary<string, string> files, IEnumerable<string> selected, Catalog profiles)
     {
@@ -575,5 +600,5 @@ static class DocsCli
     private sealed record ModuleCatalog(int SchemaVersion, Module[] Modules);
     private sealed record Module(string Id, string Name, ModuleFile[] Files);
     private sealed record ModuleFile(string Source, string Destination);
-    private sealed record ProjectConfig(string Name, string Description, string[] Profiles, string[] Skills, string[] Modules, string Site, string[] GeneratedFiles);
+    private sealed record ProjectConfig(string Name, string Description, string[] Profiles, string[] Skills, string[] Modules, string Site, string[] GeneratedFiles, Dictionary<string, string>? GeneratedHashes = null);
 }
