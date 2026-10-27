@@ -1,0 +1,10 @@
+[project]
+site_name = {{PROJECT_NAME_TOML}}
+docs_dir = "docs"
+site_dir = "site"
+use_directory_urls = true
+
+[project.markdown_extensions]
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]

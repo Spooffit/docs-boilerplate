@@ -51,7 +51,7 @@ static class DocsCli
                     return 0;
                 default:
                     AnsiConsole.WriteLine("Commands: init, list, validate, doctor");
-                    AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--modules glossary,testing] [--dry-run] [--non-interactive] [--catalog PATH]");
+                    AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--modules glossary,testing] [--site zensical] [--dry-run] [--non-interactive] [--catalog PATH]");
                     AnsiConsole.WriteLine("validate: --output PATH [--catalog PATH]");
                     return command == "help" ? 0 : 2;
             }
@@ -102,6 +102,12 @@ static class DocsCli
                 : AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title("Additional documentation modules:")
                     .AddChoices(moduleCatalog.Modules.Select(x => x.Id))).ToArray();
         var moduleIds = ResolveModules(requestedModules, moduleCatalog);
+        var site = args.GetValueOrDefault("site") ?? (unattended || Console.IsInputRedirected
+            ? "none"
+            : AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Documentation site:")
+                .AddChoices("none", "zensical")));
+        if (site is not ("none" or "zensical"))
+            throw new InvalidOperationException($"Unknown documentation site: {site}");
         var expected = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var full in Directory.GetFiles(Path.Combine(catalog, "base"), "*", SearchOption.AllDirectories))
         {
@@ -127,9 +133,12 @@ static class DocsCli
             foreach (var file in module.Files)
                 Add(file.Destination, await File.ReadAllTextAsync(SafePath(catalog, file.Source)));
         }
+        if (site == "zensical")
+            Add("zensical.toml", (await File.ReadAllTextAsync(SafePath(catalog, "sites/zensical.toml")))
+                .Replace("{{PROJECT_NAME_TOML}}", JsonSerializer.Serialize(name), StringComparison.Ordinal));
         var config = new ProjectConfig(name, description, ids.Order(StringComparer.Ordinal).ToArray(),
             skillIds.Order(StringComparer.Ordinal).ToArray(), moduleIds.Order(StringComparer.Ordinal).ToArray(),
-            expected.Keys.Order(StringComparer.Ordinal).ToArray());
+            site, expected.Keys.Order(StringComparer.Ordinal).ToArray());
         Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
         var existing = Directory.Exists(output) ? Directory.GetFileSystemEntries(output) : [];
         if (existing.Length > 0)
@@ -205,6 +214,8 @@ static class DocsCli
         var moduleIds = ResolveModules(config.Modules, modules);
         if (moduleIds.Count != config.Modules.Length)
             throw new IOException("Duplicate documentation module IDs.");
+        if (config.Site is not ("none" or "zensical"))
+            throw new IOException($"Unknown site configuration: {config.Site}");
         var errors = new List<string>();
         var required = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var path in Directory.GetFiles(Path.Combine(catalog, "base"), "*", SearchOption.AllDirectories))
@@ -224,6 +235,9 @@ static class DocsCli
                 if (!required.Add(file.Destination))
                     errors.Add($"Duplicate module output path: {file.Destination}");
         }
+        if (config.Site == "zensical")
+            if (!required.Add("zensical.toml"))
+                errors.Add("Duplicate site configuration path: zensical.toml");
         var declared = new HashSet<string>(config.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
         if (declared.Count != config.GeneratedFiles.Length || !declared.SetEquals(required))
             errors.Add("GeneratedFiles manifest does not match selected profiles, base documents and skills.");
@@ -383,5 +397,5 @@ static class DocsCli
     private sealed record ModuleCatalog(int SchemaVersion, Module[] Modules);
     private sealed record Module(string Id, string Name, ModuleFile[] Files);
     private sealed record ModuleFile(string Source, string Destination);
-    private sealed record ProjectConfig(string Name, string Description, string[] Profiles, string[] Skills, string[] Modules, string[] GeneratedFiles);
+    private sealed record ProjectConfig(string Name, string Description, string[] Profiles, string[] Skills, string[] Modules, string Site, string[] GeneratedFiles);
 }

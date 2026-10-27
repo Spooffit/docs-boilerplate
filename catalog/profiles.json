@@ -7,8 +7,8 @@
       "status": "available",
       "requires": [],
       "files": [
-        "standards/dotnet/conventions.md",
-        "standards/dotnet/testing.md"
+        "docs/standards/dotnet/conventions.md",
+        "docs/standards/dotnet/testing.md"
       ]
     },
     {
@@ -19,7 +19,7 @@
         "dotnet"
       ],
       "files": [
-        "standards/dotnet/ef-core.md"
+        "docs/standards/dotnet/ef-core.md"
       ]
     },
     {
@@ -30,7 +30,7 @@
         "dotnet"
       ],
       "files": [
-        "standards/dotnet/dapper.md"
+        "docs/standards/dotnet/dapper.md"
       ]
     },
     {
@@ -41,7 +41,7 @@
         "dotnet"
       ],
       "files": [
-        "standards/blazor/components.md"
+        "docs/standards/blazor/components.md"
       ]
     },
     {
@@ -52,7 +52,7 @@
         "blazor"
       ],
       "files": [
-        "standards/blazor/mudblazor.md"
+        "docs/standards/blazor/mudblazor.md"
       ]
     },
     {
@@ -61,7 +61,7 @@
       "status": "available",
       "requires": [],
       "files": [
-        "standards/architecture/modular-monolith.md"
+        "docs/standards/architecture/modular-monolith.md"
       ]
     },
     {
@@ -70,7 +70,7 @@
       "status": "available",
       "requires": [],
       "files": [
-        "standards/architecture/ddd.md"
+        "docs/standards/architecture/ddd.md"
       ]
     },
     {

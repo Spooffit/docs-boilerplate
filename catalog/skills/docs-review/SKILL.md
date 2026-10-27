@@ -12,4 +12,4 @@ description: Review repository documentation for link integrity, duplication, co
 5. Run the repository's documentation validator if available. Do not claim a successful check without its output.
 6. Recommend or apply minimal consistent changes; preserve human-authored decisions.
 
-Normative rules remain in `standards/`; this skill is only a workflow.
+Normative rules remain in `docs/standards/`; this skill is only a workflow.
