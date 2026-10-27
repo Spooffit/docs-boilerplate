@@ -58,3 +58,12 @@ This review does **not** authorize removal of any substantive feature, module, t
 - This removal neither rewrites the historical application's tests nor validates its AppHost code. The incoming-link gate must pass, and the originals remain accessible in normal Git history.
 
 - Follow-up reference fix: `technical/frontend/standards/S08-testing.md` also linked to the former S13. The full-repository CI deletion guard caught it; the link and associated E2E classification text now point to the general .NET testing standard. This was a real failing safety check, not a passing review assumption.
+
+## S10/S11/S12: unit, integration and functional testing
+
+- Removed `technical/backend/standards/S10-unit-tests.md` after whole-file review. Its isolated SUT, test-double limits, independent data and fast parallel execution remain in [Unit tests](../../catalog/docs/standards/dotnet/testing.md#unit-tests). The exact `MethodUnderTest_Scenario_ExpectedBehavior` name shape is conditional on project agreement, not globally mandatory.
+- Removed `technical/backend/standards/S11-integration-tests.md` after whole-file review. Real-provider SQL/database/broker verification, technical white/gray-box assertions and isolation remain in [Integration tests](../../catalog/docs/standards/dotnet/testing.md#integration-tests). Broker routing and error topology are now named explicitly. Testcontainers is opt-in, not an inherent .NET requirement.
+- Removed `technical/backend/standards/S12-functional-tests.md` after whole-file review. The one-deployable-app SUT, public HTTP/gRPC interface, observable result, optional `WebApplicationFactory` and bounded asynchronous waiting remain in [Functional tests](../../catalog/docs/standards/dotnet/testing.md#functional-tests). ASP.NET Core, PostgreSQL and RabbitMQ are not required of every project.
+- **Incoming references:** the previous CI graph counted S10: 6, S11: 7 (including S10), S12: 6 distinct referring documents. Eighteen references in surviving Markdown were redirected to the appropriate canonical testing heading, and S10's outgoing reference disappeared with the reviewed source. The deletion gate prohibits recognized links to the retired originals.
+- This documents source migration, not execution of the predecessor project's test suites. Historical copies remain in Git history. HTML/bare-text/dynamic references are outside automated link scanning and require manual review.
+

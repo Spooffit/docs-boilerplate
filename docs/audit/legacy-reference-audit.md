@@ -48,3 +48,8 @@ These are potential destinations, not completed line-by-line equivalence proofs.
 5. Record each path and evidence in the removal ledger, update inventory only when physically removed, then pass CI.
 
 **No substantive source is approved for deletion by this report.** Git history preserves removed file content, but broken links in current documents must still be repaired.
+
+## Further measured test-standard retirement (2026-10-28)
+
+The last passing baseline recorded **19** surviving technology standards; S10, S11 and S12 had respectively 6, 7 and 6 referring Markdown documents (including S10's own S11 reference). After complete source review, the remaining 18 incoming links were migrated to stable anchors of the consolidated .NET testing standard. The active count is now **16** historical standards if CI passes. This does not alter the original 24-standard baseline or certify the old project's test execution.
+

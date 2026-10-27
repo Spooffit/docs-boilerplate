@@ -54,4 +54,4 @@ Unit-тесты проверяют атомарные правила и итог
 
 Проверяются асинхронное выполнение и cancellation, отсутствие побочных эффектов и фактический запуск корневого валидатора на внешнем пути. Корректность внешней зависимости и конкурентных ограничений проверяется соответствующими интеграционными тестами.
 
-[Ошибки](S03-validation-and-errors.md) · [Unit tests](S10-unit-tests.md) · [Functional tests](S12-functional-tests.md).
+[Ошибки](S03-validation-and-errors.md) · [Unit tests](../../../catalog/docs/standards/dotnet/testing.md#unit-tests) · [Functional tests](../../../catalog/docs/standards/dotnet/testing.md#functional-tests).

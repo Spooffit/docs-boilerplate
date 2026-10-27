@@ -288,4 +288,4 @@ builder.Navigation(x => x.Sender)
 
 Не требуется писать генератор валидаторов, reflection-based mapping или универсальный движок ограничений. Явного дерева постоянных определений, небольших проверок и обычной EF-конфигурации достаточно.
 
-[Валидация моделей](S18-fluent-validation.md) · [Валидация и ошибки](S03-validation-and-errors.md) · [Хранение](S02-persistence.md) · [Unit tests](S10-unit-tests.md) · [Integration tests](S11-integration-tests.md).
+[Валидация моделей](S18-fluent-validation.md) · [Валидация и ошибки](S03-validation-and-errors.md) · [Хранение](S02-persistence.md) · [Unit tests](../../../catalog/docs/standards/dotnet/testing.md#unit-tests) · [Integration tests](../../../catalog/docs/standards/dotnet/testing.md#integration-tests).

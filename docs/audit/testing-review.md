@@ -72,3 +72,10 @@ The remaining original unit, integration and functional testing standards were r
 The three original sources remain in the historical tree at this stage. Their incoming references from S04, S11/S12, the old catalog and possibly other legacy documents must be rechecked and rewritten before deletion. The new guidance is a reusable interpretation, **not** a claim that code/tests from the predecessor repository were verified.
 
 The proposed next cleanup is to migrate live incoming references to the new scope and remove S10–S12 only after the link-graph deletion gate reports no remaining references and the source-specific decision is recorded in the removal ledger.
+
+## Completed S10/S11/S12 source migration (2026-10-28)
+
+All three complete source files were compared with the consolidated .NET testing standard. The distinct claims of **isolated unit rules**, **real-provider integration behavior** and **one application's public functional behavior** have dedicated, stable headings `#unit-tests`, `#integration-tests` and `#functional-tests` under `catalog/docs/standards/dotnet/testing.md`.
+
+All recognized references from surviving Markdown (S10: 6, S11: 6, S12: 6) were migrated to exact sections, not just the document root. The older source's unconditional Testcontainers/WebApplicationFactory choices and exact naming convention remain **optional** where appropriate, not global requirements. The three sources are marked `removed-cleanup`. Their previous tests were not rerun or certified here.
+

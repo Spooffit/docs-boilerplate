@@ -30,4 +30,4 @@
 
 Проверяйте не только длину значения, но и допустимый алфавит и другие ограничения его типа. Нормализация должна быть определена явно и одинаково применяться участниками взаимодействия.
 
-[Unit tests](S10-unit-tests.md) · [Functional tests](S12-functional-tests.md).
+[Unit tests](../../../catalog/docs/standards/dotnet/testing.md#unit-tests) · [Functional tests](../../../catalog/docs/standards/dotnet/testing.md#functional-tests).

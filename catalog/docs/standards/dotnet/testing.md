@@ -82,7 +82,7 @@ For eventual outcomes, use a bounded deadline, observable condition, meaningful 
 
 These three boundaries can use similar code and still **prove different claims**. Do not classify them only by whether a test happens to use HTTP or a mock.
 
-### Unit: isolated decision and component behavior
+### Unit tests
 
 Use an isolated component or a small set of interacting rules as the SUT. Domain value objects, business policies, validators and application handlers with controlled substitutes can qualify. Avoid real databases, brokers, containers and other external infrastructure in this category.
 
@@ -90,21 +90,25 @@ Tests should establish their own input and expectations, run independently and o
 
 Avoid a universal naming mandate imported from another repository. If the team adopts `MethodUnderTest_Scenario_ExpectedBehavior`, use it consistently for the adopted suite. For tests of a workflow rather than one method, an operation or rule name is more informative than an implementation-private method name.
 
-### Integration: concrete technical adapters and their real dependencies
+### Integration tests
 
 Use the actual provider where correctness depends on its behavior. PostgreSQL constraints, EF Core/Dapper SQL, broker serialization, routing/topology, object-store metadata and network failure handling are not validated by substituting an in-memory implementation.
+
+When the actual SUT is a message broker integration, verify the chosen serialization, routing keys, exchange/queue bindings and delivery outcome against the real broker. Test retry and error/dead-letter behavior when they are contractual. A mocked consumer alone does not establish real transport delivery.
 
 Integration tests may deliberately observe technical internals: inspect SQL rows, schema metadata, queues, exchanges, delivery headers or adapter state when these **are the integration boundary under test**. This is not permission to expose those internals through a public API. Start only the dependencies needed by the adapter: testing one repository does not require the full distributed application graph.
 
 Where a disposable dependency is required, select an appropriate provisioner such as the independently chosen Testcontainers profile, then isolate resource names and mutable data. The particular container library, image, broker or ORM is not implied by .NET alone. Failed mandatory dependency startup is an actual failed verification, not a silent `Skipped` success.
 
-### Functional: one deployable application's public behavior
+### Functional tests
 
 Exercise the real external interface of one application and verify a consumer-observable outcome. For an ASP.NET Core API, a project may use `WebApplicationFactory` to run that application with realistic dependencies; the factory itself does not implement PostgreSQL, broker or storage services.
 
 Do not replace a public HTTP request with a direct handler invocation and still claim request binding, filters, authorization and serialization were tested. Prefer observable outcomes over assertions on internal handler invocation counts. Limited database inspection can be a deliberate diagnostic or necessary assertion when no suitable public observation exists; document that exception rather than turning functional tests into adapter tests.
 
 Prepare and clean up test data independently from integration and end-to-end suites. Wait for async outcomes using bounded, meaningful conditions rather than fixed sleeps. A single application can contain several modules or bounded contexts without automatically making its functional test a distributed E2E test.
+
+Treat the chosen `WebApplicationFactory` host as one application's in-process public boundary, not proof of reverse-proxy routing or live multi-service deployment. For asynchronous functional outcomes, assert an observable condition with a bounded deadline, cancellation and meaningful timeout diagnostics instead of relying on an arbitrary delay.
 
 ## 5. Test selection and CI execution
 

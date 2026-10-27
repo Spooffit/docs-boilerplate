@@ -787,4 +787,4 @@ Route constraint выбирает маршрут, но не заменяет mod
 [HTTP Semantics, RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html), разделы 9.2, 13.1.1, 15.3 и 15.5.13; [маршрутизация ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing); [ASP.NET Core Web API](https://learn.microsoft.com/en-us/aspnet/core/web-api/).
 ## 25. Проверка соблюдения
 Проверяются совпадение метода и маршрута с OpenAPI, источники route/query/body/header, преобразование result, точный response type и status, отсутствующие и неверные входы, доступ, optimistic concurrency, cancellation и отсутствие прикладной логики в controller. Модель ошибки проверяется не только для handler, но и на уровне HTTP pipeline. Тесты не фиксируют невыбранный контракт как действующий.
-[Потоки данных](S17-data-flows.md) · [Валидация и ошибки](S03-validation-and-errors.md) · [Functional tests](S12-functional-tests.md).
+[Потоки данных](S17-data-flows.md) · [Валидация и ошибки](S03-validation-and-errors.md) · [Functional tests](../../../catalog/docs/standards/dotnet/testing.md#functional-tests).
