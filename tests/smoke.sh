@@ -208,6 +208,58 @@ if run doctor --catalog "$temp/catalog-cycle"; then
 fi
 
 
+# Frontmatter, kebab-case and folder indexes are enforced on authored documents too.
+cp -a "$temp/minimal" "$temp/invalid-frontmatter"
+printf '# Missing metadata\n' > "$temp/invalid-frontmatter/docs/project/overview.md"
+if run validate --output "$temp/invalid-frontmatter"; then
+    echo "Missing YAML frontmatter was accepted"; exit 1
+fi
+
+cp -a "$temp/minimal" "$temp/invalid-name"
+cp "$temp/invalid-name/docs/project/overview.md" "$temp/invalid-name/docs/project/Bad_Name.md"
+if run validate --output "$temp/invalid-name"; then
+    echo "Non-kebab-case Markdown filename was accepted"; exit 1
+fi
+
+cp -a "$temp/minimal" "$temp/invalid-index"
+rm "$temp/invalid-index/docs/standards/index.md"
+if run validate --output "$temp/invalid-index"; then
+    echo "Missing directory index.md was accepted"; exit 1
+fi
+
+cp -a "$temp/minimal" "$temp/invalid-llms"
+sed -i 's|docs/standards/dotnet/index.md|docs/standards/non-existent.md|' "$temp/invalid-llms/llms.txt"
+if run validate --output "$temp/invalid-llms"; then
+    echo "Broken llms.txt reference was accepted"; exit 1
+fi
+
+# Docsify is checked through actual static HTTP delivery, not a fake static HTML build.
+python3 - "$temp/minimal" <<'PY'
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from threading import Thread
+from urllib.request import urlopen
+import sys
+
+handler = partial(SimpleHTTPRequestHandler, directory=sys.argv[1])
+httpd = ThreadingHTTPServer(("127.0.0.1", 0), handler)
+thread = Thread(target=httpd.serve_forever, daemon=True)
+thread.start()
+try:
+    root = f"http://127.0.0.1:{httpd.server_port}"
+    shell = urlopen(root + "/index.html").read().decode()
+    assert 'basePath: "docs/"' in shell
+    assert 'homepage: "index.md"' in shell
+    assert "docsify@" in shell
+    assert "# Minimal" in urlopen(root + "/docs/index.md").read().decode()
+    assert "# Minimal" in urlopen(root + "/llms.txt").read().decode()
+finally:
+    httpd.shutdown()
+    thread.join(timeout=5)
+    httpd.server_close()
+PY
+
+
 # A manifest missing owned files must be rejected.
 cp "$temp/project/docs.config.json" "$temp/original.json"
 python3 - "$temp/project/docs.config.json" <<'PY'

@@ -680,6 +680,36 @@ static class DocsCli
                 }
             }
         }
+        var llmsPath = SafePath(output, "llms.txt");
+        if (File.Exists(llmsPath))
+        {
+            var llms = await File.ReadAllTextAsync(llmsPath);
+            if (!llms.StartsWith("# ", StringComparison.Ordinal)
+                || !llms.Contains("\n## ", StringComparison.Ordinal))
+                errors.Add("llms.txt must contain a project H1 and curated H2 link sections.");
+            foreach (System.Text.RegularExpressions.Match match in System.Text.RegularExpressions.Regex.Matches(
+                llms, @"\[[^\]\r\n]+\]\((?<target>[^)\r\n]+)\)"))
+            {
+                var targetText = match.Groups["target"].Value;
+                if (Uri.TryCreate(targetText, UriKind.Absolute, out var absoluteUri))
+                {
+                    if (absoluteUri.Scheme is not ("http" or "https"))
+                        errors.Add($"Unsupported llms.txt link scheme: {targetText}");
+                    continue;
+                }
+                try
+                {
+                    var target = SafePath(output, Uri.UnescapeDataString(targetText));
+                    if (!File.Exists(target))
+                        errors.Add($"Broken llms.txt link: {targetText}");
+                }
+                catch (IOException)
+                {
+                    errors.Add($"Invalid llms.txt link: {targetText}");
+                }
+            }
+        }
+
         foreach (var error in errors)
             AnsiConsole.MarkupLine($"[red]ERROR[/] {Markup.Escape(error)}");
         if (errors.Count > 0) return 1;

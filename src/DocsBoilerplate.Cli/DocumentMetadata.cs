@@ -25,6 +25,8 @@ internal static class DocumentMetadata
         AssertFileName(path);
         if (IsValid(content, filename == "SKILL.md"))
             return content;
+        if (content.StartsWith("---\n", StringComparison.Ordinal))
+            throw new InvalidOperationException($"Malformed Markdown frontmatter: {path}");
         if (filename == "SKILL.md")
             throw new InvalidOperationException($"Invalid agent skill frontmatter: {path}");
         var title = content.Split('\n').FirstOrDefault(line => line.StartsWith("# ", StringComparison.Ordinal))?[2..].Trim()
