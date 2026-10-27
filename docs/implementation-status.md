@@ -20,6 +20,8 @@ status: active
 - A CLI validator for generated-file manifests, unresolved initialization placeholders, basic local Markdown links, kebab-case filenames, YAML frontmatter, folder indexes and llms.txt references.
 - GitHub Actions build and end-to-end smoke suite (including Docsify-shell checks, local .NET Tool installation and Windows CLI smoke tests).
 
+The generator's source is split by responsibility; see [the CLI code map](architecture/generator-components.md).
+
 ## Known limitations
 
 - Full historical documentation has **not** been migrated or technically audited file-by-file.
