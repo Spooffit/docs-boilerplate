@@ -251,7 +251,8 @@ static class DocsCli
         void Add(string path, string value)
         {
             SafePath(output, path);
-            if (!expected.TryAdd(path, value))
+            var prepared = DocumentMetadata.Prepare(path, value);
+            if (!expected.TryAdd(path, prepared))
                 throw new InvalidOperationException($"Conflicting output file: {path}");
         }
     }

@@ -17,6 +17,26 @@ internal static class DocumentMetadata
             throw new InvalidOperationException($"Expected kebab-case Markdown filename: {path}");
     }
 
+    public static string Prepare(string path, string content)
+    {
+        if (!path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            return content;
+        var filename = Path.GetFileName(path);
+        AssertFileName(path);
+        if (IsValid(content, filename == "SKILL.md"))
+            return content;
+        if (filename == "SKILL.md")
+            throw new InvalidOperationException($"Invalid agent skill frontmatter: {path}");
+        var title = content.Split('\n').FirstOrDefault(line => line.StartsWith("# ", StringComparison.Ordinal))?[2..].Trim()
+            ?? Path.GetFileNameWithoutExtension(path);
+        var kind = path.Contains("/templates/", StringComparison.Ordinal) ? "template"
+            : path.Contains("/standards/", StringComparison.Ordinal) ? "standard"
+            : filename == "index.md" ? "index"
+            : path.Contains("/project/", StringComparison.Ordinal) ? "project" : "guide";
+        var status = kind == "template" ? "template" : kind == "project" ? "draft" : "active";
+        return Frontmatter(title, $"Documentation: {title}", kind, status) + content;
+    }
+
     public static string Frontmatter(string title, string description, string kind, string status)
     {
         return "---\n" +
