@@ -1,3 +1,10 @@
+---
+title: "Feature: [Concise name]"
+description: "Reusable writing template"
+kind: template
+status: template
+---
+
 # Feature: [Concise name]
 
 > **Use:** Describe one observable capability from the product/business perspective. Replace this instruction and all bracketed guidance with verified information. Delete irrelevant optional sections. Do not record a discussion transcript here.

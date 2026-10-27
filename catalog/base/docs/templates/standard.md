@@ -1,3 +1,10 @@
+---
+title: "Standard: [Name]"
+description: "Reusable writing template"
+kind: template
+status: template
+---
+
 # Standard: [Name]
 
 > **Use:** Author a reusable, technology-scoped rule, not a record of a particular project's requirements. Remove this guidance before publication.

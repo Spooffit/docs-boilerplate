@@ -1,3 +1,10 @@
+---
+title: "Module: [Name]"
+description: "Reusable writing template"
+kind: template
+status: template
+---
+
 # Module: [Name]
 
 > **Use:** Describe a cohesive group of capabilities and its boundaries. Do not repeat every child feature's scenarios.

@@ -1,3 +1,10 @@
+---
+title: "Project documentation"
+description: "Documentation entry point"
+kind: index
+status: active
+---
+
 # {{PROJECT_NAME}}
 
 {{PROJECT_DESCRIPTION}}

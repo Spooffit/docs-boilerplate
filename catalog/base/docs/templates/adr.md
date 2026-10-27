@@ -1,3 +1,10 @@
+---
+title: "ADR-NNNN: [Decision title]"
+description: "Reusable writing template"
+kind: template
+status: template
+---
+
 # ADR-NNNN: [Decision title]
 
 - **Status:** Proposed

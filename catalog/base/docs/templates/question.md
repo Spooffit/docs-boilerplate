@@ -1,3 +1,10 @@
+---
+title: "Open question: [Specific unresolved decision]"
+description: "Reusable writing template"
+kind: template
+status: template
+---
+
 # Open question: [Specific unresolved decision]
 
 - **Status:** Open

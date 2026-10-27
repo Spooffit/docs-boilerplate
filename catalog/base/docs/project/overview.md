@@ -1,3 +1,10 @@
+---
+title: "Project overview"
+description: "Project-specific documentation scaffold"
+kind: project
+status: draft
+---
+
 # Project overview
 
 ## Goals
