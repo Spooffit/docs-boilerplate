@@ -10,6 +10,22 @@ run() { dotnet run --no-build --configuration Release --project "$project" -- "$
 run doctor
 run list
 
+# A genuinely minimal repo must not contain dangling links to optional modules.
+run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
+run validate --output "$temp/minimal"
+[[ -f "$temp/minimal/docs/standards/dotnet/testing.md" ]]
+[[ ! -e "$temp/minimal/docs/testing/strategy.md" ]]
+[[ ! -e "$temp/minimal/.agents" ]]
+[[ ! -f "$temp/minimal/zensical.toml" ]]
+
+# Testing add-ons are independent and resolved through their .NET prerequisite.
+run init --name Addons --description 'Testing tools' --output "$temp/addons" --profiles tunit,testcontainers --non-interactive
+run validate --output "$temp/addons"
+[[ -f "$temp/addons/docs/standards/dotnet/testing.md" ]]
+[[ -f "$temp/addons/docs/standards/dotnet/tunit.md" ]]
+[[ -f "$temp/addons/docs/standards/dotnet/testcontainers.md" ]]
+[[ ! -e "$temp/addons/docs/standards/blazor" ]]
+
 args=(--name Example --description 'Test documentation' --output "$temp/project" --profiles dotnet,ef-core,blazor,mudblazor,modular-monolith --skills docs-review,docs-maintain --modules testing,operations --site zensical --non-interactive)
 run init "${args[@]}" --dry-run
 [[ ! -d "$temp/project" ]] || { echo "Dry run unexpectedly wrote files"; exit 1; }

@@ -4,13 +4,13 @@
 
 - A baseline structural audit and architecture ADRs.
 - Reusable Markdown catalog and available/planned technology profiles.
-- A .NET 10 + Spectre.Console CLI with interactive prompts and non-interactive flags.
+- A .NET 10 + Spectre.Console CLI with interactive prompts and non-interactive flags, packable as a local .NET Tool.
 - Dependency resolution, profile availability checks, dry-run planning and existing-file protection.
 - Optional documentation modules: glossary, requirements, API, integrations, security, testing, operations.
 - Optional agent skills: docs-review, docs-maintain, docs-architecture.
 - A canonical `docs/` source tree and opt-in Zensical configuration.
 - A CLI validator for generated-file manifests, unresolved initialization placeholders and basic local Markdown links.
-- GitHub Actions build and end-to-end smoke suite (including optional site build).
+- GitHub Actions build and end-to-end smoke suite (including optional site build and local .NET Tool installation).
 
 ## Known limitations
 

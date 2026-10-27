@@ -7,6 +7,8 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>docs-boilerplate</ToolCommandName>
     <PackageId>DocsBoilerplate.Cli</PackageId>
+    <Authors>Docs Boilerplate contributors</Authors>
+    <Description>CLI for generating modular Docs-as-Code repositories.</Description>
     <Version>0.1.0</Version>
   </PropertyGroup>
   <ItemGroup>

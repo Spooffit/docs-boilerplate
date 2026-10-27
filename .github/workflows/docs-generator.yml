@@ -25,3 +25,10 @@ jobs:
         run: python -m pip install zensical==0.0.73
       - name: Smoke-test generation and site build
         run: bash tests/smoke.sh
+      - name: Pack and install CLI as local .NET tool
+        run: |
+          dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release --output "$RUNNER_TEMP/packages"
+          dotnet tool install --tool-path "$RUNNER_TEMP/docs-tool" --add-source "$RUNNER_TEMP/packages" DocsBoilerplate.Cli --version 0.1.0
+          "$RUNNER_TEMP/docs-tool/docs-boilerplate" doctor
+          "$RUNNER_TEMP/docs-tool/docs-boilerplate" init --name ToolDemo --description "Tool installation smoke test" --output "$RUNNER_TEMP/tool-demo" --profiles dotnet --non-interactive
+          "$RUNNER_TEMP/docs-tool/docs-boilerplate" validate --output "$RUNNER_TEMP/tool-demo"
