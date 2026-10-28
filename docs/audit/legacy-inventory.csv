@@ -24,7 +24,7 @@ business/features/F13-content-delivery.md,project-source,screened-structure,5855
 business/features/F14-client-compatibility.md,project-source,screened-structure,2700
 business/features/F15-catalog-conflicts.md,project-source,screened-structure,16259
 business/features/F16-staff-access.md,project-source,reviewed-targeted,16239
-business/features/F17-content-review.md,project-source,screened-structure,10481
+business/features/F17-content-review.md,project-source,reviewed-targeted,10481
 business/features/F18-staff-activity-history.md,project-source,screened-structure,11844
 business/features/F19-unity-client.md,project-source,screened-structure,30525
 business/features/F20-unity-demo-scene.md,project-source,screened-structure,19608
@@ -57,7 +57,7 @@ business/questions/Q22-quality-targets.md,project-source,screened-structure,773
 business/questions/Q25-catalog-conflicts.md,project-source,screened-structure,12124
 business/questions/Q26-demo-mvp-scope.md,project-source,screened-structure,31053
 business/questions/Q27-catalog-archiving.md,project-source,screened-structure,6360
-business/questions/Q28-content-review-scope.md,project-source,screened-structure,14733
+business/questions/Q28-content-review-scope.md,project-source,reviewed-targeted,14733
 business/questions/Q34-schema-field-semantics.md,project-source,screened-structure,54741
 business/questions/Q35-value-constraints.md,project-source,screened-structure,12014
 business/questions/Q36-entity-instance-lifecycle.md,project-source,reviewed-targeted,29230
@@ -170,7 +170,7 @@ technical/frontend/features/F13-content-delivery.md,project-source,screened-stru
 technical/frontend/features/F14-client-compatibility.md,project-source,screened-structure,21142
 technical/frontend/features/F15-catalog-conflicts.md,project-source,screened-structure,67377
 technical/frontend/features/F16-staff-access.md,project-source,reviewed-targeted,27979
-technical/frontend/features/F17-content-review.md,project-source,screened-structure,63508
+technical/frontend/features/F17-content-review.md,project-source,reviewed-targeted,63508
 technical/frontend/features/F18-staff-activity-history.md,project-source,screened-structure,49444
 technical/frontend/features/F19-unity-client.md,project-source,screened-structure,214501
 technical/frontend/features/F20-unity-demo-scene.md,project-source,screened-structure,14558
