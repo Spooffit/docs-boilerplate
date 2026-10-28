@@ -79,7 +79,7 @@ When an author adds a Markdown document under `docs/`, also link it from its imm
 
 When renaming or moving a document, repair old/new directory indexes, its catalog entry and inbound links (including heading fragments). The validator detects broken existing links; it also detects the newly unlisted destination. The list in `llms.txt` is **curated**, not exhaustive: the root links to `docs/catalog.md`, so adding an ordinary page does not force another `llms.txt` entry. Update `llms.txt` manually for new major entry points only.
 
-Navigation checks are read-only. The original generated indexes and `docs/catalog.md` remain fingerprint-owned for update safety. Authors may edit them, but if upstream also changes the same owned file, `update` will report a conflict requiring human reconciliation; it will not silently regenerate over an edited index. Generated optional technology templates may be discoverable through the catalog alone rather than through every authored category index.
+Navigation checks are read-only. Intentionally preserved `RetiredFiles` listed by prior `update` operations are exempt from current navigation coverage; they remain on disk without being presented as selected standards. A truly new author-created page is still required in its parent index and the catalog. The original generated indexes and `docs/catalog.md` remain fingerprint-owned for update safety. Authors may edit them, but if upstream also changes the same owned file, `update` will report a conflict requiring human reconciliation; it will not silently regenerate over an edited index. Generated optional technology templates may be discoverable through the catalog alone rather than through every authored category index.
 
 ## First project intake
 
@@ -106,7 +106,7 @@ docs-boilerplate validate --output ./my-docs
 - Reject changes if both a user and the template modified the same file; **no writes occur when a preflight conflict exists**.
 - Reject collisions with newly proposed paths that are already user-owned.
 - Add new files when selected profiles gain documentation.
-- Preserve retired files, but remove their paths from managed ownership and regenerated navigation. No automatic deletion.
+- Preserve retired files, but remove their paths from managed ownership and regenerated navigation. Their exact paths are carried as `RetiredFiles` in `docs.config.json`, so validation does not mistake them for newly authored, unindexed pages. No automatic deletion.
 - Record new fingerprints and update `docs.config.json` last; attempt rollback of completed writes if a write fails.
 
 Repositories generated before fingerprints were introduced cannot be updated automatically. Their original bytes cannot be proven, so upgrade by initializing a new output and manually reviewing the diffs. There is no unconditional `--force`.

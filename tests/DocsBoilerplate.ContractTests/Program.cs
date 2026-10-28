@@ -163,6 +163,15 @@ Test("discoverability identifies missing catalog and local index entries", () =>
     docs["docs/project/index.md"] = docs["docs/project/index.md"].Replace("new-guide.md", "renamed.md");
     Expect(DocumentDiscovery.FindMissingLinks(docs, owned).Count == 0,
         "Updated navigation after a move was rejected");
+
+    // Removed profile sources are retained on disk, but no longer advertised
+    // by the selected technology catalog. This must not hide newly authored docs.
+    docs["docs/project/retired.md"] = "# Old material";
+    var retained = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "docs/project/retired.md" };
+    Expect(DocumentDiscovery.FindMissingLinks(docs, owned, retained).Count == 0,
+        "Explicitly retained retired source was treated as a new author page");
+    Expect(DocumentDiscovery.FindMissingLinks(docs, owned).Count == 2,
+        "Omitting the retained manifest must restore discoverability checks");
 });
 Test("catalog links with escaped bracket labels are discoverable", () =>
 {

@@ -58,6 +58,16 @@ def run():
         data = json.loads((output / "docs.config.json").read_text(encoding="utf-8"))
         validator.validate(data)
 
+        retired = deepcopy(data)
+        retired["RetiredFiles"] = ["docs/standards/dotnet/retired.md"]
+        validator.validate(retired)
+        duplicate_retired = deepcopy(retired)
+        duplicate_retired["RetiredFiles"].append("docs/standards/dotnet/retired.md")
+        assert_invalid(validator, duplicate_retired, "duplicate retired paths")
+        bad_retired = deepcopy(retired)
+        bad_retired["RetiredFiles"] = ["../outside.md"]
+        assert_invalid(validator, bad_retired, "unsafe retired path")
+
         wrong_site = deepcopy(data)
         wrong_site["Site"] = "unsupported-site"
         assert_invalid(validator, wrong_site, "unrecognized site")

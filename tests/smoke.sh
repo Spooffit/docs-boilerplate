@@ -532,6 +532,13 @@ with open(p,"w",encoding="utf-8") as f: json.dump(data,f)
 PY
 run update --output "$temp/minimal" --catalog "$temp/catalog-retire" --apply
 run validate --output "$temp/minimal" --catalog "$temp/catalog-retire"
+python3 - "$temp/minimal/docs.config.json" <<'PY'
+import json,sys
+with open(sys.argv[1], encoding="utf-8") as stream:
+    data = json.load(stream)
+assert "docs/standards/dotnet/new-guidance.md" in data["RetiredFiles"]
+assert "docs/standards/dotnet/new-guidance.md" not in data["GeneratedFiles"]
+PY
 [[ -f "$temp/minimal/docs/standards/dotnet/new-guidance.md" ]]
 if grep -q 'dotnet/new-guidance.md' "$temp/minimal/docs/catalog.md"; then
     echo "Retired profile file remains in generated navigation"; exit 1
