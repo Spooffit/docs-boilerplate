@@ -25,7 +25,7 @@
 | S11 | [Integration tests](catalog/docs/standards/dotnet/testing.md#integration-tests) | — |
 | S12 | [Functional tests](catalog/docs/standards/dotnet/testing.md#functional-tests) | — |
 | S13 | [E2E: .NET-стандарт и опциональный Aspire](catalog/docs/standards/dotnet/testing.md) | — |
-| S14 | [Окружения, изоляция и параллельность](technical/backend/standards/S14-test-environments.md) | — |
+| S14 | [Окружения, изоляция и параллельность](catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism) | — |
 | S15 | [Test engineering и проверка изменений](catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration) | — |
 | S16 | [REST: реализация HTTP API](technical/backend/standards/S16-rest.md) | — |
 | S17 | [Потоки данных и транспортные взаимодействия](technical/backend/standards/S17-data-flows.md) | — |

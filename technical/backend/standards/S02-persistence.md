@@ -38,4 +38,4 @@
 
 Изменение имён и структуры хранения рассматривается вместе с существующими данными и потребителями. Нельзя подменять миграцию удалением ценных данных. Проверяются сохранение, чтение, ограничения, транзакции и восстановление необходимой истории.
 
-[Integration tests](../../../catalog/docs/standards/dotnet/testing.md#integration-tests) · [Изоляция тестовых данных](S14-test-environments.md).
+[Integration tests](../../../catalog/docs/standards/dotnet/testing.md#integration-tests) · [Изоляция тестовых данных](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism).

@@ -563,7 +563,7 @@ Core diagnostics содержат Code/Message/SchemaVersionId?/FieldPath?/Sever
 Source conformance provenance tests map F03 profile/digest through F21 formal contract to Core without recomputing/mutating source history. Generated serializers/models cover exact Int64/Decimal/finite IEEE64 semantics/presence/all15 types; content integrity uses common typed canonical library at SDK boundary rather than generated .ToString/general JSON defaults. Unknown content profile rejected before runtime group apply (F13/F19), no source rehash. Generated cm-csharp/1 and cm-json-schema/1 fixed byte policies remain separate; actual runtime tests not executed here.
 
 
-По [S04](../standards/S04-testing.md)/[S14](../standards/S14-test-environments.md) Core pure mapping, server artifact preparation, HTTP binary lifecycle и CLI writes тестируются отдельно.
+По [S04](../standards/S04-testing.md)/[S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism) Core pure mapping, server artifact preparation, HTTP binary lifecycle и CLI writes тестируются отдельно.
 
 
 | ID / DF | SUT / уровень | Собственные данные / воздействие | Наблюдаемый результат |

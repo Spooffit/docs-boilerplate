@@ -536,7 +536,7 @@ Post-Demo literal fixtures нового formal profile отдельно пров
 Additional canonical contract fixtures: F03 literal source bytes/digest/profile propagated without mutation; reordered semantic fields/options and Name/HelpText/label changes preserve semanticHash as appropriate while actual exported annotations alter representation ETag. Unknown source profile/corrupt immutable source triple rejected, no historical rehash/guess; source metadata neutral read types preserved in F22. Tests are required strategy, not executed app proof.
 
 
-Применяются [S04](../standards/S04-testing.md) и [S14](../standards/S14-test-environments.md). Методы exporter-а и source projection, API и cross-app contract compatibility проверяются отдельно.
+Применяются [S04](../standards/S04-testing.md) и [S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism). Методы exporter-а и source projection, API и cross-app contract compatibility проверяются отдельно.
 
 
 | ID / DF | SUT / уровень | Собственные данные / воздействие | Наблюдаемый результат |

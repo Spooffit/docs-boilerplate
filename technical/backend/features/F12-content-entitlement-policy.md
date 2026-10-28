@@ -842,7 +842,7 @@ Global gate timeout/cancellation/failed port/owner connection loss — техн�
 
 ## 11. Тестирование
 
-[S04](../standards/S04-testing.md)/[S14](../standards/S14-test-environments.md). Unit SUT — state/history/binding/domain evaluator/resolver/validators/mappers; pure owned inputs and deterministic clock, port doubles only for external evidence. Integration SUT — owning Publishing/Delivery PostgreSQL/Testcontainers repositories/query/UoW/unique keys/outbox; real SQL concurrency/immutability, no in-memory provider. Functional — CM HTTP/JWT/PostgreSQL local policy Api/handlers/ETag, controlled external adapters with boundary stated. E2E — necessary real source-period/Publishing/Delivery/credential/broker contour F13/F06 where needed, observed effective readiness and terminal ban; multiple BC in one API alone still Functional.
+[S04](../standards/S04-testing.md)/[S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism). Unit SUT — state/history/binding/domain evaluator/resolver/validators/mappers; pure owned inputs and deterministic clock, port doubles only for external evidence. Integration SUT — owning Publishing/Delivery PostgreSQL/Testcontainers repositories/query/UoW/unique keys/outbox; real SQL concurrency/immutability, no in-memory provider. Functional — CM HTTP/JWT/PostgreSQL local policy Api/handlers/ETag, controlled external adapters with boundary stated. E2E — necessary real source-period/Publishing/Delivery/credential/broker contour F13/F06 where needed, observed effective readiness and terminal ban; multiple BC in one API alone still Functional.
 
 | ID | Уровень | Сценарий / DF | Ожидаемый результат |
 | --- | --- | --- | --- |

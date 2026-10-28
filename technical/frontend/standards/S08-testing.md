@@ -12,7 +12,7 @@ bUnit — библиотека тестирования Razor-компонент
 
 ## Общая модель и уровни проверки
 
-Применяются [S04](../../backend/standards/S04-testing.md), [изоляция и lifecycle S14](../../backend/standards/S14-test-environments.md) и [test engineering S15](../../../catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration). Расположение этих документов в backend не ограничивает применимость общих правил: SUT, независимость данных, bounded ожидания, cleanup и честный отчёт обязательны также для фронтенда. Серверная БД/брокер не становятся зависимостями каждого клиентского теста.
+Применяются [S04](../../backend/standards/S04-testing.md), [изоляция и lifecycle S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism) и [test engineering S15](../../../catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration). Расположение этих документов в backend не ограничивает применимость общих правил: SUT, независимость данных, bounded ожидания, cleanup и честный отчёт обязательны также для фронтенда. Серверная БД/брокер не становятся зависимостями каждого клиентского теста.
 
 | Проверяемая граница | Подход | Что доказывает |
 | --- | --- | --- |

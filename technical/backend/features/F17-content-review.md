@@ -605,7 +605,7 @@ Global gate timeout/cancellation/failed port/owner connection loss — техн�
 
 ## 11. Тестирование
 
-Стратегия [S04](../standards/S04-testing.md)/[S14](../standards/S14-test-environments.md) проверяет own finality, protected target facts и real outbox/correlation независимо от read UI. Current no-moderation checkout не доказывает эти сценарии.
+Стратегия [S04](../standards/S04-testing.md)/[S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism) проверяет own finality, protected target facts и real outbox/correlation независимо от read UI. Current no-moderation checkout не доказывает эти сценарии.
 
 | ID / поток | Уровень / SUT | Собственные данные / воздействие | Ожидаемый результат |
 | --- | --- | --- | --- |

@@ -581,7 +581,7 @@ Diagnostics safe correlation/verified actor/target/session/action IDs and reason
 
 ## 11. Тестирование
 
-[S04](../standards/S04-testing.md)/[S14](../standards/S14-test-environments.md): unit framework-free permission registry/checker/CapabilityResolver/last-admin rules; real own PostgreSQL/provider integration for atomicity; functional API actual cookie/antiforgery/CORS; browser UI+API required for form recovery E2E. No InMemory substitute for SQL invariants, fake principal not proof login/session expiration.
+[S04](../standards/S04-testing.md)/[S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism): unit framework-free permission registry/checker/CapabilityResolver/last-admin rules; real own PostgreSQL/provider integration for atomicity; functional API actual cookie/antiforgery/CORS; browser UI+API required for form recovery E2E. No InMemory substitute for SQL invariants, fake principal not proof login/session expiration.
 
 | ID / поток | Уровень / SUT | Свои данные / воздействие | Ожидаемый результат |
 | --- | --- | --- | --- |

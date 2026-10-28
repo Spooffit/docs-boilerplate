@@ -248,7 +248,7 @@ F14 не добавляет HTTP интеграцию, S3 операции ил�
 
 ## 11. Тестирование
 
-Стратегия по [S04](../standards/S04-testing.md) и [S14](../standards/S14-test-environments.md) проверяет минимальные инварианты в SUT владельцев, без отдельного тестового приложения F14. Открытый Q14 не получает скрытый expected fallback.
+Стратегия по [S04](../standards/S04-testing.md) и [S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism) проверяет минимальные инварианты в SUT владельцев, без отдельного тестового приложения F14. Открытый Q14 не получает скрытый expected fallback.
 
 | ID | Уровень / SUT | Сценарий / собственные данные | Ожидаемый результат |
 | --- | --- | --- | --- |

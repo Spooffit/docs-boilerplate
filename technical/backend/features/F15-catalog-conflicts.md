@@ -539,7 +539,7 @@ Machine codes, structured field/global issues, localized diagnostics, dependency
 
 ## 11. Тестирование
 
-По [S04](../standards/S04-testing.md), [S14](../standards/S14-test-environments.md) и category standards проверка отделяет pure invariant, реальное persistence, HTTP и inter-BC coordination. SUT и данные принадлежат сценарию, не общему заранее seeded внешнему проекту.
+По [S04](../standards/S04-testing.md), [S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism) и category standards проверка отделяет pure invariant, реальное persistence, HTTP и inter-BC coordination. SUT и данные принадлежат сценарию, не общему заранее seeded внешнему проекту.
 
 | ID / поток | Уровень / SUT | Свои данные / воздействие | Ожидаемый результат |
 | --- | --- | --- | --- |

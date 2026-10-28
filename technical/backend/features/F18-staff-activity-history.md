@@ -584,7 +584,7 @@ Safe record/event/source/correlation/operation/action/stage/retry categories onl
 
 ## 11. Тестирование
 
-[S04](../standards/S04-testing.md)/[S14](../standards/S14-test-environments.md): source capture and audit append separate durable boundaries. Real owning PostgreSQL/Testcontainers and deterministic barriers for constraints/races; real broker when delivery/ACK guarantees claimed; F16 actual current auth for Functional visibility. No mocks/InMemory proof SQL atomicity.
+[S04](../standards/S04-testing.md)/[S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism): source capture and audit append separate durable boundaries. Real owning PostgreSQL/Testcontainers and deterministic barriers for constraints/races; real broker when delivery/ACK guarantees claimed; F16 actual current auth for Functional visibility. No mocks/InMemory proof SQL atomicity.
 
 | ID / поток | Уровень / SUT | Собственные данные / воздействие | Ожидаемый результат |
 | --- | --- | --- | --- |

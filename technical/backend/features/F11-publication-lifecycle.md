@@ -737,7 +737,7 @@ Global gate timeout/cancellation/failed port/owner connection loss — техн�
 
 ## 11. Тестирование
 
-[S04](../standards/S04-testing.md)/[S14](../standards/S14-test-environments.md): это план target verification, не отчёт о запущенных tests. Current [PublishingDeliveryIntegrationTests](../../../../contentmanager.api/tests/App/ContentManager.App.Tests.Integration/PublishingDeliveryIntegrationTests.cs) проверяют legacy isolated jobs/overlap/rollback, но direct Delivery contexts/no moderation/body Revision не target proof.
+[S04](../standards/S04-testing.md)/[S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism): это план target verification, не отчёт о запущенных tests. Current [PublishingDeliveryIntegrationTests](../../../../contentmanager.api/tests/App/ContentManager.App.Tests.Integration/PublishingDeliveryIntegrationTests.cs) проверяют legacy isolated jobs/overlap/rollback, но direct Delivery contexts/no moderation/body Revision не target proof.
 
 Unit SUT — state/operation roots, transition policy, FV/mappers, recovery/correlation policies; immutable own test inputs, doubles только external ports/clock. Integration SUT — Publishing real PostgreSQL/Testcontainers repositories/query adapters/UoW/outbox/inbox, реальные constraints/transactions; unique fixture scope/IDs, cleanup по project fixture, no in-memory EF substitution. Functional SUT — CM HTTP/JWT+PostgreSQL, real Api/handlers/mappers/headers; external dependencies controlled adapter doubles с явной verification boundary. E2E — реальный необходимый Publishing/F17/broker/Delivery contour и наблюдение projection/read access; несколько BC в одном API Functional не становятся E2E.
 
