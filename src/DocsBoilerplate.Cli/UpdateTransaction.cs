@@ -13,73 +13,52 @@ internal static class UpdateTransaction
         string output, IReadOnlyList<Write> writes, Func<int, Task>? afterWrite = null)
     {
         SafeFiles.AssertNoLinks(output);
-        var completed = new List<(string Path, byte[]? Original, string WrittenHash)>();
-        var createdDirectories = new HashSet<string>(
-            OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+        UpdateRecovery.AssertNoPending(output);
+        if (writes.Count == 0) return;
+
+        // Persist verified snapshots and desired bytes before the first project write.
+        await UpdateRecovery.PrepareAsync(output, writes);
         try
         {
-            foreach (var write in writes)
+            for (var i = 0; i < writes.Count; i++)
             {
+                var write = writes[i];
                 var target = SafeFiles.Child(output, write.Path);
-                byte[]? before = null;
                 if (write.Existing)
                 {
-                    before = await File.ReadAllBytesAsync(target);
+                    var before = await File.ReadAllBytesAsync(target);
                     if (HashBytes(before) != write.OriginalHash)
                         throw new IOException($"File changed after planning: {write.Path}");
                 }
                 else if (File.Exists(target) || Directory.Exists(target))
                     throw new IOException($"Unmanaged file appeared after planning: {write.Path}");
 
-                EnsureParents(output, Path.GetDirectoryName(target)!, createdDirectories);
+                EnsureParents(output, Path.GetDirectoryName(target)!);
                 await AtomicWriteAsync(target, write.Content, !write.Existing);
-                completed.Add((target, before, HashBytes(write.Content)));
                 if (afterWrite is not null)
-                    await afterWrite(completed.Count);
+                    await afterWrite(i + 1);
             }
         }
         catch (Exception error)
         {
-            var rollbackErrors = new List<string>();
-            foreach (var (path, original, writtenHash) in completed.AsEnumerable().Reverse())
+            try
             {
-                try
-                {
-                    SafeFiles.AssertNoLinks(path);
-                    if (!File.Exists(path) || HashBytes(await File.ReadAllBytesAsync(path)) != writtenHash)
-                    {
-                        rollbackErrors.Add($"{path}: changed after write; left untouched");
-                        continue;
-                    }
-                    if (original is null) File.Delete(path);
-                    else await AtomicWriteAsync(path, original, createNew: false);
-                }
-                catch (Exception rollbackError)
-                {
-                    rollbackErrors.Add($"{path}: {rollbackError.Message}");
-                }
+                await UpdateRecovery.RecoverAsync(output, forceRollback: true);
+                throw new IOException($"Update failed: {error.Message}. " +
+                    "Completed changes were rolled back; new empty directories were removed.", error);
             }
-            foreach (var directory in createdDirectories.OrderByDescending(x => x.Length))
+            catch (IOException recoveryError) when (recoveryError.InnerException != error)
             {
-                try
-                {
-                    SafeFiles.AssertNoLinks(directory);
-                    if (Directory.Exists(directory))
-                        Directory.Delete(directory); // Only remove an empty directory we created.
-                }
-                catch (Exception rollbackError)
-                {
-                    rollbackErrors.Add($"{directory}: {rollbackError.Message}");
-                }
+                throw new IOException($"Update failed: {error.Message}. " +
+                    $"Rollback was incomplete: {recoveryError.Message}", error);
             }
-            throw new IOException($"Update failed: {error.Message}. " +
-                (rollbackErrors.Count == 0
-                    ? "Completed changes were rolled back; new empty directories were removed."
-                    : "Rollback was incomplete: " + string.Join("; ", rollbackErrors)), error);
         }
+        // If cleanup itself is interrupted, the journal remains available to
+        // finalize an already-completed update with 'recover'.
+        UpdateRecovery.Complete(output);
     }
 
-    private static void EnsureParents(string output, string directory, HashSet<string> created)
+    private static void EnsureParents(string output, string directory)
     {
         var current = Path.GetFullPath(output);
         var relative = Path.GetRelativePath(current, directory);
@@ -90,7 +69,6 @@ internal static class UpdateTransaction
             SafeFiles.AssertNoLinks(current);
             if (Directory.Exists(current)) continue;
             Directory.CreateDirectory(current);
-            created.Add(current);
         }
     }
 
