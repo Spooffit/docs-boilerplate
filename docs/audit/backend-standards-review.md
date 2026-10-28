@@ -9,7 +9,7 @@ status: active
 
 - Date: 2026-10-27
 - Scope: focused content review of S01, S02, S03, S16, S18, S20, S23 and S24. Reviewed repository text and checked critical framework behavior against official documentation. This is **not** a full review of every feature or legacy standard.
-- Destination: reusable documentation profiles in `catalog/docs/standards/`; all source files remain untouched.
+- Destination: reusable base and technology-scoped documentation profiles in `catalog/`. Source documents were initially preserved; file-specific migrations are recorded below.
 
 ## Findings by original file
 
@@ -70,3 +70,7 @@ The complete S02 and S03 files were read, not just their headings. The reusable 
 | S03 mandatory FluentValidation and validator composition | `catalog/docs/standards/dotnet/fluentvalidation.md`, plus owner-decision backlog | Optional profile pending owner's policy choice |
 
 The predecessor's application test execution, DB migrations and production contracts have **not** been verified by this documentation migration. S02 and S03 may be physically retired only after all incoming Markdown links are updated, the original-policy exceptions are recorded and the deletion guard and CI pass. Mandatory historical library choices are recorded for later owner consultation rather than silently approved or forced on the universal catalog.
+
+## Completed S02/S03 retirement (2026-10-28)
+
+Following a whole-file review and reusable-rule extraction, the four inbound links to each retired source were updated. S02 mapped to the base stateful-workflows review and selected EF Core conventions; S03 to base data-flow trust/failure rules and opt-in ASP.NET Core error semantics. Project-specific mandatory Ardalis, constraint-class naming and FluentValidation decisions are **not** presumed for every new project. The full source-to-target trace is in the preceding comparison section. The original documents remain available through Git history, and successful CI remains the deletion gate.

@@ -13,8 +13,8 @@
 | ID | Бэкенд | Фронтенд |
 | --- | --- | --- |
 | S01 | [.NET conventions, migrated reusable profile](catalog/docs/standards/dotnet/conventions.md) | — |
-| S02 | [Хранение и целостность](technical/backend/standards/S02-persistence.md) | — |
-| S03 | [Валидация и ошибки](technical/backend/standards/S03-validation-and-errors.md) | — |
+| S02 | [Хранение и целостность](catalog/base/docs/standards/stateful-workflows.md#durable-snapshots-and-retained-history) | — |
+| S03 | [Валидация и ошибки](catalog/base/docs/standards/data-flows.md#input-trust-and-failure-semantics) | — |
 | S04 | [Общая модель тестирования](technical/backend/standards/S04-testing.md) | — |
 | S05 | — | [Интерфейсы и формы](technical/frontend/standards/S05-ui-and-forms.md) |
 | S06 | — | [Работа с API](technical/frontend/standards/S06-api-client.md) |

@@ -61,3 +61,7 @@ The reference graph reported four incoming documents for S15, with five recogniz
 ## S14 environment document removal (2026-10-28)
 
 After 20 identified incoming-link migrations, the Linux Actions reference report still found **one** S14 referring document, `technical/backend/features/F01-create-entity-schema.md`. Its remaining link is updated as part of S14 retirement. Thus all **21** identified live incoming documents now point to `catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism`. The historical technology-standard count decreases from **15 to 14** pending the deletion-gate CI check. The S04 predecessor document stays in place because the strict cross-suite naming policy requires an owner decision.
+
+## S02/S03 scoped retirements (2026-10-28)
+
+Both complete sources were compared to the canonical baseline. Four known incoming documents each were redirected to typed, relevant anchors before the old files were retired in one commit. The known incoming lists and decision rationale are recorded in [the removal ledger](legacy-removals.md) and [backend technical review](backend-standards-review.md). The surviving historical standard count becomes **12**, subject to the CI link gate. The original project's mandatory Ardalis.Specification, named constraints and FluentValidation policies remain explicitly deferred for owner consultation; no universal dependency was created.

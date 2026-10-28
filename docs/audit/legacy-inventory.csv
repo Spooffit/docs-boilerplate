@@ -127,8 +127,8 @@ technical/backend/questions/Q31-schema-code-generation.md,project-source,screene
 technical/backend/questions/Q33-sync-resume-transport.md,project-source,reviewed-targeted,56253
 technical/backend/questions/Q39-schema-content-selection.md,project-source,screened-structure,9537
 technical/backend/standards/S01-dotnet-conventions.md,candidate-technology-standard,removed-cleanup,2671
-technical/backend/standards/S02-persistence.md,candidate-technology-standard,reviewed-targeted,5405
-technical/backend/standards/S03-validation-and-errors.md,candidate-technology-standard,reviewed-targeted,3803
+technical/backend/standards/S02-persistence.md,candidate-technology-standard,removed-cleanup,5405
+technical/backend/standards/S03-validation-and-errors.md,candidate-technology-standard,removed-cleanup,3803
 technical/backend/standards/S04-testing.md,candidate-technology-standard,reviewed-targeted,9702
 technical/backend/standards/S09-architecture-tests.md,candidate-technology-standard,removed-cleanup,4450
 technical/backend/standards/S10-unit-tests.md,candidate-technology-standard,removed-cleanup,2755
