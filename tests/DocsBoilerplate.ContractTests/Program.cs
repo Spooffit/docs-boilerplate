@@ -108,7 +108,7 @@ Test("llms.txt lists installed project areas without leaking absent modules", ()
     Expect(generated.Contains("docs/templates/index.md", StringComparison.Ordinal), "Missing installed templates");
     Expect(!generated.Contains("docs/architecture/security.md", StringComparison.Ordinal), "Unselected security module leaked");
     Expect(!generated.Contains("docs/operations/runbook.md", StringComparison.Ordinal), "Unselected operations module leaked");
-    Expect(!generated.Contains("docs/catalog.md)\n- [", StringComparison.Ordinal), "Unexpected duplicate catalog entry");
+    Expect(generated.Split("](docs/catalog.md)", StringSplitOptions.None).Length == 2, "Duplicate catalog link");
     var replay = DocsCli.BuildLlmsIndex("Sample", "Summary", docs);
     Expect(generated == replay, "Navigation order is not deterministic");
 
