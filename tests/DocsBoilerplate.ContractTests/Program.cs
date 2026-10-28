@@ -166,6 +166,7 @@ Test("Markdown link targets retain fragments and omit fenced code examples", () 
     const string source = """
         Read [Section](guide.md#one-important-section) and [same page](#overview).
         Open [encoded](guide.md#über-caf%C3%A9).
+        Inline `[example](missing.md#not-real)` is not a real link.
 
         ~~~markdown
         [Example only](missing.md#fictitious)

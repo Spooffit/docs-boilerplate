@@ -18,7 +18,8 @@ status: active
 | Catalog | `src/DocsBoilerplate.Cli/DocsCli.Catalog.cs` | Resolve dependencies, reject unknown profiles, check catalog integrity and model the manifests |
 | Rendering | `src/DocsBoilerplate.Cli/DocsCli.Rendering.cs` | Compose selected source files, indexes, `llms.txt`, and the generated ownership manifest |
 | Updating | `src/DocsBoilerplate.Cli/DocsCli.Updates.cs` | Preview-first, fingerprint-checked updates and best-effort rollback |
-| Validation | `src/DocsBoilerplate.Cli/DocsCli.Validation.cs` | Check generated manifest ownership, filenames, frontmatter, local links and folder indexes |
+| Validation | `src/DocsBoilerplate.Cli/DocsCli.Validation.cs` | Check generated manifest ownership, filenames, frontmatter, local links (including section fragments) and folder indexes |
+| Markdown navigation | `src/DocsBoilerplate.Cli/MarkdownNavigation.cs` | Parse common inline links and headings, skip fenced/inline code examples, derive duplicate heading anchors |
 | Markdown metadata | `src/DocsBoilerplate.Cli/DocumentMetadata.cs` | Narrow frontmatter policy and kebab-case naming |
 | File system | `src/DocsBoilerplate.Cli/SafeFiles.cs` | Reject traversal, symlink/reparse-point paths and unsafe file-system entries |
 | Data contracts | `schemas/*.schema.json` | JSON Schema definitions for input registries and generated `docs.config.json` |
@@ -34,7 +35,7 @@ The CLI is still one executable and uses a **partial static class** split by res
 - **JSON Schema contracts:** `tests/schema_contracts.py` validates catalog files and representative generated config; CI installs `jsonschema` for these checks only.
 - **Migration inventory:** `tests/legacy_inventory.py` refuses disappearance of source material without a recorded process.
 
-A passing focused check does not prove browser interactivity, all Markdown link variants or crash-atomic multi-file updates. Keep these limitations explicit.
+A passing focused check does not prove browser interactivity, all Markdown link variants or crash-atomic multi-file updates. Fragment checks support ordinary inline links, common headings and explicit HTML anchors, but do not implement every Docsify-renderer convention or reference-style link. Keep these limitations explicit.
 
 ## Editing workflow
 
