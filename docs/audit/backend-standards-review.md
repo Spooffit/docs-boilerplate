@@ -55,6 +55,12 @@ The smoke suite should generate combinations with MVC, its prerequisites, Postgr
 - Add compiling examples with dedicated build tests before describing them as tested examples.
 - Preserve all legacy source content until the migration decisions are complete.
 
+## S18/S19/S20 full-content comparison (2026-10-28)
+
+The three source documents were inspected in full. S18's meaningful field-level rule reuse, typed validator composition, null/nested/collection behavior and async execution are now explicit in the **optional** `dotnet/fluentvalidation.md` profile. S19's lack of built-in composite full specifications, supported builder extensions, explicit query shape and real-provider verification are now explicit in the **optional** `dotnet/ardalis-specification.md` profile. Both remain technology-specific: no project inherits those libraries without selecting them. S20 is only two lines prescribing command handler placement in Application and query handler placement in `EntityFramework.Persistence`; the reusable CQRS guidance instead explains placement choices and dependency direction.
+
+All three original prescriptions of mandatory libraries or fixed layering are recorded as **historical choices**, not adopted universal policy. The owner backlog already carries optional-versus-mandatory technology and architecture decisions; do not add duplicate approval questions. Original source retention/removal and incoming links are tracked independently of this content-level review. The refreshed guidance is grounded in the linked official FluentValidation, Ardalis.Specification and Microsoft documentation; runnable package examples are not claimed as verified.
+
 ## Complete S02/S03 source comparison (2026-10-28)
 
 The complete S02 and S03 files were read, not just their headings. The reusable parts are now traceable:

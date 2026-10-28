@@ -22,6 +22,20 @@ A specification describes selection, filtering, sorting, projection or paging as
 - For database queries, confirm that composition remains server-translatable and does not fetch unbounded rows for client-side filtering.
 - Check version-specific API behavior when composing specifications. Do not write code examples against assumed overloads or repository methods.
 
+## Reusable predicates versus complete specifications
+
+The library does **not** provide generic `specA.And(specB)`, `specA.Or(specB)` or `specA.Not()` composition of complete specifications. A specification may also own includes, ordering, projections, tracking behavior and pagination, so treating entire specifications as simple Boolean predicates loses their meaning.
+
+- Prefer focused `ISpecificationBuilder<T>` extension methods for reusable atomic predicates. Have each operation-specific `Specification<T>` invoke the appropriate extensions and define its own result shape.
+- A reusable predicate must not silently set tracking, sort, `Include`, `Skip`, `Take`, projection or permission scope. Keep those choices explicit in the final specification; do not create a giant specification with unrelated optional switches.
+- Multiple `Where` predicates narrow the result together (AND). Express OR with an intentionally grouped predicate; adding two separate `Where` clauses does not mean OR.
+- Pass filter inputs explicitly rather than reading ambient HTTP context or mutable global state. Specification construction describes a query, and should not open connections or perform writes.
+- If using the EF Core integration, use the installed version's supported evaluator/adapter (for example `WithSpecification` where available). Do not materialize before filtering or `Compile()` a database predicate merely to make unsupported translation run in memory.
+- Keep paging separate from total-match counts. Select `Specification<T, TResult>` for shaped projections when applicable, and enforce deterministic ordering for paging, including ties. Count/existence queries must retain the same **intended predicates** without inheriting a list's page limit.
+- Permission and tenant scoping are **mandatory policy checks** at a trusted boundary, not user-selectable optional filters.
+
+References: [composite-specification FAQ](https://specification.ardalis.com/getting-started/faq.html#how-do-i-use-composite-specifications), [specification extensions](https://specification.ardalis.com/extensions/extensions-for-specifications.html), [EF Core integration](https://specification.ardalis.com/usage/use-specification-dbcontext.html).
+
 ## Database integration and testing
 
 Ardalis.Specification can be paired with EF Core using the ecosystem's evaluator/repository support. Keep this an integration choice; selecting the base library does not itself select EF Core or PostgreSQL.

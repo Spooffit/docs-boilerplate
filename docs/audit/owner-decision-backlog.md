@@ -26,7 +26,7 @@ This is a **decision backlog**, not a questionnaire to answer during ongoing eng
 | Topic | Legacy policy requiring a decision | Options to evaluate |
 | --- | --- | --- |
 | Mandatory FluentValidation | S03 requires FluentValidation for every incoming .NET model; the reusable baseline currently makes it an optional profile | Require it only in an explicitly opinionated .NET profile; leave validation-library selection project-specific; document a preferred alternative with tested integration |
-| Mandatory Ardalis.Specification and named aggregate constraints | S02 ties persistence to Ardalis.Specification and `<AggregateName>Constraints`, while S21 and S19 remain historical sources | Make each an opt-in project convention; define a separately selected opinionated persistence profile; retain the tool-neutral baseline and let projects choose their own abstractions |
+| Mandatory Ardalis.Specification and named aggregate constraints | S02/S19 tie all entity filtering to Ardalis.Specification; S02/S21 require `<AggregateName>Constraints` | Make each an opt-in project convention; define a separately selected opinionated persistence profile; retain the tool-neutral baseline and let projects choose their own abstractions |
 
 These are **not approvals**. Historic project documents may keep describing their original chosen conventions. New projects must not inherit them automatically without profile selection and verification.
 

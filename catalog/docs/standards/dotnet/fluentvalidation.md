@@ -22,6 +22,16 @@ status: active
 
 Compose reusable validators for genuinely shared *meaning*, not merely shared CLR field types. When a value has restrictions beyond length, validate its allowed characters, format and explicitly adopted normalization rule. Nested model validators and outer requiredness checks solve different problems; ensure both are tested when the child must exist.
 
+## Atomic field rules and nested composition
+
+- Reuse the smallest **meaningful** rule or indivisible cross-field invariant. This does not justify a wrapper around every built-in `NotNull`, `MaximumLength` or `Must` call. Creation, patch and update operations can share the value rule while owning different presence requirements.
+- For recurring property semantics, use suitably typed `IRuleBuilder<T, TProperty>` extension methods. For a nested object, use `RuleFor(...).SetValidator(...)`; use `RuleForEach(...).SetValidator(...)` for collection elements. `Include(...)` is for validators of the **same root model type**, not arbitrary child types.
+- A `null` child skips its child validator; the parent must explicitly require the child if needed. Enforce collection-level limits separately from per-item rules. Preserve field/property paths, including collection indexes, in surfaced validation failures.
+- Keep field-level rules free of hidden network/database lookups. If a use case requires a fresh external fact, put it behind a consciously selected application check or a separately designed asynchronous boundary. Avoid repeating the same remote lookup in each child validator.
+- Optional and omitted values need different semantics for patch-style operations; rule composition must not silently turn "not provided" into "invalid domain state."
+
+References: [including rules](https://docs.fluentvalidation.net/en/latest/including-rules.html), [custom validators](https://docs.fluentvalidation.net/en/latest/custom-validators.html), [complex properties](https://docs.fluentvalidation.net/en/latest/start.html#complex-properties), [collections](https://docs.fluentvalidation.net/en/latest/collections.html).
+
 ## Async rules and ASP.NET Core
 
 If any rule is asynchronous (`MustAsync`, `CustomAsync`, `WhenAsync`), run `ValidateAsync` with a cancellation token. Running synchronous `Validate` on an async validator is unsupported and may throw.
@@ -29,6 +39,13 @@ If any rule is asynchronous (`MustAsync`, `CustomAsync`, `WhenAsync`), run `Vali
 **Do not adopt the legacy `FluentValidation.AspNetCore` MVC auto-validation pipeline for new projects.** Its synchronous ASP.NET validation pipeline is incompatible with asynchronous rules and the integration is no longer recommended for new projects. Use explicit async invocation in the application/request pipeline or an evaluated async-capable filter adapter if automatic behavior is required.
 
 Do not duplicate all checks in MVC attributes and FluentValidation. Binding errors, transport validation, business authorization, domain invariants and database constraints have different responsibilities.
+
+## Execution and test evidence
+
+- Ensure the selected endpoint, handler or filter **actually invokes** the root validator before the action it protects. Correct standalone validator tests do not establish application-pipeline integration.
+- Keep normalization/transformation outside the validator, consistently defined in the public model contract. A failed validation should not mutate inputs or have external side effects.
+- Test reusable rules alone and in the real parent composition, including null/missing inputs, zero/empty collections, conditional branches, boundary values and correct property/index error paths.
+- Exercise asynchronous rules with cancellation and a real `ValidateAsync` invocation where chosen. Provider uniqueness, concurrent state changes and permissions require their own integration/application evidence after input checks pass.
 
 ## Source of constraints
 
