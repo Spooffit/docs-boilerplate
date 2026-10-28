@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 internal static class MarkdownNavigation
 {
     private static readonly Regex InlineLink = new(
-        @"(?<!!)\[[^\]\r\n]+\]\((?<target>[^)\r\n]+)\)",
+        @"(?<!!)\[(?:\\.|[^\]\\\r\n])+\]\((?<target>[^)\r\n]+)\)",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
     private static readonly Regex Heading = new(
         @"^ {0,3}#{1,6}[ \t]+(?<title>.+?)[ \t]*$",
