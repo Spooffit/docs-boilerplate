@@ -639,4 +639,19 @@ for name in sys.argv[1:]:
 PY
 run validate --output "$temp/nav-authored"
 
+# An llms.txt entry point must keep its link to the complete catalog.
+cp -a "$temp/minimal" "$temp/llms-without-catalog"
+python3 - "$temp/llms-without-catalog/llms.txt" <<'PY'
+from pathlib import Path
+import sys
+p = Path(sys.argv[1])
+text = p.read_text(encoding="utf-8")
+lines = [line for line in text.splitlines(keepends=True) if "](docs/catalog.md)" not in line]
+assert len(lines) == len(text.splitlines(keepends=True)) - 1
+p.write_text("".join(lines), encoding="utf-8")
+PY
+if run validate --output "$temp/llms-without-catalog"; then
+    echo "Missing llms.txt catalog entrypoint was accepted"; exit 1
+fi
+
 echo "Smoke tests passed."
