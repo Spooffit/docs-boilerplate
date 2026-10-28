@@ -21,6 +21,15 @@ This is a **decision backlog**, not a questionnaire to answer during ongoing eng
 | Historical milestone structure | Original Demo/MVP/Production phases are project-specific; a neutral milestone template now exists | Leave stages fully project-defined; offer an optional curated stage example without implied commitments |
 | Strict test naming convention | Historical backend S04 and frontend S08 require `MethodUnderTest_Scenario_ExpectedBehavior` for every test category; the portable .NET catalog deliberately treats the format as a project choice | Adopt the exact convention through an explicit optional opinionated profile; recommend descriptive behavior-focused names without mandatory shape; enforce a different project-approved convention |
 
+## Decisions carried forward from S02/S03
+
+| Topic | Legacy policy requiring a decision | Options to evaluate |
+| --- | --- | --- |
+| Mandatory FluentValidation | S03 requires FluentValidation for every incoming .NET model; the reusable baseline currently makes it an optional profile | Require it only in an explicitly opinionated .NET profile; leave validation-library selection project-specific; document a preferred alternative with tested integration |
+| Mandatory Ardalis.Specification and named aggregate constraints | S02 ties persistence to Ardalis.Specification and `<AggregateName>Constraints`, while S21 and S19 remain historical sources | Make each an opt-in project convention; define a separately selected opinionated persistence profile; retain the tool-neutral baseline and let projects choose their own abstractions |
+
+These are **not approvals**. Historic project documents may keep describing their original chosen conventions. New projects must not inherit them automatically without profile selection and verification.
+
 ## Required evidence before consultation
 
 - The structural inventory and detailed migration notes are reconciled with source files.

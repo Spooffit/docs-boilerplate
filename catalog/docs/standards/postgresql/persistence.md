@@ -15,6 +15,12 @@ Use database constraints for invariants that must remain true under concurrent t
 
 For operations requiring an atomic change to multiple rows or tables, use a database transaction with an explicit boundary. Avoid performing irreversible external effects in the same assumed transaction unless a distributed consistency design is in place.
 
+## Durable references and history
+
+Where durable records refer to historical snapshots or other retained content, use constraints or an explicitly justified consistency process to prevent dangling references and silent loss of readable history. Referential integrity, scoped uniqueness and ownership need protection at the persistence boundary when concurrent writers can race; an application-side collection check alone is insufficient.
+
+If a snapshot, its current pointer and a history record must become visible together, define a transaction that spans those **database** writes and verify recovery after failures. Do not extend PostgreSQL transaction guarantees to external object stores or message brokers. When effects cross stores, specify staged states, recovery and idempotency separately.
+
 ## MVCC, isolation and concurrent access
 
 - PostgreSQL uses multiversion concurrency control (MVCC). Transaction isolation and locking affect which reads and writes can conflict.

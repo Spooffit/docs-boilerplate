@@ -17,6 +17,12 @@ status: active
 
 Choose one source for each rule; use adapters for representation without duplicating decision logic. A validation library is optional. FluentValidation conventions are selected through their own profile.
 
+## Value normalization and partial operations
+
+For each request value, define requiredness, length, permitted character set, encoding and any agreed case/Unicode/whitespace normalization. Do not rely on a maximum string length to reject forbidden characters, and do not invent normalization that changes consumer-visible identifiers. Validate nested objects against their real contract as well as their syntax.
+
+A bulk endpoint must document whether it is atomic or supports per-item outcomes; when partial results are allowed, expose successes and failures explicitly rather than reporting an unconditional overall success. If a state-changing request times out after reaching the server, clients need a defined retry, status-query or idempotency strategy where applicable. Transport failure alone does not establish that the write was rolled back.
+
 ## Response semantics
 
 - Distinguish invalid input, unauthenticated access, forbidden actions, missing or hidden resources, stale state, and transient dependency failures.

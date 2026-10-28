@@ -54,3 +54,19 @@ The smoke suite should generate combinations with MVC, its prerequisites, Postgr
 - Evaluate whether optional Ardalis.Specification, MassTransit and API Versioning deserve distinct profiles after checking their current APIs.
 - Add compiling examples with dedicated build tests before describing them as tested examples.
 - Preserve all legacy source content until the migration decisions are complete.
+
+## Complete S02/S03 source comparison (2026-10-28)
+
+The complete S02 and S03 files were read, not just their headings. The reusable parts are now traceable:
+
+| Source claim | Canonical location | Disposition |
+| --- | --- | --- |
+| S02 immutable snapshots, pointer/history atomicity, retained dependencies | `catalog/base/docs/standards/stateful-workflows.md#durable-snapshots-and-retained-history` | Generalized to conditional stateful systems |
+| S02 DB constraints, concurrency and historical migrations | `catalog/docs/standards/postgresql/persistence.md` and `catalog/docs/standards/dotnet/ef-core.md` | Technology-scoped; storage product and ORM are independent |
+| S02 DB+message consistency, projections and replay | `catalog/docs/standards/integrations/reliable-synchronization.md` | Only for systems selecting the integration-reliability profile |
+| S02 mandatory Ardalis.Specification and `<AggregateName>Constraints` | Existing opt-in Ardalis profile, S21 historical source and owner-decision backlog | **Not** imposed on all projects |
+| S03 format/domain/application trust boundaries, failures, partial results and uncertain write outcomes | `catalog/base/docs/standards/data-flows.md#input-trust-and-failure-semantics` | Portable flow contract checklist |
+| S03 HTTP-facing errors, normalization and response mapping | `catalog/docs/standards/aspnet/errors-and-validation.md` | Only for selected ASP.NET Core projects |
+| S03 mandatory FluentValidation and validator composition | `catalog/docs/standards/dotnet/fluentvalidation.md`, plus owner-decision backlog | Optional profile pending owner's policy choice |
+
+The predecessor's application test execution, DB migrations and production contracts have **not** been verified by this documentation migration. S02 and S03 may be physically retired only after all incoming Markdown links are updated, the original-policy exceptions are recorded and the deletion guard and CI pass. Mandatory historical library choices are recorded for later owner consultation rather than silently approved or forced on the universal catalog.

@@ -40,6 +40,16 @@ A DB commit and a broker publish are not magically one atomic event. Multiple st
 
 Where a workflow includes edits, immutable versions, publication or destructive changes, apply the [conditional stateful-workflow checklist](stateful-workflows.md) rather than assuming a basic CRUD lifecycle.
 
+## Input trust and failure semantics
+
+For each external operation, separate **transport validity** (format, length, encoding and allowed characters), **application authorization and state checks** (existence, ownership and allowed transition), and **durable invariants** (constraints that must survive concurrent writes). A syntactically valid identifier does not prove ownership; a checksum does not prove authorization; a claimed schema reference does not prove the payload conforms to that schema.
+
+Document normalization explicitly: allowed alphabet, case or Unicode normalization, whitespace handling and missing-versus-null behavior must match the actual producer/consumer contract. Do not silently coerce invalid input into another business meaning.
+
+Distinguish invalid input, denied access, an unknown resource, a stale state, a result not ready yet, a conflicting write and an unavailable dependency. Define which failure is observable to the caller and which internal details remain private. An exception from infrastructure is not automatically a public error contract. Do not return a successful empty response on failure.
+
+For batch operations, specify whether processing is atomic or partial and make any per-item outcomes observable. An operation that promised all-or-nothing semantics must not acknowledge partial completion as success. A timed-out write or missing response is an **unknown outcome**, not proof that a commit did not occur.
+
 ## Repeat and recovery semantics
 
 For flows where retries matter, document idempotency scope, deduplication window, message acknowledgements, ordering, stale input and partial failure recovery. Explain how users or operators distinguish a failed write from a lost acknowledgement.

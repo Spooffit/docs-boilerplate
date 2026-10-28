@@ -23,6 +23,12 @@ status: active
 - Avoid directly exposing tracked entities as public transport DTOs.
 - Configure model constraints and database constraints consistently. Input validation never substitutes for concurrent uniqueness guarantees.
 
+## Domain constraints and historical persistence metadata
+
+If a project deliberately owns stable limits in its domain model, keep current model validation and database mapping consistent without creating unrelated, drifting copies. However, domain checks and ORM metadata are not interchangeable: distinguish required input, nullable columns and required nested/value-object state explicitly.
+
+A project's named constraints class is an architectural choice, not an EF Core requirement. A migration and its model snapshot record the schema **at the time it was authored**. Do not bind previously applied migrations to mutable current-domain constants or rewrite their historical values when a new constraint changes. Review existing rows before increasing requiredness or tightening bounds.
+
 ## Transactions and concurrency
 
 - Define transaction boundaries around logically atomic changes, considering both default SaveChanges behavior and operations spanning multiple commits.

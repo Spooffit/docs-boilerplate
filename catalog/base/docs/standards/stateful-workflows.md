@@ -15,6 +15,14 @@ For each resource, distinguish logical identity, individual version identity, hu
 
 When historical snapshots exist, identify what is immutable, how previous representations remain readable, and whether format/profile changes require new readers. Do not infer hash formats or canonical serialization unless a real adopted contract defines them.
 
+## Durable snapshots and retained history
+
+For systems that actually persist immutable revisions, distinguish the **snapshot's owned content**, its immutable identity, the active pointer, and any separately stored history. Materialize a stable copy of mutable inputs before the snapshot is made durable; an immutable wrapper around a mutable collection is not a durable snapshot guarantee.
+
+Do not expose an active/ready pointer before all required snapshot parts are committed. When pointer changes and history entries describe one logical transition, specify how they remain consistent after failure. Use one atomic transaction where the stores permit it, or explicitly model pending/failed states and recovery where they do not. A successful intermediate write must not masquerade as a completed transition.
+
+Before deleting or replacing dependencies needed for historical reads, establish the actual retention contract and references. Deletion or ownership checks performed only in memory are insufficient if parallel writers can change the protected set before commit. Define which uniqueness, ownership, referential and concurrency guarantees are enforced at a durable boundary and how conflicts are observed.
+
 ## Transitions and validation
 
 Document only actual states and transitions. Where both editing and publication exist, distinguish requirements for local input, saved drafts, validation, approval, publication, activation and client visibility. These may be separate operations, but none is universal.

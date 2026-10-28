@@ -18,6 +18,10 @@ status: active
 - Do not infer identical rules from identical CLR types: two strings may have different domain meaning.
 - Validation must not mutate its input, write to databases, publish events, or bypass authorization.
 
+## Value-type semantics and normalization
+
+Compose reusable validators for genuinely shared *meaning*, not merely shared CLR field types. When a value has restrictions beyond length, validate its allowed characters, format and explicitly adopted normalization rule. Nested model validators and outer requiredness checks solve different problems; ensure both are tested when the child must exist.
+
 ## Async rules and ASP.NET Core
 
 If any rule is asynchronous (`MustAsync`, `CustomAsync`, `WhenAsync`), run `ValidateAsync` with a cancellation token. Running synchronous `Validate` on an async validator is unsupported and may throw.
