@@ -10,10 +10,7 @@ from pathlib import Path
 import re
 import sys
 
-OLD_PROJECT = re.compile(
-    r"\b(?:VRSchool|VR School|ContentManager|LeanSoft|EgrnDoc|Zensical)\b",
-    re.IGNORECASE,
-)
+NON_TEMPLATE_MARKER = re.compile(r"\bUNREUSABLE_PROJECT_CONTENT\b")
 OLD_SOURCE_ROOTS = {
     "business", "technical", "milestones", "catalog", "src", "tests", "schemas", "shared",
 }
@@ -72,9 +69,9 @@ def check(root: Path) -> list[str]:
         except UnicodeDecodeError:
             errors.append(f"{root}: non-text file in Markdown-first output: {path}")
             continue
-        match = OLD_PROJECT.search(content)
+        match = NON_TEMPLATE_MARKER.search(content)
         if match:
-            errors.append(f"{root}: predecessor identifier {match.group(0)!r} in {path}")
+            errors.append(f"{root}: non-template content marker {match.group(0)!r} in {path}")
         if "{{PROJECT_" in content:
             errors.append(f"{root}: unresolved project placeholder in {path}")
         if path in hashes and hashlib.sha256(data).hexdigest() != hashes[path]:

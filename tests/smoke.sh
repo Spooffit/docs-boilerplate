@@ -239,11 +239,11 @@ python3 tests/generated_output_hygiene.py "$temp/minimal" "$temp/headless" "$tem
 
 # Prove the new artifact guard fails specifically for source contamination and extra assets.
 cp -a "$temp/headless" "$temp/project-leak"
-printf '\nContentManager\n' >> "$temp/project-leak/docs/project/overview.md"
+printf '\nUNREUSABLE_PROJECT_CONTENT\n' >> "$temp/project-leak/docs/project/overview.md"
 if python3 tests/generated_output_hygiene.py "$temp/project-leak" > "$temp/project-leak.log" 2>&1; then
     echo "Historical product content escaped generated-output audit"; exit 1
 fi
-grep -q "predecessor identifier" "$temp/project-leak.log"
+grep -q "non-template content marker" "$temp/project-leak.log"
 cp -a "$temp/headless" "$temp/asset-leak"
 mkdir -p "$temp/asset-leak/assets"
 printf 'unexpected browser bundle\n' > "$temp/asset-leak/assets/app.js"

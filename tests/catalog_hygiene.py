@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
-"""Check that active reusable catalog content is not a dump of the predecessor product."""
+"""Check reusable catalog metadata, naming and absence of non-template fixture markers."""
 from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "catalog"
 ALLOWED_SPECIAL = {"README.md", "AGENTS.md", "SKILL.md", "CONTRIBUTING.md"}
-OLD_PROJECT = re.compile(
-    r"\bVRSchool\b|\bVR School\b|\bContentManager\b|\bLeanSoft\b|\bEgrnDoc\b|\bZensical\b",
-    re.IGNORECASE,
-)
+NON_TEMPLATE_MARKER = re.compile(r"\bUNREUSABLE_PROJECT_CONTENT\b")
 DOC_FILENAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*\.md$")
 PROTECTED_TREES = ("base", "docs", "modules", "skills")
 errors = []
@@ -26,9 +23,9 @@ for folder in PROTECTED_TREES:
         if doc.name not in ALLOWED_SPECIAL and not DOC_FILENAME.fullmatch(doc.name):
             errors.append(f"{relative}: filename must use lowercase kebab-case")
 
-        for match in OLD_PROJECT.finditer(text):
+        for match in NON_TEMPLATE_MARKER.finditer(text):
             line = text.count("\n", 0, match.start()) + 1
-            errors.append(f"{relative}:{line}: predecessor-project identifier '{match.group(0)}'")
+            errors.append(f"{relative}:{line}: non-template content marker '{match.group(0)}'")
 
 viewer_files = sorted(path.name for path in (CATALOG / "sites").iterdir() if path.is_file())
 if viewer_files != ["docsify.html"]:

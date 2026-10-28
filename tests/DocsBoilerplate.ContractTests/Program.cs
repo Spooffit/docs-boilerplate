@@ -52,7 +52,7 @@ void Throws<TException>(Action action) where TException : Exception
 
 DocsCli.Profile P(string id, string[]? dependencies = null, string status = "available") =>
     new(id, id, status, dependencies ?? [], [$"docs/standards/{id}.md"], "backend");
-DocsCli.Catalog Catalog(params DocsCli.Profile[] profiles) => new(1, profiles);
+DocsCli.Catalog Catalog(params DocsCli.Profile[] profiles) => new(profiles);
 
 Test("transitive dependencies resolve without duplicates", () =>
 {
@@ -72,14 +72,14 @@ Test("an unselected profile is not added", () =>
 });
 Test("skills resolve precisely", () =>
 {
-    var catalog = new DocsCli.SkillCatalog(1, [new("review", "Review", "skills/review/SKILL.md", ".agents/skills/review/SKILL.md")]);
+    var catalog = new DocsCli.SkillCatalog([new("review", "Review", "skills/review/SKILL.md", ".agents/skills/review/SKILL.md")]);
     Expect(DocsCli.ResolveSkills(["review"], catalog).SetEquals(["review"]), "Wrong skill resolution");
     Throws<InvalidOperationException>(() => DocsCli.ResolveSkills(["review", "review"], catalog));
     Throws<InvalidOperationException>(() => DocsCli.ResolveSkills(["unknown"], catalog));
 });
 Test("modules resolve precisely", () =>
 {
-    var catalog = new DocsCli.ModuleCatalog(1, [new("testing", "Testing", [])]);
+    var catalog = new DocsCli.ModuleCatalog([new("testing", "Testing", [])]);
     Expect(DocsCli.ResolveModules(["testing"], catalog).SetEquals(["testing"]), "Wrong module resolution");
     Throws<InvalidOperationException>(() => DocsCli.ResolveModules(["testing", "testing"], catalog));
     Throws<InvalidOperationException>(() => DocsCli.ResolveModules(["missing"], catalog));

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reject predecessor product sources and dead links in the active boilerplate.
+"""Reject source-tree leakage and broken links in the active boilerplate.
 
 This test covers the maintainer docs, not the generated project's complete
 Markdown syntax. Catalog-specific frontmatter and name checks live in
@@ -17,7 +17,7 @@ FORBIDDEN_ROOTS = ("business", "technical", "milestones", "shared")
 FORBIDDEN_FILES = ("features.md", "modules.md", "questions.md", "standards.md")
 FORBIDDEN_DIRECTORIES = ("docs/audit", "docs/legacy")
 FORBIDDEN_TESTS = ("legacy_inventory.py", "legacy_link_graph.py", "source_evidence_links.py")
-OLD_IDENTIFIERS = re.compile(r"\b(?:VRSchool|VR School|ContentManager|LeanSoft|EgrnDoc|Zensical)\b", re.I)
+NON_TEMPLATE_MARKER = re.compile(r"\bUNREUSABLE_PROJECT_CONTENT\b")
 INLINE_LINK = re.compile(r"\]\(\s*<?([^\s)<>]+)>?(?:\s+[^)]*)?\)")
 REFERENCE_LINK = re.compile(r"^\s{0,3}\[[^\]]+\]:\s*<?([^\s<>]+)>?", re.M)
 FENCE = re.compile(r"^\s{0,3}(`{3,}|~{3,})")
@@ -76,8 +76,8 @@ def main():
         relative = p.relative_to(ROOT).as_posix()
         content = p.read_text(encoding="utf-8")
         checked += 1
-        if OLD_IDENTIFIERS.search(content):
-            errors.append(f"Former product identifier in {relative}")
+        if NON_TEMPLATE_MARKER.search(content):
+            errors.append(f"Non-template content marker in {relative}")
         for link in links(content):
             dest = target_path(relative, link)
             if dest is None:
