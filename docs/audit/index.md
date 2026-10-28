@@ -28,5 +28,6 @@ These reports distinguish examined documentation from historical source material
 - [Object storage and media lifecycle extraction](object-storage-extraction.md)
 - [HTTP contracts, API clients and safe database migrations](http-persistence-extraction.md)
 - [Q15/Q20 source evidence and F09/F10/F11/F17 API boundaries](q15-q20-evidence-review.md)
+- [Five retained technology standards: technical closeout](retained-standards-closeout.md)
 - [Owner decisions deferred until engineering is complete](owner-decision-backlog.md)
 - [Historical placeholder and standard removals](legacy-removals.md)
