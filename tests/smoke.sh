@@ -242,7 +242,7 @@ grep -q 'visibility before counts, pagination and filter suggestions' "$temp/all
 grep -q '^## Conditional history and audit effects$' "$temp/all-profiles/docs/standards/data-flows.md"
 grep -q 'cross-feature read concern' "$temp/all-profiles/docs/templates/module.md"
 grep -q 'UI notification or an attempted action' "$temp/all-profiles/docs/templates/feature.md"
-grep -q 'generator source checkout' "$temp/all-profiles/.agents/skills/docs-init/SKILL.md"
+grep -q 'does not contain an installed CLI' "$temp/all-profiles/.agents/skills/docs-init/SKILL.md"
 grep -q 'generated repository does not contain the CLI' "$temp/all-profiles/.agents/skills/docs-review/SKILL.md"
 [[ ! -e "$temp/minimal/docs/operations/observability.md" ]]
 [[ ! -e "$temp/minimal/docs/architecture/security.md" ]]
