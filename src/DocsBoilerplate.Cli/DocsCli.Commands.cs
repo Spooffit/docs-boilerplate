@@ -5,15 +5,27 @@ using Spectre.Console;
 
 static partial class DocsCli
 {
+    internal static string[] RemainingInteractiveProfiles(Catalog catalog, IEnumerable<string> offered)
+    {
+        var alreadyShown = new HashSet<string>(offered, StringComparer.Ordinal);
+        return catalog.Profiles
+            .Where(profile => profile.Status == "available" && !alreadyShown.Contains(profile.Id))
+            .Select(profile => profile.Id)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+    }
+
     private static string[] PromptProfiles(Catalog catalog)
     {
         var selected = new HashSet<string>(StringComparer.Ordinal);
+        var offered = new HashSet<string>(StringComparer.Ordinal);
         var frontendChoice = "none";
 
         string PickOne(string title, string category)
         {
             var choices = catalog.Profiles.Where(x => x.Category == category && x.Status == "available")
                 .Select(x => x.Id).Order(StringComparer.Ordinal).ToArray();
+            offered.UnionWith(choices);
             return AnsiConsole.Prompt(new SelectionPrompt<string>().Title(title)
                 .AddChoices(new[] { "none" }.Concat(choices)));
         }
@@ -24,6 +36,7 @@ static partial class DocsCli
                 && !(x.Id == "bunit" && frontendChoice != "blazor"))
                 .Select(x => x.Id).Order(StringComparer.Ordinal).ToArray();
             if (choices.Length == 0) return;
+            offered.UnionWith(choices);
             var picks = AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title(title).AddChoices(choices));
             selected.UnionWith(picks);
         }
@@ -51,6 +64,16 @@ static partial class DocsCli
         PickMany("Application patterns (optional):", "application-pattern");
         if (backend == "dotnet" || frontend == "blazor")
             PickMany("Testing libraries (optional):", "testing");
+
+        // Profiles in independent categories (e.g. documentation policy, storage,
+        // integration, HTTP consumption and UI practices) must remain discoverable
+        // in interactive mode too. Dependencies are resolved after selection.
+        var remaining = RemainingInteractiveProfiles(catalog, offered);
+        if (remaining.Length > 0)
+            selected.UnionWith(AnsiConsole.Prompt(
+                new MultiSelectionPrompt<string>()
+                    .Title("Additional optional profiles (dependencies resolved automatically):")
+                    .AddChoices(remaining)));
 
         return selected.Order(StringComparer.Ordinal).ToArray();
     }

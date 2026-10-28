@@ -70,6 +70,16 @@ Test("an unselected profile is not added", () =>
     var selected = DocsCli.ResolveProfiles(["alpha"], Catalog(P("alpha"), P("unrelated")));
     Expect(selected.SetEquals(["alpha"]), "Unexpected implicit profile");
 });
+Test("interactive profile picker includes all independently selectable profiles", () =>
+{
+    var catalog = Catalog(P("dotnet"), P("http-contracts"), P("object-storage"),
+        P("document-identifiers-and-statuses"), P("ui-direct-dto-forms"),
+        P("go", status: "planned"));
+    var extras = DocsCli.RemainingInteractiveProfiles(catalog, ["dotnet"]);
+    Expect(extras.SequenceEqual([
+        "document-identifiers-and-statuses", "http-contracts", "object-storage", "ui-direct-dto-forms"
+    ]), "An available profile disappeared from interactive selection");
+});
 Test("skills resolve precisely", () =>
 {
     var catalog = new DocsCli.SkillCatalog([new("review", "Review", "skills/review/SKILL.md", ".agents/skills/review/SKILL.md")]);
