@@ -14,6 +14,7 @@ This is a **decision backlog**, not a questionnaire to answer during ongoing eng
 | Topic | Why it needs owner input | Options to evaluate |
 | --- | --- | --- |
 | Historical examples | The predecessor source contains large, highly specific F/M/Q specifications that are poor universal defaults | Keep no examples; retain a small sanitized and isolated example project; preserve only via Git history |
+| Optional approval/review workflow illustration | F17 contains a useful but highly product-specific, cross-owner decision/activation/Delivery process; a universal approval engine would be misleading | Retain only the conditional stateful-workflow checklist; add an explicitly opt-in neutral review-decision template; build a small sanitized, executable example only with real demand and verification |
 | Prescriptive .NET architecture | Original backend documents prescribe Domain/Application.Abstractions/EF/Infrastructure, particular query placement and aggregate constraint classes; the current catalog is neutral | Keep only neutral architecture profiles; provide one or more explicitly optional opinionated profiles, after executable checks |
 | Default template breadth | There is a base Feature, Module, Question, ADR, Standard, Technical Feature and Milestone set alongside .NET/Blazor variants | Keep a small permanent core; move more templates to opt-in modules; add specialized templates only with a real reuse case |
 | Requirements identifiers and status | Original files use F/M/Q identifiers that are useful inside that project, but not necessarily universal | Descriptive filenames with optional project IDs; opt-in structured ID scheme; avoid mandatory global numbering |
@@ -74,6 +75,10 @@ The [five-standard closeout](retained-standards-closeout.md) reconciles the stil
 | `S21-aggregate-constraints.md` | Aggregate constraints catalog and sample style | Await owner; portable DDD/EF rules already apply |
 
 A choice to maintain an opinionated profile or sanitized example is **separate** from approval to retire the historical source. Both must meet the verification and deletion gates in the closeout before modifying generated defaults.
+
+## F17 workflow illustration handoff (2026-10-28)
+
+The [F17 semantic review](content-review-evidence-review.md) documents already extracted, conditional review/approval principles and the still-historical decision, effect, consent-basis and concurrent-write examples. **No moderation profile or example is approved by this entry.** The choice above is separate from deciding whether the predecessor F17/Q28 documents may be deleted; their source-level evidence and deletion gates remain in force.
 
 ## Required evidence before consultation
 
