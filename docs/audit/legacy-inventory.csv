@@ -139,9 +139,9 @@ technical/backend/standards/S14-test-environments.md,candidate-technology-standa
 technical/backend/standards/S15-test-engineering.md,candidate-technology-standard,removed-cleanup,10076
 technical/backend/standards/S16-rest.md,candidate-technology-standard,reviewed-targeted,36346
 technical/backend/standards/S17-data-flows.md,candidate-technology-standard,reviewed-targeted,11944
-technical/backend/standards/S18-fluent-validation.md,candidate-technology-standard,reviewed-targeted,10001
-technical/backend/standards/S19-specifications.md,candidate-technology-standard,reviewed-targeted,8882
-technical/backend/standards/S20-cqrs.md,candidate-technology-standard,reviewed-targeted,314
+technical/backend/standards/S18-fluent-validation.md,candidate-technology-standard,removed-cleanup,10001
+technical/backend/standards/S19-specifications.md,candidate-technology-standard,removed-cleanup,8882
+technical/backend/standards/S20-cqrs.md,candidate-technology-standard,removed-cleanup,314
 technical/backend/standards/S21-aggregate-constraints.md,candidate-technology-standard,reviewed-targeted,30457
 technical/backend/standards/S22-eventbus-topology.md,candidate-technology-standard,reviewed-targeted,8390
 technical/backend/standards/S23-csproj.md,candidate-technology-standard,removed-cleanup,6062

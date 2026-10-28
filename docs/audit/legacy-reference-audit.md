@@ -65,3 +65,7 @@ After 20 identified incoming-link migrations, the Linux Actions reference report
 ## S02/S03 scoped retirements (2026-10-28)
 
 Both complete sources were compared to the canonical baseline. Four known incoming documents each were redirected to typed, relevant anchors before the old files were retired in one commit. The known incoming lists and decision rationale are recorded in [the removal ledger](legacy-removals.md) and [backend technical review](backend-standards-review.md). The surviving historical standard count becomes **12**, subject to the CI link gate. The original project's mandatory Ardalis.Specification, named constraints and FluentValidation policies remain explicitly deferred for owner consultation; no universal dependency was created.
+
+## S18/S19/S20 completed source-and-link migration (2026-10-28)
+
+After full-source review and extraction into their selected profiles, S18/S19/S20 were redirected from the predecessor tree. The prior passing report counted 26/21/18 inbound **documents** respectively. The reference graph on commit `da787f4a715fd8f73deb8331ce2e12080443d987` reported **zero incoming documents** for each. Their deletion leaves **9** historical candidate-technology standards, subject to final CI and inventory checks. The portability decision is to keep `fluentvalidation`, `ardalis-specification` and `cqrs` opt-in; framework/library mandates and exact handler placement are deferred to owner review rather than silently made universal.

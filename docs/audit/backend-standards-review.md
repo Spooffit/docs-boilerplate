@@ -50,7 +50,7 @@ The smoke suite should generate combinations with MVC, its prerequisites, Postgr
 
 ## Remaining migration work
 
-- Review the unprocessed S05-S08 and S17, S19, S21-S22 and frontend standards for technical correctness.
+- Review the remaining S04/S16/S17/S21/S22 and frontend S05-S08 standards for technical correctness, while preserving already extracted rules.
 - Evaluate whether optional Ardalis.Specification, MassTransit and API Versioning deserve distinct profiles after checking their current APIs.
 - Add compiling examples with dedicated build tests before describing them as tested examples.
 - Preserve all legacy source content until the migration decisions are complete.
@@ -80,3 +80,7 @@ The predecessor's application test execution, DB migrations and production contr
 ## Completed S02/S03 retirement (2026-10-28)
 
 Following a whole-file review and reusable-rule extraction, the four inbound links to each retired source were updated. S02 mapped to the base stateful-workflows review and selected EF Core conventions; S03 to base data-flow trust/failure rules and opt-in ASP.NET Core error semantics. Project-specific mandatory Ardalis, constraint-class naming and FluentValidation decisions are **not** presumed for every new project. The full source-to-target trace is in the preceding comparison section. The original documents remain available through Git history, and successful CI remains the deletion gate.
+
+## Completed S18/S19/S20 retirement (2026-10-28)
+
+S18 and S19 were compared in full with their respective **optional** FluentValidation and Ardalis.Specification profiles; the specialized composition, execution, provider fidelity and validation requirements have been retained without a mandatory dependency for unselected projects. The entire two-line S20 source was reconciled into optional CQRS handler-placement guidance, with concrete architectural layering left to a real project decision. The deletion decision for each and evidence of zero recognized incoming links are recorded in [the historical removal ledger](legacy-removals.md). Updated documentation is not executable verification of the old project's tests or third-party library examples.
