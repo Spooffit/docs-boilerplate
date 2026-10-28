@@ -9,13 +9,13 @@ status: active
 
 ## Implemented
 
-- A .NET 10 / Spectre.Console CLI with interactive and non-interactive `init`, `list`, `doctor`, `validate` and fingerprint-based `update` commands.
+- A .NET 10 / Spectre.Console CLI with interactive and non-interactive `init`, `list`, `doctor`, `validate`, fingerprint-based `update`, `recover` and `version` commands. Input catalogs require schema version 1, new project manifests declare `SchemaVersion: 1`, and prior unversioned v1 manifests remain compatible.
 - A minimal Markdown-first base catalog with composable available/planned technology profiles, optional project-document modules and optional agent skills.
 - Explicit dependency resolution, catalog path checks and refusal of conflicting user edits. Preview/dry-run is read-only; `update --apply` uses recorded SHA-256 generator-owned file fingerprints and preserves user-authored changes. Update preflight rejects case-only collisions with existing files and parent directories before writing.
 - Generated `README.md`, `AGENTS.md`, `llms.txt`, navigable `docs/` and `docs.config.json` manifest. Generated output includes only selected profiles and optional modules.
 - Optional Docsify browser shell using a single `index.html`. Markdown remains source of truth and no static-site build tree is created.
 - A CLI validator for ordinary relative Markdown links and common heading fragments, frontmatter, directory indexes, **catalog coverage for every project Markdown page and local index coverage for newly authored pages**, managed paths and unresolved required placeholders.
-- Cross-platform CI: Linux build, focused .NET contract tests, generation smoke, JSON Schema checks and hygiene; Windows build and smoke; real Chromium/Playwright Docsify navigation checks.
+- Cross-platform CI: Linux build, focused .NET contract tests, generation smoke, JSON Schema checks and hygiene; Windows build and smoke; real Chromium/Playwright Docsify navigation checks. Linux and Windows also test installing the packed .NET Tool and updating it from 0.1.0 to a locally staged simulated 0.1.1 without reinitializing existing documents.
 - Repository and catalog hygiene checks ensuring former project specifications are not shipped or silently reintroduced.
 - Initial project and architecture overviews remain `draft`, distinguish observed code from target decisions and prompt for evidence. The optional `docs-init` skill explains first-pass project intake; smoke tests verify generated onboarding content.
 

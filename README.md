@@ -20,10 +20,13 @@ Requires .NET SDK 10:
 ```sh
 dotnet run --project src/DocsBoilerplate.Cli -- list
 dotnet run --project src/DocsBoilerplate.Cli -- doctor
+dotnet run --project src/DocsBoilerplate.Cli -- version
 dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive --dry-run
 dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/demo
 ```
+
+The CLI also packages as a local or global .NET Tool. From the boilerplate source, run `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts` and install with `dotnet tool install DocsBoilerplate.Cli --tool-path ./tools --add-source ./artifacts --version 0.1.0`. Invoke `./tools/docs-boilerplate version` to inspect the installed CLI and supported manifest/catalog versions. A released package can be upgraded with `dotnet tool update DocsBoilerplate.Cli --tool-path ./tools --add-source ./artifacts --version <new-version>`; this does not automatically modify any generated project. These examples use locally built packages and do not claim a published NuGet release. See the [generator guide](docs/generator.md) for compatibility and upgrade rules.
 
 Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh` after changing generator behavior. The cross-platform test workflow is [`.github/workflows/docs-generator.yml`](.github/workflows/docs-generator.yml).
 
