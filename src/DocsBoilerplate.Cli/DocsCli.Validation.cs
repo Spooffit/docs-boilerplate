@@ -83,21 +83,36 @@ static partial class DocsCli
                 errors.Add($"Invalid or missing YAML frontmatter: {relativeName}");
             if (text.Contains("{{PROJECT_", StringComparison.Ordinal))
                 errors.Add($"Unresolved template field: {file}");
-            foreach (System.Text.RegularExpressions.Match match in System.Text.RegularExpressions.Regex.Matches(text, @"\]\(([^)#]+)(?:#[^)]*)?\)"))
+            foreach (var rawLink in MarkdownNavigation.InlineTargets(text))
             {
-                var link = match.Groups[1].Value;
-                if (Uri.TryCreate(link, UriKind.Absolute, out _) || link.StartsWith('#') || link.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
+                if (Uri.TryCreate(rawLink, UriKind.Absolute, out _) ||
+                    rawLink.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
                     continue;
-                var decoded = Uri.UnescapeDataString(link);
-                var target = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file)!, decoded));
-                var outputRoot = Path.GetFullPath(output).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-                if (!target.StartsWith(outputRoot, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
-                    errors.Add($"Relative link escapes repository in {file}: {link}");
-                else
+                var (path, fragment) = MarkdownNavigation.SplitLocalTarget(rawLink);
+                if (path.Length == 0 && fragment is null) continue;
+                var target = path.Length == 0
+                    ? file
+                    : Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file)!, path));
+                var root = Path.GetFullPath(output).TrimEnd(Path.DirectorySeparatorChar)
+                    + Path.DirectorySeparatorChar;
+                if (!target.Equals(file, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)
+                    && !target.StartsWith(root, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
                 {
-                    SafeFiles.AssertNoLinks(target);
-                    if (!File.Exists(target))
-                        errors.Add($"Broken relative link in {file}: {link}");
+                    errors.Add($"Relative link escapes repository in {relativeName}: {rawLink}");
+                    continue;
+                }
+                SafeFiles.AssertNoLinks(target);
+                if (!File.Exists(target))
+                {
+                    errors.Add($"Broken relative link in {relativeName}: {rawLink}");
+                    continue;
+                }
+                if (fragment is not null && fragment.Length > 0
+                    && target.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+                {
+                    var targetText = target == file ? text : await File.ReadAllTextAsync(target);
+                    if (!MarkdownNavigation.Anchors(targetText).Contains(fragment))
+                        errors.Add($"Missing Markdown heading anchor in {relativeName}: {rawLink}");
                 }
             }
         }
