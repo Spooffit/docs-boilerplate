@@ -235,6 +235,14 @@ run validate --output "$temp/all-profiles"
 grep -q 'docs/project/requirements.md' "$temp/all-profiles/llms.txt"
 grep -q 'docs/architecture/security.md' "$temp/all-profiles/llms.txt"
 grep -q 'docs/operations/runbook.md' "$temp/all-profiles/llms.txt"
+# Optional audit-history review prompts must render only with the selected modules.
+grep -q '^## Durable activity history (only when required)$' "$temp/all-profiles/docs/operations/observability.md"
+grep -q 'source owner' "$temp/all-profiles/docs/operations/observability.md"
+grep -q 'visibility before counts, pagination and filter suggestions' "$temp/all-profiles/docs/architecture/security.md"
+grep -q '^## Conditional history and audit effects$' "$temp/all-profiles/docs/standards/data-flows.md"
+grep -q 'cross-feature read concern' "$temp/all-profiles/docs/templates/module.md"
+[[ ! -e "$temp/minimal/docs/operations/observability.md" ]]
+[[ ! -e "$temp/minimal/docs/architecture/security.md" ]]
 python3 tests/generated_output_hygiene.py "$temp/minimal" "$temp/headless" "$temp/full-stack" "$temp/all-profiles"
 
 # Prove the new artifact guard fails specifically for source contamination and extra assets.

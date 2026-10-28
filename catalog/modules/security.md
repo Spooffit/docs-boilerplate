@@ -47,6 +47,10 @@ Do not automatically replay an uncertain state-changing request after reauthenti
 
 State key/secret ownership, persistence, rotation and multi-replica compatibility where applicable. Keep security diagnostics separate from product activity history where their audience, retention or confidentiality differs. Define what may be logged, who can read it, how failures are distinguished, and whether audit delivery is synchronous or eventually consistent.
 
+Where a durable activity or security audit is required, establish the authoritative source and classification for each fact, rather than inferring the result from an HTTP status, a button click or an application log. Record trusted actor identity versus automated executor/initiator, typed resource/version identity and safe historical labels. For asynchronous delivery, capture the intent durably with the actual committed source change; specify replay-safe receiving and lag/error handling. The chosen policy determines which failed attempts, security denials and completed business effects are recorded; these may belong to **different** histories.
+
+Protect audit records and their metadata through a documented allowlist and reader policy. Enforce visibility before counts, pagination and filter suggestions; an audit-reader permission does not bypass the current target owner's authorization. Keep unrelated credentials, payloads, access tokens, private URLs and full before/after content out of a convenient activity summary. Define retention, privacy exceptions and removal of personal data from real approved obligations, not a default infinite-history promise.
+
 | Threat / requirement | Selected mitigation and owner | Implementation version/reference | Negative or failure test | Status |
 | --- | --- | --- | --- | --- |
 | [Confirmed risk] | [Approved control] | [Observed source or Not verified] | [Actual scenario] | [Planned / Implemented / Verified] |

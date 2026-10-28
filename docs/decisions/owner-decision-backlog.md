@@ -27,6 +27,7 @@ These are **questions for the repository owner**, not approved engineering requi
 | Messaging topology | MassTransit/RabbitMQ guidance avoids hardcoding one project topology | Optional concrete contract/package/topology conventions after testing; stay tool/transport-neutral by default |
 | Data-flow detail | Transport and internal flows are distinguished when applicable | Optional detailed DF-ID template; lightweight traceability only |
 | Milestone examples | Stages are project-defined | Example Demo/MVP/Production plan as opt-in guidance; no prescribed stages |
+| Persistent activity-history documentation | Security and observability scaffolds include conditional prompts for durable history without requiring an audit subsystem | Keep prompts within existing modules; add a dedicated opt-in activity-history writing template; omit history-specific guidance unless explicitly selected |
 | Review/approval workflow examples | Generic stateful workflow checklist describes review only when applicable | Keep the checklist; add an opt-in review decision template; offer an independently verified example |
 
 ## Approval requirements

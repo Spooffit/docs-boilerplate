@@ -27,6 +27,8 @@ status: template
 
 [Describe handoffs and sequencing only where needed to understand the combined result. Distinguish module-as-documentation grouping, module-as-runtime boundary and domain bounded context; they are not necessarily the same unit. Link each owned public interface to its authoritative contract instead of restating fields.]
 
+If several features contribute to a shared activity view, document the view as a **cross-feature read concern** without moving source business invariants, review outcomes or authority into the documentation module. Distinguish actor identity, authorization, target-reference access and durable history ownership by their real boundaries; one screen or module heading does not imply one bounded context.
+
 ## Delivery stage and ownership
 
 [Identify confirmed ownership of mutable state, public read interfaces and work assigned to each delivery milestone. Note explicitly when work is not included in the current milestone.]
