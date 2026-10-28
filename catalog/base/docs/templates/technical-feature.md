@@ -52,7 +52,7 @@ Identify cancellation, timeout, idempotency and side-effect behavior where relev
 
 ## State and failure handling
 
-[For UI or SDK features, describe state ownership and user-visible progress. For backend/integration features, describe conflict handling, transaction rollback, external dependency failure and safe diagnostics. Distinguish invalid inputs, forbidden work, missing resources and concurrent changes.]
+[For UI or SDK features, describe state ownership and user-visible progress. For backend/integration features, describe conflict handling, transaction rollback, external dependency failure and safe diagnostics. Distinguish invalid inputs, forbidden work, missing resources and concurrent changes. If a review/approval gate exists, document its exact target/version, retained decision history, reviewer permissions, independent comparison/consent basis, concurrency protections and the separate point at which a permitted action becomes effective; apply the selected stateful-workflow standard instead of inventing a generic approval engine.]
 
 ## Security, reliability and observability
 
