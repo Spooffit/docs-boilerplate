@@ -325,6 +325,12 @@ Test("update path preflight rejects case-only files and directory aliases", () =
     Expect(UpdatePathSafety.FindCaseOnlyCollision(
         "docs/standards/dotnet/existing.md", entries) is null,
         "Exact casing must be handled by ordinary collision logic");
+    Expect(UpdatePathSafety.FindBlockingFileAncestor(
+        "docs/notes/guide.md", ["docs/notes", "docs/standards/summary.md"]) == "docs/notes",
+        "A user file blocking a needed directory was missed");
+    Expect(UpdatePathSafety.FindBlockingFileAncestor(
+        "docs/standards/dotnet/new.md", ["docs/standards/summary.md"]) is null,
+        "Unrelated user file falsely blocked an update");
 });
 Test("safe enumeration includes directories without changing file-only enumeration", () =>
 {

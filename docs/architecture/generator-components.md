@@ -35,7 +35,7 @@ The CLI is still one executable and uses a **partial static class** split by res
 - **Real browser verification:** `tests/docsify_browser.py` exercises rendered Docsify in Playwright/Chromium, including nested routes, fragment links and refresh, with CI failure traces; it does not add dependencies to generated projects.
 - **Windows CLI verification:** `tests/windows-smoke.ps1` checks an independent real Windows execution path.
 - **JSON Schema contracts:** `tests/schema_contracts.py` validates catalog files and representative generated config; CI installs `jsonschema` for these checks only.
-- **Migration inventory:** `tests/legacy_inventory.py` refuses disappearance of source material without a recorded process.
+- **Repository cleanliness:** `tests/repository_hygiene.py` protects the boilerplate from reintroducing predecessor project sources and links.
 
 A passing focused check does not prove browser interactivity, all Markdown link variants or crash-atomic multi-file updates. The CI browser job checks selected Chromium scenarios only, not full accessibility, CDN uptime or other browsers. Fragment checks support ordinary inline links, common headings and explicit HTML anchors, but do not implement every Docsify-renderer convention or reference-style link. Keep these limitations explicit.
 

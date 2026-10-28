@@ -5,6 +5,11 @@
 /// </summary>
 internal static class UpdatePathSafety
 {
+    internal static string? FindBlockingFileAncestor(
+        string relative, IEnumerable<string> existingFiles) =>
+        existingFiles.Order(StringComparer.Ordinal).FirstOrDefault(file =>
+            relative.StartsWith(file + "/", StringComparison.OrdinalIgnoreCase));
+
     internal static string? FindCaseOnlyCollision(
         string relative, IEnumerable<string> existingEntries)
     {

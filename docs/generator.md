@@ -104,7 +104,7 @@ docs-boilerplate validate --output ./my-docs
 - Update a file only when it still matches the original recorded hash, or leave it unchanged if the new template is already present.
 - Preserve local edits when the upstream template has not changed.
 - Reject changes if both a user and the template modified the same file; **no writes occur when a preflight conflict exists**. The preview identifies each conflicting path and tells the owner to reconcile it in Git rather than edit manifest fingerprints.
-- Reject collisions with newly proposed paths that are already user-owned, including file or parent-folder names that differ only by letter case. This prevents a Linux-generated update from creating paths that would alias on Windows.
+- Reject collisions with newly proposed paths that are already user-owned, including file or parent-folder names that differ only by letter case, and existing files where a new profile needs a directory. This prevents case-sensitive/case-insensitive conflicts and failures partway through an update.
 - Add new files when selected profiles gain documentation.
 - Preserve retired files, but remove their paths from managed ownership and regenerated navigation. Their exact paths are carried as `RetiredFiles` in `docs.config.json`, so validation does not mistake them for newly authored, unindexed pages. No automatic deletion.
 - Record new fingerprints and update `docs.config.json` last; attempt rollback of completed writes if a write fails.

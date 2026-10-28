@@ -591,6 +591,26 @@ cmp "$temp/case-original-config.json" "$temp/case-conflict/docs.config.json"
 grep -q 'Owner document' "$temp/case-conflict/docs/standards/dotnet/USER-NOTE.md"
 [[ ! -f "$temp/case-conflict/docs/standards/dotnet/user-note.md" ]]
 
+# A user file cannot silently become a directory required by an added profile.
+cp -a "$temp/minimal" "$temp/blocked-parent"
+cp -a "$temp/catalog-collision-update" "$temp/catalog-blocked-parent"
+mkdir -p "$temp/catalog-blocked-parent/docs/standards/nested"
+printf '# Future guidance\n' > "$temp/catalog-blocked-parent/docs/standards/nested/guide.md"
+python3 - "$temp/catalog-blocked-parent/profiles.json" <<'PY'
+import json,sys
+p=sys.argv[1]
+with open(p,encoding="utf-8") as fh: data=json.load(fh)
+next(x for x in data["profiles"] if x["id"]=="dotnet")["files"].append("docs/standards/nested/guide.md")
+with open(p,"w",encoding="utf-8") as fh: json.dump(data,fh)
+PY
+printf 'Owner file, not a directory\n' > "$temp/blocked-parent/docs/standards/nested"
+cp "$temp/blocked-parent/docs.config.json" "$temp/blocked-parent-before.json"
+if run update --output "$temp/blocked-parent" --catalog "$temp/catalog-blocked-parent" --apply > "$temp/blocked-parent.log" 2>&1; then
+    echo "Existing file became a generator directory"; exit 1
+fi
+grep -q 'File blocks required directory' "$temp/blocked-parent.log"
+cmp "$temp/blocked-parent-before.json" "$temp/blocked-parent/docs.config.json"
+grep -q 'Owner file, not a directory' "$temp/blocked-parent/docs/standards/nested"
 # Corrupt v2 fingerprints must fail validation even if all files still exist.
 cp -a "$temp/minimal" "$temp/invalid-hashes"
 python3 - "$temp/invalid-hashes/docs.config.json" <<'PY'

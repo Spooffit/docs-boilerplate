@@ -45,6 +45,9 @@ static partial class DocsCli
         var existingEntries = SafeFiles.EnumerateEntries(output)
             .Select(path => Path.GetRelativePath(output, path).Replace('\\', '/'))
             .ToArray();
+        var existingFiles = existingEntries
+            .Where(relative => File.Exists(Path.Combine(output, relative.Replace('/', Path.DirectorySeparatorChar))))
+            .ToArray();
         var configPath = SafePath(output, ConfigName);
         if (!File.Exists(configPath))
             throw new IOException($"Missing {ConfigName}. Refusing to update an unmanaged directory.");
@@ -95,6 +98,9 @@ static partial class DocsCli
                 if (caseCollision is not null)
                     conflicts.Add($"Case-only path collision: {relative} conflicts with {caseCollision}. " +
                         "Rename the existing path (including parent directory casing) before retrying.");
+                else if (UpdatePathSafety.FindBlockingFileAncestor(relative, existingFiles) is { } blocked)
+                    conflicts.Add($"File blocks required directory: {blocked} prevents {relative}. " +
+                        "Rename the existing file before retrying.");
                 else if (File.Exists(target) || Directory.Exists(target))
                     conflicts.Add($"Unmanaged file collision: {relative}. Rename or reconcile the existing file before retrying.");
                 else
