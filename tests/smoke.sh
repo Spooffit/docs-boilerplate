@@ -611,6 +611,29 @@ fi
 grep -q 'File blocks required directory' "$temp/blocked-parent.log"
 cmp "$temp/blocked-parent-before.json" "$temp/blocked-parent/docs.config.json"
 grep -q 'Owner file, not a directory' "$temp/blocked-parent/docs/standards/nested"
+# A stale transaction directory must block validation and updates, never erase user data.
+cp -a "$temp/minimal" "$temp/interrupted-staging"
+mkdir "$temp/interrupted-staging/.docs-boilerplate-update"
+printf '%s\n' 'preserve unknown staging data' > "$temp/interrupted-staging/.docs-boilerplate-update/unknown-note.txt"
+cp "$temp/interrupted-staging/docs.config.json" "$temp/interrupted-staging-config.json"
+if run update --output "$temp/interrupted-staging" --apply > "$temp/interrupt-update.log" 2>&1; then
+    echo "Update ignored interrupted recovery journal"; exit 1
+fi
+grep -q 'docs-boilerplate recover' "$temp/interrupt-update.log"
+if run validate --output "$temp/interrupted-staging" > "$temp/interrupt-validate.log" 2>&1; then
+    echo "Validate ignored unfinished update"; exit 1
+fi
+grep -q 'unfinished update' "$temp/interrupt-validate.log"
+if run recover --output "$temp/interrupted-staging" > "$temp/interrupt-recover.log" 2>&1; then
+    echo "Recovery accepted an incomplete staging directory as a committed plan"; exit 1
+fi
+grep -q 'staging was interrupted' "$temp/interrupt-recover.log"
+cmp "$temp/interrupted-staging-config.json" "$temp/interrupted-staging/docs.config.json"
+grep -q 'preserve unknown staging data' "$temp/interrupted-staging/.docs-boilerplate-update/unknown-note.txt"
+if run recover --output "$temp/minimal" > "$temp/recover-clean.log" 2>&1; then
+    echo "Recovery succeeded without a journal"; exit 1
+fi
+
 # Corrupt v2 fingerprints must fail validation even if all files still exist.
 cp -a "$temp/minimal" "$temp/invalid-hashes"
 python3 - "$temp/invalid-hashes/docs.config.json" <<'PY'
