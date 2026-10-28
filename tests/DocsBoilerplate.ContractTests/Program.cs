@@ -164,6 +164,19 @@ Test("discoverability identifies missing catalog and local index entries", () =>
     Expect(DocumentDiscovery.FindMissingLinks(docs, owned).Count == 0,
         "Updated navigation after a move was rejected");
 });
+Test("catalog links with escaped bracket labels are discoverable", () =>
+{
+    const string navigation = @"# Catalog
+- [Feature: \[Concise name\]](templates/feature.md)
+- [Technical: \[Boundary\]](templates/technical-feature.md)";
+    var links = MarkdownNavigation.InlineTargets(navigation).ToArray();
+    Expect(links.SequenceEqual(["templates/feature.md", "templates/technical-feature.md"]),
+        "Escaped square brackets in generated titles hid valid Markdown links");
+    var resolved = DocumentDiscovery.LinkedPaths("docs/catalog.md", navigation);
+    Expect(resolved.SetEquals(["docs/templates/feature.md", "docs/templates/technical-feature.md"]),
+        "Catalog parsing omitted escaped labels");
+});
+
 Test("discovery links honor relative paths and ignore examples", () =>
 {
     var linked = DocumentDiscovery.LinkedPaths("docs/project/index.md", """
