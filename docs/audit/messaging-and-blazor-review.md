@@ -40,3 +40,9 @@ status: active
 ## Not yet done
 
 Review the remaining frontend standard files comprehensively, assess optional API client tool profiles, and validate all examples against a real project. Do not delete any of the legacy source material until the complete audit is recorded.
+
+## S21/S22 extraction review (2026-10-28)
+
+The complete legacy S21 and S22 texts were compared with current canonical DDD, EF Core, FluentValidation and MassTransit/RabbitMQ documentation. S21's shared immutable domain limits, valid optional-field semantics, Unicode/string-length distinction, regex safety, owned-object requiredness, migration snapshot fidelity and public const inlining are now described in relevant selected profiles. The mandatory static class tree and long uncompiled example are **not** made global defaults. S22's independent contracts, deliberate dependency direction, optional three-project composition, stable exchange identity, correlation, consumer queue ownership, actual routing semantics, outbox tradeoffs and compatibility reviews were moved into the existing MassTransit profile. The universal requirement to create exactly three projects, use one exchange naming rule and enforce a particular outbox remains unapproved.
+
+Retirement of either historical source still requires a measured incoming-link graph and a recorded removal decision; the old files also contain educational examples or opinionated architecture choices that may warrant explicit retention until the owner makes the related deferred decisions. This is not evidence that predecessor solution code builds or its RabbitMQ topology runs.

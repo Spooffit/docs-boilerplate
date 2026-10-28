@@ -30,6 +30,15 @@ This is a **decision backlog**, not a questionnaire to answer during ongoing eng
 
 These are **not approvals**. Historic project documents may keep describing their original chosen conventions. New projects must not inherit them automatically without profile selection and verification.
 
+## S21/S22 architecture options to decide after technical migration
+
+| Topic | Historical prescriptive policy | Options for the owner |
+| --- | --- | --- |
+| Aggregate constraints catalog and sample style | S21 requires a public static `<AggregateName>Constraints` tree for **every** aggregate and embeds substantial illustrative C# examples | Keep a neutral DDD baseline and optional documented project convention; create a separate opinionated DDD profile; retain a sanitized example project only after compiling its examples |
+| EventBus packaging/topology defaults | S22 requires `Integration/EventBus/{Contracts,RabbitMq,Default}`, a registrar, `msg.{integration}.{purpose}`, explicit publish topology, DB outbox and contract versioning for every EventBus application | Adopt as opt-in opinionated MassTransit/RabbitMQ profile; select only parts after compatibility testing; leave projects to set topology/naming/outbox based on their actual contracts |
+
+Neither row is approval. Avoid changing the generator's default profile selections on the basis of these original-project documents alone.
+
 ## Required evidence before consultation
 
 - The structural inventory and detailed migration notes are reconciled with source files.

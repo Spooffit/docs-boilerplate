@@ -51,6 +51,12 @@ Do not duplicate all checks in MVC attributes and FluentValidation. Binding erro
 
 If an application uses a domain constraints container, share stable definitions intentionally, but do not require a specific `<Aggregate>Constraints` class for all projects. Database migrations must capture historical values appropriately; a change to a constant does not rewrite applied migrations.
 
+## Domain-defined limits and safe regular expressions
+
+When domain constraints are shared with request validators, apply the same **confirmed** limits and normalization semantics while keeping domain enforcement independent of FluentValidation. Separate a property's optional presence from validation of a non-null supplied value; `Length` alone does not make a string mandatory. Never use a `When` predicate that skips invalid supplied whitespace unless the public contract intentionally normalizes whitespace to absence.
+
+For regex validation, apply the project's specified anchoring and character alphabet (such as ASCII digits versus Unicode categories); bound input lengths and regex execution time where relevant. Neither a generic string rule nor a regex wrapper should silently mutate source data. Verify the entire model's actual validator composition and the domain factory's invariant separately.
+
 ## Verification
 
 Test invalid, boundary, optional and nested input cases; ensure errors identify the relevant field and that validation is actually executed in the chosen pipeline. Test concurrency/uniqueness behavior at the database boundary rather than assuming input-validation success guarantees it.

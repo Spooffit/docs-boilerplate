@@ -37,6 +37,14 @@ A project's named constraints class is an architectural choice, not an EF Core r
 - Don't automatically retry non-idempotent operations without verifying transaction and side-effect safety.
 - A DB transaction cannot atomically commit a message to a separate broker without a coordination pattern; consider outbox for that failure model.
 
+## Mapping domain constraints into EF Core
+
+Where the chosen model has authoritative fixed constraints, use them consistently in the **current** EF Core mapping where appropriate, without requiring all projects to create a static constraints container. `HasMaxLength` maps relational metadata/provider schema expectations; it is not a replacement for domain validation, and `IsRequired` prevents null at the mapped boundary, not empty or whitespace-only values. `MinLength`, regex policy and business ownership need separate enforcement.
+
+Treat a required **owned or complex object** differently from required scalar fields inside an optional nested object. Verify the actual provider's owned-type/complex-type mapping, table splitting, converters and nullable navigation behavior. A required nested child must not inadvertently make an optional parent impossible to persist.
+
+When a limit changes, review current model, validators, domain rules, existing rows, deployed clients and historical migrations together. Never rewrite applied migrations to read today's domain constants. EF Core model snapshots describe a schema revision and must not silently change when runtime constants change. Compile-time public `const` values may be inlined into other assemblies, so changing a shared definition can require rebuilding and republishing consumers.
+
 ## Migration discipline
 
 Review schema diffs and data transformation for loss, locks and deployment ordering. Choose a controlled application strategy (reviewed SQL, a migration bundle, or other deliberate deployment procedure). Idempotent scripts are provider-dependent.
