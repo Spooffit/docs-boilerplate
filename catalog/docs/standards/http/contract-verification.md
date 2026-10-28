@@ -43,6 +43,16 @@ Generated SDK code should be reproducible from its pinned contract and generator
 
 When a generated client needs a missing API capability, change and review the **actual server contract** or explicitly implement an adapter. Do not maintain an unnoticed second, divergent copy of the public contract.
 
+## Generated model and source-code conformance (when applicable)
+
+Where a team generates typed models or source code from a schema registry, verify that generation consumes an **immutable, identified schema contract**, not guessed properties from example instance JSON or arbitrary runtime reflection. Separate the source schema's identity and interpretation from the generated-language mapping and any independently versioned binary/serialization profile. A rename of an authoring label must not accidentally redefine historical field identity when the contract distinguishes them.
+
+Record the selected JSON Schema dialect or equivalent contract language, required versus omitted properties, `null`, unknown fields, numeric precision, date/time zone and offset semantics, enum fallback, nested collections and any extension annotations needed to preserve meaning. Do not assume JSON Schema `number` establishes a specific decimal representation or that a timestamp without offset represents UTC. Source-language types and generated-language types must be tested against the actual wire codec, not only against similar-looking declarations.
+
+For generated source, test identifier normalization, reserved keywords and collisions, deterministic output where the product requires it, and duplicate or incompatible input definitions. When producing a source bundle, distinguish deterministic **source content** from optional deterministic archive/container bytes. Neither is implied merely by a successful compiler invocation. Test generated code in a real consuming project against the chosen serializer and target runtime; source generation alone does not prove it can deserialize, round-trip or load the adopted schema.
+
+If a consumer uses multiple runtimes (for example a desktop build and a restricted game-engine runtime), verify each promised environment rather than substituting a host-only .NET unit test for native dependencies, ahead-of-time compilation, platform threading or packaging compatibility. Editor tests and player/runtime tests answer different questions. Only require such gates for platforms the project has actually selected.
+
 ## Per-operation evidence comparison
 
 For complex contracts or partially implemented API migrations, document the same operation across distinct authorities without copying all fields:

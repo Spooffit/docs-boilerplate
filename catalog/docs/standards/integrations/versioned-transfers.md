@@ -35,6 +35,12 @@ If a transfer uses a generated plan, state whether selection and target content 
 
 Document start/status/data/commit transitions **only if the actual protocol exposes them**. A plan identifier is not necessarily a network connection, commit receipt, stream offset or credential.
 
+## Portable-client execution and platform limits (when applicable)
+
+A shared protocol implementation can be reused across supported client platforms, but each transport and storage adapter must preserve the same observable transfer semantics. Document header availability, single-reader stream ownership, bounded buffering/backpressure, cancellation and disposal for the actual HTTP platform. A network callback that supplied bytes is not proof those bytes were parsed, validated or committed to local durable state.
+
+For restricted runtimes, record the exact target framework, native dependency and thread model that were actually tested. A managed library compiling in isolation does not establish compatibility with an ahead-of-time player, browser sandbox, mobile process lifecycle or native persistence provider. A launcher and a separate player should not be assumed to share caches, credentials or local locks simply because they use one SDK; define file/state ownership and cross-process coordination only if that deployment exists.
+
 ## Resume and durable checkpoints
 
 Distinguish **bytes received**, **complete record parsed**, **record validated** and **record durably staged**. If correctness depends on durable replay, move the application checkpoint only after the required durable stage succeeds. A TCP fragment, callback or parsed-but-not-saved record is not durable progress.

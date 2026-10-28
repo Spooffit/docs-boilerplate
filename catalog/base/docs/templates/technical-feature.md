@@ -31,6 +31,8 @@ status: template
 
 Do not require fixed Domain/Application/Infrastructure or FSD folder structures unless the selected project architecture explicitly adopts them.
 
+[For SDK- or client-facing features, identify the portable protocol/core responsibilities and concrete platform adapters only when such a split exists. Record actual target runtime, response/stream lifetime, local-state ownership, cancellation and resource cleanup. Shared code is not proof of cross-language or platform support. Use the selected HTTP client and verification standards rather than inventing another SDK architecture.]
+
 ## Contracts and authoritative models
 
 [Link real OpenAPI, JSON Schema, message contract, generated client API or UI model definitions. Show precise shapes only when they are not already authoritative elsewhere. Separate transport DTOs from domain/storage models when those boundaries actually exist.]

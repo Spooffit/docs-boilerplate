@@ -17,6 +17,22 @@ Where clients are generated from an adopted OpenAPI description, treat generated
 
 Do not infer that a generated client exposes every required response header: configure and verify access to `ETag`, correlation headers or pagination links when the protocol actually uses them.
 
+## Portable SDK core and platform adapters (when applicable)
+
+When multiple applications or runtimes consume the same service, document **which layer owns the public wire contract**, shared protocol behavior and platform integration. A portable SDK can share request coordination, typed interpretation, validation, idempotency/retry decisions and state-transition rules while exposing narrow interfaces for HTTP transport, persistence, time and diagnostics. Concrete adapters implement those capabilities for their actual environment. Do not create a multi-package SDK or force a particular layering pattern for a simple single-platform client.
+
+Keep one owner for an operation's identity, original request intent and recovery logic. An HTTP adapter should not invent a new operation ID, silently change a resource version, or implement its own competing business retry algorithm after a timeout. When a client persists an operation or transfer, distinguish the durable store's logical identity, file or database locking, and the application's UI/session lifetime; an in-memory lock is not automatically cross-process coordination.
+
+A shared C# library can be reused in C# hosts that support its real target framework and dependencies. It is **not** automatically a JavaScript, native or other-language SDK. The authoritative OpenAPI, JSON Schema or comparable public contract may be shared with separate language implementations; sharing a contract does not imply byte-for-byte runtime API compatibility or a working cross-language wrapper.
+
+## Streaming, cancellation and resource ownership
+
+For transports that stream response bodies, specify who owns the response and its disposal, when headers become available, how backpressure bounds buffered data and which component consumes the stream. A callback receiving a reusable buffer must not retain its contents unless they are copied into owned storage. A platform API's asynchronous callback or main-thread dispatch requirement is an adapter responsibility, not evidence that the shared SDK may block or buffer an entire response.
+
+Define cancellation at the boundaries it can actually stop: request issuance, network read, parsing, durable staging, and an already committed remote operation are different. A timeout or cancellation must not silently manufacture a failed server commit, a fresh operation identity or a successful cleanup result. Client SDKs should expose meaningful pending/failed/unknown-outcome states and bounded recovery paths.
+
+For native, UI-engine or platform-managed resources, declare the transfer of ownership explicitly: which component constructs, caches, releases or destroys each resource, on what thread and after which operation. A resource created before cancellation may still require disposal when its callback arrives late. Engine-specific asset systems, address resolution and rendering objects are optional integrations, not part of the HTTP wire contract.
+
 ## Authentication, authorization and secrets
 
 Clients may supply credentials and identifiers, but server-side ownership and authorization cannot be proven by client validation or a cached hash. Avoid putting secrets in URLs, diagnostics, logs and exception messages. Token refresh, cookie policy, CORS and credentials depend on the actual deployment and threat model.

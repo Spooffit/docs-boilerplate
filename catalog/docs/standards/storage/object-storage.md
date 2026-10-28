@@ -49,6 +49,12 @@ For authenticated delivery, decide where authorization is enforced **before** re
 
 If HTTP Range is supported, verify `If-Range`, `206`, `416` and fallback `200` behavior for the **same representation**. Do not assume byte ranges and an application's resumable-record cursor are interchangeable.
 
+## Consumer cache and platform-managed assets (when applicable)
+
+When the consuming application downloads media or other large binaries, define a verified cache entry using the **actual byte representation**, expected hash/profile and access scope. Prefer complete, validated temporary files followed by an owned promotion step over exposing partially downloaded bytes as ready. Specify how concurrent consumers share or isolate a transfer, which process may remove a cached file, and whether the reference is pinned to an immutable resource version. These choices depend on actual size, privacy, host and storage constraints, not a mandated cache technology.
+
+Where a platform produces a texture, sprite, audio object or engine asset from downloaded bytes, distinguish raw verified file ownership from the platform-managed in-memory object. Document who releases each object, how cancellation and late completion are handled, and which thread owns creation or destruction. Optional asset managers may wrap a generic byte provider but must not silently redefine the service's logical asset identity or authorization. A single cached hash is not proof that an asset is permitted, compatible with a particular decoder, or already loaded into another process.
+
 ## Verification
 
 Test mismatched MIME/signatures, executable payloads, filename/path attacks, oversized streams, incomplete uploads, crashes after object write but before metadata commit, duplicate requests, forbidden downloads, deletion while referenced, range/cache validators and historical reads. Use the actual object provider and access gateway for integration claims.

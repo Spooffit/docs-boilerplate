@@ -235,6 +235,14 @@ run validate --output "$temp/all-profiles"
 grep -q 'docs/project/requirements.md' "$temp/all-profiles/llms.txt"
 grep -q 'docs/architecture/security.md' "$temp/all-profiles/llms.txt"
 grep -q 'docs/operations/runbook.md' "$temp/all-profiles/llms.txt"
+# Optional contract/SDK guidance must be present only with matching profiles.
+grep -q '^## Portable SDK core and platform adapters (when applicable)$' "$temp/all-profiles/docs/standards/http/client-contracts.md"
+grep -q '^## Generated model and source-code conformance (when applicable)$' "$temp/all-profiles/docs/standards/http/contract-verification.md"
+grep -q '^## Portable-client execution and platform limits (when applicable)$' "$temp/all-profiles/docs/standards/integrations/versioned-transfers.md"
+grep -q '^## Consumer cache and platform-managed assets (when applicable)$' "$temp/all-profiles/docs/standards/storage/object-storage.md"
+grep -q 'cross-language or platform support' "$temp/all-profiles/docs/templates/technical-feature.md"
+[[ ! -f "$temp/minimal/docs/standards/http/client-contracts.md" ]]
+[[ ! -f "$temp/minimal/docs/standards/storage/object-storage.md" ]]
 # Optional audit-history review prompts must render only with the selected modules.
 grep -q '^## Durable activity history (only when required)$' "$temp/all-profiles/docs/operations/observability.md"
 grep -q 'source owner' "$temp/all-profiles/docs/operations/observability.md"
