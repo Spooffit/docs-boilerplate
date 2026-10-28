@@ -68,7 +68,8 @@ jobs:
               docker logs docs-eventbus-ci >&2
               exit 1
             fi
-            if docker exec docs-eventbus-ci rabbitmq-diagnostics -q ping >/dev/null 2>&1; then
+            # A root-owned diagnostics cookie can prevent the RabbitMQ service user from booting.
+            if docker exec --user rabbitmq docs-eventbus-ci rabbitmq-diagnostics -q ping >/dev/null 2>&1; then
               ready=true
               break
             fi
