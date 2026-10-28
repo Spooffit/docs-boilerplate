@@ -61,6 +61,20 @@ These questions remain **unapproved** and are separate from any semantic rule ex
 These decisions are deferred. The earlier **strict test naming** backlog item also covers S08 and should not be duplicated here.
 
 
+## Technical-standard consultation handoff (2026-10-28)
+
+The [five-standard closeout](retained-standards-closeout.md) reconciles the still-present historical technology standards with their already extracted canonical guidance. **All five remain unapproved.** The substantive choices above, rather than the existence of an old file or a zero-inbound reference count, determine their eventual disposition.
+
+| Retained source | Decision topic(s) above | Current disposition |
+| --- | --- | --- |
+| `S04-testing.md` | Strict test naming convention | Await owner; no universal name requirement |
+| `S06-api-client.md` | NSwag models as direct form/editor state; client-facing concurrency UX | Await owner; portable HTTP-client rules already apply |
+| `S08-testing.md` | Blazor/FSD component and browser testing; strict test naming | Await owner; framework-specific selection remains optional |
+| `S16-rest.md` | Opinionated ASP.NET Core MVC API style; HTTP conditional-write policy | Await owner; neutral HTTP/MVC rules already apply |
+| `S21-aggregate-constraints.md` | Aggregate constraints catalog and sample style | Await owner; portable DDD/EF rules already apply |
+
+A choice to maintain an opinionated profile or sanitized example is **separate** from approval to retire the historical source. Both must meet the verification and deletion gates in the closeout before modifying generated defaults.
+
 ## Required evidence before consultation
 
 - The structural inventory and detailed migration notes are reconciled with source files.
