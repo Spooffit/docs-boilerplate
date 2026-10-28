@@ -155,67 +155,14 @@ static partial class DocsCli
             return 0;
         }
 
-        var completed = new List<(string Path, byte[]? Original)>();
-        var rollbackErrors = new List<string>();
-        try
-        {
-            foreach (var write in writes)
-            {
-                var target = SafePath(output, write.Path);
-                byte[]? before = null;
-                if (write.Existing)
-                {
-                    before = await File.ReadAllBytesAsync(target);
-                    if (HashBytes(before) != write.OriginalHash)
-                        throw new IOException($"File changed after planning: {write.Path}");
-                }
-                else if (File.Exists(target) || Directory.Exists(target))
-                    throw new IOException($"Unmanaged file appeared after planning: {write.Path}");
-
-                await AtomicWriteAsync(target, Encoding.UTF8.GetBytes(write.Content), !write.Existing);
-                completed.Add((target, before));
-            }
-        }
-        catch (Exception error)
-        {
-            foreach (var (path, original) in completed.AsEnumerable().Reverse())
-            {
-                try
-                {
-                    SafeFiles.AssertNoLinks(path);
-                    if (original is null) File.Delete(path);
-                    else await AtomicWriteAsync(path, original, false);
-                }
-                catch (Exception rollbackError)
-                {
-                    rollbackErrors.Add($"{path}: {rollbackError.Message}");
-                }
-            }
-            throw new IOException($"Update failed: {error.Message}. " +
-                (rollbackErrors.Count == 0 ? "Completed changes were rolled back." :
-                    "Rollback was incomplete: " + string.Join("; ", rollbackErrors)), error);
-        }
+        // The manifest was appended last. Rollback restores prior bytes and
+        // removes additions without deleting unrelated user-owned files.
+        await UpdateTransaction.ApplyAsync(output, writes.Select(write =>
+            new UpdateTransaction.Write(write.Path, Encoding.UTF8.GetBytes(write.Content),
+                write.Existing, write.OriginalHash)).ToArray());
 
         AnsiConsole.MarkupLine($"[green]Updated.[/] {writes.Count} files written. User edits were preserved.");
         return 0;
-    }
-
-    private static async Task AtomicWriteAsync(string target, byte[] content, bool createNew)
-    {
-        var directory = Path.GetDirectoryName(target)!;
-        SafeFiles.AssertNoLinks(directory);
-        Directory.CreateDirectory(directory);
-        SafeFiles.AssertNoLinks(target);
-        var temporary = Path.Combine(directory, $".docs-boilerplate-{Guid.NewGuid():N}.tmp");
-        try
-        {
-            await File.WriteAllBytesAsync(temporary, content);
-            File.Move(temporary, target, overwrite: !createNew);
-        }
-        finally
-        {
-            if (File.Exists(temporary)) File.Delete(temporary);
-        }
     }
 
     private static async Task<bool> IsIdenticalAsync(string output, Dictionary<string, string> expected)
