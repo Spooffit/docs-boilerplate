@@ -197,5 +197,9 @@ static partial class DocsCli
     internal sealed record ModuleCatalog(int SchemaVersion, Module[] Modules);
     internal sealed record Module(string Id, string Name, ModuleFile[] Files);
     internal sealed record ModuleFile(string Source, string Destination);
-    private sealed record ProjectConfig(string Name, string Description, string[] Profiles, string[] Skills, string[] Modules, string Site, string[] GeneratedFiles, Dictionary<string, string>? GeneratedHashes = null);
+    private sealed record ProjectConfig(
+        string Name, string Description, string[] Profiles, string[] Skills, string[] Modules,
+        string Site, string[] GeneratedFiles, Dictionary<string, string>? GeneratedHashes = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        string[]? RetiredFiles = null);
 }

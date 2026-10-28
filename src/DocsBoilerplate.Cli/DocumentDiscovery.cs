@@ -6,7 +6,8 @@
 internal static class DocumentDiscovery
 {
     internal static IReadOnlyList<string> FindMissingLinks(
-        IReadOnlyDictionary<string, string> docs, IReadOnlySet<string> generatorOwned)
+        IReadOnlyDictionary<string, string> docs, IReadOnlySet<string> generatorOwned,
+        IReadOnlySet<string>? retainedUnmanaged = null)
     {
         var errors = new List<string>();
         if (!docs.TryGetValue("docs/catalog.md", out var catalog))
@@ -17,6 +18,9 @@ internal static class DocumentDiscovery
             && p.EndsWith(".md", StringComparison.OrdinalIgnoreCase)
             && p != "docs/catalog.md").Order(StringComparer.Ordinal))
         {
+            // An upstream-retired document may remain intentionally on disk
+            // without being advertised by the current selected profile.
+            if (retainedUnmanaged?.Contains(path) == true) continue;
             if (!catalogLinks.Contains(path))
                 errors.Add($"Not discoverable from docs/catalog.md: {path}");
 

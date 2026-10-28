@@ -63,13 +63,22 @@ static partial class DocsCli
 
         var expected = await RenderAsync(catalog, profiles, skills, modules,
             oldConfig.Name, oldConfig.Description, output, profileIds, skillIds, moduleIds, oldConfig.Site);
-        var newConfig = BuildConfig(oldConfig.Name, oldConfig.Description,
-            profileIds, skillIds, moduleIds, oldConfig.Site, expected);
-        var newConfigContent = JsonSerializer.Serialize(newConfig, Json) + Environment.NewLine;
-
         var oldPaths = new HashSet<string>(oldConfig.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
         var retired = oldPaths.Except(expected.Keys, StringComparer.OrdinalIgnoreCase)
             .Order(StringComparer.Ordinal).ToArray();
+        var priorRetired = oldConfig.RetiredFiles ?? [];
+        var uniquePriorRetired = new HashSet<string>(priorRetired, StringComparer.OrdinalIgnoreCase);
+        if (uniquePriorRetired.Count != priorRetired.Length || uniquePriorRetired.Overlaps(oldPaths))
+            throw new IOException("Invalid or overlapping RetiredFiles manifest entries.");
+        foreach (var path in priorRetired) _ = SafePath(output, path);
+        // Retired sources are kept on disk without remaining part of generated navigation.
+        // Carry their identity across subsequent updates; do not silently re-adopt a path.
+        var retained = uniquePriorRetired.Union(retired, StringComparer.OrdinalIgnoreCase)
+            .Except(expected.Keys, StringComparer.OrdinalIgnoreCase)
+            .Order(StringComparer.Ordinal).ToArray();
+        var newConfig = BuildConfig(oldConfig.Name, oldConfig.Description,
+            profileIds, skillIds, moduleIds, oldConfig.Site, expected, retained);
+        var newConfigContent = JsonSerializer.Serialize(newConfig, Json) + Environment.NewLine;
         var writes = new List<PlannedWrite>();
         var protectedFiles = new List<string>();
         var conflicts = new List<string>();

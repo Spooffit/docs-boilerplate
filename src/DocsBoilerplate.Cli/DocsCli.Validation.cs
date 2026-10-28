@@ -59,6 +59,11 @@ static partial class DocsCli
         if (config.Site == "docsify" && !required.Add("index.html"))
             errors.Add("Duplicate site configuration path: index.html");
         var declared = new HashSet<string>(config.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
+        var retired = config.RetiredFiles ?? [];
+        var retiredSet = new HashSet<string>(retired, StringComparer.OrdinalIgnoreCase);
+        if (retiredSet.Count != retired.Length || retiredSet.Overlaps(declared))
+            errors.Add("Invalid or overlapping RetiredFiles manifest entries.");
+        foreach (var path in retired) _ = SafePath(output, path);
         if (declared.Count != config.GeneratedFiles.Length || !declared.SetEquals(required))
             errors.Add("GeneratedFiles manifest does not match selected profiles, base documents and skills.");
         foreach (var path in config.GeneratedFiles)
@@ -125,7 +130,7 @@ static partial class DocsCli
             if (path.StartsWith("docs/", StringComparison.Ordinal))
                 docsByPath.Add(path, await File.ReadAllTextAsync(file));
         }
-        errors.AddRange(DocumentDiscovery.FindMissingLinks(docsByPath, declared));
+        errors.AddRange(DocumentDiscovery.FindMissingLinks(docsByPath, declared, retiredSet));
 
         var llmsPath = SafePath(output, "llms.txt");
         if (File.Exists(llmsPath))

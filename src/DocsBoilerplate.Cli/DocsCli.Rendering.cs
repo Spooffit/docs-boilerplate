@@ -54,15 +54,18 @@ static partial class DocsCli
 
     private static ProjectConfig BuildConfig(
         string name, string description, IEnumerable<string> ids, IEnumerable<string> skills,
-        IEnumerable<string> modules, string site, Dictionary<string, string> content)
+        IEnumerable<string> modules, string site, Dictionary<string, string> content,
+        IEnumerable<string>? retiredPaths = null)
     {
         var hashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var (path, value) in content.OrderBy(x => x.Key, StringComparer.Ordinal))
             hashes.Add(path, Hash(value));
+        var retired = retiredPaths?.Order(StringComparer.Ordinal).ToArray();
         return new ProjectConfig(name, description,
             ids.Order(StringComparer.Ordinal).ToArray(), skills.Order(StringComparer.Ordinal).ToArray(),
             modules.Order(StringComparer.Ordinal).ToArray(), site,
-            content.Keys.Order(StringComparer.Ordinal).ToArray(), hashes);
+            content.Keys.Order(StringComparer.Ordinal).ToArray(), hashes,
+            retired is { Length: > 0 } ? retired : null);
     }
 
     internal static string Hash(string content) =>
