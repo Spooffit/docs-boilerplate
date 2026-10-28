@@ -19,6 +19,7 @@ This is a **decision backlog**, not a questionnaire to answer during ongoing eng
 | Requirements identifiers and status | Original files use F/M/Q identifiers that are useful inside that project, but not necessarily universal | Descriptive filenames with optional project IDs; opt-in structured ID scheme; avoid mandatory global numbering |
 | Example/code verification threshold | Former technical features contain large amounts of source-specific code, API shapes and contracts | Require compiling, version-pinned examples; permit clearly labeled pseudocode; keep examples separate from normative standards |
 | Historical milestone structure | Original Demo/MVP/Production phases are project-specific; a neutral milestone template now exists | Leave stages fully project-defined; offer an optional curated stage example without implied commitments |
+| Strict test naming convention | Historical backend S04 and frontend S08 require `MethodUnderTest_Scenario_ExpectedBehavior` for every test category; the portable .NET catalog deliberately treats the format as a project choice | Adopt the exact convention through an explicit optional opinionated profile; recommend descriptive behavior-focused names without mandatory shape; enforce a different project-approved convention |
 
 ## Required evidence before consultation
 

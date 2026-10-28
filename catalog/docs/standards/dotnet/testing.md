@@ -114,6 +114,8 @@ Treat the chosen `WebApplicationFactory` host as one application's in-process pu
 
 For suites using real infrastructure, identify a resource owner **per test run and isolation scope**. Logical isolation can be sufficient and faster than starting a separate physical container for every method, provided parallel writers cannot share mutable state or reset it underneath each other.
 
+Integration, Functional and E2E suites must be runnable independently: none may require another suite's setup, seeded data, database, broker virtual host or cleanup step. Prefer resources provisioned by the test harness rather than a manually prepared long-lived external server. Document unavoidable external prerequisites separately from resource provisioning; a missing required container runtime or disposable dependency is a failed verification, not a passing skip.
+
 - Database tests may use a separate database per fixture/parallel worker or a dedicated instance where behavior requires it. A reset between **sequential** tests does not protect a database against concurrent test writers or reset operations.
 - Broker tests may use isolated virtual hosts or resource namespaces and unique queues/bindings per parallel scope. A dedicated broker is appropriate if the SUT changes node-level configuration, plugins, global policies or tests restart/recovery of the broker itself.
 - Share heavyweight resources only within an explicitly owned run and guarantee cleanup of exactly what that run created. Suite A must not depend on suite B's preexisting database, queue, container or setup.
