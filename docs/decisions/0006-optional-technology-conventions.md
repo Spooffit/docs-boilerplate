@@ -35,4 +35,4 @@ Live RabbitMQ routing tests run only in the boilerplate CI test harness, not in 
 - The catalog is validated for conflicts and profile dependencies, and Linux CLI smoke generates and validates each available profile individually.
 - `tests/optional_profile_contracts.py` checks the RFC-based HTTP scenarios and compiles/runs the extracted EventBus example against a disposable broker in CI. Source of the sample is the optional standard itself, so it cannot silently drift from a separate unverified demo app.
 - Existing generated repositories retain their selected profiles and require no migration. A project opts into a new convention only through an explicitly regenerated selection or a reviewed manual adoption; `update` does not silently change selections.
-- The five remaining owner questions stay in [the decision backlog](owner-decision-backlog.md).
+- At the time of this decision, five further owner questions remained. They were subsequently resolved in [ADR 0007](0007-final-editorial-policies.md), and the [decision review](owner-decision-backlog.md) is now closed.

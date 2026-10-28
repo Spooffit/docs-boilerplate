@@ -34,4 +34,4 @@ The generator is an AI-agent-first documentation boilerplate, not a copy of an a
 
 - These approvals **confirm existing behavior**, not a request to add more generated files or profile dependencies.
 - Existing generated repositories need no migration merely because this decision was recorded. Normal fingerprint-safe update behavior remains unchanged.
-- Other editorial and technical conventions remain unresolved in [the owner decision backlog](owner-decision-backlog.md); this decision does not approve their proposed variants.
+- At the time of this decision, other editorial and technical conventions were still under review. Those choices were subsequently resolved in [ADR 0006](0006-optional-technology-conventions.md) and [ADR 0007](0007-final-editorial-policies.md); the [decision review](owner-decision-backlog.md) is now closed.
