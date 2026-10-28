@@ -134,6 +134,8 @@ static partial class DocsCli
             if (!llms.StartsWith("# ", StringComparison.Ordinal)
                 || !llms.Contains("\n## ", StringComparison.Ordinal))
                 errors.Add("llms.txt must contain a project H1 and curated H2 link sections.");
+            if (!DocumentDiscovery.LinkedPaths("llms.txt", llms).Contains("docs/catalog.md"))
+                errors.Add("llms.txt must link to docs/catalog.md so all project documentation remains discoverable.");
             foreach (System.Text.RegularExpressions.Match match in System.Text.RegularExpressions.Regex.Matches(
                 llms, @"\[[^\]\r\n]+\]\((?<target>[^)\r\n]+)\)"))
             {
