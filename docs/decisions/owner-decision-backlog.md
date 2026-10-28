@@ -11,6 +11,7 @@ These are **questions for the repository owner**, not approved engineering requi
 
 | Topic | Current neutral approach | Options for later owner approval |
 | --- | --- | --- |
+| Planned profile visibility | Five technology profiles are explicitly marked `planned`, have no standards, and cannot be selected | Keep planned entries discoverable; hide them until implemented; remove unused planned entries |
 | Permanent template set | Feature, technical feature, module, question, ADR, standard and milestone templates exist without requiring each one | Smaller core; keep the current templates; specialized optional templates |
 | File identifiers and workflow status | Descriptive names and explicit decision status are encouraged without mandatory numbered global IDs | Opt-in F/M/Q-like IDs; purely descriptive names; project-defined scheme |
 | Example policy | Active catalog contains generic editorial placeholders, not real business specifications | No product examples; a small isolated opt-in example; separate demonstrator repository with tests |
@@ -32,4 +33,4 @@ These are **questions for the repository owner**, not approved engineering requi
 
 For each choice record the selected default versus opt-in scope, reason, affected manifest/template paths, implementation and test evidence, and any migration impact on previously generated docs. A historical pattern alone never grants authority to change generated defaults.
 
-**All options remain pending.** The active repository intentionally contains no predecessor-product source files. A decision to include a sanitized example is distinct from a decision to restore historical source documents; the latter is not planned.
+**All options remain pending.** The active repository is for reusable writing guidance, not for any individual application's requirements. Examples must be generic or explicitly opt-in and verified.

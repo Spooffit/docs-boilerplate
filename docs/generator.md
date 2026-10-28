@@ -101,7 +101,7 @@ dotnet run --project src/DocsBoilerplate.Cli -- update --output ./my-docs --appl
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./my-docs
 
 # Only if an interrupted update is detected:
-docs-boilerplate recover --output ./my-docs
+dotnet run --project src/DocsBoilerplate.Cli -- recover --output ./my-docs
 ```
 
 `update` is preview-only by default. `--apply` must be specified to write changes. It will:

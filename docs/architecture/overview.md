@@ -7,7 +7,7 @@ status: active
 
 # Documentation template architecture
 
-## Products
+## Repositories
 
 **Template repository** contains the CLI, profile registry, reusable content, agent workflows and quality checks. **Generated repository** contains `README.md`, `AGENTS.md`, `llms.txt`, `docs/` (with indexes and frontmatter), `.agents/skills/` when selected, an optional root Docsify `index.html`, and the machine-readable `docs.config.json`.
 
@@ -29,7 +29,7 @@ Generated Markdown + profile files + docs.config.json
 Read-only validate
 ```
 
-The CLI reads the catalog relative to its installation location or from an explicit `--catalog` path. Neither the agent nor the TUI implements a separate renderer.
+Run the CLI from this source checkout using `dotnet run --project src/DocsBoilerplate.Cli --` and an explicit `--output` path for the generated repository. The CLI reads the bundled build-output catalog or the source checkout's `catalog/` directory; `--catalog` can supply a different content root. Neither the agent nor the TUI implements a separate renderer.
 
 ## Categories
 

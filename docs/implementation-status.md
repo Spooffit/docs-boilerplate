@@ -16,10 +16,16 @@ status: active
 - Optional Docsify browser shell using a single `index.html`. Markdown remains source of truth and no static-site build tree is created.
 - A CLI validator for ordinary relative Markdown links and common heading fragments, frontmatter, directory indexes, **catalog coverage for every project Markdown page and local index coverage for newly authored pages**, managed paths and unresolved required placeholders.
 - Cross-platform CI: Linux build, focused .NET contract tests, generation smoke and hygiene; Windows build and smoke; real Chromium/Playwright Docsify navigation checks.
-- Repository and catalog hygiene checks ensuring former project specifications are not shipped or silently reintroduced.
+- Repository and catalog hygiene checks for unwanted source trees, concrete non-template content, orphan links and unexpected generated assets.
 - Initial project and architecture overviews remain `draft`, distinguish observed code from target decisions and prompt for evidence. The optional `docs-init` skill explains first-pass project intake; smoke tests verify generated onboarding content.
 
 The generator's boundaries are documented in [the code map](architecture/generator-components.md). Selected profile configuration and operation examples are documented in [the generator guide](generator.md).
+
+## Catalog coverage and remaining work
+
+The currently usable catalog has **22 available technology/architecture profiles** and **five planned but non-selectable profiles**: `go`, `angular`, `react`, `blazorise` and `custom-ui`. The existing writing-aid library contains seven general-purpose document templates (feature, technical feature, module, question, ADR, standard and milestone) plus three optional technology-specific variants (.NET backend feature, Blazor frontend feature and PostgreSQL migration). These represent the **current implemented catalog**, not completion of every possible standard or template.
+
+Every available profile maps to real catalog documents and participates in generation and validation tests. Further technology standards are not silently declared complete: planned profiles need actual content and coverage before promotion. Editorial/default choices remain pending in the [owner decision backlog](decisions/owner-decision-backlog.md), and no project-specific requirements are assumed.
 
 ## Known limitations
 
@@ -37,4 +43,3 @@ The generator's boundaries are documented in [the code map](architecture/generat
 3. Expand technology guidance only when profile selection, compatibility and verification are grounded.
 4. Resolve [deferred owner choices](decisions/owner-decision-backlog.md) before adding opinionated defaults or specialized example profiles.
 
-The predecessor documentation was removed from the active tree after extracting neutral template guidance. Earlier commits retain that material for optional historical consultation; migration inventories, legacy-source assertions and project-specific milestones are no longer part of the repository's active contract.

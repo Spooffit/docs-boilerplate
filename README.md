@@ -43,4 +43,3 @@ The CLI is a generator, not an implementation or a business requirement registry
 
 See [implementation status](docs/implementation-status.md), [architectural decisions](docs/decisions/index.md), [pending owner choices](docs/decisions/owner-decision-backlog.md) and [contributing rules](CONTRIBUTING.md).
 
-Earlier project's source specifications have been removed from the current branch; Git history retains past commits for reference.
