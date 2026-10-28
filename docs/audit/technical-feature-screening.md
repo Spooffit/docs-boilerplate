@@ -10,7 +10,7 @@ status: active
 - Date: 2026-10-27
 - Scope: **20** `technical/backend/features/F*` and **22** `technical/frontend/features/F*` files.
 - Method: inspected each source's title, introductory references and high-level heading structure, with specific comparison against the already migrated .NET backend and Blazor feature templates. This is a **structural screening**, not line-by-line technical verification.
-- Inventory status in this structural pass: `screened-structure` for these 42 files. Subsequent targeted reviews, including [backend/frontend F16](staff-access-evidence-review.md), update selected file states in the inventory; this original pass does not certify the remainder. No deletion authorization is implied.
+- Inventory status in this structural pass: `screened-structure` for these 42 files. Subsequent targeted reviews, including [backend/frontend F16](staff-access-evidence-review.md) and [F17 review/approval boundaries](content-review-evidence-review.md), update selected file states in the inventory; this original pass does not certify the remainder. No deletion authorization is implied.
 
 ## Backend feature group
 
