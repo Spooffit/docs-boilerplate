@@ -37,11 +37,9 @@ For cookie-authenticated browser requests, document actual origin/site boundarie
 
 For non-browser clients, record separately how their credentials are provisioned, stored, scoped and revoked; do not reuse a browser login flow merely because both call the same HTTP API.
 
-## Unsaved work, identity switches and uncertain outcomes (when applicable)
+## Session and operation safety (when applicable)
 
-Specify what happens to in-progress user input if a session expires, permissions change or a different account signs in. If recovery is supported, define its lifetime, actor isolation, original resource identity and concurrency baseline, what is retained, and what is deliberately not persisted. A fresh server read must not silently turn old input into a write against a newer version.
-
-Do not automatically replay an uncertain state-changing request after reauthentication or a transport timeout; use an authorized outcome inquiry or a verified idempotency contract. Exclude secrets, cookies, credential codes and authentication headers from form recovery snapshots and diagnostics.
+If the selected product retains unsaved input across authentication changes, document its access controls and expiration. Do not replay uncertain state-changing requests without a verified idempotency or outcome-inquiry contract. Never persist credentials or tokens in recovery data or diagnostics.
 
 ## Data protection, audit and operational evidence
 

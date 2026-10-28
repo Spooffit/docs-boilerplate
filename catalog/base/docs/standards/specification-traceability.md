@@ -16,15 +16,13 @@ status: active
 - Choose one authoritative location for each rule. Other documents may summarize it with a relative link, but must not silently maintain a competing copy of its values.
 - Preserve contract authority: machine-readable OpenAPI/JSON Schema and real external message schemas take precedence for their respective wire contracts only when the project actually selected them.
 
-## Separate delivery stages
+## Delivery scope, when staged
 
-- A Demo, MVP, rollout and future extension may have different security, integration, persistence and acceptance scope. Write which stage each rule belongs to.
-- Deferred work is not implicitly included in an earlier milestone. Do not promote a proposal or acceptance criterion into a claim of shipped functionality.
-- Link milestone acceptance to existing feature and contract sources. A test plan is evidence of intent, not evidence a test passed.
+When the project defines delivery stages, record which requirements and verification evidence apply to each stage. Deferred work is not included by implication. A proposed milestone or test plan is not evidence of shipped functionality. Do not invent Demo/MVP phases or require milestones for small projects.
 
 ## Decision lifecycle and question records
 
-- A `question.md` record is a **decision trace**, not proof that the answer is still unknown. Read the current content and stated status.
+- Where a project uses a question record, read its current content and decision status instead of assuming it remains unresolved.
 - Mark what is confirmed, which details remain open, who has actual decision authority and how a resolution affects the canonical specification.
 - After a decision is approved, update each affected normative feature/architecture/milestone, not merely the Q-record. Track incomplete propagation explicitly.
 - Keep historical decisions identifiable, including when a later decision supersedes them. An old accepted statement and a later proposal are not equivalent authorities.

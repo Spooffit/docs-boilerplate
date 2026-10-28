@@ -1,36 +1,36 @@
 ---
 title: "Resumable data transfers and integrity"
-description: "Optional guidance for streaming, content integrity, durable checkpoints and recovery"
+description: "Optional guidance for bounded streaming, integrity checks and recoverable transfers"
 kind: standard
 status: active
 ---
 
 # Resumable data transfers and integrity
 
-**Applies when:** a project streams large data, supports partial downloads or requires recoverable transfer. This document does **not** require immutable business snapshots, entity-version lifecycles, a content registry, custom NDJSON framing or an SDK.
+**Applies when:** a system transfers large payloads, supports partial reads or must resume interrupted transfers. No immutable business-record versions, content registry, file cache, custom framing or SDK is implied.
 
 ## Transfer contract
 
-Document the actual transport, content type, size limits, credentials and component responsible for the body and destination. If the protocol defines a validator, transfer identifier or representation version, describe its meaning. A request identifier, byte offset and application cursor are not interchangeable.
+Record the adopted protocol, content type, expected size, authorization boundary, byte representation and the component that owns the response and destination. A transfer ID, HTTP validator, byte offset and application record cursor have different meanings. Introduce only identifiers supported by the actual contract.
 
-## Integrity and bounded buffering
+## Streaming and integrity
 
-Where a checksum or signature is used, define the algorithm, expected source and exact bytes covered. A checksum cannot independently prove authorization or freshness. Use bounded buffering, incremental parsing and size limits. Verify complete units before marking progress as durable.
+Bound memory use and temporary storage; impose size and time limits based on real operating constraints. Where checksums or signatures exist, name the algorithm, trusted source and bytes covered. A checksum establishes neither access rights nor freshness by itself.
 
-## Resume and recovery
+Treat incomplete or unverified data as incomplete. Advance durable progress only after the selected validation and persistence boundary succeeds. Specify who disposes of response streams and incomplete files.
 
-Advance an application checkpoint only after the required bytes or records are validated and safely stored. If HTTP ranges are supported, verify `If-Range`, `206 Partial Content`, `416 Range Not Satisfiable` and unexpected full `200 OK` behavior for the actual representation.
+## Resume and failure behavior
 
-For incomplete transfers, document retry, temporary-file cleanup and outcome confirmation after a lost acknowledgement. Do not auto-repeat a non-idempotent request merely because the client timed out. Do not expose partial data as an accepted complete result.
+If HTTP byte ranges are supported, verify the selected representation and actual handling of `If-Range`, `206 Partial Content`, `416 Range Not Satisfiable` and fallback `200 OK`. Do not append a full response to an old partial file or assume a record cursor is a byte offset.
 
-## Portable-client execution and platform limits (when applicable)
+Document timeout, cancellation, retries, cleanup and uncertain completion behavior only for operations the system actually offers. Non-idempotent requests require an established replay or inquiry contract before automatic retry.
 
-When one protocol implementation serves multiple runtimes, each adapter must preserve the agreed semantics for header availability, response ownership, single-reader streams, backpressure, cancellation and disposal. A callback delivering bytes is not proof they were parsed or committed.
+## Runtime constraints, when applicable
 
-Verify the selected runtime's actual native dependencies, memory limits and threading constraints. Compilation against a shared interface does not prove compatibility with a restricted, ahead-of-time or browser environment.
+For supported platforms, verify streaming, cancellation, resource ownership, concurrency and memory constraints in each actual runtime. An adapter callback does not prove data was validated or durably stored. Do not prescribe a cross-platform SDK or platform asset manager for an ordinary transfer.
 
 ## Verification
 
-Test truncated transfers, invalid lengths, mismatched checksums, stale validators, cancellation, timeouts, retry limits and safe resume using the selected transport and runtime.
+Test truncation, corrupted content, invalid length, stale validator, interrupted read, resumption, memory limits and final-content correctness as applicable. Use the real protocol and target runtime for compatibility claims.
 
-References: [RFC 9110 HTTP range semantics](https://www.rfc-editor.org/rfc/rfc9110.html#section-14), [data-flow documentation](../data-flows.md).
+Reference: [RFC 9110 HTTP range semantics](https://www.rfc-editor.org/rfc/rfc9110.html#section-14).

@@ -13,7 +13,7 @@ Document confirmed stakeholder goals and observable outcomes.
 
 ## Functional requirements
 
-Capture each requirement with a stable ID, acceptance criteria and a source. Link detailed features instead of repeating flows.
+Capture confirmed requirements with their source and acceptance criteria. Use stable IDs only if the project adopts an identifier scheme; link detailed specifications instead of repeating flows.
 
 ## Non-functional requirements
 

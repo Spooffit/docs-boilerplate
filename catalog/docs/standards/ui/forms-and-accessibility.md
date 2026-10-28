@@ -24,9 +24,7 @@ Distinguish **local input**, **submitted request**, **accepted operation**, **pe
 
 Use fields and object identifiers defined by the real operation contract. A client must not invent a server-owned technical identifier or treat locally removing an editable row as authorization to delete durable server data. Different Create, Edit, Save, Apply and Delete operations may require different inputs and confirmation steps; do not infer those operations from one generic form.
 
-Where autosave, cancellation, navigation or multi-screen drafts exist, specify who owns unsaved state and when it is discarded or restored. Distinguish what the user typed from the request sent, a durable server commit and any later publication/application of that state. A "Saved" message must not claim an asynchronous publish or activation has already finished.
-
-For tree or versioned-record UIs, distinguish the *currently selected* item, its identity, hierarchy and its historical version or lifecycle status. Do not make a visual selection indicator imply that this object is current or published. These rules apply only to UIs with those concepts; a simple form needs no invented tree or versioning UI.
+Where autosave, cancellation, navigation or multi-screen editing exists, specify who owns unsaved state and when it is discarded or restored. A success message must reflect the actual server-confirmed operation, not an unrelated later effect.
 
 ## Access and semantics
 
@@ -39,7 +37,7 @@ For tree or versioned-record UIs, distinguish the *currently selected* item, its
 
 ## Accessible hierarchical controls and feedback
 
-When an interface presents hierarchical items, ensure the nesting and selected item can be understood without relying only on indentation, color or icons. Choose native HTML semantics or an accessible tree/list pattern that actually matches keyboard interaction and focus behavior. Selection, expansion and the item's lifecycle/version status are distinct states and need distinguishable labels or descriptions.
+When an interface presents hierarchical items, ensure the nesting and selected item can be understood without relying only on indentation, color or icons. Choose native HTML semantics or an accessible tree/list pattern that actually matches keyboard interaction and focus behavior. Selection and expansion are different interaction states and need distinguishable labels or descriptions.
 
 Loading, success, warnings and failures must be perceivable as meaningful messages, including for assistive technologies when content changes asynchronously. A visible disabled button alone is not a substitute for a status message or a recovery path. Define keyboard/assistive-technology coverage and the target WCAG level in each project's test plan; automated scans and a few keyboard tests are not certification.
 

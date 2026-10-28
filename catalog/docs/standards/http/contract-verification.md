@@ -1,91 +1,36 @@
 ---
 title: "HTTP API contract verification and compatibility"
-description: "Review authoritative wire contracts, generated clients, versions and evidence without inventing endpoints"
+description: "Verify published wire contracts against clients and deployed behavior"
 kind: standard
 status: active
 ---
 
 # HTTP API contract verification and compatibility
 
-**Applies when:** a project publishes or consumes HTTP endpoints whose behavior must remain compatible with deployed clients. This is a documentation and verification standard, not a required API framework.
+**Applies when:** an HTTP API has published consumers or compatibility requirements. No OpenAPI generator, schema registry, SDK architecture or business-data revision system is required.
 
-## Source of truth and scope
+## Contract authority
 
-Identify the **authoritative** API contract and the actual deployed behavior. Link the published OpenAPI specification or equivalent machine-readable description where one exists. An example controller signature, historical documentation, generated SDK and internal DTO are evidence of different things.
+Identify the approved public contract, its version or reference, and the deployed behavior being tested. OpenAPI or another machine-readable description may be authoritative where adopted. A sample controller, old document and generated SDK are not equivalent evidence.
 
-| Concern | Authoritative source to check |
-| --- | --- |
-| Resource address and HTTP method | Adopted public contract and deployed routing |
-| Input requiredness, nullability and response shape | Published schema plus actual binding/serialization behavior |
-| Conditional request headers and status mapping | Selected HTTP contract and actual endpoint tests |
-| Security and permission scope | Server policy and authorized endpoint behavior |
-| Code-generated client | Versioned contract inputs, generator configuration and resulting build artifact |
-| Historical compatibility | Versioned schemas, deployment policy, supported consumers and observed tests |
+Review the selected endpoint's method, URL, request/response types, requiredness, nullability, error body, status codes, headers, security scope and serialization. Mark unverified behavior explicitly; do not create endpoints or DTOs to fill documentation gaps.
 
-Do not fill unknown entries by copying names, error envelopes, route prefixes, response codes or custom bus types from another project. Mark unverified implementation claims explicitly as **Not verified**.
+## Compatibility review
 
-## Contract-change review
+For changes affecting consumers, consider route constraints, query defaults, newly required fields, unknown enum values, missing versus `null`, numeric precision, dates and offsets, collections, content types, pagination, authentication, conditional requests and error mapping. Include only concerns actually exposed by the public contract.
 
-For every externally visible change, review:
+A language-level compatible change may still break a wire consumer. Distinguish property names from display labels and field meanings where the schema defines them. Do not impose a specific domain field-identity or historical-version model.
 
-- Method, URL, query defaults, route constraints and headers.
-- Required/optional fields, missing versus `null`, enum values and unknown fields.
-- Success/error status, error schema, pagination, sorting and conditional concurrency semantics.
-- Serialization details, date/time and numeric representation, content type and streaming.
-- Authorization scope, exposure of previously internal operations and redaction of sensitive data.
-- Client compatibility, version coexistence, rollout order, deprecation and rollback plan.
+Where generated clients are used, reproduce them from pinned contract inputs and generator settings. Validate the target runtime, especially response headers, errors and serializer behavior. The choice between generated DTOs and dedicated presentation models remains project-specific.
 
-A modification that seems source-compatible in one language may be a wire-breaking change for another consumer. A successful OpenAPI generation step cannot establish runtime compatibility by itself.
+## Evidence and rollout
 
-## Semantic compatibility of typed fields (when applicable)
+For each changed operation, record the accepted target contract, observed implementation, generated-client status if present, executed test evidence and any mismatch. A historical source revision is not proof of a deployed route. A proposed test matrix with no successful runs is a plan, not verification.
 
-Treat the contract's **logical field identity**, wire property name, display label, type meaning and nesting/container ownership as distinct decisions. A presentation rename is not necessarily a wire rename; reusing an identifier or enum key for a different meaning can corrupt historical data even if the serialized type still compiles. Record whether a field can be removed, renamed, deprecated or reintroduced, and the real compatibility contract for old consumers. Do not impose one irreversible evolution policy on every API.
+Assess old/new consumer compatibility and rollout sequence only for deployments that must coexist. Document applicable deprecation and rollback expectations; do not invent an API versioning scheme.
 
-Requiredness is not synonymous with a non-default CLR value. Test present `false`, zero, empty list, missing member, explicit `null` and invalid values separately for each adopted wire type. An optional field that is present may still need full type and constraint validation. For nested objects and lists, specify whether array order, duplicates, comparison keys and empty versus omitted values are observable parts of the contract.
+## Verification
 
-Review exact decimal encoding, unsupported non-finite floating-point values, integer range, ambiguous timestamp representations and whether two offset timestamps denoting the same instant are semantically equal. The selected serializer, client runtime, API schema and persistence mapping must agree on semantics; generated types alone do not prove they do.
-
-Where a schema includes custom annotations or validation extensions, explicitly identify the component that implements them. Passing a general-purpose JSON Schema validator proves only the supported standard keywords and dialect; it does not establish arbitrary application-specific comparers, sanitized-text semantics, value equality or domain rules.
-
-## Generated clients and meaningful models
-
-Generated SDK code should be reproducible from its pinned contract and generator settings. Verify compilation in the **target SDK environment** and required runtime behaviors, including access to headers and problem responses. Keep presentation state and transport metadata deliberately owned by the client; do not force every UI or domain type to equal a generated transport DTO.
-
-When a generated client needs a missing API capability, change and review the **actual server contract** or explicitly implement an adapter. Do not maintain an unnoticed second, divergent copy of the public contract.
-
-## Generated model and source-code conformance (when applicable)
-
-Where a team generates typed models or source code from a schema registry, verify that generation consumes an **immutable, identified schema contract**, not guessed properties from example instance JSON or arbitrary runtime reflection. Separate the source schema's identity and interpretation from the generated-language mapping and any independently versioned binary/serialization profile. A rename of an authoring label must not accidentally redefine historical field identity when the contract distinguishes them.
-
-Record the selected JSON Schema dialect or equivalent contract language, required versus omitted properties, `null`, unknown fields, numeric precision, date/time zone and offset semantics, enum fallback, nested collections and any extension annotations needed to preserve meaning. Do not assume JSON Schema `number` establishes a specific decimal representation or that a timestamp without offset represents UTC. Source-language types and generated-language types must be tested against the actual wire codec, not only against similar-looking declarations.
-
-For generated source, test identifier normalization, reserved keywords and collisions, deterministic output where the product requires it, and duplicate or incompatible input definitions. When producing a source bundle, distinguish deterministic **source content** from optional deterministic archive/container bytes. Neither is implied merely by a successful compiler invocation. Test generated code in a real consuming project against the chosen serializer and target runtime; source generation alone does not prove it can deserialize, round-trip or load the adopted schema.
-
-If a consumer uses multiple runtimes (for example a desktop build and a restricted game-engine runtime), verify each promised environment rather than substituting a host-only .NET unit test for native dependencies, ahead-of-time compilation, platform threading or packaging compatibility. Editor tests and player/runtime tests answer different questions. Only require such gates for platforms the project has actually selected.
-
-## Per-operation evidence comparison
-
-For complex contracts or partially implemented API migrations, document the same operation across distinct authorities without copying all fields:
-
-| Operation | Accepted target source | Existing source/contract version | Generated client status | Runtime/test evidence | Unresolved mismatch |
-| --- | --- | --- | --- | --- | --- |
-| [Real operation] | [Approved requirement or Not established] | [Commit and actual schema or Not verified] | [Generated from pinned version or Not verified] | [Executed contract test or Not verified] | [Exact difference] |
-
-A controller file found in a historical archive is not proof that its replacement route exists. A proposed public contract does not become current simply because a design review accepted it. The client generator and the deployed service can lag the source schema independently.
-
-If original source links point outside the current repository or to missing files, record them as **unverified evidence dependencies**, not as a passing implementation check. Do not use a broken citation to justify new endpoints, DTOs or error mappings.
-
-## Versioned rollout and verification matrix
-
-| Scenario | Intended behavior | Test boundary | Evidence |
-| --- | --- | --- | --- |
-| Old client with current API | [Confirmed compatibility requirement] | [Real HTTP integration] | Not yet verified |
-| Current client with older API | [Only if rollout requires it] | [Deployed-version integration] | Not yet verified |
-| Invalid/unauthorized request | [Actual status and format] | [End-to-end route/policy] | Not yet verified |
-| Lost write acknowledgement | [Replay/inquiry contract, if any] | [Fault-injection test] | Not yet verified |
-| Stale conditional update | [Actual selected concurrency contract] | [Concurrent mutation test] | Not yet verified |
-| Unknown response/field value | [Selected reader behavior] | [Serializer/client test] | Not yet verified |
-
-Record the specific API version, generated client version and test execution evidence. A proposed matrix with all rows unverified is a plan, not passing conformance.
+Exercise the actual transport and selected client/runtime. Test required versus omitted values, unauthorized access, error formats, status/header consistency and backward compatibility according to confirmed support commitments. Source generation and a successful build alone cannot prove wire compatibility.
 
 References: [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), [OpenAPI Specification](https://spec.openapis.org/oas/latest.html).

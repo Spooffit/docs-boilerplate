@@ -19,7 +19,7 @@ Handlers should honor application authorization and domain invariants. Query han
 
 ## Placement is architecture-dependent
 
-The original project placed command handlers in an Application assembly and query handlers in an EntityFramework.Persistence assembly. This is one **project convention**, not a universal CQRS requirement. Document actual dependency boundaries in the project architecture; avoid introducing Application-to-infrastructure references solely to satisfy a folder naming rule.
+Command and query handlers may be organized in the application layer, dedicated read-model components or chosen infrastructure adapters. Document actual dependency boundaries rather than copying a historical assembly layout.
 
 Use a mediator or command/query bus only if the project selects that abstraction. Neither `ICommandBus` nor `IQueryBus` is implied by CQRS alone.
 
@@ -29,7 +29,7 @@ When a project uses an Application/Domain/Infrastructure layering model, command
 
 Query handlers can reside in Application, a read-model assembly, or an infrastructure adapter according to actual chosen dependencies and access strategy. Keep the *request/contract* independent of provider-specific implementation if the architecture requires it; avoid making Application depend directly on an EF Core-specific assembly to resolve a query. Moving a handler between assemblies does not change the CQRS semantics by itself.
 
-Choose handler placement and verify the dependency graph in a project's ADR and architecture tests rather than imposing `EntityFramework.Persistence` or a fixed folder topology on unrelated projects. No project must use an ORM, mediator or separate database to implement CQRS.
+Choose handler placement according to the project's real dependency graph. No project must use an ORM, mediator or separate database to implement CQRS.
 
 Reference: [Microsoft .NET CQRS application-layer example](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/microservice-application-layer-implementation-web-api).
 

@@ -1,58 +1,41 @@
 ---
 title: "Object storage, uploads and binary delivery"
-description: "Optional technology-neutral guidance for secure binary handling and metadata/byte consistency"
+description: "Optional storage guidance for file safety, consistency and authorized access"
 kind: standard
 status: active
 ---
 
 # Object storage, uploads and binary delivery
 
-**Applies when:** a project accepts uploaded files or exposes managed binary objects through a storage service. This does **not** require S3, MinIO, a reverse proxy, presigned URLs, a specific client framework or a MediaAsset domain model.
+**Applies when:** a project uploads, stores or serves binary objects. It does not require S3, MinIO, an application metadata database, presigned URLs, asset pipelines or a special domain model.
 
-## Ownership and public boundaries
+## Ownership and access
 
-Specify who owns the logical file/asset identity, authoritative metadata, binary content, access policy, and physical storage location. A user-visible filename, logical asset ID and object-storage key may differ; define their mapping rather than assuming a particular `Guid` naming convention.
+Identify the logical resource owner, metadata authority, bytes storage, permitted consumers and access enforcement boundary. A public identifier, display filename and storage key need not be identical. Never expose credentials, private paths or bucket configuration merely because an internal provider uses them.
 
-Public contracts should expose only stable identifiers and metadata intended for consumers. Bucket names, credentials and internal object paths should not become public API by accident. If the project deliberately issues temporary signed URLs, document their audience, permissions, expiry and revocation limits.
+Where temporary signed URLs are selected, document authorization, permitted operations, lifetime and revocation limitations. Authorization must be enforced before revealing protected metadata or content, including cache and partial-response paths.
 
-## Validating an upload
+## Safe upload
 
-- Choose allowed content types and size ceilings from actual product constraints. Apply limits on the server and configure infrastructure accordingly; client picker filters are only usability hints.
-- Never trust an uploaded filename, extension or claimed `Content-Type` alone. Validate against the adopted policy, inspect format signatures/container structure where feasible and use malware scanning where appropriate. Signature identification is **not** proof the file is safe or decodable by every client.
-- Use application-assigned safe physical names, avoiding traversal and overwrites. Do not place untrusted files in an executable web root.
-- Prefer streaming/bounded buffering for potentially large uploads; document quotas for concurrent uploads, temporary storage and incomplete multipart sessions.
-- If checksums are used, state the algorithm and whether it covers original bytes, encrypted bytes or a transformed representation. An object-store `ETag` is not automatically SHA-256 or MD5 of the logical file.
+- Enforce the project's approved size, format, quota and concurrency limits on trusted boundaries.
+- Treat filename, extension and claimed `Content-Type` as untrusted. Validate supported formats as appropriate and consider malware scanning for the actual threat model.
+- Prevent path traversal, unsafe execution and unintended overwrite. Prefer streaming or bounded buffering for large uploads.
+- Where checksums exist, specify the exact representation and algorithm. An object-store `ETag` is not universally a file's MD5 or SHA-256.
 
-## Metadata, storage and partial failure
+## Consistency and cleanup
 
-An object store and application metadata database usually do **not** share one transaction. Document the actual stages and recovery path for:
+If binary storage and metadata persist independently, document the actual failure boundaries and recovery. An object write and relational database write generally do not share one transaction. Make an object visible as complete only after the checks promised by the selected application contract.
 
-1. Initial request/intent persisted, if any.
-2. Streaming upload, size/content verification and checksum computation.
-3. Completed object storage and independently persisted authoritative metadata.
-4. Transition to user-visible/available state only after required checks.
-5. Crash/timeout between any two stages: retry behavior, recovery, cleanup of incomplete uploads and orphaned bytes.
+Account for incomplete multipart operations, orphaned objects, retries and deletion only where those situations are possible. If deletions must respect references or retention, obtain reliable evidence under the applicable concurrency rules; a failed reference lookup does not prove an object is unused. Do not invent publish, approval or archive states.
 
-Document which process owns cleanup and how failed/in-progress objects become visible to operators. Do not claim `Available` merely because object upload bytes were received.
+## Delivery and cache, when applicable
 
-## References and deletion
+Define the authorized delivery mechanism, caching scope, validators, range support and privacy effects. If HTTP ranges are offered, verify `If-Range`, `206`, `416` and fallback `200` for the same byte representation.
 
-When the adopted API allows object deletion, check its actual references and retention requirements before removal. An unavailable reference source is not proof of no references; recheck under the concurrency guarantees applicable to the application. Do not invent archive, withdrawal, publication or versioning states.
-
-## Access, caching and partial reads
-
-For authenticated delivery, decide where authorization is enforced **before** revealing metadata, `304 Not Modified`, `206 Partial Content` or bytes. The mere possession of an object ID or checksum is not an access grant. Specify private/public cache scope, expiry, validators and authorization-sensitive `Vary` behavior where applicable.
-
-If HTTP Range is supported, verify `If-Range`, `206`, `416` and fallback `200` behavior for the **same representation**. Do not assume byte ranges and an application's resumable-record cursor are interchangeable.
-
-## Consumer cache and platform-managed assets (when applicable)
-
-When the consuming application downloads media or other large binaries, define a verified cache entry using the **actual byte representation**, expected hash/profile and access scope. Prefer complete, validated temporary files followed by an owned promotion step over exposing partially downloaded bytes as ready. Specify how concurrent consumers share or isolate a transfer, which process may remove a cached file, and whether the reference is pinned to an immutable resource version. These choices depend on actual size, privacy, host and storage constraints, not a mandated cache technology.
-
-Where a platform produces a texture, sprite, audio object or engine asset from downloaded bytes, distinguish raw verified file ownership from the platform-managed in-memory object. Document who releases each object, how cancellation and late completion are handled, and which thread owns creation or destruction. Optional asset managers may wrap a generic byte provider but must not silently redefine the service's logical asset identity or authorization. A single cached hash is not proof that an asset is permitted, compatible with a particular decoder, or already loaded into another process.
+A consumer-side cache is an optional design decision, not an implied part of object storage. When adopted, separate incomplete from verified content, specify ownership/eviction and consider authorization and representation changes. Runtime-specific textures, audio objects and other decoded resources belong to the selecting client/platform's design, not this standard.
 
 ## Verification
 
-Test mismatched MIME/signatures, executable payloads, filename/path attacks, oversized streams, incomplete uploads, crashes after object write but before metadata commit, duplicate requests, forbidden downloads, deletion while referenced, range/cache validators and referenced-object reads. Use the actual object provider and access gateway for integration claims.
+Cover chosen threats and failure boundaries: unsafe names, incorrect type or size, interrupted uploads, orphan cleanup, permission denial, corrupt bytes, referenced-object deletion and cache/range semantics. Verify against the selected storage provider and access path before claiming compatibility.
 
-References: [ASP.NET Core secure file upload guidance](https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads), [AWS multipart object upload and checksum behavior](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html), [RFC 9110 Range Requests](https://www.rfc-editor.org/rfc/rfc9110.html#section-14).
+References: [ASP.NET Core secure file upload guidance](https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads), [AWS multipart upload semantics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html), [RFC 9110 Range Requests](https://www.rfc-editor.org/rfc/rfc9110.html#section-14).
