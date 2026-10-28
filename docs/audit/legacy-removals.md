@@ -75,3 +75,11 @@ This review does **not** authorize removal of any substantive feature, module, t
 - The last reference graph showed **four referring documents**. Five recognized Markdown links in `standards.md`, `S04-testing.md`, `S14-test-environments.md`, and `technical/frontend/standards/S08-testing.md` were redirected to the canonical section; S08 contained two separate links.
 - The historical source remains in normal Git history. This source migration is not a claim that the predecessor suite ran or that all its historical CI requirements remain active.
 
+
+## S14: independently provisioned test environments
+
+- Removed path: `technical/backend/standards/S14-test-environments.md` after inspection of its complete original content and comparison with the now-canonical [test environment ownership rules](../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism), the optional [Testcontainers](../../catalog/docs/standards/dotnet/testcontainers.md) and [TUnit](../../catalog/docs/standards/dotnet/tunit.md) profiles.
+- Preserved: independent Integration/Functional/E2E environment lifecycles, logical versus physical isolation, safe parallel PostgreSQL data scopes, RabbitMQ virtual-host ownership, bounded heavy-test concurrency, dynamically named resources, cleanup after setup/test failures, and no hidden dependence on externally prepared infrastructure. Framework-specific TUnit concurrency controls stay opt-in.
+- Not made universal: the predecessor's exact TUnit tooling preference or example concurrency numbers. They require the project's own selected tooling and measured CI limits.
+- Incoming-link reconciliation: the full GitHub Actions reference report showed one remaining incoming S14 document after the initial 20 migrations, `technical/backend/features/F01-create-entity-schema.md`. That last link is migrated in the same commit as retirement, for a total of **21** redirected referring documents. The removal must pass `tests/legacy_link_graph.py` and supported Linux/Windows CI.
+- The original S14 source remains available in Git history; this is documentation migration, not execution of the predecessor application's infrastructure tests.

@@ -57,3 +57,7 @@ The last passing baseline recorded **19** surviving technology standards; S10, S
 ## S15 shared test engineering source retired (2026-10-28)
 
 The reference graph reported four incoming documents for S15, with five recognized links. All were changed to `catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration` after full source review, before removal. **15** historical candidate-technology standards remain if the link gate and CI pass. The S14 environment standard is still retained due to its much wider incoming-link surface.
+
+## S14 environment document removal (2026-10-28)
+
+After 20 identified incoming-link migrations, the Linux Actions reference report still found **one** S14 referring document, `technical/backend/features/F01-create-entity-schema.md`. Its remaining link is updated as part of S14 retirement. Thus all **21** identified live incoming documents now point to `catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism`. The historical technology-standard count decreases from **15 to 14** pending the deletion-gate CI check. The S04 predecessor document stays in place because the strict cross-suite naming policy requires an owner decision.

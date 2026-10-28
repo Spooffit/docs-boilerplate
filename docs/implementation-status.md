@@ -26,7 +26,7 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 
 ## Known limitations
 
-- Every original inventory entry now has a structural disposition, but **full technical/semantic migration is not complete**. Seven placeholder files and five individually reviewed legacy .NET/testing standards were removed under [documented individual cleanup decisions](audit/legacy-removals.md). All substantive historical feature, module, question and API specifications remain intact.
+- Every original inventory entry now has a structural disposition, but **full technical/semantic migration is not complete**. Seven placeholder files and ten individually reviewed legacy .NET/testing standards were removed under [documented individual cleanup decisions](audit/legacy-removals.md). All substantive historical feature, module, question and API specifications remain intact.
 - Focused no-extra-package .NET contract tests now cover profile resolution, navigation, metadata, hashes, safe paths and symlinks on Linux and Windows. A full dedicated testing-framework suite, property-based checks and detailed diagnostics remain outstanding.
 - Safe hash-based updates are implemented. Full three-way content merging is deliberately not attempted; concurrent author and template changes require manual resolution.
 - Markdown and frontmatter parsing are deliberately scoped; they do not fully verify Markdown anchors, every image/link dialect or arbitrary YAML syntax.
@@ -36,7 +36,7 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 
 The [targeted versioning/lifecycle review](audit/versioned-lifecycle-review.md) preserves the reusable documentation concerns without imposing the old product's runtime behavior.
 
-Unit, integration and functional testing guidance has been consolidated after a scoped S10–S12 source review; linked historical copies are retained until inbound references are migrated.
+Unit, integration, functional, architecture, end-to-end and test-environment guidance has been consolidated after source-specific reviews; the S09–S15 predecessors were retired after incoming-link reconciliation. Historical S04 remains because its mandatory cross-suite naming policy requires an owner decision.
 
 ## Next steps
 

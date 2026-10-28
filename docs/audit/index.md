@@ -29,4 +29,4 @@ These reports distinguish examined documentation from historical source material
 - [HTTP contracts, API clients and safe database migrations](http-persistence-extraction.md)
 - [Q15/Q20 source evidence and F09/F10/F11/F17 API boundaries](q15-q20-evidence-review.md)
 - [Owner decisions deferred until engineering is complete](owner-decision-backlog.md)
-- [Seven placeholder removals and deletion checks](legacy-removals.md)
+- [Historical placeholder and standard removals](legacy-removals.md)

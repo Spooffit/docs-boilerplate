@@ -993,7 +993,7 @@ Duplicate schema key и HTTP optimistic conflict — разные ошибки. 
 Post-Demo delivery policy acceptance: default/explicit modes, nested Lists/Objects, reject setting у String/unknown enum, real PostgreSQL save/read и generated-client round-trip. Старые `/1` golden bytes неизменны, исторический effective default не перезаписывает Published. Это future checks после согласования Q37 carriers/profile, не результат существующего Demo suite.
 
 
-Это стратегия target-проверок, не отчёт о выполненных тестах. Применяются [S04](../standards/S04-testing.md), [Architecture testing (migrated)](../../../catalog/docs/standards/dotnet/testing.md), [S10](../../../catalog/docs/standards/dotnet/testing.md#unit-tests), [S11](../../../catalog/docs/standards/dotnet/testing.md#integration-tests), [S12](../../../catalog/docs/standards/dotnet/testing.md#functional-tests), [S14](../standards/S14-test-environments.md).
+Это стратегия target-проверок, не отчёт о выполненных тестах. Применяются [S04](../standards/S04-testing.md), [Architecture testing (migrated)](../../../catalog/docs/standards/dotnet/testing.md), [S10](../../../catalog/docs/standards/dotnet/testing.md#unit-tests), [S11](../../../catalog/docs/standards/dotnet/testing.md#integration-tests), [S12](../../../catalog/docs/standards/dotnet/testing.md#functional-tests), [S14](../../../catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism).
 
 
 | Уровень | SUT / реальные зависимости / doubles | Собственные данные, изоляция и cleanup |
