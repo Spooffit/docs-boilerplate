@@ -22,7 +22,15 @@ assert set(config["GeneratedHashes"]) == set(config["GeneratedFiles"])
 assert all(len(value)==64 for value in config["GeneratedHashes"].values())
 PY
 # A generated repository must begin with draft, evidence-first project documentation.
-grep -q '^status: draft
+[[ -f "$temp/minimal/docs/project/overview.md" ]]
+[[ -f "$temp/minimal/docs/architecture/overview.md" ]]
+grep -q '^status: draft$' "$temp/minimal/docs/project/overview.md"
+grep -q '^status: draft$' "$temp/minimal/docs/architecture/overview.md"
+grep -q '^## Evidence and confidence$' "$temp/minimal/docs/project/overview.md"
+grep -q '^## Current state versus intended state$' "$temp/minimal/docs/project/overview.md"
+grep -q '^## Current system as observed$' "$temp/minimal/docs/architecture/overview.md"
+grep -q '^## Accepted target architecture$' "$temp/minimal/docs/architecture/overview.md"
+[[ -f "$temp/minimal/docs/catalog.md" ]]
 [[ -f "$temp/minimal/llms.txt" ]]
 if grep -q '^## Project areas$' "$temp/minimal/llms.txt"; then
     echo "Optional project areas leaked into minimal documentation"; exit 1
