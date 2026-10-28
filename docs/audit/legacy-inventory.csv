@@ -188,9 +188,9 @@ technical/frontend/questions/Q24-admin-sign-in.md,project-source,screened-struct
 technical/frontend/questions/Q29-unity-client-package.md,project-source,screened-structure,76754
 technical/frontend/questions/Q32-sdk-package-distribution.md,project-source,screened-structure,50898
 technical/frontend/questions/Q37-launcher-asset-delivery.md,project-source,screened-structure,16155
-technical/frontend/standards/S05-ui-and-forms.md,candidate-technology-standard,reviewed-targeted,2399
+technical/frontend/standards/S05-ui-and-forms.md,candidate-technology-standard,removed-cleanup,2399
 technical/frontend/standards/S06-api-client.md,candidate-technology-standard,reviewed-targeted,5910
-technical/frontend/standards/S07-accessibility.md,candidate-technology-standard,reviewed-targeted,1729
+technical/frontend/standards/S07-accessibility.md,candidate-technology-standard,removed-cleanup,1729
 technical/frontend/standards/S08-testing.md,candidate-technology-standard,reviewed-targeted,24354
 technical/frontend/templates/frontend-feature.md,candidate-template,reviewed-targeted,31880
 technical/frontend/templates/module.md,candidate-template,reviewed-targeted,1218

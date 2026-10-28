@@ -26,7 +26,7 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 
 ## Known limitations
 
-- Every original inventory entry now has a structural disposition, but **full technical/semantic migration is not complete**. Seven placeholder files and seventeen individually reviewed legacy .NET/testing standards were removed under [documented individual cleanup decisions](audit/legacy-removals.md). All substantive historical feature, module, question and API specifications remain intact.
+- Every original inventory entry now has a structural disposition, but **full technical/semantic migration is not complete**. Seven placeholder files and nineteen individually reviewed legacy .NET/testing standards were removed under [documented individual cleanup decisions](audit/legacy-removals.md). All substantive historical feature, module, question and API specifications remain intact.
 - Focused no-extra-package .NET contract tests now cover profile resolution, navigation, metadata, hashes, safe paths and symlinks on Linux and Windows. A full dedicated testing-framework suite, property-based checks and detailed diagnostics remain outstanding.
 - Safe hash-based updates are implemented. Full three-way content merging is deliberately not attempted; concurrent author and template changes require manual resolution.
 - Markdown and frontmatter parsing are deliberately scoped; they do not fully verify Markdown anchors, every image/link dialect or arbitrary YAML syntax.
@@ -47,3 +47,5 @@ Unit, integration, functional, architecture, end-to-end and test-environment gui
 5. Review and remove historical project content only after extraction or recorded rejection.
 
 The baseline now has a path-level inventory at `docs/audit/legacy-inventory.csv` and grouped [project-source triage](audit/project-source-triage.md). All entries are at least structurally screened; targeted extraction and completed source reviews are separate states. CI checks that listed sources exist and that newly added historical documents are inventoried. This inventory is not proof of content extraction.
+
+The S05/S07 UI and accessibility sources have been consolidated into the portable form guidance and retired after link reconciliation; S06/S08 remain in the historical tree pending owner decisions on NSwag, bUnit/FSD and strict test naming. There are **five** retained substantive legacy technology standards after this cleanup. No browser-based behavior is verified by documentation source migration alone.

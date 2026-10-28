@@ -77,3 +77,7 @@ The last passing GitHub Actions run for commit `6e7afdb8d45f02abcd1e918bfd6c5925
 ## S16/S17 technical migration and S17 deletion gate (2026-10-28)
 
 S16 and S17 were read in full and applicable semantics moved into selected ASP.NET Core and base data-flow documents. Incoming references to S17 were redirected in commit `c16a4dfbf8041fdd1ebe80af410f14a5ebb0c94b` (19 recognized Markdown links). S17 is eligible to retire **after** the CI reference graph confirms zero remaining inbound links; record the completed outcome in the removal ledger. S16 remains intentionally present because the historically mandatory MVC/CQRS/ETag/envelope style and substantial controller examples require owner decisions. The post-removal inventory should contain **7** historical standards, including retained S04, S16 and S21.
+
+## S05/S07 frontend cleanup and S06/S08 retention (2026-10-28)
+
+The source review and link rewrites for S05–S08 were completed in two commits. The passing Linux link scan for `bcfa45ef62291683199568609ca40b91c88f2f3b` reported **0** S05 incoming documents and **1** S07 incoming document, namely S05 itself. Deleting **both files in the same tree** leaves neither an incoming source nor a dangling recognized Markdown link, subject to a fresh post-deletion CI run. Five historical standards then remain: S04, S16, S21, S06 and S08. S06 and S08 are intentionally not deleted because their opinionated client-model, testing-library, FSD and naming conventions require a project-owner decision.
