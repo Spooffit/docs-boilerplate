@@ -75,7 +75,7 @@ Every new repository receives `docs/catalog.md`, a deterministic navigation list
 
 ### Adding, moving and discovering documents
 
-When an author adds a Markdown document under `docs/`, also link it from its immediate directory `index.md` and from `docs/catalog.md`. `validate` now checks that every project Markdown page is reachable from `docs/catalog.md` and every **additional author-created non-index page** is linked from its immediate directory index. All links remain relative. This deliberately does not enforce a particular feature/ADR naming scheme.
+When an author adds a Markdown document under `docs/`, also link it from its immediate directory `index.md` and from `docs/catalog.md`. `validate` now checks that every project Markdown page is reachable from `docs/catalog.md` and every **additional author-created non-index page** is linked from its immediate directory index. For an author-created nested directory, its `index.md` must also be linked from the parent directory index. All links remain relative. This deliberately does not enforce a particular feature/ADR naming scheme.
 
 When renaming or moving a document, repair old/new directory indexes, its catalog entry and inbound links (including heading fragments). The validator detects broken existing links; it also detects the newly unlisted destination. The list in `llms.txt` is **curated**, not exhaustive: the root links to `docs/catalog.md`, so adding an ordinary page does not force another `llms.txt` entry. Update `llms.txt` manually for new major entry points only.
 

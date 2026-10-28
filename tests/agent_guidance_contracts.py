@@ -55,6 +55,7 @@ def check(root: Path) -> list[str]:
         "status: active",
         "docs/catalog.md",
         "Not yet verified",
+        "parent directory",
     ):
         if needle not in agent:
             errors.append(f"{root}: missing expected source/evidence guidance {needle!r}")
