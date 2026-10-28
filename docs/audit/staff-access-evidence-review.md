@@ -37,7 +37,7 @@ The old numeric settings (eight-hour session, 20-minute setup code, password and
 
 The predecessor's backend F16 explicitly cites a scoped 2026-10-05 code search that did not find a deployed staff Identity provider, store or authentication API in the then-inspected checkout. This is **an assertion in the historical documentation**, not a new code inspection by this audit. Q24 and the F16 tests describe accepted intended behavior and verification plans, not proof of a working server or browser application.
 
-The historical [IdentityAccess architecture archive](../../archive/identity-access-architecture.md) linked from Q24/backend/frontend F16 is **absent from this repository** (GitHub fetch returned 404). It is a missing provenance dependency, not grounds to fabricate its contents. Backend F16 also links directly into a sibling `contentmanager.api` checkout outside this repository. Those paths have not been verified. The same evidence limitation applies to Q15/Q20 cross-repository references.
+The historical `archive/identity-access-architecture.md` linked from Q24/backend/frontend F16 is **absent from this repository** (GitHub fetch returned 404). It is a missing provenance dependency, not grounds to fabricate its contents. Backend F16 also links directly into a sibling `contentmanager.api` checkout outside this repository. Those paths have not been verified. The same evidence limitation applies to Q15/Q20 cross-repository references.
 
 | Required evidence for any future reusable executable sample | Current conclusion |
 | --- | --- |
