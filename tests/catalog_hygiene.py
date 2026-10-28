@@ -102,6 +102,53 @@ for profile_id, (dependencies, target) in approved_optional.items():
 for entry in profiles:
     if entry["id"] not in approved_optional and set(entry["requires"]) & approved_optional.keys():
         errors.append(f"Base profile unexpectedly requires optional convention: {entry['id']}")
+
+# ADR 0007: preserve the last two explicitly selectable, independent conventions.
+last_block_profiles = {
+    "document-identifiers-and-statuses": ([], "docs/standards/documentation/identifiers-and-statuses.md"),
+    "ui-direct-dto-forms": (["http-contracts", "ui-accessibility"], "docs/standards/ui/direct-dto-forms.md"),
+}
+for profile_id, (required, path) in last_block_profiles.items():
+    selected = by_id.get(profile_id)
+    if selected is None or selected["status"] != "available":
+        errors.append(f"Missing final approved optional profile: {profile_id}")
+    elif selected["requires"] != required or selected["files"] != [path]:
+        errors.append(f"Final optional profile changed dependencies/content: {profile_id}")
+for entry in profiles:
+    if entry["id"] not in last_block_profiles and set(entry["requires"]) & last_block_profiles.keys():
+        errors.append(f"Unselected final convention leaked into a base profile: {entry['id']}")
+
+# Exclude the inherited application-specific client-library and code-generation
+# content from *active* documentation. The .NET SDK used to build the docs CLI
+# is a separate compiler tool and is intentionally not excluded.
+legacy_client_patterns = [
+    re.compile(p, re.IGNORECASE) for p in (
+        r"\bcode[- ]generat(?:ion|or|ors|ed|ing)\b",
+        r"\bcodegen\b",
+        r"\bsource[- ]generat(?:ion|or|ors|ed|ing)\b",
+        r"\bschema registr(?:y|ies)\b",
+        r"\bgenerated (?:api )?(?:client|dto|model)s?\b",
+        r"\b(?:cross-platform|client|platform|custom) SDK\b",
+        r"\bSDK (?:core|architecture|adapter|package|development)\b",
+        r"\bSDKs\b",
+        r"\bplatform adapters?\b",
+    )
+]
+for document in (CATALOG / "base").rglob("*.md"):
+    contents = document.read_text(encoding="utf-8")
+    for pattern in legacy_client_patterns:
+        if pattern.search(contents):
+            errors.append(f"Prior-project client/code-generation policy in {document.relative_to(ROOT)}: {pattern.pattern}")
+for document in (CATALOG / "docs").rglob("*.md"):
+    contents = document.read_text(encoding="utf-8")
+    for pattern in legacy_client_patterns:
+        if pattern.search(contents):
+            errors.append(f"Prior-project client/code-generation policy in {document.relative_to(ROOT)}: {pattern.pattern}")
+
+authoring = (CATALOG / "base/docs/standards/documentation.md").read_text(encoding="utf-8")
+for phrase in ("Code examples and verification evidence", "label it illustrative or partial", "build/test command"):
+    if phrase not in authoring:
+        errors.append(f"Code-example verification policy missing: {phrase}")
 for error in errors:
     print("ERROR", error)
 print(f"Active catalog hygiene: {checked} Markdown files examined; {len(errors)} findings.")

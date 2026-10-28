@@ -45,5 +45,7 @@ The CLI is a generator, not an implementation or a business requirement registry
 
 Technology conventions such as test-method naming, HTTP ETag/If-Match concurrency and three-project MassTransit EventBus composition are independently **opt-in** profiles. Their examples and verification do not add a demonstration application to the generated repository. See [ADR 0006](docs/decisions/0006-optional-technology-conventions.md).
 
+The final owner decisions are recorded in [ADR 0007](docs/decisions/0007-final-editorial-policies.md). Document identifiers and approval workflows, and direct API request DTO form binding, are both **independently opt-in**. The documentation catalog does not prescribe client-library development or source-model generation; incomplete code examples must be labeled illustrative and claims of executable examples require real test evidence.
+
 See [implementation status](docs/implementation-status.md), [approved template scope](docs/decisions/0005-approved-template-scope.md), [architectural decisions](docs/decisions/index.md), [remaining owner choices](docs/decisions/owner-decision-backlog.md) and [contributing rules](CONTRIBUTING.md).
 

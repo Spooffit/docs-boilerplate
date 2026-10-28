@@ -86,6 +86,14 @@ status: draft
     }
     if (Test-Path (Join-Path $variants 'docs/standards/dotnet/ef-core.md')) { throw 'Unselected data access profile leaked' }
 
+    $final = Join-Path $root 'final-optional'
+    Invoke-Docs init --name FinalConventions --description 'Selected documentation and UI rules' --output $final --profiles 'document-identifiers-and-statuses,ui-direct-dto-forms' --site none --non-interactive
+    Invoke-Docs validate --output $final
+    foreach ($file in @('docs/standards/documentation/identifiers-and-statuses.md', 'docs/standards/ui/direct-dto-forms.md', 'docs/standards/http/client-contracts.md')) {
+        if (-not (Test-Path (Join-Path $final $file))) { throw "Missing final opt-in profile: $file" }
+    }
+    if (Test-Path (Join-Path $final 'docs/standards/blazor')) { throw 'Unselected Blazor profile leaked' }
+
     $headless = Join-Path $root 'headless'
     Invoke-Docs init --name Headless --description 'Markdown only' --output $headless --profiles dotnet --site none --non-interactive
     Invoke-Docs validate --output $headless

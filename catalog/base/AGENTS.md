@@ -38,3 +38,9 @@ Use the optional `docs-init` skill when installed. Do not create feature/module/
 - If `update` or `validate` reports an interrupted update, inspect the file changes. If the boilerplate source checkout and .NET 10 SDK are available, run `dotnet run --project src/DocsBoilerplate.Cli -- recover --output <repository-root>` **from that checkout**, supplying the generated repository's location as `--output`. If the generator is unavailable or recovery refuses unexpected edits, preserve the temporary journal and seek deliberate reconciliation; never discard its snapshots or override user work to force a successful check.
 - If a checkout of the boilerplate generator and .NET 10 SDK is available, from **that checkout** run `dotnet run --project src/DocsBoilerplate.Cli -- validate --output <repository-root>`. The generated repository does not contain or require an installed CLI package. Report separately what the validator did **not** establish (for example, factual correctness, approval, complete Markdown anchor validity or browser behavior).
 - Optional agent skills under `.agents/skills/` describe focused workflows. They do **not** override project decisions or selected standards.
+
+## Example and decision evidence
+
+- Code snippets with omitted imports, placeholders, or pseudocode are illustrative and must be labeled accordingly. Do not claim an example works without a verified build or executed test in the relevant environment.
+- Do not invent project-specific document IDs, approval authorities or document workflow states. Apply the optional identifiers/approval standard only if the project selected that profile.
+- Do not introduce a second UI state model automatically. The optional direct API DTO form convention applies only if selected and the DTO is appropriate for safe editing.

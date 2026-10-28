@@ -80,6 +80,24 @@ PY
 run update --output "$temp/optional-conventions" --apply
 run validate --output "$temp/optional-conventions"
 
+# The final owner-selected profiles must only appear when explicitly selected.
+run init --name FinalConventions --description "Document workflow and direct DTO forms" --output "$temp/final-conventions" --profiles document-identifiers-and-statuses,ui-direct-dto-forms --site none --non-interactive
+run validate --output "$temp/final-conventions"
+[[ -f "$temp/final-conventions/docs/standards/documentation/identifiers-and-statuses.md" ]]
+[[ -f "$temp/final-conventions/docs/standards/ui/direct-dto-forms.md" ]]
+[[ -f "$temp/final-conventions/docs/standards/http/client-contracts.md" ]]
+[[ -f "$temp/final-conventions/docs/standards/ui/forms-and-accessibility.md" ]]
+[[ ! -e "$temp/final-conventions/docs/standards/dotnet" ]]
+[[ ! -e "$temp/final-conventions/docs/standards/blazor" ]]
+python3 - "$temp/final-conventions/docs.config.json" <<'PY'
+import json,sys
+from pathlib import Path
+manifest=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+assert set(manifest["Profiles"]) == {"document-identifiers-and-statuses", "ui-direct-dto-forms", "http-contracts", "ui-accessibility"}, manifest["Profiles"]
+assert manifest["Modules"] == [] and manifest["Skills"] == []
+PY
+run update --output "$temp/final-conventions" --apply
+run validate --output "$temp/final-conventions"
 # A genuinely minimal repo must not contain dangling links to optional modules.
 run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
 run validate --output "$temp/minimal"
@@ -95,6 +113,8 @@ PY
 [[ ! -f "$temp/minimal/docs/standards/dotnet/test-naming-convention.md" ]]
 [[ ! -f "$temp/minimal/docs/standards/dotnet/eventbus-composition.md" ]]
 [[ ! -f "$temp/minimal/docs/standards/http/etag-concurrency.md" ]]
+[[ ! -f "$temp/minimal/docs/standards/documentation/identifiers-and-statuses.md" ]]
+[[ ! -f "$temp/minimal/docs/standards/ui/direct-dto-forms.md" ]]
 [[ -f "$temp/minimal/docs/project/overview.md" ]]
 [[ -f "$temp/minimal/docs/architecture/overview.md" ]]
 grep -q '^status: draft$' "$temp/minimal/docs/project/overview.md"
