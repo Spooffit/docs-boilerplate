@@ -15,7 +15,7 @@ status: active
 - Read the root `llms.txt` as a curated entry point and `AGENTS.md` for instructions. Neither replaces the referenced source documents or explicit project decisions. `docs/catalog.md` is the complete project-doc discovery map, including pages authored after initialization. `llms.txt` remains intentionally short and should link to the catalog; it need not repeat every new document. Initial generated indexes list installed documents, not pending or unselected technologies; navigation is not confirmation of requirements.
 - Every directory under `docs/` containing Markdown documents must have `index.md` summarizing its purpose and linking to its contents. Keep links relative to the containing document. When adding a new Markdown page, link it from its immediate directory's `index.md` and from `docs/catalog.md`. Link each newly authored nested directory's `index.md` from its parent directory index as well. When moving/renaming pages or directories, repair affected indexes, catalog entries and inbound links. The generator creates initial indexes; it does **not** overwrite author edits to fix navigation.
 - Documentation files use lowercase **kebab-case** (e.g. `api-versioning.md`) and `index.md` for directory overviews. Established tool-specific entrypoints `README.md`, `AGENTS.md`, `SKILL.md` and `CONTRIBUTING.md` are explicit well-known exceptions; do not rename them.
-- Do not invent a mandatory identifier scheme for features, ADRs or business requirements. Use existing project IDs where adopted; otherwise use descriptive kebab-case filenames.
+- Do not invent a mandatory identifier scheme for features, ADRs or business requirements. Use existing project IDs where adopted; otherwise use descriptive kebab-case filenames. The optional document-identifier and approval policy is installed only if its profile is selected.
 
 ## Frontmatter
 
@@ -54,6 +54,14 @@ Do not add invented owner names, review dates, adoption status or unsupported te
 - A template is guidance, not confirmation that a design has been approved or built. The installed technology profile list is also not approval of any business requirement.
 - For **accepted decisions**, use the canonical ADR/decision and requirements; for an external wire format use the adopted schema and deployed contract; for observed implementation verify source code and actual tests. If sources disagree, identify the conflict and the responsible owner instead of silently picking the most recent-looking document.
 - Read only documents relevant to the current task. Use the generated catalog and template selection guide to navigate, not as a reason to expand every document category.
+
+## Code examples and verification evidence
+
+- Treat source examples as **illustrative** unless the exact snippet or a faithful complete version has been compiled, executed or contract-tested using an explicitly identified compatible toolchain. A syntactically plausible code block is not proof that it runs.
+- When an example is intentionally incomplete (pseudocode, placeholder type, omitted imports, omitted surrounding application or elided assertions), **label it illustrative or partial** next to the example. Never present `...` or comments standing in for executable behavior as verified code.
+- A claim of an **executable or verified** example needs a concrete build/test command, tool and dependency versions as applicable, and retrievable evidence from an actual successful run. Link the source of truth for test fixtures rather than duplicating a second example that can drift.
+- Do **not** require a dedicated application, package or CI job for every small documentation snippet. Prefer focused real tests for examples that materially guide integration, compatibility, security or public behavior. If no verification ran, report it as *not verified*, not as a passing example.
+- Build success by itself does not establish integration, runtime behavior, authorization, reliability or API compatibility. Test the claim at the appropriate boundary.
 
 ## Viewer and local preview
 

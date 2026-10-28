@@ -17,7 +17,7 @@ Link the actual authoritative API contract, such as OpenAPI or another adopted w
 
 ## Client compatibility (when applicable)
 
-For real consumers, document required compatibility, headers and error behavior. Record code-generation inputs only if generated clients actually exist. The separate `http-contracts` profile is optional and does not follow automatically from selecting this documentation module.
+For real consumers, document required compatibility, headers and error behavior. The separate `http-contracts` profile is optional and does not follow automatically from selecting this documentation module.
 
 ## Compatibility and versions
 

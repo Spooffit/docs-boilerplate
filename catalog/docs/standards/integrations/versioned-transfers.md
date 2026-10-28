@@ -7,7 +7,7 @@ status: active
 
 # Resumable data transfers and integrity
 
-**Applies when:** a system transfers large payloads, supports partial reads or must resume interrupted transfers. No immutable business-record versions, content registry, file cache, custom framing or SDK is implied.
+**Applies when:** a system transfers large payloads, supports partial reads or must resume interrupted transfers. No particular application architecture, storage product or custom framing is implied.
 
 ## Transfer contract
 
@@ -27,7 +27,7 @@ Document timeout, cancellation, retries, cleanup and uncertain completion behavi
 
 ## Runtime constraints, when applicable
 
-For supported platforms, verify streaming, cancellation, resource ownership, concurrency and memory constraints in each actual runtime. An adapter callback does not prove data was validated or durably stored. Do not prescribe a cross-platform SDK or platform asset manager for an ordinary transfer.
+Where an application runs on multiple platforms, verify streaming, cancellation, resource ownership, concurrency and memory constraints in each actual runtime. A transport callback does not prove data was validated or durably stored.
 
 ## Verification
 
