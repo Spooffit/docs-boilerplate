@@ -18,7 +18,7 @@ internal static class MarkdownNavigation
         @"^ {0,3}(?:=+|-+)[ \t]*$",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
     private static readonly Regex ExplicitAnchor = new(
-        @"<a\s+[^>]*\bid\s*=\s*[""'](?<id>[^""']+)[""'][^>]*>",
+        @"<a\s+[^>]*\b(?:id|name)\s*=\s*[""'](?<id>[^""']+)[""'][^>]*>",
         RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex MarkdownLinkLabel = new(
         @"!?\[(?<label>[^\]]+)\]\([^)]+\)", RegexOptions.Compiled);

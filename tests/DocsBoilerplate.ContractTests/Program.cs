@@ -130,6 +130,56 @@ Test("document catalog lists only selected technology", () =>
     Expect(!text.Contains("blazor", StringComparison.Ordinal), "Unselected technology leaked");
     Expect(text.Contains("standards/dotnet/testing.md", StringComparison.Ordinal), "Missing installed document");
 });
+Test("Markdown heading anchors are scoped, duplicated, and Unicode-safe", () =>
+{
+    const string source = """
+        # Overview
+
+        ## One **Important** Section
+
+        ## Repeat
+        ## Repeat
+        ## Repeat!
+
+        Paragraph title
+        ------------
+
+        <a id="explicit-id"></a>
+        <a name="explicit-name"></a>
+
+        ~~~md
+        ## Hidden header
+        [Bad](missing.md#nope)
+        ~~~
+        """;
+    var anchors = MarkdownNavigation.Anchors(source);
+    foreach (var key in new[] { "overview", "one-important-section", "repeat", "repeat-1", "repeat-2",
+        "paragraph-title", "explicit-id", "explicit-name" })
+        Expect(anchors.Contains(key), $"Heading anchor missing: {key}");
+    Expect(!anchors.Contains("hidden-header"), "Heading in fenced code became an anchor");
+    Expect(MarkdownNavigation.Slug("Über C# & .NET") == "über-c-net", "Incorrect Unicode/punctuation slug");
+});
+
+Test("Markdown link targets retain fragments and omit fenced code examples", () =>
+{
+    const string source = """
+        Read [Section](guide.md#one-important-section) and [same page](#overview).
+        Open [encoded](guide.md#über-caf%C3%A9).
+
+        ~~~markdown
+        [Example only](missing.md#fictitious)
+        ~~~
+        """;
+    var links = MarkdownNavigation.InlineTargets(source).ToArray();
+    Expect(links.Length == 3, "Inline link parser included fenced content or skipped links");
+    Expect(links[0] == "guide.md#one-important-section", "Lost real fragment");
+    Expect(links[1] == "#overview", "Lost same-page fragment");
+    var (path, fragment) = MarkdownNavigation.SplitLocalTarget(links[2]);
+    Expect(path == "guide.md" && fragment == "über-café", "Percent-encoded fragment was not decoded");
+    var (anglePath, angleFragment) = MarkdownNavigation.SplitLocalTarget("<guides/my guide.md#section> \"Title\"");
+    Expect(anglePath == "guides/my guide.md" && angleFragment == "section", "Angle-bracket path not supported");
+});
+
 Test("SHA-256 hashes are stable and use UTF-8", () =>
     Expect(DocsCli.Hash("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
         "SHA-256 does not match known test vector"));

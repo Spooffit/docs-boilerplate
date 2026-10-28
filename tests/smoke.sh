@@ -358,6 +358,21 @@ if run doctor --catalog "$temp/catalog-cycle"; then
 fi
 
 
+# Broken fragments are rejected even if the Markdown file itself exists.
+cp -a "$temp/minimal" "$temp/valid-fragment"
+printf '\n[Existing heading](docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism)\n' >> "$temp/valid-fragment/README.md"
+run validate --output "$temp/valid-fragment"
+cp -a "$temp/minimal" "$temp/missing-fragment"
+printf '\n[Missing heading](docs/standards/dotnet/testing.md#not-a-real-section)\n' >> "$temp/missing-fragment/README.md"
+if run validate --output "$temp/missing-fragment"; then
+    echo "Missing target Markdown heading was accepted"; exit 1
+fi
+cp -a "$temp/minimal" "$temp/missing-samepage-fragment"
+printf '\n[Missing local heading](#not-a-real-heading)\n' >> "$temp/missing-samepage-fragment/docs/index.md"
+if run validate --output "$temp/missing-samepage-fragment"; then
+    echo "Missing same-page heading was accepted"; exit 1
+fi
+
 # Frontmatter, kebab-case and folder indexes are enforced on authored documents too.
 cp -a "$temp/minimal" "$temp/invalid-frontmatter"
 printf '# Missing metadata\n' > "$temp/invalid-frontmatter/docs/project/overview.md"
