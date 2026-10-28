@@ -605,7 +605,7 @@ Recoverable Publishing outbox stores restriction fact on every new Withdrawal an
 
 ### Транспортные потоки
 
-[S17](../standards/S17-data-flows.md). DF08 separates durable local intent, delivery and consumer commit; DF09 reuses F09 reads, no new source API.
+[S17](../../../catalog/base/docs/standards/data-flows.md). DF08 separates durable local intent, delivery and consumer commit; DF09 reuses F09 reads, no new source API.
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

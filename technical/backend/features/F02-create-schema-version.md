@@ -373,7 +373,7 @@ MVP SchemaDraftApplier различает identity definition и editable value-
 
 ### 5.1. Endpoints
 
-Таблица по [S17](../standards/S17-data-flows.md). `V=/api/v1/entity-schemas/{schemaId:guid}/versions`, `S=/api/v1/entity-schemas/{schemaId:guid}`. Demo anonymous, MVP Specialist F16/Q10. Таблица задаёт materialized Demo transport; проверка controller/HTTP/OpenAPI подтверждена scoped Functional suite (§11). Retire/Restore и logical Archive/Restore отдельно остаются MVP, Publish — F03.
+Таблица по [S17](../../../catalog/base/docs/standards/data-flows.md). `V=/api/v1/entity-schemas/{schemaId:guid}/versions`, `S=/api/v1/entity-schemas/{schemaId:guid}`. Demo anonymous, MVP Specialist F16/Q10. Таблица задаёт materialized Demo transport; проверка controller/HTTP/OpenAPI подтверждена scoped Functional suite (§11). Retire/Restore и logical Archive/Restore отдельно остаются MVP, Publish — F03.
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

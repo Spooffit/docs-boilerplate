@@ -476,7 +476,7 @@ MVP DI/adapter явно выбирает поддерживаемую source/for
 ## 9. Data flows
 
 
-По [S17](../standards/S17-data-flows.md) ephemeral server artifact и local CLI writes — разные boundaries.
+По [S17](../../../catalog/base/docs/standards/data-flows.md) ephemeral server artifact и local CLI writes — разные boundaries.
 
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |

@@ -28,7 +28,7 @@
 | S14 | [Окружения, изоляция и параллельность](catalog/docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism) | — |
 | S15 | [Test engineering и проверка изменений](catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration) | — |
 | S16 | [REST: реализация HTTP API](technical/backend/standards/S16-rest.md) | — |
-| S17 | [Потоки данных и транспортные взаимодействия](technical/backend/standards/S17-data-flows.md) | — |
+| S17 | [Потоки данных и транспортные взаимодействия](catalog/base/docs/standards/data-flows.md) | — |
 | S18 | [FluentValidation и композиция правил](catalog/docs/standards/dotnet/fluentvalidation.md) | — |
 | S19 | [Фильтрация: Ardalis.Specification](catalog/docs/standards/dotnet/ardalis-specification.md) | — |
 | S20 | [CQRS: размещение обработчиков](catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction) | — |

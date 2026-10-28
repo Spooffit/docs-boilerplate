@@ -484,7 +484,7 @@ Host DI registers Publishing.Application handlers, new Persistence queries/repos
 
 ## 9. Data flows
 
-[S17](../standards/S17-data-flows.md): transport obligations и internal algorithms отдельно, all mutations preserve exact target. DF10 read context не root concurrency authority.
+[S17](../../../catalog/base/docs/standards/data-flows.md): transport obligations и internal algorithms отдельно, all mutations preserve exact target. DF10 read context не root concurrency authority.
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

@@ -469,7 +469,7 @@ MVP DI регистрирует поддерживаемые old/new profiles с
 ## 9. Data flows
 
 
-По [S17](../standards/S17-data-flows.md): раздельно external API и internal F22, собственных записей/commit нет.
+По [S17](../../../catalog/base/docs/standards/data-flows.md): раздельно external API и internal F22, собственных записей/commit нет.
 
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |

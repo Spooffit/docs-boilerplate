@@ -386,7 +386,7 @@ DI: Application handlers/validators/verifier; Persistence repository/query/metad
 
 ### 5.1. Endpoints
 
-Таблица [S17](../standards/S17-data-flows.md), HTTP adapter по [S16](../standards/S16-rest.md). `A=/api/v1/assets`, IDs Guid. D = anonymous Demo; M = MVP authoring access F16/Q10, без выдуманного permission. MVP runtime bytes выдаются после проверки Delivery session/revision; точный access contract Q15/F13.
+Таблица [S17](../../../catalog/base/docs/standards/data-flows.md), HTTP adapter по [S16](../standards/S16-rest.md). `A=/api/v1/assets`, IDs Guid. D = anonymous Demo; M = MVP authoring access F16/Q10, без выдуманного permission. MVP runtime bytes выдаются после проверки Delivery session/revision; точный access contract Q15/F13.
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

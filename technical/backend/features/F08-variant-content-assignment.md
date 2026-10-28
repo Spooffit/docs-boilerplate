@@ -506,7 +506,7 @@ Idempotent empty Variant assignment setup отдельно от CatalogAccess co
 
 ### Транспортные потоки
 
-По [S17](../standards/S17-data-flows.md). DF06 фиксирует незакрытую потребность preview candidate, а не существующий или выбранный endpoint. Public query fields/error profiles F04 переиспользуются, не дублируются как новый API F08.
+По [S17](../../../catalog/base/docs/standards/data-flows.md). DF06 фиксирует незакрытую потребность preview candidate, а не существующий или выбранный endpoint. Public query fields/error profiles F04 переиспользуются, не дублируются как новый API F08.
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

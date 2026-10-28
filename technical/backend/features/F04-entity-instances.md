@@ -893,7 +893,7 @@ DI Application подключает ValueConstraintValidator/PlainTextLength/Run
 ### 5.1. Endpoints
 
 
-Транспортная таблица по [S17](../standards/S17-data-flows.md)/[S16](../standards/S16-rest.md). `I=/api/v1/entity-instances`, `R=I/{instanceId:guid}`, `V=R/versions`; version/source IDs Guid route constraints. Доступ D=Demo anonymous, M=MVP Specialist F16/Q10. Существующие target routes прежнего F04 сохранены; Rename route не выбирается по аналогии. Models §3, algorithms §9.
+Транспортная таблица по [S17](../../../catalog/base/docs/standards/data-flows.md)/[S16](../standards/S16-rest.md). `I=/api/v1/entity-instances`, `R=I/{instanceId:guid}`, `V=R/versions`; version/source IDs Guid route constraints. Доступ D=Demo anonymous, M=MVP Specialist F16/Q10. Существующие target routes прежнего F04 сохранены; Rename route не выбирается по аналогии. Models §3, algorithms §9.
 
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |

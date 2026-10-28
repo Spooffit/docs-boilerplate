@@ -437,7 +437,7 @@ Adapter move impact ссылается на публичные immutable Applica
 
 MVP порядок для DF01–DF02, DF05, caller commit DF06 и отдельный repair commit DF07: input/CPU preparation вне gate → явная owner ReadCommitted transaction → standalone exclusive advisory acquire → fresh own roots и foreign primary-port facts → проверки own token/basis/lifecycle/dependencies → Domain action → только own writes/atomic intents → commit и release. Это обязательный префикс каждого указанного mutation/retry stage; строки «load/guard» ниже означают загрузку **после** acquire. Read-only query/impact/preview остаются observations; при необходимости короткий source capture имеет отдельный guarded scope, но долгий stream и пользовательский review не удерживают guard. Demo использует свой согласованный контур без новых обязательных MVP dependencies.
 
-По [S17](../standards/S17-data-flows.md) внешний поток и внутренний алгоритм описаны отдельно. DF07 задаёт согласованное корректирующее действие, чей точный transport/CLR остаётся Q15/Q23, а MVP guard protocol принят Q20; описание не доказывает готовый endpoint.
+По [S17](../../../catalog/base/docs/standards/data-flows.md) внешний поток и внутренний алгоритм описаны отдельно. DF07 задаёт согласованное корректирующее действие, чей точный transport/CLR остаётся Q15/Q23, а MVP guard protocol принят Q20; описание не доказывает готовый endpoint.
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

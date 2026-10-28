@@ -736,7 +736,7 @@ Domain/FV/DTO mapping DateTimeValueDefinition переносит exact TemporalS
 ### 5.1. Endpoints и транспортные потоки
 
 
-Target routes сохраняют прежнюю целевую спецификацию F01. Таблица соответствует [S17](../standards/S17-data-flows.md); controller — transport adapter по [S16](../standards/S16-rest.md).
+Target routes сохраняют прежнюю целевую спецификацию F01. Таблица соответствует [S17](../../../catalog/base/docs/standards/data-flows.md); controller — transport adapter по [S16](../standards/S16-rest.md).
 
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |

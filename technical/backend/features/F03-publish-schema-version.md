@@ -304,7 +304,7 @@ MVP schema hash учитывает declared semantic bounds/collection rules/com
 
 ### 5.1. Endpoints
 
-Транспортный поток по [S17](../standards/S17-data-flows.md), HTTP по [S16](../standards/S16-rest.md). Existing nested route сохраняется; body/response/concurrency меняются целевым контрактом.
+Транспортный поток по [S17](../../../catalog/base/docs/standards/data-flows.md), HTTP по [S16](../standards/S16-rest.md). Existing nested route сохраняется; body/response/concurrency меняются целевым контрактом.
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

@@ -766,7 +766,7 @@ Internal setup использует выбранный recoverable trigger Q20 �
 
 ### Транспортные потоки
 
-По [S17](../standards/S17-data-flows.md), models §2–3. F04 candidate reads перечислены как переиспользуемые внешние interactions, не новые assignment endpoints. Initialization internal, его transport не выбран.
+По [S17](../../../catalog/base/docs/standards/data-flows.md), models §2–3. F04 candidate reads перечислены как переиспользуемые внешние interactions, не новые assignment endpoints. Initialization internal, его transport не выбран.
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

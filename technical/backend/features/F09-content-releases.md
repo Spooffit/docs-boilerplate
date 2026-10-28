@@ -779,7 +779,7 @@ Trusted clock/actor and DI; exact chosen ProductRelease reader/guard и explicit
 
 ### Транспортные потоки
 
-[S17](../standards/S17-data-flows.md). Two lifecycle rows each name both accepted actions. DF09 использует выбранный POST release-review, Application command и technical receipt; Preview/Tree queries остаются read-only.
+[S17](../../../catalog/base/docs/standards/data-flows.md). Two lifecycle rows each name both accepted actions. DF09 использует выбранный POST release-review, Application command и technical receipt; Preview/Tree queries остаются read-only.
 
 | Поток | Транспорт | Метод / канал | Endpoint / destination | Доступ | Вход | Application action | Выход | Успех | Ошибки |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
