@@ -10,6 +10,54 @@ run() { dotnet run --no-build --configuration Release --project "$project" -- "$
 run doctor
 run list
 
+# A selectable profile must not depend on a planned profile. Doctor must
+# reject that catalog even before any project generation is attempted.
+cp -a catalog "$temp/catalog-planned-dependency"
+python3 - "$temp/catalog-planned-dependency/profiles.json" <<'PY'
+import json
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+data = json.loads(path.read_text(encoding="utf-8"))
+available = next(p for p in data["profiles"] if p["id"] == "tunit")
+assert available["status"] == "available"
+assert next(p for p in data["profiles"] if p["id"] == "go")["status"] == "planned"
+available["requires"].append("go")
+path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+PY
+if run doctor --catalog "$temp/catalog-planned-dependency" > "$temp/planned-dependency.log" 2>&1; then
+    echo "Doctor accepted an available profile requiring a planned profile"; exit 1
+fi
+grep -q "Available profile 'tunit' cannot depend on planned profile 'go'" "$temp/planned-dependency.log"
+
+# End-to-end audit: every available profile must generate and validate in
+# isolation with exactly its declared transitive dependencies, no selected
+# project modules or agent skills and no browser shell.
+while IFS= read -r profile; do
+    output="$temp/profile-matrix/$profile"
+    run init --name ProfileAudit --description "Independent profile audit" --output "$output" --profiles "$profile" --site none --non-interactive > "$temp/profile-matrix-init.log"
+    run validate --output "$output" > "$temp/profile-matrix-validate.log"
+    python3 - "$output/docs.config.json" "$profile" <<'PY'
+import json
+from pathlib import Path
+import sys
+manifest = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+requested = sys.argv[2]
+assert requested in manifest["Profiles"], requested
+assert manifest["Site"] == "none"
+assert manifest["Modules"] == []
+assert manifest["Skills"] == []
+assert "index.html" not in manifest["GeneratedFiles"]
+assert set(manifest["GeneratedFiles"]) == set(manifest["GeneratedHashes"])
+PY
+    echo "PASS profile matrix: $profile"
+done < <(python3 - <<'PY'
+import json
+with open("catalog/profiles.json", encoding="utf-8") as stream:
+    print(*(p["id"] for p in json.load(stream)["profiles"] if p["status"] == "available"), sep="\n")
+PY
+)
+
 # A genuinely minimal repo must not contain dangling links to optional modules.
 run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
 run validate --output "$temp/minimal"

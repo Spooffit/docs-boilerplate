@@ -30,6 +30,16 @@ These are **questions for the repository owner**, not approved engineering requi
 | Data-flow detail | Transport and internal flows are distinguished when applicable | Optional detailed DF-ID template; lightweight traceability only |
 | Milestone examples | Stages are project-defined | Example Demo/MVP/Production plan as opt-in guidance; no prescribed stages |
 
+## Review sequence after the technical audit
+
+Review existing questions in three passes, without treating the order as priority or consent:
+
+1. **Scope and permanent defaults:** planned-profile visibility, permanent template set, file identifiers and statuses, technology selection, example policy, milestone examples and data-flow detail. A valid choice is to keep the core minimal or declare an inherited suggestion out of scope.
+2. **Optional technology conventions:** testing method names, test UI tooling, .NET validation, persistence/query patterns, MVC/CQRS API style, optimistic HTTP concurrency and messaging topology. No specialized stack should be generated unless it is explicitly selected and verifiable.
+3. **Optional integration and example policies:** code-example verification, SDK platform adapter policy, code generation verification examples and generated API client state. These are *candidates for review*, not evidence that the boilerplate needs an SDK, business schema, client cache or source generator.
+
+The existing table is the decision register; the passes above are only a review route, not additional requirements. Closing a proposal as **not applicable** requires no replacement template. Keep all entries pending until an explicit owner decision is recorded.
+
 ## Approval requirements
 
 For each choice record the selected default versus opt-in scope, reason, affected manifest/template paths, implementation and test evidence, and any migration impact on previously generated docs. A historical pattern alone never grants authority to change generated defaults.

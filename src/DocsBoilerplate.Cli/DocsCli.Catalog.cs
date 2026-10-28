@@ -168,8 +168,15 @@ static partial class DocsCli
             if (profile.Requires.Distinct(StringComparer.Ordinal).Count() != profile.Requires.Length)
                 throw new InvalidOperationException($"Duplicate dependency in profile: {profile.Id}");
             foreach (var dependency in profile.Requires)
-                if (!byId.ContainsKey(dependency))
+            {
+                if (!byId.TryGetValue(dependency, out var required))
                     throw new InvalidOperationException($"Unknown dependency '{dependency}' in profile '{profile.Id}'.");
+                // A selectable profile must never have an unavailable transitive dependency.
+                // A direct dependency on a planned profile is enough to make the catalog invalid.
+                if (profile.Status == "available" && required.Status != "available")
+                    throw new InvalidOperationException(
+                        $"Available profile '{profile.Id}' cannot depend on planned profile '{dependency}'.");
+            }
         }
         var visited = new HashSet<string>(StringComparer.Ordinal);
         var active = new HashSet<string>(StringComparer.Ordinal);
