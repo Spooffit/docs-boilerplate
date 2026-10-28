@@ -45,7 +45,7 @@ A passing focused check does not prove browser interactivity, all Markdown link 
 3. Add a focused regression assertion for pure logic and an end-to-end case when file output or command behavior changes.
 4. Run `dotnet build src/DocsBoilerplate.Cli -c Release`, `dotnet run --project tests/DocsBoilerplate.ContractTests -c Release` and `bash tests/smoke.sh` in a suitable environment.
 5. Check Linux and Windows GitHub Actions before marking the change verified.
-6. Never delete historical project content solely because an inventory entry calls it project-specific. Follow the [historical triage](../audit/project-source-triage.md) and record its disposition.
+6. Keep historical product specifications out of the boilerplate. Any former-project material needed for archaeology remains recoverable from Git history; do not restore it as an active documentation source.
 
 ## Long-term refactor boundary
 

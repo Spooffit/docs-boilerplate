@@ -1,19 +1,17 @@
 ---
 title: "Docs Boilerplate"
-description: "Repository documentation and guidance"
+description: "AI-first Docs-as-Code repository generator"
 kind: index
 status: active
 ---
 
 # Docs Boilerplate
 
-A work-in-progress **Docs-as-Code repository generator**, not yet a fully migrated template.
+A Markdown-first **documentation repository generator** designed primarily for AI coding agents and secondarily for humans. The reusable source lives in [`catalog/`](catalog/), the .NET 10 CLI in [`src/`](src/), and generator tests in [`tests/`](tests/).
 
-## Current state
+This is the **boilerplate itself**, not a working application's business specification. It contains no example product requirements, feature backlogs or historical project implementation documents. Technology-specific guidance is opt-in; a newly generated repository receives only the selected files.
 
-The reusable implementation lives in [`catalog/`](catalog/), [`src/`](src/) and [`docs/`](docs/). The original documentation repository is **intentionally still present** in `business/`, `technical/`, `milestones/` and older root indexes. Those documents remain input to the migration audit and **are not copied into generated projects**. Do not treat their project-specific claims as boilerplate.
-
-Read [llms.txt](llms.txt), the [documentation index](docs/index.md), and the [authoring conventions](catalog/base/docs/standards/documentation.md). Also read the [baseline audit](docs/audit/2026-10-27.md), [architecture](docs/architecture/overview.md), [ADR](docs/decisions/0001-composable-profiles.md), [generator instructions](docs/generator.md), and [implementation status](docs/implementation-status.md).
+Start with [`llms.txt`](llms.txt), [agent instructions](AGENTS.md), the [documentation index](docs/index.md), the [generator guide](docs/generator.md), and the [authoring standard](catalog/base/docs/standards/documentation.md).
 
 ## Quick start
 
@@ -21,26 +19,28 @@ Requires .NET SDK 10:
 
 ```sh
 dotnet run --project src/DocsBoilerplate.Cli -- list
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example project" --output ./scratch/demo --profiles dotnet,ef-core,blazor,mudblazor --non-interactive --dry-run
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example project" --output ./scratch/demo --profiles dotnet,ef-core,blazor,mudblazor --non-interactive
+dotnet run --project src/DocsBoilerplate.Cli -- doctor
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive --dry-run
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/demo
 ```
 
-Run `dotnet build src/DocsBoilerplate.Cli` and `bash tests/smoke.sh` before relying on the generator. For local human viewing of a generated repository, run `python -m http.server 3000` from its root and visit `http://localhost:3000/`; opening `index.html` via `file://` is unreliable. CI is defined at `.github/workflows/docs-generator.yml`.
+Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh` after changing generator behavior. The cross-platform test workflow is [`.github/workflows/docs-generator.yml`](.github/workflows/docs-generator.yml).
 
-## What it does
+To browse a generated repository, run `python -m http.server 3000` in its root and open `http://localhost:3000/`. Docsify renders the Markdown dynamically in the browser without a static-site build. Opening its `index.html` directly via `file://` is not a reliable mode.
 
-- Generates Markdown documentation from a minimal portable base.
-- Includes only requested, available technology profiles and their prerequisites, with opt-in ASP.NET Core/MVC, PostgreSQL, FluentValidation, CQRS, MassTransit/RabbitMQ, Ardalis.Specification, bUnit, HTTP client contracts, integration reliability and object-storage standards.
-- Lists planned, unavailable technologies explicitly.
-- Supports interactive prompts, non-interactive flags, selectable documentation modules and optional Agent Skills.
-- Offers a read-only dry run, preview-first updates with SHA-256 ownership checks, and refuses conflicting user edits.
-- Validates generated-file presence, unresolved base fields and simple relative Markdown links.
+## What the generator does
 
-## Current limitations
+- Creates a minimal repository with `README.md`, `AGENTS.md`, `llms.txt`, `docs/`, a generated-file ownership manifest and an optional Docsify viewer.
+- Selects composable, technology-scoped standards and templates rather than shipping one fixed stack. Available profiles include .NET, ASP.NET Core, MVC, PostgreSQL, Blazor, test frameworks, CQRS, messaging, HTTP contracts and other opt-in guidance.
+- Offers optional project-document scaffolds and agent skills without imposing them on minimal projects.
+- Supports dry-run, validation and preview-first updates with SHA-256 fingerprints, while protecting user-edited content.
+- Maintains navigable Markdown and a concise `llms.txt` for agents; Docsify is an optional human reading layer.
 
-This repository is undergoing a staged migration. The legacy content still requires technical review. The default human viewer is Docsify: one index.html and no site build. Generated repositories include llms.txt, standard frontmatter and directory indexes. Historical source review, comprehensive framework-based test coverage and strong concurrent-filesystem guarantees remain incomplete; formal JSON Schemas and focused cross-platform tests are already present. See [implementation status](docs/implementation-status.md).
+## Boundaries
 
-## Contributing
+The CLI is a generator, not an implementation or a business requirement registry. Examples in templates are placeholders or explicitly optional technical illustrations; they are never evidence that a generated project's code exists. Planned technology profiles are visible but not selectable. Docsify requires browser network access to CDN assets unless self-hosted, and opening Markdown through a local web server is preferred.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) for the full development workflow and legacy preservation policy. Keep normative standards technology-scoped, project details in generated project documents, and agent workflows free of copied technical rules. New available profiles must include real content and tests.
+See [implementation status](docs/implementation-status.md), [architectural decisions](docs/decisions/index.md), [pending owner choices](docs/decisions/owner-decision-backlog.md) and [contributing rules](CONTRIBUTING.md).
+
+Earlier project's source specifications have been removed from the current branch; Git history retains past commits for reference.

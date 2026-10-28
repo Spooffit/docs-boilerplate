@@ -1,19 +1,18 @@
 ---
 title: "Docs Boilerplate documentation"
-description: "Documentation index and navigation"
+description: "Maintainer documentation navigation"
 kind: index
 status: active
 ---
 
 # Docs Boilerplate documentation
 
-This repository builds reusable, technology-scoped, agent-first documentation. The original project-specific files are retained as historical inputs until the migration is complete.
+This repository contains a generator and reusable documentation sources. It does not host an example product's active requirements.
 
-- [Architecture and design](architecture/index.md)
-- [Migration audits](audit/index.md)
-- [Architectural decisions](decisions/index.md)
+- [Architecture and code boundaries](architecture/index.md)
+- [Accepted decisions and deferred choices](decisions/index.md)
 - [Generator commands](generator.md)
-- [Implementation status](implementation-status.md)
-- [Documentation conventions](../catalog/base/docs/standards/documentation.md)
+- [Implementation status and limitations](implementation-status.md)
+- [Canonical documentation conventions](../catalog/base/docs/standards/documentation.md)
 
-Start at the root [README](../README.md) and [AGENTS](../AGENTS.md) for repository workflows.
+Use [README](../README.md) for onboarding and [AGENTS](../AGENTS.md) for agent workflows. Project-specific features and requirements belong in **generated project repositories**.

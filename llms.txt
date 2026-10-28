@@ -1,20 +1,20 @@
 # Docs Boilerplate
 
-> Agent-first Docs-as-Code repository template and CLI. Markdown content and composable standards are the source of truth; the browser viewer is secondary.
+> Reusable agent-first Docs-as-Code generator. The source of truth is Markdown and a composable catalog; Docsify is an optional browser viewer.
 
-Read `AGENTS.md` before changing content. The historical `business/`, `technical/` and `milestones/` trees are migration inputs, not reusable generated project documentation.
-
-## Essential
+## Start here
 
 - [Repository instructions](AGENTS.md)
-- [Project overview](README.md)
+- [Generator overview](README.md)
 - [Documentation index](docs/index.md)
-- [Generator usage](docs/generator.md)
-- [Implementation status](docs/implementation-status.md)
-- [Documentation authoring convention](catalog/base/docs/standards/documentation.md)
+- [Generator CLI](docs/generator.md)
+- [Implementation and verification status](docs/implementation-status.md)
+- [Documentation standard](catalog/base/docs/standards/documentation.md)
 
-## Architecture and decisions
+## Architecture and choices
 
-- [Architecture overview](docs/architecture/overview.md)
-- [Design decisions](docs/decisions/index.md)
-- [Migration status](docs/audit/index.md)
+- [Architecture](docs/architecture/index.md)
+- [Accepted design decisions](docs/decisions/index.md)
+- [Open template decisions](docs/decisions/owner-decision-backlog.md)
+
+The catalog includes only reusable scaffolds and selected-technology guidance. A generated repository is a separate project's documentation, not a copy of this maintainer repository.

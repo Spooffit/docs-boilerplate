@@ -1,54 +1,38 @@
 ---
 title: "Contributing to Docs Boilerplate"
-description: "Repository documentation and guidance"
+description: "Maintenance workflow for the reusable repository generator"
 kind: guide
 status: active
 ---
 
 # Contributing to Docs Boilerplate
 
-This is a generator repository under staged migration. The reusable source lives in `catalog/`, the .NET CLI in `src/`, and test scripts in `tests/`.
+This repository maintains a reusable Markdown-first documentation generator. The canonical catalog is `catalog/`, the CLI is `src/`, shared schemas are `schemas/`, and tests are `tests/`. Do not add a project's real feature specifications to this repository.
 
 ## Change workflow
 
-1. Check [implementation status](docs/implementation-status.md) and the accepted [architecture ADR](docs/decisions/0001-composable-profiles.md).
-2. Identify what is canonical: `catalog/base/` for always-generated docs, `catalog/docs/standards/` for selectable technical standards, `catalog/modules/` for additional project documents, and `catalog/skills/` for optional agent procedures.
-3. Modify the smallest appropriate source. CI also checks that reusable catalog files contain no predecessor-product identifiers (`tests/catalog_hygiene.py`). Do not copy project-specific requirements into standards or tool-dependent procedures into AGENTS.md.
-4. Consult the [CLI code map](docs/architecture/generator-components.md) before changing generator behavior. Add or update catalog manifest entries for selectable content. All available profiles must have actual reusable files and clear dependencies.
-5. Update tests for new profile combinations, negative cases, missing links and idempotency.
-6. Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh`. For site changes, verify that Docsify's root index.html and Markdown routes work through a local HTTP server; the CI smoke test checks HTTP delivery.
-7. Inspect the generated repository, not merely its individual templates. Never claim a check that has not been executed.
-8. Commit a logically complete change using Conventional Commits.
+1. Read [implementation status](docs/implementation-status.md), the [architecture overview](docs/architecture/overview.md), and applicable [architectural decisions](docs/decisions/index.md).
+2. Select the smallest owning source: `catalog/base/` for common generated documentation, `catalog/docs/` for opt-in technical profiles, `catalog/modules/` for optional project documents, and `catalog/skills/` for procedures.
+3. Keep standards technology-scoped and templates free of product-specific entities, routes, roles and business rules. Use conditional examples rather than inventing requirements.
+4. Modify the associated profile/module/skill manifest when adding selectable content; verify that dependencies and supported status are correct.
+5. Add or adjust focused .NET contract tests, schema assertions, smoke cases and hygiene checks when behavior changes.
+6. Run `dotnet build src/DocsBoilerplate.Cli -c Release`, `dotnet run -c Release --project tests/DocsBoilerplate.ContractTests`, `bash tests/smoke.sh`, `python tests/catalog_hygiene.py`, and `python tests/repository_hygiene.py`. Consult CI for Windows and Chromium results.
+7. Inspect a newly generated output, including its `llms.txt`, navigation, ownership manifest, internal links and exact file set. Report only checks that actually ran.
+8. Commit cohesive changes with conventional commit messages. Direct commits to `main` are permitted when authorized.
 
 ## Documentation ownership
 
-- **Standard:** reusable, technology-scoped normative rule in `catalog/docs/standards/`.
-- **Template:** adaptable structure that does not assert project facts.
-- **Documentation module:** optional project-specific document initialized with editorial guidance.
-- **ADR:** reason for a technical decision, including alternatives and consequences.
-- **Agent Skill:** a reproducible workflow referencing standards instead of copying them.
-- **Project configuration:** explicit selected profiles, modules, skills, site and owned output file list.
+- **Standard:** enforceable engineering rule, applicable only when the relevant technology/profile is selected.
+- **Template:** a structure for documenting a real project's verified behavior; placeholders are not facts.
+- **Optional module:** project-specific document scaffold installed only when requested.
+- **ADR:** an accepted decision with reasoning and consequences, not a list of speculative alternatives.
+- **Agent Skill:** a repeatable workflow that references canonical documents instead of copying standards.
+- **Project config:** selected profiles, modules, skills, site and generator-owned output paths.
 
-Make normative requirements verifiable and explain their applicability. Do not require libraries or architecture styles solely because they exist in the catalog.
+Write one authoritative definition for each rule. Distinguish accepted design, observed implementation, and tested behavior. Do not silently overwrite generated project files, follow untrusted paths, select unapproved profiles or generate static-site artifacts.
 
-## Compatibility and safety
+## Repository cleanliness
 
-- Do not silently replace existing user-authored files.
-- Keep template output deterministic. A dry-run must remain read-only.
-- Treat untrusted paths, symlinks, file collisions and malformed manifest data as errors.
-- Keep every generated internal Markdown link valid in the smallest profile combination.
-- Keep optional dependencies optional; creating a Markdown-only repository must not require a site builder, Docker, AI or an interactive terminal.
-- Keep platform-specific guidance gated by profile selection.
-- No static-site output is generated. Keep test artifacts and experimental build outputs out of Git.
+The active tree must not contain old project `business/`, `technical/`, `milestones/`, `shared/` folders, root F/M/Q catalogs or migration-only audits. Those materials were extraction inputs, not a supported example application; prior commits remain available in Git history. `tests/repository_hygiene.py` protects this boundary.
 
-## Legacy source material
-
-The repository originated from a different documentation project. Its old `business/`, `technical/`, `milestones/` and root catalogs are **source material**, not a normative part of the generator. See [legacy inventory](docs/audit/legacy-inventory.csv), [baseline audit](docs/audit/2026-10-27.md) and [testing review](docs/audit/testing-review.md).
-
-Review [the project-source triage](docs/audit/project-source-triage.md) before removing any historical file. Every new historical file must be inventoried; CI checks source preservation and classifications.
-
-The original contributing guide is preserved under `docs/legacy/CONTRIBUTING.md`. Preserve other legacy files until their content has been reviewed and decisions to extract, generalize or discard are recorded. Remove only after that review, never as indiscriminate cleanup.
-
-## Pull requests and direct commits
-
-Work may be committed directly to `main` where authorized, but all published commits must preserve history, run relevant checks and clearly distinguish implemented behavior from roadmap items.
+Product-specific examples require an explicit owner decision and a clearly separate, opt-in sample with usable verification; do not re-create a legacy source archive inside this boilerplate. Unresolved choices are recorded in the [owner decision backlog](docs/decisions/owner-decision-backlog.md).
