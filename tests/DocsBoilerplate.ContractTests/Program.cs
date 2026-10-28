@@ -1,6 +1,27 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
+using System.Diagnostics;
+
+// Separate child process: simulate a hard stop without a catch/finally rollback.
+if (args.Length == 2 && args[0] == "--crash-during-update")
+{
+    var output = args[1];
+    await UpdateTransaction.ApplyAsync(output,
+        [
+            new UpdateTransaction.Write("docs/overview.md", Encoding.UTF8.GetBytes("new overview"),
+                true, DocsCli.Hash("original overview")),
+            new UpdateTransaction.Write("docs/new/guide.md", Encoding.UTF8.GetBytes("new guide"),
+                false, null),
+            new UpdateTransaction.Write("docs.config.json", Encoding.UTF8.GetBytes("new manifest"),
+                true, DocsCli.Hash("original manifest"))
+        ], count =>
+        {
+            if (count == 2) Environment.Exit(73);
+            return Task.CompletedTask;
+        });
+    return 91;
+}
 
 var passed = 0;
 var failed = 0;
@@ -301,6 +322,116 @@ Test("path containment rejects traversal and platform metacharacters", () =>
     foreach (var invalid in new[] { "../secret.md", "docs/../../secret", "/absolute.md", "docs\\evil.md", "docs/C:evil.md", "docs//file.md" })
         Throws<IOException>(() => SafeFiles.Child(temporary.Path, invalid));
 });
+Test("forced process exit leaves a recoverable journal and preserves the original manifest", () =>
+{
+    using var tmp = new TempDirectory();
+    Directory.CreateDirectory(Path.Combine(tmp.Path, "docs"));
+    var overview = Path.Combine(tmp.Path, "docs", "overview.md");
+    var manifest = Path.Combine(tmp.Path, "docs.config.json");
+    File.WriteAllText(overview, "original overview");
+    File.WriteAllText(manifest, "original manifest");
+    var info = new ProcessStartInfo("dotnet")
+    {
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        UseShellExecute = false
+    };
+    info.ArgumentList.Add(System.Reflection.Assembly.GetExecutingAssembly().Location);
+    info.ArgumentList.Add("--crash-during-update");
+    info.ArgumentList.Add(tmp.Path);
+    using var child = Process.Start(info) ?? throw new Exception("Could not launch fault child");
+    if (!child.WaitForExit(30000))
+    {
+        child.Kill(entireProcessTree: true);
+        throw new Exception("Fault child did not exit");
+    }
+    Expect(child.ExitCode == 73, $"Expected forced exit 73, got {child.ExitCode}");
+    Expect(UpdateRecovery.HasPending(tmp.Path), "Hard stop did not leave a journal");
+    Expect(File.ReadAllText(overview) == "new overview", "First write was not applied");
+    Expect(File.Exists(Path.Combine(tmp.Path, "docs", "new", "guide.md")),
+        "New file was not applied before termination");
+    Expect(File.ReadAllText(manifest) == "original manifest", "Manifest must be written last");
+    Throws<IOException>(() => UpdateRecovery.AssertNoPending(tmp.Path));
+    var result = UpdateRecovery.RecoverAsync(tmp.Path).GetAwaiter().GetResult();
+    Expect(result == UpdateRecovery.Outcome.RolledBack, "Interrupted update was not rolled back");
+    Expect(File.ReadAllText(overview) == "original overview", "Recovery lost original contents");
+    Expect(File.ReadAllText(manifest) == "original manifest", "Recovery changed the original manifest");
+    Expect(!Directory.Exists(Path.Combine(tmp.Path, "docs", "new")), "Recovery retained new directories");
+    Expect(!UpdateRecovery.HasPending(tmp.Path), "Recovery left journal behind");
+});
+Test("recovery finalizes an entirely written update after interrupted cleanup", () =>
+{
+    using var tmp = new TempDirectory();
+    var first = Path.Combine(tmp.Path, "page.md");
+    var manifest = Path.Combine(tmp.Path, "docs.config.json");
+    File.WriteAllText(first, "original");
+    File.WriteAllText(manifest, "old manifest");
+    var writes = new[]
+    {
+        new UpdateTransaction.Write("page.md", Encoding.UTF8.GetBytes("updated"), true, DocsCli.Hash("original")),
+        new UpdateTransaction.Write("docs.config.json", Encoding.UTF8.GetBytes("new manifest"), true, DocsCli.Hash("old manifest"))
+    };
+    UpdateRecovery.PrepareAsync(tmp.Path, writes).GetAwaiter().GetResult();
+    for (var i = 0; i < writes.Length; i++)
+        UpdateRecovery.ApplyStagedAsync(tmp.Path, i, writes[i].Path, DocsCli.Hash(
+            Encoding.UTF8.GetString(writes[i].Content)), true).GetAwaiter().GetResult();
+    Expect(UpdateRecovery.RecoverAsync(tmp.Path).GetAwaiter().GetResult() ==
+        UpdateRecovery.Outcome.AlreadyCompleted, "Fully committed update was incorrectly undone");
+    Expect(File.ReadAllText(first) == "updated" && File.ReadAllText(manifest) == "new manifest",
+        "Successful update was undone after process loss");
+    Expect(!UpdateRecovery.HasPending(tmp.Path), "Completed transaction left its journal");
+});
+Test("independent edit after process loss blocks recovery before any writes", () =>
+{
+    using var tmp = new TempDirectory();
+    var first = Path.Combine(tmp.Path, "one.md");
+    var other = Path.Combine(tmp.Path, "two.md");
+    File.WriteAllText(first, "before one");
+    File.WriteAllText(other, "before two");
+    var writes = new[]
+    {
+        new UpdateTransaction.Write("one.md", Encoding.UTF8.GetBytes("after one"), true, DocsCli.Hash("before one")),
+        new UpdateTransaction.Write("two.md", Encoding.UTF8.GetBytes("after two"), true, DocsCli.Hash("before two"))
+    };
+    UpdateRecovery.PrepareAsync(tmp.Path, writes).GetAwaiter().GetResult();
+    UpdateRecovery.ApplyStagedAsync(tmp.Path, 0, "one.md", DocsCli.Hash("after one"), true).GetAwaiter().GetResult();
+    File.WriteAllText(other, "owner changed the second page");
+    Throws<IOException>(() => UpdateRecovery.RecoverAsync(tmp.Path).GetAwaiter().GetResult());
+    Expect(File.ReadAllText(first) == "after one", "Recovery modified a file despite conflict");
+    Expect(File.ReadAllText(other) == "owner changed the second page", "Newer edit was overwritten");
+    Expect(UpdateRecovery.HasPending(tmp.Path), "Recovery deleted evidence of a conflict");
+});
+Test("interrupted staging without a complete plan cannot be mistaken for a safe rollback", () =>
+{
+    using var tmp = new TempDirectory();
+    var pending = Path.Combine(tmp.Path, UpdateRecovery.DirectoryName);
+    Directory.CreateDirectory(pending);
+    File.WriteAllText(Path.Combine(pending, "unrecognized.txt"), "must be preserved");
+    Throws<IOException>(() => UpdateRecovery.RecoverAsync(tmp.Path).GetAwaiter().GetResult());
+    Expect(File.Exists(Path.Combine(pending, "unrecognized.txt")),
+        "Unrecognized staging data was erased without owner review");
+});
+Test("recovery can resume when cleanup had already deleted an unused backup", () =>
+{
+    using var tmp = new TempDirectory();
+    var one = Path.Combine(tmp.Path, "one.md");
+    var two = Path.Combine(tmp.Path, "two.md");
+    File.WriteAllText(one, "before one");
+    File.WriteAllText(two, "before two");
+    var writes = new[]
+    {
+        new UpdateTransaction.Write("one.md", Encoding.UTF8.GetBytes("after one"), true, DocsCli.Hash("before one")),
+        new UpdateTransaction.Write("two.md", Encoding.UTF8.GetBytes("after two"), true, DocsCli.Hash("before two"))
+    };
+    UpdateRecovery.PrepareAsync(tmp.Path, writes).GetAwaiter().GetResult();
+    UpdateRecovery.ApplyStagedAsync(tmp.Path, 1, "two.md", DocsCli.Hash("after two"), true).GetAwaiter().GetResult();
+    File.Delete(Path.Combine(tmp.Path, UpdateRecovery.DirectoryName, "before", "000000.bin"));
+    Expect(UpdateRecovery.RecoverAsync(tmp.Path).GetAwaiter().GetResult() ==
+        UpdateRecovery.Outcome.RolledBack, "Recovery needed an already unnecessary snapshot");
+    Expect(File.ReadAllText(one) == "before one" && File.ReadAllText(two) == "before two",
+        "Partial cleanup recovery did not restore the original state");
+});
+
 Test("update rollback restores all prior bytes, removes additions and cleans directories", () =>
 {
     foreach (var failAfter in new[] { 2, 3 })
