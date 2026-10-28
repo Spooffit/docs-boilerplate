@@ -398,6 +398,16 @@ if run validate --output "$temp/invalid-llms"; then
     echo "Broken llms.txt reference was accepted"; exit 1
 fi
 
+# llms.txt must check fragments, not merely the presence of the target file.
+cp -a "$temp/minimal" "$temp/valid-llms-fragment"
+printf '\n- [Existing heading](docs/standards/dotnet/testing.md#test-environment-ownership-and-bounded-parallelism)\n' >> "$temp/valid-llms-fragment/llms.txt"
+run validate --output "$temp/valid-llms-fragment"
+cp -a "$temp/minimal" "$temp/invalid-llms-fragment"
+printf '\n- [Bad heading](docs/standards/dotnet/testing.md#no-such-heading)\n' >> "$temp/invalid-llms-fragment/llms.txt"
+if run validate --output "$temp/invalid-llms-fragment"; then
+    echo "Broken llms.txt heading fragment was accepted"; exit 1
+fi
+
 # Docsify is checked through actual static HTTP delivery, not a fake static HTML build.
 python3 - "$temp/minimal" <<'PY'
 from functools import partial
