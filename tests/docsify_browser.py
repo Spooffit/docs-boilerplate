@@ -9,7 +9,6 @@ from __future__ import annotations
 import functools
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
-import os
 from pathlib import Path
 import subprocess
 import tempfile

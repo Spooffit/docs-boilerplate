@@ -41,7 +41,9 @@ Only `docsify` and `none` are supported. If an older repository stores a differe
 
 ## Validation status
 
-CI runs a .NET 10 Release build, non-interactive end-to-end smoke test, Docsify entrypoint checks and negative tests. Check the latest GitHub Actions result rather than assuming the source code has passed.
+CI runs a .NET 10 Release build, CLI end-to-end smoke tests, Docsify static HTTP checks and negative validation tests. A separate Linux **Playwright + Chromium browser job** creates a real generated docs repository, serves it over HTTP, and checks Docsify rendering, nested relative links, hash-based deep routes, browser refresh, heading fragments and an optional project module. Browser failures upload trace and screenshot diagnostics.
+
+Playwright and Chromium are installed **only in CI**; they never become dependencies, source files or build artifacts of the generated project. The viewer still depends on public Docsify 5 CDN assets and an HTTP server. Browser CI detects real loading problems but cannot guarantee CDN uptime or full compatibility across browsers and hosting platforms. Check the latest GitHub Actions result before claiming verification.
 
 ## Optional backend guidance
 

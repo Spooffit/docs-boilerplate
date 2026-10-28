@@ -22,6 +22,7 @@ status: active
 - A CLI validator for generated-file manifests, unresolved initialization placeholders, ordinary local Markdown links **including same-page and cross-file heading fragments**, kebab-case filenames, YAML frontmatter, folder indexes and llms.txt references. Authored folder indexes can replace synthetic indexes, with source ownership collisions still rejected.
 - Incoming legacy Markdown references and deleted-file links are checked with a shared tested parser in Linux CI.
 - GitHub Actions build and end-to-end smoke suite (including Docsify-shell checks, local .NET Tool installation, Windows CLI smoke tests and reusable-catalog hygiene checks).
+- A separate CI-only Playwright/Chromium smoke test of real Docsify rendering, nested links, deep routes, page reloads, heading fragments and optional module pages; browser traces/screenshots are captured on failure.
 - Fresh generated-artifact scope tests across **all available profiles, modules and skills**; check exact owned files and fingerprints, no predecessor-product identifiers, no historical/maintainer source trees and no extraneous site assets. Negative contamination cases verify guard failures.
 
 The generator's source is split by responsibility; see [the CLI code map](architecture/generator-components.md).
@@ -34,7 +35,7 @@ The generator's source is split by responsibility; see [the CLI code map](archit
 - Markdown and frontmatter parsing are deliberately scoped: the validator checks common ATX/Setext heading anchors and inline links, but not every Docsify-specific slug, reference-style link, image/link dialect, dynamic HTML anchor or arbitrary YAML syntax. Real browser navigation is not currently automated.
 - Catalog preflight detects unknown/cyclic dependencies and case-insensitive destination collisions. Formal JSON Schemas now specify the catalogs and generated configuration, with schema-level checks in CI; the CLI itself still uses the built-in validation and full hostile-concurrent-filesystem safety remains outstanding.
 - No automated publication or browser-based editing workflow; Docsify is only a browser-side reader.
-- The Docsify browser view depends on CDN availability and a local/static HTTP server; full headless-browser interaction tests remain outstanding.
+- The Docsify browser view depends on CDN availability and a local/static HTTP server. Essential Chromium navigation is tested; wider cross-browser coverage, search behavior, accessibility, visual regression and independently hosted deployment verification remain outstanding.
 
 The [targeted versioning/lifecycle review](audit/versioned-lifecycle-review.md) preserves the reusable documentation concerns without imposing the old product's runtime behavior.
 
