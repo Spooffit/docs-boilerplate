@@ -73,3 +73,7 @@ After full-source review and extraction into their selected profiles, S18/S19/S2
 ## S21/S22 incoming-link reconciliation (2026-10-28)
 
 The last passing GitHub Actions run for commit `6e7afdb8d45f02abcd1e918bfd6c59256622803d` reported **zero** recognized incoming documents for each of S21 and S22, after redirecting references from **17** and **10** previously referring documents respectively. S22's normative topology guidance is now in the optional MassTransit/RabbitMQ profile and S22 is retired with its original text in history. S21 is **intentionally retained**, even without incoming links, because its uncompiled cross-layer example remains an unresolved content-retention choice in the owner backlog. The remaining historical candidate-technology standard count is **8** pending final deletion-gate CI.
+
+## S16/S17 technical migration and S17 deletion gate (2026-10-28)
+
+S16 and S17 were read in full and applicable semantics moved into selected ASP.NET Core and base data-flow documents. Incoming references to S17 were redirected in commit `c16a4dfbf8041fdd1ebe80af410f14a5ebb0c94b` (19 recognized Markdown links). S17 is eligible to retire **after** the CI reference graph confirms zero remaining inbound links; record the completed outcome in the removal ledger. S16 remains intentionally present because the historically mandatory MVC/CQRS/ETag/envelope style and substantial controller examples require owner decisions. The post-removal inventory should contain **7** historical standards, including retained S04, S16 and S21.

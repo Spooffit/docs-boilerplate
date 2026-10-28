@@ -113,3 +113,14 @@ This review does **not** authorize removal of any substantive feature, module, t
 - `technical/backend/standards/S21-aggregate-constraints.md` was fully reviewed. Its portable domain, validation and EF Core rules are now in their selected profiles. The source additionally contains a detailed multi-layer `AppealConstraints` teaching example with nested types, FluentValidation, domain value objects, regex handling and EF Core owned mappings.
 - The reference graph also reports **zero** incoming S21 links after migration, but an absent inbound link is not proof that this larger example should be discarded. The owner still must choose whether any sanitized, compiling example is worth preserving; until then **S21 stays in the historical tree** with `reviewed-targeted` inventory status. No automatic cleanup is authorized for S21.
 - This is not verification of the illustrative C# against a real solution.
+
+## S17: transport and internal data-flow documentation (2026-10-28)
+
+- Retire `technical/backend/standards/S17-data-flows.md` following a whole-file review. The two distinct flow layers, optional local flow IDs, structured transport inventory, real state reads/invariants/commit boundaries, cross-store effects, retries, stale data, independent broker/outbox/consumer milestones, explicit unknowns and SUT-based test traceability are now in the portable [data flows standard](../../catalog/base/docs/standards/data-flows.md).
+- The original rigid `DF01` identifiers and tables are **not** mandatory for unrelated projects. Its one illustrative `GET /api/v1/records/{id:guid}` row does not establish a reusable resource or response contract. No unique, tested source code is being discarded; the original Markdown remains in Git history.
+- Prior reference inventory counted 19 incoming S17 documents. Commit `c16a4dfbf8041fdd1ebe80af410f14a5ebb0c94b` redirected the 19 recognized links, including those from `standards.md`, S16 and surviving backend feature documentation. Deletion requires the GitHub Actions reference graph to report zero inbound documents and `tests/legacy_link_graph.py` to pass after the file is removed. The graph does not inspect arbitrary HTML, bare text or dynamic links.
+
+### S16 retained for optional MVC/CQRS examples and approval
+
+- `technical/backend/standards/S16-rest.md` was fully reviewed and its portable HTTP semantics extracted to the ASP.NET Core and MVC profiles. It still contains large illustrative controller examples and project-specific rules for `ICommandBus`, `IQueryBus`, `ApiResponse<T>`, `ToActionResult`, shared version constants, response status selection and `int Version` ETags.
+- These are **historical project conventions**, not requirements of ordinary ASP.NET Core. S16 remains in the historical tree until the owner decides whether to retain an explicitly opinionated MVC/CQRS sample and which contractual rules to adopt. No example was presented as compiling.
