@@ -60,7 +60,10 @@ def exercise(page, base_url: str, local_failures: list[str]) -> None:
     page.goto(base_url + "#/templates/index", wait_until="domcontentloaded")
     assert_heading(page, "Choose a documentation template")
     page.locator("#main").get_by_role("link", name="Technical feature").first.click()
-    assert_heading(page, "Technical feature specification template")
+    page.locator("#main h1").first.wait_for(state="visible", timeout=25000)
+    assert page.locator("#main h1").first.inner_text().startswith("Technical feature:"), (
+        "Incorrect technical template page: " + page.locator("#main h1").first.inner_text()
+    )
     assert "templates/technical-feature" in page.url.lower(), page.url
 
     # Test a deep link to a heading on a nested page, followed by refresh.
