@@ -50,6 +50,17 @@ Neither row is approval. Avoid changing the generator's default profile selectio
 These questions remain **unapproved** and are separate from any semantic rule extraction completed in this block.
 
 
+## Frontend S06/S08 choices to approve after technical migration
+
+| Topic | Legacy policy needing owner's judgement | Options to evaluate |
+| --- | --- | --- |
+| NSwag models as direct form/editor state | S06 requires generated NSwag DTOs to serve directly as read/edit models and forbids parallel view/form models | Adopt as an explicitly opinionated generated-client profile; permit purposeful UI/domain adapter models where their semantics differ; leave transport/state architecture to each project |
+| Blazor/FSD component and browser testing | S08 requires bUnit for all Blazor component tests, a specific FSD test-project mapping, and recommends Playwright | Offer an opt-in Blazor+bUnit+FSD testing profile; choose a lighter bUnit-only profile without FSD; allow each project's established test framework/browser tooling |
+| Client-facing concurrency UX | S06 prescribes exact ETag behavior, storing HTTP metadata beside generated DTOs and explicit 412/428/409 UX, based on S16's chosen API contract | Include in an optional strong-ETag project profile; keep generic conditional HTTP client rules and choose recovery UX from the real API/product contract |
+
+These decisions are deferred. The earlier **strict test naming** backlog item also covers S08 and should not be duplicated here.
+
+
 ## Required evidence before consultation
 
 - The structural inventory and detailed migration notes are reconciled with source files.

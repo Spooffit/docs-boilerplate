@@ -30,6 +30,13 @@ Blazor has different hosting and rendering models; do not assume every app uses 
 
 Preserve stable component keys when lists reorder and measured UI state otherwise moves incorrectly. Profile rendering and network behavior rather than prematurely introducing state frameworks or components.
 
+## Client interactions under competing operations
+
+When an interactive component saves data or loads information for a changing selection, model local edits, pending HTTP request and authoritative server outcome as separate states. Avoid overwriting new selection state with a late response for an earlier resource; cancel or mark stale work as appropriate. Preserve recoverable form input on validation or network failures when the user experience requires it.
+
+For components using a generated API client, treat request/response DTOs and the client-visible HTTP metadata (including an optional ETag) according to the selected contract. Do not invent a second API source of truth or mandate that every project uses DTOs directly as edit models. Verify the exact request produced by user interaction separately from its visible feedback.
+
+
 ## Verification
 
 Component tests can verify UI behavior in isolation (bUnit is an optional profile); browser tests verify actual DOM, focus, network and JavaScript behavior. Test loading, empty, error, cancellation and authorization-visible states.

@@ -23,6 +23,14 @@ Clients may supply credentials and identifiers, but server-side ownership and au
 
 Distinguish user-visible authentication failure, insufficient authorization, nonexistence and an intentionally concealed resource. A client must not turn security failures into empty successful results.
 
+## Optional generated-client and UI-model policy
+
+For projects that choose NSwag or another OpenAPI generator, keep generated DTOs and operations reproducible from the pinned authoritative contract and generator settings. Do not hand-edit generated code, or maintain a second hand-written set of *identical wire fields* merely to bypass a generator limitation.
+
+Some teams deliberately reuse generated DTOs directly in form read/edit state, with a separate small container for loading, dirty flags, selection and HTTP metadata. Other teams need explicit form/view models for isolation, validation, complex edits or contract evolution. **Neither choice is universal.** Review actual duplication and mapping value rather than banning adapters solely because fields currently match.
+
+If the client generator does not expose headers needed by the selected API contract (such as `ETag`), update a supported generation setting or owned HTTP adapter and test the resulting code. Do not solve missing header access by inventing server-side version fields in DTOs.
+
 ## Conditional writes and version tokens
 
 Only when a server exposes `ETag` and requires conditional mutations:
