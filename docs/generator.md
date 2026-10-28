@@ -97,6 +97,9 @@ New repositories record SHA-256 fingerprints for all generated files in `docs.co
 docs-boilerplate update --output ./my-docs
 docs-boilerplate update --output ./my-docs --apply
 docs-boilerplate validate --output ./my-docs
+
+# Only if an interrupted update is detected:
+docs-boilerplate recover --output ./my-docs
 ```
 
 `update` is preview-only by default. `--apply` must be specified to write changes. It will:
@@ -107,7 +110,24 @@ docs-boilerplate validate --output ./my-docs
 - Reject collisions with newly proposed paths that are already user-owned, including file or parent-folder names that differ only by letter case, and existing files where a new profile needs a directory. This prevents case-sensitive/case-insensitive conflicts and failures partway through an update.
 - Add new files when selected profiles gain documentation.
 - Preserve retired files, but remove their paths from managed ownership and regenerated navigation. Their exact paths are carried as `RetiredFiles` in `docs.config.json`, so validation does not mistake them for newly authored, unindexed pages. No automatic deletion.
-- Record new fingerprints and update `docs.config.json` last. If an ordinary write fails, restore original file bytes, delete newly added files and remove directories created by the failed update **only when empty**. When a file was independently modified after writing, report an incomplete rollback rather than overwrite that modification.
+- Record new fingerprints and update `docs.config.json` last. Before writing any project file, stage the full desired content and verified original-file snapshots under the temporary `.docs-boilerplate-update/` directory. If an ordinary write fails, restore original bytes, delete additions and remove newly created directories **only when empty**. Concurrent changes are never silently overwritten.
+
+### Recovery after process termination
+
+The `.docs-boilerplate-update/` directory exists **only during an active or interrupted update**. It is temporary working state, not project documentation or an output artifact to commit. Its `plan.json` is written after all input and backup files are staged, and before the first document write. New document bytes are promoted by per-file rename. The ownership manifest is still written last.
+
+When `update` or `validate` detects this directory, it stops rather than trusting a potentially half-updated project. Inspect the working tree, then run:
+
+```sh
+docs-boilerplate recover --output ./my-docs
+docs-boilerplate validate --output ./my-docs
+```
+
+If only some planned changes were written, recovery verifies **all current target hashes and required backups before restoring anything**. It rolls back only content matching the journal's generated hash; unexpected user edits cause a safe refusal and the journal is retained for manual reconciliation. If *all* desired file hashes are present (including the new `docs.config.json`), recovery treats the update as completed and only removes the journal.
+
+If termination happened during *staging* and no complete `plan.json` exists, the CLI cannot authenticate the temporary folder's contents. It will not delete it automatically; inspect the directory and remove it manually before trying again. No project writes begin before `plan.json` is created.
+
+Recovery does not guarantee power-loss durability, concurrent-writer isolation or atomicity across multiple files. Back up or commit local changes before updates, and do not commit the temporary journal.
 
 Repositories generated before fingerprints were introduced cannot be updated automatically. Their original bytes cannot be proven, so upgrade by initializing a new output and manually reviewing the diffs. There is no unconditional `--force`.
 

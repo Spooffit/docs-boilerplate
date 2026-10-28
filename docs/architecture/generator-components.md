@@ -18,7 +18,8 @@ status: active
 | Catalog | `src/DocsBoilerplate.Cli/DocsCli.Catalog.cs` | Resolve dependencies, reject unknown profiles, check catalog integrity and model the manifests |
 | Rendering | `src/DocsBoilerplate.Cli/DocsCli.Rendering.cs` | Compose selected source files, indexes, `llms.txt`, and the generated ownership manifest |
 | Updating | `src/DocsBoilerplate.Cli/DocsCli.Updates.cs` | Preview-first, fingerprint-checked update planning and ownership manifest management |
-| Update transaction | `src/DocsBoilerplate.Cli/UpdateTransaction.cs` | Apply the reviewed plan, use per-file atomic renames, restore changed bytes after errors and remove newly created empty directories |
+| Update transaction | `src/DocsBoilerplate.Cli/UpdateTransaction.cs` | Apply the reviewed plan with per-file promotion of staged bytes and rollback on ordinary errors |
+| Crash recovery | `src/DocsBoilerplate.Cli/UpdateRecovery.cs` | Keep transient pre-write snapshots, verify and recover interrupted work, finalize completed writes and reject ambiguous states |
 | Validation | `src/DocsBoilerplate.Cli/DocsCli.Validation.cs` | Check generated manifest ownership, filenames, frontmatter, local links (including section fragments) and folder indexes |
 | Markdown navigation | `src/DocsBoilerplate.Cli/MarkdownNavigation.cs` | Parse common inline links and headings, skip fenced/inline code examples, derive duplicate heading anchors |
 | Markdown metadata | `src/DocsBoilerplate.Cli/DocumentMetadata.cs` | Narrow frontmatter policy and kebab-case naming |
