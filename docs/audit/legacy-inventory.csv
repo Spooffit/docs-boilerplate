@@ -23,7 +23,7 @@ business/features/F12-content-entitlement-policy.md,project-source,screened-stru
 business/features/F13-content-delivery.md,project-source,screened-structure,58553
 business/features/F14-client-compatibility.md,project-source,screened-structure,2700
 business/features/F15-catalog-conflicts.md,project-source,screened-structure,16259
-business/features/F16-staff-access.md,project-source,screened-structure,16239
+business/features/F16-staff-access.md,project-source,reviewed-targeted,16239
 business/features/F17-content-review.md,project-source,screened-structure,10481
 business/features/F18-staff-activity-history.md,project-source,screened-structure,11844
 business/features/F19-unity-client.md,project-source,screened-structure,30525
@@ -37,7 +37,7 @@ business/modules/M02-media-library.md,project-source,screened-structure,5511
 business/modules/M03-catalog.md,project-source,screened-structure,7679
 business/modules/M04-publishing.md,project-source,screened-structure,13966
 business/modules/M05-delivery.md,project-source,screened-structure,19833
-business/modules/M06-staff-workflow.md,project-source,screened-structure,9150
+business/modules/M06-staff-workflow.md,project-source,reviewed-targeted,9150
 business/modules/M07-schema-tooling.md,project-source,screened-structure,7038
 business/product.md,project-source,reviewed-targeted,19548
 business/questions/Q01-license-rights.md,project-source,screened-structure,5598
@@ -49,7 +49,7 @@ business/questions/Q06-automatic-promotion.md,project-source,screened-structure,
 business/questions/Q07-exclusions-and-local-content.md,project-source,screened-structure,25383
 business/questions/Q08-keys-and-drafts.md,project-source,reviewed-targeted,20301
 business/questions/Q09-editing-and-deletion.md,project-source,reviewed-targeted,27123
-business/questions/Q10-permissions-and-isolation.md,project-source,screened-structure,15875
+business/questions/Q10-permissions-and-isolation.md,project-source,reviewed-targeted,15875
 business/questions/Q11-catalog-ownership.md,project-source,screened-structure,6428
 business/questions/Q12-media-and-retention.md,project-source,screened-structure,3743
 business/questions/Q14-client-compatibility.md,project-source,screened-structure,3878
@@ -102,7 +102,7 @@ technical/backend/features/F12-content-entitlement-policy.md,project-source,scre
 technical/backend/features/F13-content-delivery.md,project-source,screened-structure,232252
 technical/backend/features/F14-client-compatibility.md,project-source,screened-structure,45746
 technical/backend/features/F15-catalog-conflicts.md,project-source,screened-structure,97166
-technical/backend/features/F16-staff-access.md,project-source,screened-structure,74049
+technical/backend/features/F16-staff-access.md,project-source,reviewed-targeted,74049
 technical/backend/features/F17-content-review.md,project-source,reviewed-targeted,84085
 technical/backend/features/F18-staff-activity-history.md,project-source,screened-structure,65909
 technical/backend/features/F21-schema-registry.md,project-source,screened-structure,77312
@@ -169,7 +169,7 @@ technical/frontend/features/F12-content-entitlement-policy.md,project-source,scr
 technical/frontend/features/F13-content-delivery.md,project-source,screened-structure,91782
 technical/frontend/features/F14-client-compatibility.md,project-source,screened-structure,21142
 technical/frontend/features/F15-catalog-conflicts.md,project-source,screened-structure,67377
-technical/frontend/features/F16-staff-access.md,project-source,screened-structure,27979
+technical/frontend/features/F16-staff-access.md,project-source,reviewed-targeted,27979
 technical/frontend/features/F17-content-review.md,project-source,screened-structure,63508
 technical/frontend/features/F18-staff-activity-history.md,project-source,screened-structure,49444
 technical/frontend/features/F19-unity-client.md,project-source,screened-structure,214501
@@ -184,7 +184,7 @@ technical/frontend/modules/M05-delivery.md,project-source,screened-structure,208
 technical/frontend/modules/M06-staff-workflow.md,project-source,screened-structure,5608
 technical/frontend/modules/M07-schema-tooling.md,project-source,screened-structure,3050
 technical/frontend/questions/Q13-ui-scope.md,project-source,screened-structure,56055
-technical/frontend/questions/Q24-admin-sign-in.md,project-source,screened-structure,17046
+technical/frontend/questions/Q24-admin-sign-in.md,project-source,reviewed-targeted,17046
 technical/frontend/questions/Q29-unity-client-package.md,project-source,screened-structure,76754
 technical/frontend/questions/Q32-sdk-package-distribution.md,project-source,screened-structure,50898
 technical/frontend/questions/Q37-launcher-asset-delivery.md,project-source,screened-structure,16155
