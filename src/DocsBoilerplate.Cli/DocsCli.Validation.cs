@@ -47,9 +47,11 @@ static partial class DocsCli
                 if (!required.Add(file.Destination))
                     errors.Add($"Duplicate module output path: {file.Destination}");
         }
+        // An authored index.md belongs to base or a selected profile.
+        // AddDirectoryIndexes only synthesizes an index when none is provided.
+        // Source-path ownership collisions are rejected earlier in validation.
         foreach (var directory in DirectoryNames(required))
-            if (!required.Add($"{directory}/index.md"))
-                errors.Add($"Duplicate generated directory index: {directory}/index.md");
+            required.Add($"{directory}/index.md");
         if (!required.Add("docs/catalog.md"))
             errors.Add("Duplicate generated documentation catalog path.");
         if (!required.Add("llms.txt"))
