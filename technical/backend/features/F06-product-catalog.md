@@ -386,7 +386,7 @@ MVP coordination port принадлежит Application.Abstractions: зада�
 
 ### 3.5. Specifications / read contracts
 
-[S19](../standards/S19-specifications.md): атомарные builder conditions для ProductId, name search, lifecycle/eligibility и наличия unresolved state переиспользуются List/count/selector. `ProductsReadSpecification`, `ProductVariantsReadSpecification` и exact-ID specifications собирают условия в builder; не использовать выдуманный `spec.And` для объединения готовых specs.
+[S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): атомарные builder conditions для ProductId, name search, lifecycle/eligibility и наличия unresolved state переиспользуются List/count/selector. `ProductsReadSpecification`, `ProductVariantsReadSpecification` и exact-ID specifications собирают условия в builder; не использовать выдуманный `spec.And` для объединения готовых specs.
 
 List применяет фильтры на сервере, затем whitelist sort с обязательным stable Id tie-breaker, count и offset pagination; проецирует сразу read DTO без tracked aggregate graph. Фактические sort keys/default/limits и согласованность count/page — Q15. Query cancellation передаётся до EF. Обычное list чтение не открывает mutation UoW, не сохраняет projection и не вычитывает полный каталог для browser filtering. Deprecated lookup/all endpoints из текущего кода не объявляются обязательными для target UI.
 
@@ -406,7 +406,7 @@ List/exact Persistence read only. Public guarded ports expose affected fault/rea
 
 ### 4.2. Validators
 
-[S18](../standards/S18-fluent-validation.md): композиция `SourceCatalogIdentityValidator`, `SourceVersionValidator`, `ProductSnapshotValidator`, `ProductVariantSnapshotValidator`, `CatalogListParametersValidator` и специфичных ID/filter validators. Названия целевые. Атомарные правила: non-empty source/event IDs, positive source version, Name через Domain constraints, корректный normalized lifecycle, допустимые list offset/sort/filter. Variant validator добавляет source parent ID. Envelope contract version и сериализация проверяются transport adapter до Domain mapping.
+[S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): композиция `SourceCatalogIdentityValidator`, `SourceVersionValidator`, `ProductSnapshotValidator`, `ProductVariantSnapshotValidator`, `CatalogListParametersValidator` и специфичных ID/filter validators. Названия целевые. Атомарные правила: non-empty source/event IDs, positive source version, Name через Domain constraints, корректный normalized lifecycle, допустимые list offset/sort/filter. Variant validator добавляет source parent ID. Envelope contract version и сериализация проверяются transport adapter до Domain mapping.
 
 V2 rules Product Name1–120, Variant1–200, Description string?<=500 null/empty, positive int Version, nonempty IDs, UTC OccurredAt, Active/Archived. Source normalizes before commit; CM validates/preserves, no truncation/rename. V1 checked range/continuity separate, no implicit License/history/ProjectStorage migration.
 

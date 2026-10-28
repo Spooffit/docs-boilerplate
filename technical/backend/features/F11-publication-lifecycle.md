@@ -325,7 +325,7 @@ Trusted actor/time/correlation задаёт execution context; не дополн
 | OperationId | Уточняется | Да | Exact operation | Durable progress |
 | Caller access context | Уточняется | Уточняется | Operation visibility | Q15; own token scope if selected |
 
-[S20](../standards/S20-cqrs.md): commands Application; queries EntityFramework.Persistence. Delivery visibility read composition — отдельный public port/read contract; включение в response и token scope Q15, не foreign join.
+[S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction): commands Application; queries EntityFramework.Persistence. Delivery visibility read composition — отдельный public port/read contract; включение в response и token scope Q15, не foreign join.
 
 ### 3.3. DTO и parameter models
 
@@ -454,7 +454,7 @@ Own technical Version отсутствует во всех DTO. Internal committ
 
 ### 3.5. Specifications / read contracts
 
-[S19](../standards/S19-specifications.md): ProductStateByProductIdSpecification, VariantStateByVariantIdSpecification, ActivationHistoryByVariantSpecification, PromotionOperationByIdSpecification, PendingPromotionItemsSpecification. Atomic predicates: OwnedByProductCondition, ForVariantCondition, AtOperationStageCondition, AvailableReleaseCondition; Compose через builder extension в конкретной Ardalis specification, не spec.And.
+[S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): ProductStateByProductIdSpecification, VariantStateByVariantIdSpecification, ActivationHistoryByVariantSpecification, PromotionOperationByIdSpecification, PendingPromotionItemsSpecification. Atomic predicates: OwnedByProductCondition, ForVariantCondition, AtOperationStageCondition, AvailableReleaseCondition; Compose через builder extension в конкретной Ardalis specification, не spec.And.
 
 History ordered by server Sequence с unique tie-free ключом, не ActivatedAt; direction/page/cursor/max Q15. Local input — highest created F09 ReleaseNumber at start capture, including Retired. Retired latest → Blocked без older fallback; reparent/later release проверяются для applicability, не заменяют capture. Projection возвращает исторические exact IDs даже если summaries source недоступны, no silent latest replacement. Read DTO не отслеживается; exact state token принадлежит тому же прочитанному root поколению.
 
@@ -474,7 +474,7 @@ Automatic prepare читает только frozen inputs/item под новым
 
 ### 4.2. Validators
 
-[S18](../standards/S18-fluent-validation.md): PromotionModeValidator, ProductIdValidator, VariantIdValidator, ReleaseIdValidator, PublicationRevisionIdValidator, OperationIdValidator, ExpectedStateVersionValidator и ClientOperationIdValidator переиспользуют constraints. PromoteProductReleaseValidator/ActivateVariantRevisionValidator/RollbackVariantRevisionValidator/UnpublishVariantValidator/ProcessPromotionVariantValidator compose смысловые компоненты. No repeated literal string limits/guessed comment requirement.
+[S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): PromotionModeValidator, ProductIdValidator, VariantIdValidator, ReleaseIdValidator, PublicationRevisionIdValidator, OperationIdValidator, ExpectedStateVersionValidator и ClientOperationIdValidator переиспользуют constraints. PromoteProductReleaseValidator/ActivateVariantRevisionValidator/RollbackVariantRevisionValidator/UnpublishVariantValidator/ProcessPromotionVariantValidator compose смысловые компоненты. No repeated literal string limits/guessed comment requirement.
 
 FV проверяет binding/ID/enum/request shape. Authorization, mutable Available/Approved/F15/owner facts, no-local-work classification, operation-stage/unique correlation и commit concurrency — Application policies/Domain/DB; async preliminary validator не race guard. Inbox проверяет trusted contract identity/version/correlation; payload не допускает arbitrary client actor/approved marker.
 

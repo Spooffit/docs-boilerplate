@@ -749,7 +749,7 @@ Query возвращает логическую incremental последоват
 | Session context | Уточняется | Да | Trusted exact protected basis | Authorization before 304/range/bytes |
 | Requested exact resource ID | Уточняется | Условно | Item/asset identity | Where resource-specific; pinned membership, not arbitrary ID |
 
-[S20](../standards/S20-cqrs.md): commands in Delivery.Application (Demo branch free of licensing dependencies). SQL query handlers Delivery.EntityFramework.Persistence; cache/public-content queries in owning access adapters/read handlers, not unnecessary EF persistence of Demo plan. A pure freshness diff doesn't insert new plan or session. Status read не execution owner acquisition; data stream acquisition/reconnect и fencing — Q33.
+[S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction): commands in Delivery.Application (Demo branch free of licensing dependencies). SQL query handlers Delivery.EntityFramework.Persistence; cache/public-content queries in owning access adapters/read handlers, not unnecessary EF persistence of Demo plan. A pure freshness diff doesn't insert new plan or session. Status read не execution owner acquisition; data stream acquisition/reconnect и fencing — Q33.
 
 ### 3.3. DTO и parameter models
 
@@ -1147,7 +1147,7 @@ PlanId/SynchronizationId, CreatedAt/ExpiresAt, execution lease/generation/progre
 
 ### 3.5. Specifications / read contracts
 
-[S19](../standards/S19-specifications.md): SessionByIdAndVerifierSpecification, SnapshotByRevisionIdSpecification, DeliveryHistoryBeforeCutoffSpecification, ActiveSessionsByInvalidatorBasisSpecification, RestrictionByRevisionIdSpecification. Atomic ForVariantCondition/AtSessionBasisCondition/EffectiveBeforeBoundaryCondition/AfterPublishingSequenceCondition; compose builder extensions in concrete Ardalis specs, no invented spec.And.
+[S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): SessionByIdAndVerifierSpecification, SnapshotByRevisionIdSpecification, DeliveryHistoryBeforeCutoffSpecification, ActiveSessionsByInvalidatorBasisSpecification, RestrictionByRevisionIdSpecification. Atomic ForVariantCondition/AtSessionBasisCondition/EffectiveBeforeBoundaryCondition/AfterPublishingSequenceCondition; compose builder extensions in concrete Ardalis specs, no invented spec.And.
 
 ContentModeling owns exact-schema Published/version-order query; Delivery receives immutable public values, not source tracked roots. Application record cursor bound plan/order/group/identity; no mutable latest paging or public GET-per-chunk contract. Manifest/item/hash membership checked prior to cache304/bytes, cursor/network position != durable checkpoint/install proof. Effective history strict cutoff keeps null, validates completeness/catch-up profile Q17/Q20.
 
@@ -1182,7 +1182,7 @@ ResponseLeaseCoordinator owns ephemeral response generation/cancellation, period
 
 ### 4.2. Validators
 
-[S18](../standards/S18-fluent-validation.md): ExactSchemaSelectionValidator, RepresentationIdentityValidator, InstalledInventoryEntryValidator, CompleteSelectionPresenceValidator, SynchronizationIdValidator, GroupReceiptValidator, CursorContextValidator, ProductVariantIdValidator and SessionCreationInputValidator. SynchronizationControlValidator validates planId/nonempty GUID/positive Int64 expected generation; ResumeOriginalRequestValidator composes original digest/profile rules; host SynchronizationTransportOptionsValidator checks positive budgets/caps, coherent buffers and renewInterval less than leaseDuration. Compose Start/Resume/Stop/Discard/Commit/Freshness validators using semantic components/named constraints; JSON absence/null distinguished from explicit empty list. Duplicate tuple identities invalid; foreign exact SchemaVersion owner mismatch group validation, not empty result.
+[S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): ExactSchemaSelectionValidator, RepresentationIdentityValidator, InstalledInventoryEntryValidator, CompleteSelectionPresenceValidator, SynchronizationIdValidator, GroupReceiptValidator, CursorContextValidator, ProductVariantIdValidator and SessionCreationInputValidator. SynchronizationControlValidator validates planId/nonempty GUID/positive Int64 expected generation; ResumeOriginalRequestValidator composes original digest/profile rules; host SynchronizationTransportOptionsValidator checks positive budgets/caps, coherent buffers and renewInterval less than leaseDuration. Compose Start/Resume/Stop/Discard/Commit/Freshness validators using semantic components/named constraints; JSON absence/null distinguished from explicit empty list. Duplicate tuple identities invalid; foreign exact SchemaVersion owner mismatch group validation, not empty result.
 
 Model shape validation doesn't prove selection represents application's full local registry; SDK F19 owns it. Domain/source availability/completeness/lifecycle checks, cache atomic ownership, session token/status/ban/membership and commit guards remain authoritative Application/DB/adapters. Untrusted inventory hashes are comparison inputs, not permission/proof saved bytes. Session token/default TTL/proof age/lease durations selected §3; exact wire/security source/configuration/retention profiles Q15/Q20/Q23. Demo record/cursor/receipt limits/formats Q33, no source literals copied.
 

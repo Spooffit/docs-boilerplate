@@ -545,7 +545,7 @@ Metadata carrier post-commit Q15; result не объявляет success в hand
 | `InstanceId` | `Guid` | Да | Logical owner | Full dependencies/history |
 
 
-Target schema exact read переиспользует F02. Новый version-delete preview API не согласован; requirement blockers если нужны возвращаются command/Q15. Query handlers [S20](../standards/S20-cqrs.md) в EntityFramework.Persistence, no query handlers в Application.
+Target schema exact read переиспользует F02. Новый version-delete preview API не согласован; requirement blockers если нужны возвращаются command/Q15. Query handlers [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction) в EntityFramework.Persistence, no query handlers в Application.
 
 
 ### 3.3. DTO и parameter models
@@ -809,7 +809,7 @@ MVP coordination port принадлежит Application.Abstractions: зада�
 ### 3.5. Specifications / read contracts
 
 
-По [S19](../standards/S19-specifications.md) EntityInstancesListSpecification, InstanceVersionByOwnerAndIdSpecification, InstanceVersionsByOwnerSpecification, LatestPublishedInstanceVersionForSchemaSpecification и InstanceDeleteImpactSpecification reuse atomic builder conditions owner/schema/target/status/lifecycle. Нет выдуманного spec.And; tracking/projection/order/paging отдельно.
+По [S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md) EntityInstancesListSpecification, InstanceVersionByOwnerAndIdSpecification, InstanceVersionsByOwnerSpecification, LatestPublishedInstanceVersionForSchemaSpecification и InstanceDeleteImpactSpecification reuse atomic builder conditions owner/schema/target/status/lifecycle. Нет выдуманного spec.And; tracking/projection/order/paging отдельно.
 
 
 Latest same-target query: OwnerId AND SchemaVersionId AND Status Published, max VersionNumber, exact Id; не global LatestPublishedVersionId и не last created. Baseline учитывает Published history без искусственного fallback, eligibility — отдельная policy. List count те же filters без paging; summaries без Content; normal list excludes Archived, exact archived readonly доступен. Rail Draft CreatedAt desc, Published number desc, stable Id tie-breaker. Default newest Draft else latest Published, target filter/query names/page/default-offpage Q15. Delivery selection contract F13 сначала target filter, затем latest number per owner; F04 не пишет выдачу как side effect Publish.
@@ -829,7 +829,7 @@ Latest same-target query: OwnerId AND SchemaVersionId AND Status Published, max 
 ### 4.2. Validators
 
 
-По [S18](../standards/S18-fluent-validation.md) composition: CreateEntityInstanceRequestValidator (InstanceName/Key rules+Schema IDs+Values); UpdateInstanceValuesValidator (structure/syntax/presence envelopes+unique occurrence/discard IDs); recursive InstanceValueValidator guided current definitions. Limits берутся Domain constraints; configured Text max и exact wire/key details Q15/Q34/Q36, restricted HTML/sanitization уже выбраны.
+По [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md) composition: CreateEntityInstanceRequestValidator (InstanceName/Key rules+Schema IDs+Values); UpdateInstanceValuesValidator (structure/syntax/presence envelopes+unique occurrence/discard IDs); recursive InstanceValueValidator guided current definitions. Limits берутся Domain constraints; configured Text max и exact wire/key details Q15/Q34/Q36, restricted HTML/sanitization уже выбраны.
 
 
 Draft допускает missing required; incompatible/orphan authoring values сохраняются согласно Draft profile, не получают silent defaults/coercion. Malformed JSON/unknown union/foreign IDs/conflicting discard не оставляют partial state. Save допускает missing required и сохранённую incompatibility/orphans; newly entered type-invalid value отклоняется. Retained saved work не коэрцируется в новый тип и не удаляется. Strict Publish проверяет full values/orphans/AssetIds; required defaults valid, unknown option invalid; defined Deprecated valid с warning. Async availability/DB facts handler, FV не заменяет guard. Validators не пишут/не меняют DTO.

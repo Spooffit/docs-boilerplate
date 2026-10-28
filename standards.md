@@ -29,9 +29,9 @@
 | S15 | [Test engineering и проверка изменений](catalog/docs/standards/dotnet/testing.md#shared-testing-infrastructure-and-safe-migration) | — |
 | S16 | [REST: реализация HTTP API](technical/backend/standards/S16-rest.md) | — |
 | S17 | [Потоки данных и транспортные взаимодействия](technical/backend/standards/S17-data-flows.md) | — |
-| S18 | [FluentValidation и композиция правил](technical/backend/standards/S18-fluent-validation.md) | — |
-| S19 | [Фильтрация: Ardalis.Specification](technical/backend/standards/S19-specifications.md) | — |
-| S20 | [CQRS: размещение обработчиков](technical/backend/standards/S20-cqrs.md) | — |
+| S18 | [FluentValidation и композиция правил](catalog/docs/standards/dotnet/fluentvalidation.md) | — |
+| S19 | [Фильтрация: Ardalis.Specification](catalog/docs/standards/dotnet/ardalis-specification.md) | — |
+| S20 | [CQRS: размещение обработчиков](catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction) | — |
 | S21 | [Ограничения агрегатов: единый источник в Domain](technical/backend/standards/S21-aggregate-constraints.md) | — |
 | S22 | [MassTransit / RabbitMQ EventBus topology](technical/backend/standards/S22-eventbus-topology.md) | — |
 | S23 | [.NET project files, migrated reusable profile](catalog/docs/standards/dotnet/project-files.md) | — |

@@ -277,7 +277,7 @@ Source projection NoTracking, полного дерева/замороженны
 ### 4.1. Handlers / use cases
 
 
-Query handlers размещаются в ContentModeling.EntityFramework.Persistence/SchemaRegistry по [S20](../standards/S20-cqrs.md), Source query adapter — там же в SchemaContracts. Application реализует pure JsonSchemaContractExporter и reusable validators/mappers; query handler в Application не добавляется. Конкретные процедуры для single/internal/batch приведены в DF01–DF04.
+Query handlers размещаются в ContentModeling.EntityFramework.Persistence/SchemaRegistry по [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction), Source query adapter — там же в SchemaContracts. Application реализует pure JsonSchemaContractExporter и reusable validators/mappers; query handler в Application не добавляется. Конкретные процедуры для single/internal/batch приведены в DF01–DF04.
 
 
 | Тип | Ответственность | Вызовы / boundary |
@@ -294,7 +294,7 @@ F22 inside-process использует те же query/port semantics. Возв
 ### 4.2. Validators
 
 
-FluentValidation composition по [S18](../standards/S18-fluent-validation.md): SchemaContractVersionIdValidator проверяет конкретную exact identity, SchemaContractSelectionValidator — наличие коллекции/валидность каждого ID и agreed duplicate/empty/size policy. Built-in NotNull/ID checks не оборачиваются в классы ради шаблона; названия компонентов означают смысловое reuse. Source constraints/type shape проверяются по F01/Q34 и ExportProfileCompatibilityValidator, а не независимым универсальным validator строки.
+FluentValidation composition по [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): SchemaContractVersionIdValidator проверяет конкретную exact identity, SchemaContractSelectionValidator — наличие коллекции/валидность каждого ID и agreed duplicate/empty/size policy. Built-in NotNull/ID checks не оборачиваются в классы ради шаблона; названия компонентов означают смысловое reuse. Source constraints/type shape проверяются по F01/Q34 и ExportProfileCompatibilityValidator, а не независимым универсальным validator строки.
 
 
 Publication status/ownership/lifecycle берутся reader-ом из актуальных owner facts, не доверяются body и не решаются только FluentValidation. Source без обязательного frozen metadata/hash/positive published number, с неизвестным definition или потерянными descendants не превращается в successful document. Отсутствующая profile policy не заменяется default latest/normalization/пересчётом из instance.

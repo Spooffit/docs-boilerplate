@@ -12,11 +12,11 @@
 
 ## Валидация, выборки и размещение обработчиков
 
-Применяй [S18](standards/S18-fluent-validation.md): FluentValidation, атомарные правила смысловых полей и композиция валидаторов. В фиче называй её конкретные переиспользуемые компоненты; не заполняй неизвестные ограничения догадками.
+Применяй [S18](../../catalog/docs/standards/dotnet/fluentvalidation.md): FluentValidation, атомарные правила смысловых полей и композиция валидаторов. В фиче называй её конкретные переиспользуемые компоненты; не заполняй неизвестные ограничения догадками.
 
-Для фильтрации применяй [S19](standards/S19-specifications.md): Ardalis.Specification и атомарные переиспользуемые условия. Не дублируй фильтры в обработчиках и не выдумывай API объединения готовых спецификаций.
+Для фильтрации применяй [S19](../../catalog/docs/standards/dotnet/ardalis-specification.md): Ardalis.Specification и атомарные переиспользуемые условия. Не дублируй фильтры в обработчиках и не выдумывай API объединения готовых спецификаций.
 
-По [S20](standards/S20-cqrs.md) command handler всегда располагается в Application; query handler в слое доступа к данным, обычно EntityFramework.Persistence.
+По [S20](../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction) command handler всегда располагается в Application; query handler в слое доступа к данным, обычно EntityFramework.Persistence.
 
 ## Проверки
 

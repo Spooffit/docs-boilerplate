@@ -454,7 +454,7 @@ Public DTO не содержит технического Version/Revision/Expec
 | `Id` | `Guid` | Да | Route identity схемы | Exact read; без fallback |
 
 
-List/read handlers находятся в EntityFramework.Persistence по [S20](../standards/S20-cqrs.md). Exact version GET используется для readonly initial Draft в F01; дальнейшее редактирование F02 отдельно. Старые GetAllEntitySchemasQuery/EntitySchemaLookupRequestDto не являются F01 collection contract; major/minor-фильтров в нём нет.
+List/read handlers находятся в EntityFramework.Persistence по [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction). Exact version GET используется для readonly initial Draft в F01; дальнейшее редактирование F02 отдельно. Старые GetAllEntitySchemasQuery/EntitySchemaLookupRequestDto не являются F01 collection contract; major/minor-фильтров в нём нет.
 
 
 ### 3.3. DTO и parameter models
@@ -638,7 +638,7 @@ MVP coordination port принадлежит Application.Abstractions: зада�
 ### 3.5. Specifications / read contracts
 
 
-По [S19](../standards/S19-specifications.md) условия оформляются через Ardalis.Specification. Целевые EntitySchemaByKeySpecification, EntitySchemaByIdSpecification, EntitySchemaListSpecification используют атомарные builder conditions по key/id и Search по Name OR Key. Эти имена — проектные, current handler пока использует WhereILikeSearch и локальные Where.
+По [S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md) условия оформляются через Ardalis.Specification. Целевые EntitySchemaByKeySpecification, EntitySchemaByIdSpecification, EntitySchemaListSpecification используют атомарные builder conditions по key/id и Search по Name OR Key. Эти имена — проектные, current handler пока использует WhereILikeSearch и локальные Where.
 
 
 Key existence и DB uniqueness используют одну case-sensitive семантику сравнения с сохранением регистра. Search по Name OR Key использует case-insensitive ILIKE; это не определяет key uniqueness. Count использует те же фильтры без paging. Name ASC default либо allowlisted Name/ModificationTime ASC/DESC завершается Id ASC tie-breaker; SkipCount≥0, MaxResultCount default20/max200 до материализации. Неизвестный sort возвращает400, не становится произвольным SQL-полем.
@@ -672,7 +672,7 @@ CreateSchemaCommandHandler располагается в Application. Он вы�
 ### 4.2. Validators
 
 
-Текущий [CreateSchemaCommandValidator](../../../../contentmanager.api/src/BoundedContexts/ContentModeling/ContentManager.ContentModeling.Application/EntitySchemas/Validators/CreateSchemaCommandValidator.cs) через FluentValidation проверяет OperationId и recursive Request/Fields/Definition/Options, включая whole-tree keys, shape и metadata. По [S18](../standards/S18-fluent-validation.md) целевое переиспользование выделяет атомарные смысловые rules и композицию; отдельные классы Request/Draft/Field validators не объявляются уже существующими.
+Текущий [CreateSchemaCommandValidator](../../../../contentmanager.api/src/BoundedContexts/ContentModeling/ContentManager.ContentModeling.Application/EntitySchemas/Validators/CreateSchemaCommandValidator.cs) через FluentValidation проверяет OperationId и recursive Request/Fields/Definition/Options, включая whole-tree keys, shape и metadata. По [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md) целевое переиспользование выделяет атомарные смысловые rules и композицию; отдельные классы Request/Draft/Field validators не объявляются уже существующими.
 
 
 Атомарные компоненты F01: проверки SchemaName, SchemaKey, SchemaDescription; DraftTitle/ChangeComment; FieldKey/Name/HelpText; OptionKey/Name; known FieldDataType/OrderMode; согласованность Required/Deprecated. Параметры берутся из Domain constraints, а не разных literals в create/update. Option validator переиспользуется Enum/FlagEnum.

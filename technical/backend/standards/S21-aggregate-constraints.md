@@ -116,7 +116,7 @@ public static class AppealConstraints
 
 ## 6. Использование в Application и FluentValidation
 
-По [S18](S18-fluent-validation.md) смысловые проверки выделяются в переиспользуемые компоненты. Их параметры берутся из `Constraints`; для создания и изменения не заводятся независимые копии чисел и regex.
+По [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md) смысловые проверки выделяются в переиспользуемые компоненты. Их параметры берутся из `Constraints`; для создания и изменения не заводятся независимые копии чисел и regex.
 
 Ниже показана атомарная проверка присутствующего отчества и её подключение во вложенном валидаторе. Остальные поля проверяются аналогично по собственным определениям. Фрагмент не является полным валидатором всего агрегата.
 
@@ -288,4 +288,4 @@ builder.Navigation(x => x.Sender)
 
 Не требуется писать генератор валидаторов, reflection-based mapping или универсальный движок ограничений. Явного дерева постоянных определений, небольших проверок и обычной EF-конфигурации достаточно.
 
-[Валидация моделей](S18-fluent-validation.md) · [Валидация и ошибки](../../../catalog/base/docs/standards/data-flows.md#input-trust-and-failure-semantics) · [Хранение](../../../catalog/docs/standards/dotnet/ef-core.md#domain-constraints-and-historical-persistence-metadata) · [Unit tests](../../../catalog/docs/standards/dotnet/testing.md#unit-tests) · [Integration tests](../../../catalog/docs/standards/dotnet/testing.md#integration-tests).
+[Валидация моделей](../../../catalog/docs/standards/dotnet/fluentvalidation.md) · [Валидация и ошибки](../../../catalog/base/docs/standards/data-flows.md#input-trust-and-failure-semantics) · [Хранение](../../../catalog/docs/standards/dotnet/ef-core.md#domain-constraints-and-historical-persistence-metadata) · [Unit tests](../../../catalog/docs/standards/dotnet/testing.md#unit-tests) · [Integration tests](../../../catalog/docs/standards/dotnet/testing.md#integration-tests).

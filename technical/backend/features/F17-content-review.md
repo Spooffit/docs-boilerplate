@@ -338,9 +338,9 @@ EventId/contract version/producer/sequence/inbox properties относятся �
 
 ### 3.5. Specifications / read contracts
 
-[S19](../standards/S19-specifications.md): atomic exact-ID/RevisionId/Status/context/search/actor predicates reused queue/history/Pending/Approved reads, no spec.And. Shared scope; SubmittedBy filter only optional convenience. Whitelist sort/stable Id/page defaults Q15, no invented paging limits.
+[S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): atomic exact-ID/RevisionId/Status/context/search/actor predicates reused queue/history/Pending/Approved reads, no spec.And. Shared scope; SubmittedBy filter only optional convenience. Whitelist sort/stable Id/page defaults Q15, no invented paging limits.
 
-[S20](../standards/S20-cqrs.md): command handlers Application; query handlers EntityFramework.Persistence либо adapter data boundary. Separate Publishing.EntityFramework.Persistence предстоит добавить. Own core projection и Version coherent; list no per-row token. Approval reader false требует confirmed отсутствие Approved, unavailable/incomplete not false. Live review joins используют public projections, не foreign DbContext/navigation.
+[S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction): command handlers Application; query handlers EntityFramework.Persistence либо adapter data boundary. Separate Publishing.EntityFramework.Persistence предстоит добавить. Own core projection и Version coherent; list no per-row token. Approval reader false требует confirmed отсутствие Approved, unavailable/incomplete not false. Live review joins используют public projections, не foreign DbContext/navigation.
 
 ## 4. Application
 
@@ -362,7 +362,7 @@ Actor проверяется F16 на каждом staff HTTP entrypoint; его
 
 ### 4.2. Validators
 
-[S18](../standards/S18-fluent-validation.md): переиспользовать атомарные ModerationId/RevisionId/Text/DecisionReason validators и agreed list parameters; known text constraints берутся из named Domain definitions. Reason meaningful, не whitespace; max lengths/normalization/format Q15/Q28. Comment и reason отдельные semantic rules, не generic «строка».
+[S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): переиспользовать атомарные ModerationId/RevisionId/Text/DecisionReason validators и agreed list parameters; known text constraints берутся из named Domain definitions. Reason meaningful, не whitespace; max lengths/normalization/format Q15/Q28. Comment и reason отдельные semantic rules, не generic «строка».
 
 Pending state/unique iteration/current revision availability/F15/withdrawal факты проверяются handler и commit guards, не считаются защищёнными async FluentValidation. Сам Submit no If-Match не отменяет DB unique/current-lifecycle guard. Failed external read != no blockers/Approved=false.
 

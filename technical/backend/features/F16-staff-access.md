@@ -342,7 +342,7 @@ Legacy logical ICurrentStaffContext references are adapted to ICurrentUser safe 
 
 ### 3.5. Specifications / read contracts
 
-[S19](../standards/S19-specifications.md): atomic user-ID/active/known-role/safe-label predicates, same filters list/count, whitelist sort+stable Id; adapted provider query projection uses own EF.Persistence. Snapshot reader uses one coherent committed primary SQL/read scope for user/session/memberships/fixed grants, no torn multi-query ReadCommitted observations and no loaded old claims/long-lived cache. Exact SQL profile Q20; immutable result mapped once into request scope. Other BC reads no Identity tables/FK.
+[S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): atomic user-ID/active/known-role/safe-label predicates, same filters list/count, whitelist sort+stable Id; adapted provider query projection uses own EF.Persistence. Snapshot reader uses one coherent committed primary SQL/read scope for user/session/memberships/fixed grants, no torn multi-query ReadCommitted observations and no loaded old claims/long-lived cache. Exact SQL profile Q20; immutable result mapped once into request scope. Other BC reads no Identity tables/FK.
 
 ## 4. Application
 
@@ -373,7 +373,7 @@ SignOutStaffHandler terminally revokes current session only, then clears API coo
 
 ### 4.2. Validators
 
-[S18](../standards/S18-fluent-validation.md): LoginValidator, DisplayNameValidator, FixedRoleSetValidator, ExpectedLoginContextValidator, SetupProofShapeValidator, PasswordPolicyValidator compose named constraints. Login unique normalization checked by provider/index, not client lookup. Password15–128/paste/no composition/weak-password check; provider lockout defaults/config separate. No required Email/RememberMe/custom-role fields. Exact labels/normalization/context/codes [Q15](../questions/Q15-api-and-source-code.md#identityaccess-contracts-и-capabilities).
+[S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): LoginValidator, DisplayNameValidator, FixedRoleSetValidator, ExpectedLoginContextValidator, SetupProofShapeValidator, PasswordPolicyValidator compose named constraints. Login unique normalization checked by provider/index, not client lookup. Password15–128/paste/no composition/weak-password check; provider lockout defaults/config separate. No required Email/RememberMe/custom-role fields. Exact labels/normalization/context/codes [Q15](../questions/Q15-api-and-source-code.md#identityaccess-contracts-и-capabilities).
 
 ### 4.3. Mappers
 

@@ -379,7 +379,7 @@ Selected typed immutable read values below do not expose private Version/EF root
 
 ### 3.5. Specifications / read contracts
 
-[S19](../standards/S19-specifications.md): compose fixed authorized ActionProfile visibility predicate then actor/action/target/UTC range/correlation/operation filters, then keyset boundary. No Count/page/options before visibility. [S20](../standards/S20-cqrs.md) List/Get/FilterOptions handlers in Audit.EntityFramework.Persistence; SQL stable descending SortOccurredAtUtcTicks bigint+Id UUID, server limit+one extra authorized row yields HasMore. No offset/Page/Sort choice or mandatory totals. Actor options visible historic IDs/captions, not admin account listing. Cursor normalized filters/current reader checked before executing; fresh permission each call, never frozen session authorization.
+[S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): compose fixed authorized ActionProfile visibility predicate then actor/action/target/UTC range/correlation/operation filters, then keyset boundary. No Count/page/options before visibility. [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction) List/Get/FilterOptions handlers in Audit.EntityFramework.Persistence; SQL stable descending SortOccurredAtUtcTicks bigint+Id UUID, server limit+one extra authorized row yields HasMore. No offset/Page/Sort choice or mandatory totals. Actor options visible historic IDs/captions, not admin account listing. Cursor normalized filters/current reader checked before executing; fresh permission each call, never frozen session authorization.
 
 ## 4. Application
 
@@ -393,7 +393,7 @@ List/Get/FilterOptions readers receive fresh F16 snapshot; audit.activity.read r
 
 ### 4.2. Validators
 
-[S18](../standards/S18-fluent-validation.md): ActivityActorValidator (Staff ID only Staff), TrustedActionProfileValidator, ExactTargetReferenceValidator, TypedMetadataVariantValidator, CommittedResultValidator, UtcIntervalValidator, CursorBindingValidator, PageSizeValidator50/200. Builder whitelist positive inclusion, not regex-blacklist redaction after full entity serialization. No generic source payload allowed. Schema/codec/text limits Q15/Q20; semantic scope/routes/defaults selected here.
+[S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): ActivityActorValidator (Staff ID only Staff), TrustedActionProfileValidator, ExactTargetReferenceValidator, TypedMetadataVariantValidator, CommittedResultValidator, UtcIntervalValidator, CursorBindingValidator, PageSizeValidator50/200. Builder whitelist positive inclusion, not regex-blacklist redaction after full entity serialization. No generic source payload allowed. Schema/codec/text limits Q15/Q20; semantic scope/routes/defaults selected here.
 
 ### 4.3. Mappers
 

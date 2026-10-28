@@ -169,7 +169,7 @@ return (
         ct))
     .ToActionResult(this);
 ```
-Контроллер не вызывает обработчики напрямую. Их размещение определяется [S20](S20-cqrs.md).
+Контроллер не вызывает обработчики напрямую. Их размещение определяется [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction).
 Контроллер не должен реализовывать дополнительную application orchestration поверх command/query без отдельного архитектурного требования.
 ---
 ## 6. Model binding
@@ -330,7 +330,7 @@ ProblemDetails
 ```
 ---
 ## 11. Validation
-Валидация transport/application-моделей выполняется через FluentValidation по [S18](S18-fluent-validation.md). Валидаторы собираются из переиспользуемых правил полей и вложенных моделей. Они подключаются к единому механизму валидации; контроллер не получает собственную копию этих правил.
+Валидация transport/application-моделей выполняется через FluentValidation по [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md). Валидаторы собираются из переиспользуемых правил полей и вложенных моделей. Они подключаются к единому механизму валидации; контроллер не получает собственную копию этих правил.
 Controller не должен содержать код вида:
 ```csharp
 if (request.Name is null)

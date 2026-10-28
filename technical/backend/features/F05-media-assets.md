@@ -257,7 +257,7 @@ No input. Возвращает active backend policy для frontend: kinds, all
 | --- | --- | --- | --- | --- |
 | AssetId | `Guid` | Да | Exact impact identity | Authority/полнота отдельно от own ETag |
 
-Читающие handlers располагаются в EntityFramework.Persistence по [S20](../standards/S20-cqrs.md). Binary gateway/runtime access использует публичные media eligibility facts при проверке session/revision; это access gate, не enrichment Published runtime values. Immutable AssetReference descriptor захватывается F04 при Publish и читается Delivery из snapshot. Binary read выполняет Host YARP после applicable gate; separate OpenAssetContentQuery/MVC byte pump не вводится. Anonymous Demo gateway не означает anonymous protected MVP access.
+Читающие handlers располагаются в EntityFramework.Persistence по [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction). Binary gateway/runtime access использует публичные media eligibility facts при проверке session/revision; это access gate, не enrichment Published runtime values. Immutable AssetReference descriptor захватывается F04 при Publish и читается Delivery из snapshot. Binary read выполняет Host YARP после applicable gate; separate OpenAssetContentQuery/MVC byte pump не вводится. Anonymous Demo gateway не означает anonymous protected MVP access.
 
 ### 3.3. DTO и parameter models
 
@@ -354,19 +354,19 @@ MVP coordination port принадлежит Application.Abstractions: зада�
 
 ### 3.5. Specifications / read contracts
 
-MediaAssetsListSpecification, MediaAssetByIdSpecification и UsableMediaAssetsByIdsSpecification используют [S19](../standards/S19-specifications.md): атомарные conditions identity/status/name search и отдельные ordering/projection/page. Count использует те же filters без paging. Нет spec.And и client-side загрузки всей library для поиска. List summaries без streams; exact metadata без body bytes. Default sort/tie-breaker/page/search comparison Q15. Archived исключён из normal picker; Failed/Pending/Deleting не selectable.
+MediaAssetsListSpecification, MediaAssetByIdSpecification и UsableMediaAssetsByIdsSpecification используют [S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): атомарные conditions identity/status/name search и отдельные ordering/projection/page. Count использует те же filters без paging. Нет spec.And и client-side загрузки всей library для поиска. List summaries без streams; exact metadata без body bytes. Default sort/tie-breaker/page/search comparison Q15. Archived исключён из normal picker; Failed/Pending/Deleting не selectable.
 
 ## 4. Application
 
 ### 4.1. Handlers / use cases
 
-UploadAssetCommandHandler, ArchiveAssetCommandHandler, RestoreAssetCommandHandler и DeleteAssetCommandHandler находятся в целевом ContentManager.MediaLibrary.Application. Такой assembly сейчас отсутствует: source MediaAssetHandler совмещает command/query в Persistence. Перенос command orchestration нужен для физического разделения [S20](../standards/S20-cqrs.md); он не означает переноса query handlers в Application.
+UploadAssetCommandHandler, ArchiveAssetCommandHandler, RestoreAssetCommandHandler и DeleteAssetCommandHandler находятся в целевом ContentManager.MediaLibrary.Application. Такой assembly сейчас отсутствует: source MediaAssetHandler совмещает command/query в Persistence. Перенос command orchestration нужен для физического разделения [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction); он не означает переноса query handlers в Application.
 
 Каждый use case раскрыт в §9. Upload/Delete координируют несколько durable stages и storage IO; один ambient transactional command scope на весь request не подходит для фиксации Pending/Deleting до object write/delete. Concrete pipeline opt-out/отдельные scopes должны быть согласованы и проверены Q21. Контроллер не коммитит БД и не управляет этим orchestration.
 
 ### 4.2. Validators
 
-UploadAssetInputValidator композирует FileNameRules/ContentTypeRules из MediaAssetConstraints и согласованную upload policy; Archive/Restore/Delete validators проверяют ID/precondition structure, без чтения чужих БД. По [S18](../standards/S18-fluent-validation.md) metadata validation выполняется до writes, валидаторы не потребляют upload stream и не меняют DTO. Фактический размер/hash/type verification выполняет отдельный streaming algorithm; reference authority/eligibility — handler/public protocol. Limits применяются согласованно на HTTP/proxy/storage, а не отдельными несовпадающими literals.
+UploadAssetInputValidator композирует FileNameRules/ContentTypeRules из MediaAssetConstraints и согласованную upload policy; Archive/Restore/Delete validators проверяют ID/precondition structure, без чтения чужих БД. По [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md) metadata validation выполняется до writes, валидаторы не потребляют upload stream и не меняют DTO. Фактический размер/hash/type verification выполняет отдельный streaming algorithm; reference authority/eligibility — handler/public protocol. Limits применяются согласованно на HTTP/proxy/storage, а не отдельными несовпадающими literals.
 
 ### 4.3. Mappers
 

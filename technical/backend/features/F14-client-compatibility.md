@@ -125,7 +125,7 @@ ClientContentProfile — текущая доменная модель, а не �
 
 ### 3.5. Specifications / read contracts
 
-Demo использует exact schema/version принадлежность, Published и доступность по F13, затем выбирает максимальный Published бизнесовый номер экземпляра только внутри выбранного target. Query-условия владельцев выражаются атомарными Ardalis predicates по [S19](../standards/S19-specifications.md); чистый Supports не требует repository/specification. MVP читает materialized pinned snapshot F13, а не составляет ответ из чужих EF contexts. Отдельная фильтрация по строке сборки, Key или latest здесь не добавляется.
+Demo использует exact schema/version принадлежность, Published и доступность по F13, затем выбирает максимальный Published бизнесовый номер экземпляра только внутри выбранного target. Query-условия владельцев выражаются атомарными Ardalis predicates по [S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md); чистый Supports не требует repository/specification. MVP читает materialized pinned snapshot F13, а не составляет ответ из чужих EF contexts. Отдельная фильтрация по строке сборки, Key или latest здесь не добавляется.
 
 ## 4. Application
 
@@ -139,11 +139,11 @@ Demo использует exact schema/version принадлежность, Pub
 | Demo start/preflight | Полный selection, фактический inventory, exact Published projection | Build desired set/diff F13; start фиксирует immutable cached plan, preflight читает | Нет business SQL transaction F14; exact result/group errors |
 | MVP session/read | Право F12, effective materialized revision, pinned membership и hard invalidators F13 | Создание/чтение session по F13 | Обнаружение неподдерживаемого состава не разрешает иной snapshot; ветвь решения Q14 |
 
-Command handlers остаются в Application, queries — в доступе к данным (EntityFramework.Persistence либо cache adapter соответствующего query), согласно [S20](../standards/S20-cqrs.md). After-commit side effects принадлежат своим фичам; F14 не добавляет скрытый broker или distributed transaction.
+Command handlers остаются в Application, queries — в доступе к данным (EntityFramework.Persistence либо cache adapter соответствующего query), согласно [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction). After-commit side effects принадлежат своим фичам; F14 не добавляет скрытый broker или distributed transaction.
 
 ### 4.2. Validators
 
-Переиспользуются semantic validators владельцев: exact SchemaId/SchemaVersionId pair и полный selection/inventory F13; recursive schema/values F02–F04. По [S18](../standards/S18-fluent-validation.md) их композиция не копирует доменные лимиты. Существование/доступность версий и право — изменяемые внешние факты; их проверяет use case/read boundary в нужный момент, FluentValidation не устраняет гонки. Валидатор новых возможностей клиента отсутствует до Q14.
+Переиспользуются semantic validators владельцев: exact SchemaId/SchemaVersionId pair и полный selection/inventory F13; recursive schema/values F02–F04. По [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md) их композиция не копирует доменные лимиты. Существование/доступность версий и право — изменяемые внешние факты; их проверяет use case/read boundary в нужный момент, FluentValidation не устраняет гонки. Валидатор новых возможностей клиента отсутствует до Q14.
 
 ### 4.3. Mappers
 

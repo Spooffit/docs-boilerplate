@@ -252,9 +252,9 @@ MVP coordination port принадлежит Application.Abstractions: зада�
 
 ### 3.5. Specifications / read contracts
 
-По [S19](../standards/S19-specifications.md) SchemaVersionByOwnerAndIdSpecification, SchemaByIdSpecification и PublishedSchemaVersionByOwnerAndIdSpecification переиспользуют atomic OwnerId/Id/Status builder conditions из F02. Current Published загружается exact pointer ID, не latest-created/наибольший номер из page. Tracking policy command repositories отдельно от no-tracking F02 projections; filter не скрывает missing/foreign resource fallback.
+По [S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md) SchemaVersionByOwnerAndIdSpecification, SchemaByIdSpecification и PublishedSchemaVersionByOwnerAndIdSpecification переиспользуют atomic OwnerId/Id/Status builder conditions из F02. Current Published загружается exact pointer ID, не latest-created/наибольший номер из page. Tracking policy command repositories отдельно от no-tracking F02 projections; filter не скрывает missing/foreign resource fallback.
 
-Если для immutable historical identity нужен history projection, он не ограничивается UI paging и не загружает instance values. Concrete projection/profile Q15. Новые queries по [S20](../standards/S20-cqrs.md), если появятся после решения, размещаются в EntityFramework.Persistence, не Application.
+Если для immutable historical identity нужен history projection, он не ограничивается UI paging и не загружает instance values. Concrete projection/profile Q15. Новые queries по [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction), если появятся после решения, размещаются в EntityFramework.Persistence, не Application.
 
 ## 4. Application
 
@@ -266,7 +266,7 @@ Load/ExpectedVersion/state/base checks → complete strict validation → number
 
 ### 4.2. Validators
 
-PublishSchemaVersionCommandValidator по [S18](../standards/S18-fluent-validation.md) проверяет IDs/internal input profile, но не ожидает body tree. Общие structural field/definition/metadata validators F01/F02 переиспользуют Domain constraints без DTO mutation/default insertion. StrictSchemaPublishValidator — pure policy loaded content, не FluentValidation HTTP binding.
+PublishSchemaVersionCommandValidator по [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md) проверяет IDs/internal input profile, но не ожидает body tree. Общие structural field/definition/metadata validators F01/F02 переиспользуют Domain constraints без DTO mutation/default insertion. StrictSchemaPublishValidator — pure policy loaded content, не FluentValidation HTTP binding.
 
 Сначала shape/null/known-variant/коллекции, затем tree identity/uniqueness и cross-version evolution. Индексы FieldId и option Key позволяют сопоставлять смысл, array position/Name не identity. Ищутся все релевантные issues с адресуемым path, без исключений null subtree. Async DB/lifecycle/concurrency facts читает handler/guard; validator не пишет в БД, не обращается ко всем instance/asset records. Known PublishIssues UI не заменяют повторную validation.
 

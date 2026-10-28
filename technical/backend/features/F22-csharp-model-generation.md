@@ -99,7 +99,7 @@ Core-owned models отделены от server request/archive models. Demo publ
 ### 3.1. Commands
 
 
-Техническое создание артефакта — GenerateCSharpModelsCommand с handler в Application по [S20](../standards/S20-cqrs.md). No business persistence mutation не является основанием поместить query handler в Application. Source reads остаются query F21 в Persistence.
+Техническое создание артефакта — GenerateCSharpModelsCommand с handler в Application по [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction). No business persistence mutation не является основанием поместить query handler в Application. Source reads остаются query F21 в Persistence.
 
 
 | Command | Назначение | Result | Concurrency |
@@ -278,7 +278,7 @@ GenerateCSharpModelsCommandHandler — ContentModeling.Application/CodeGeneratio
 ### 4.2. Validators
 
 
-Actual FluentValidation [S18](../standards/S18-fluent-validation.md) `GenerateCSharpModelsCommandValidator` проверяет request/array nonnull/nonempty, count, nonempty unique IDs. Core parser проверяет exact F21 document identity/profile/definitions; handler проверяет final requested root/file coverage. Отдельный SchemaContractSetMatchValidator class для этих checks не вводится. Непрошедший target/unsupported construct не исключается ради successful ответа.
+Actual FluentValidation [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md) `GenerateCSharpModelsCommandValidator` проверяет request/array nonnull/nonempty, count, nonempty unique IDs. Core parser проверяет exact F21 document identity/profile/definitions; handler проверяет final requested root/file coverage. Отдельный SchemaContractSetMatchValidator class для этих checks не вводится. Непрошедший target/unsupported construct не исключается ради successful ответа.
 
 
 Actual output checks находятся в Core naming plan, handler coverage checks и `DeterministicZipWriter.SafeName`/preflight. Они проверяют bindings/files completeness, `.g.cs` paths и cross-target uniqueness, rejects absolute/drive/UNC/rooted paths/traversal/unsafe separators/casefold collisions; допустимые Unicode identifier categories сохраняются, filename length считается по UTF-8 bytes. Отдельные GeneratedOutputValidator/GeneratedRelativePathValidator classes не являются actual Demo components. Code/naming identifiers не создаются из untrusted options/Name/кодовых snippets; reserved/type-member conflicts решаются profile. Count/bytes/deadline задаются выбранной конфигурацией, Core recursive depth64.

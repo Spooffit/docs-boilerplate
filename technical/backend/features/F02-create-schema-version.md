@@ -207,7 +207,7 @@ Declarations — [SchemaDraftQueries.cs](../../../../contentmanager.api/src/Boun
 | GetSchemaDeleteImpactQuery | SchemaId | Guid | Да | Owner | Missing →404 |
 | GetSchemaDeleteImpactQuery | VersionId | Guid? | Нет | Exact version либо logical scope | Null = entire logical schema; impact unpaged |
 
-По [S20](../standards/S20-cqrs.md) query handlers находятся в EntityFramework.Persistence. Logical details читаются F01 GetSchemaDetailsQuery. Summary list не заменяет exact read и не содержит per-row technical ETag.
+По [S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction) query handlers находятся в EntityFramework.Persistence. Logical details читаются F01 GetSchemaDetailsQuery. Summary list не заменяет exact read и не содержит per-row technical ETag.
 
 ### 3.3. DTO и parameter models
 
@@ -327,7 +327,7 @@ IUnitOfWorkManager/command pipeline владеет local commit/rollback. TimePr
 
 ### 3.5. Specifications / read contracts
 
-По [S19](../standards/S19-specifications.md) отбор owner/exact ID/status должен оставаться серверным. Не вводятся fictional specification classes/And API. Count использует те же filters без paging; summary не содержит полное Content всех versions.
+По [S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md) отбор owner/exact ID/status должен оставаться серверным. Не вводятся fictional specification classes/And API. Count использует те же filters без paging; summary не содержит полное Content всех versions.
 
 Default rail: Draft first, Draft CreatedAt descending; Published VersionNumber descending; stable Id tie-breaker. Explicit allow-listed sort применяется стабильно с identity tie-breaker. Default selection по owner DefaultVersionId F01 — newest Draft, иначе latest Published, empty history — empty workspace. Exact отсутствующий/foreign version и missing list owner →404, без fallback. Major/minor filters в новом F02 wire отсутствуют.
 
@@ -343,7 +343,7 @@ Save version не переименовывает schema. Name/Description при
 
 ### 4.2. Validators
 
-По [S18](../standards/S18-fluent-validation.md) [SchemaDraftCommandValidators](../../../../contentmanager.api/src/BoundedContexts/ContentModeling/ContentManager.ContentModeling.Application/EntitySchemas/Validators/SchemaDraftCommandValidators.cs) содержат отдельный validator каждого Demo command/query; shared DraftValidation и правила CreateSchemaCommandValidator переиспользуют F01 metadata/recursive definitions. Atomic Title/ChangeComment/FieldName/HelpText/OptionKey/Name/known OrderMode используют Domain constraints. Validator не меняет DTO, не генерирует IDs/не скрыто нормализует Key.
+По [S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md) [SchemaDraftCommandValidators](../../../../contentmanager.api/src/BoundedContexts/ContentModeling/ContentManager.ContentModeling.Application/EntitySchemas/Validators/SchemaDraftCommandValidators.cs) содержат отдельный validator каждого Demo command/query; shared DraftValidation и правила CreateSchemaCommandValidator переиспользуют F01 metadata/recursive definitions. Atomic Title/ChangeComment/FieldName/HelpText/OptionKey/Name/known OrderMode используют Domain constraints. Validator не меняет DTO, не генерирует IDs/не скрыто нормализует Key.
 
 Create: recursive shape/null/collection checks, затем whole-tree uniqueness. Update: required IDs/repeated/conflicting operations/variant shape; после загрузки domain applier сравнивает saved identity/monotonic state. Foreign ID/parent/deleted ancestor/resulting minimum проверяются до replacement. Async facts читает handler/port; FV не заменяет transaction guard. Published evolution issues отдельно от Save errors.
 

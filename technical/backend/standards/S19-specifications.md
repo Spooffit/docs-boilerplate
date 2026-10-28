@@ -51,4 +51,4 @@ Unit-тесты проверяют независимые условия и их
 
 Integration-тесты выполняют итоговые спецификации на используемом провайдере: фильтрация, сочетания условий, подсчёт без пагинации, порядок, проекция и отсутствие обхода обязательных ограничений. Переиспользуемый фильтр не должен неожиданно менять другие части запроса.
 
-[Хранение](../../../catalog/base/docs/standards/stateful-workflows.md#durable-snapshots-and-retained-history) · [Валидация параметров](S18-fluent-validation.md) · [Integration tests](../../../catalog/docs/standards/dotnet/testing.md#integration-tests).
+[Хранение](../../../catalog/base/docs/standards/stateful-workflows.md#durable-snapshots-and-retained-history) · [Валидация параметров](../../../catalog/docs/standards/dotnet/fluentvalidation.md) · [Integration tests](../../../catalog/docs/standards/dotnet/testing.md#integration-tests).

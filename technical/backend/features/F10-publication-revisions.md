@@ -406,7 +406,7 @@ No direct ContentModeling/Delivery repository or HTTP client automatically added
 
 ### 3.5. Specifications / read contracts
 
-[S19](../standards/S19-specifications.md): target RevisionByIdSpecification, RevisionsByVariantSpecification; atomic ID/owner/lifecycle/created conditions, chosen filters/order/paging Q15. F09 source exact specs reused, tracking only guarded writes. Public projection captures complete stored materialized set/lifecycle/token; list summaries don't load full Items. No guessed spec.And API/new repository per Item.
+[S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): target RevisionByIdSpecification, RevisionsByVariantSpecification; atomic ID/owner/lifecycle/created conditions, chosen filters/order/paging Q15. F09 source exact specs reused, tracking only guarded writes. Public projection captures complete stored materialized set/lifecycle/token; list summaries don't load full Items. No guessed spec.And API/new repository per Item.
 
 Historical exact read doesn't load current releases and recompute or fail because source Retired. Display missing metadata/Withdrawn admin permissions handled explicitly Q15. Materialized public reader uses stored canonical representation Q19 and own availability facts, not current serializer over JSONB/source query. Preview coherent selected source lifecycle/context/metadata capture Q20; no latest state disguised as previously validated input.
 
@@ -453,7 +453,7 @@ Retire/Restore use exact revision own token. Retire coordinates F11 current poin
 
 ### 4.2. Validators
 
-[S18](../standards/S18-fluent-validation.md): SourceReleaseSelectionValidator checks ≥1 ID and non-empty passed GUID; public Create also composes ClientOperationIdValidator; context/RevisionId validators; Create validator composes ChangeCommentValidator; Withdraw validator composes WithdrawalReasonValidator. Retire/Restore/list models use selected pure constraints. ProductVariantPublicationRevisionConstraints/shared value constraints single source S21; no guessed string length/default.
+[S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): SourceReleaseSelectionValidator checks ≥1 ID and non-empty passed GUID; public Create also composes ClientOperationIdValidator; context/RevisionId validators; Create validator composes ChangeCommentValidator; Withdraw validator composes WithdrawalReasonValidator. Retire/Restore/list models use selected pure constraints. ProductVariantPublicationRevisionConstraints/shared value constraints single source S21; no guessed string length/default.
 
 Pure FV doesn't query active pointer, retired sources/content availability or Latest, and doesn't normalize/dedup inputs. Application/Domain validate owner, captured target/schema, cross-group uniqueness, result availability/finalnonempty and F15. Header expected Version separate. Diagnostic labels/collision paths don't require client-generated IDs.
 

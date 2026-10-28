@@ -282,7 +282,7 @@ Request/model нельзя переиспользовать как read DTO, F08
 
 ### 3.5. Specifications / read contracts
 
-[S19](../standards/S19-specifications.md): целевой `ProductContentAssignmentByProductIdSpecification` читает own root/items; atomic ProductId condition переиспользуется exact query/repository, tracking задаётся use case. Batch ContentModeling adapter ищет только requested IDs; stable-ID uniqueness проверяется после resolution, а не по labels.
+[S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): целевой `ProductContentAssignmentByProductIdSpecification` читает own root/items; atomic ProductId condition переиспользуется exact query/repository, tracking задаётся use case. Batch ContentModeling adapter ищет только requested IDs; stable-ID uniqueness проверяется после resolution, а не по labels.
 
 Read projection AsNoTracking получает whole assignment и внутренний token одной согласованной версии; item view не смешивает разные saves. Display/lifecycle enrichment батчами через public port, без N+1 на item и десериализации всех content graphs ради списка. Правила read consistency при concurrent Save и external metadata change — Q15/Q20. Assignment — набор; presentation grouping по EntitySchema не вводит runtime order/SortOrder. Picker search/page/sort принадлежат F04 specifications. Composition условий — builder conditions, не выдуманный `spec.And`.
 
@@ -530,7 +530,7 @@ Query читает сохранённый working set и current display/availab
 
 ### 4.2. Validators
 
-[S18](../standards/S18-fluent-validation.md): `UpdateProductContentAssignmentRequestValidator` композирует ProductId/VersionId field validators, required collection и unique exact-ID rules; `UpdateProductContentAssignmentCommandValidator` использует те же pure constraints и internal expected-version profile. `ProductContentAssignmentConstraints.Items` — source ограничений, если предел набора будет принят; initial local Version grammar берётся общей convention.
+[S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): `UpdateProductContentAssignmentRequestValidator` композирует ProductId/VersionId field validators, required collection и unique exact-ID rules; `UpdateProductContentAssignmentCommandValidator` использует те же pure constraints и internal expected-version profile. `ProductContentAssignmentConstraints.Items` — source ограничений, если предел набора будет принят; initial local Version grammar берётся общей convention.
 
 Collection не null, может быть empty; каждый version ID non-empty. Duplicate exact ID — structural request issue; две разные версии одного logical instance обнаруживаются после authoritative resolution и отклоняются как domain composition conflict. Не молча Distinct incoming payload. FV не читает чужую БД, не меняет refs/Latest, не обращается к broker. Async existence/availability/blocker/guard facts проверяет handler.
 

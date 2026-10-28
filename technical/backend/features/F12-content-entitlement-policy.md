@@ -373,7 +373,7 @@ Publishing command handlers Publishing.Application; binding/evaluation orchestra
 
 ReadDeliveryEffectiveHistoryQuery reuses the exact [F13 ReadCompleteDeliveryHistoryQuery](F13-content-delivery.md#32-queries) parameter/read contract: ProductVariantId Guid, optional Cutoff DateTimeOffset and required server decision-purpose/range scope, immutable CompleteDeliveryHistoryRead values (no internal Version/entities). Application maps to owned Domain temporal values; no direct Domain→Abstractions reference. No separate F12 temporal DTO/time fields; own Delivery read/projection handler remains EntityFramework.Persistence.
 
-[S20](../standards/S20-cqrs.md): all queries в владельце EntityFramework.Persistence, не Application command implementation. Current resolution UI отличается от policy для existing binding. Entitlement diagnostics read/public endpoint ещё не выбран Q15; method existence не proof REST route.
+[S20](../../../catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction): all queries в владельце EntityFramework.Persistence, не Application command implementation. Current resolution UI отличается от policy для existing binding. Entitlement diagnostics read/public endpoint ещё не выбран Q15; method existence не proof REST route.
 
 ### 3.3. DTO и parameter models
 
@@ -508,7 +508,7 @@ CatalogFacts не изменяются Publishing/Delivery evaluator. Ownership/
 
 ### 3.5. Specifications / read contracts
 
-[S19](../standards/S19-specifications.md): ProductPolicyStateByIdSpecification, VariantPolicyStateByIdSpecification, PolicyHistoryByScopeSpecification, BindingByPeriodScopeSpecification, PolicyAgreementByIdSpecification, PolicyAgreementByCallerRequestSpecification, CurrentPeriodByLicenseVariantSpecification, EffectiveStateBeforeCutoffSpecification. Atomic predicates ForPolicyScopeCondition, ForLicenseVariantPeriodCondition, EffectiveBeforeBoundaryCondition; builder extensions compose внутри concrete Ardalis specification, не invented spec.And API.
+[S19](../../../catalog/docs/standards/dotnet/ardalis-specification.md): ProductPolicyStateByIdSpecification, VariantPolicyStateByIdSpecification, PolicyHistoryByScopeSpecification, BindingByPeriodScopeSpecification, PolicyAgreementByIdSpecification, PolicyAgreementByCallerRequestSpecification, CurrentPeriodByLicenseVariantSpecification, EffectiveStateBeforeCutoffSpecification. Atomic predicates ForPolicyScopeCondition, ForLicenseVariantPeriodCondition, EffectiveBeforeBoundaryCondition; builder extensions compose внутри concrete Ardalis specification, не invented spec.And API.
 
 History policy ordered server Sequence; Delivery history selection использует saved VisibilityConfirmedAt+actual effective order, не revision CreatedAt, GUID или Publishing Sequence alone. Strict stored confirmation cutoff retains null rows; necessary prefix pending/completeness/order failure stays Indeterminate, not filtered away to older known rows. Irrelevant later catch-up/pending cannot blanket-veto proven prior Freeze prefix if it cannot backdate; current committed otherwise-allowed state remains usable. New agreement captures coherent current applied parent/local/Product policy under gate; existing agreement exact read never re-resolves by period/date/first use. History pagination/tie/clock profile Q15/Q17; nontracking projections и completeness не сводятся к presence одного latest row.
 
@@ -534,7 +534,7 @@ Query handlers remain owner Persistence. Current policy UI query grants no agree
 
 ### 4.2. Validators
 
-[S18](../standards/S18-fluent-validation.md): ProductIdValidator, VariantIdValidator, PolicyScopeValidator, OptionalContentPolicyValidator, ExpectedStateVersionValidator, ConfirmedPeriodIdentityValidator. SetProductContentPolicyValidator/SetVariantContentPolicyValidator compose semantic rules: null разрешён; только два enum values. AgreementRequestValidator composes non-empty RequestId/SourcePeriodId/VariantId, LicenseId and original plan/expected-context shape validators; BindingParametersValidator composes exact tuple/AgreementId/original confirmation constraints, без arbitrary max dates или guessed source unlimited flag.
+[S18](../../../catalog/docs/standards/dotnet/fluentvalidation.md): ProductIdValidator, VariantIdValidator, PolicyScopeValidator, OptionalContentPolicyValidator, ExpectedStateVersionValidator, ConfirmedPeriodIdentityValidator. SetProductContentPolicyValidator/SetVariantContentPolicyValidator compose semantic rules: null разрешён; только два enum values. AgreementRequestValidator composes non-empty RequestId/SourcePeriodId/VariantId, LicenseId and original plan/expected-context shape validators; BindingParametersValidator composes exact tuple/AgreementId/original confirmation constraints, без arbitrary max dates или guessed source unlimited flag.
 
 FV — shape/primitive constraints. Scope permissions/applied parent/F15, protected mutable source facts/current Version, availability/completeness и unique binding race — Application/Domain/DB. “Async validator resolved current policy” не proof new quote remained valid through commit; authoritative capture happens after guard, confirmed replay lookup comes first. Server trusted clock/actor source не editable validated body.
 
