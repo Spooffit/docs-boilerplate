@@ -834,7 +834,7 @@ cp "$temp/nav-nested/docs/project/guides/index.md" "$temp/nav-nested-index-befor
 
 # An unrelated upstream change must apply without resetting any authored navigation.
 cp -a catalog "$temp/catalog-navigation-update"
-printf '\n## Follow-up reference\n\nOnly actual project evidence can establish architecture.\n' >> "$temp/catalog-navigation-update/base/docs/architecture/overview.md"
+printf '\n## Evidence reminder\n\nOnly verified project sources establish documentation facts.\n' >> "$temp/catalog-navigation-update/base/docs/standards/documentation.md"
 run update --output "$temp/nav-nested" --catalog "$temp/catalog-navigation-update" --apply
 run validate --output "$temp/nav-nested" --catalog "$temp/catalog-navigation-update"
 cmp "$temp/nav-nested-catalog-before.md" "$temp/nav-nested/docs/catalog.md"
