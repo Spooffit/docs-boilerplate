@@ -1,10 +1,3 @@
----
-title: "Docs Boilerplate"
-description: "AI-first Docs-as-Code repository generator"
-kind: index
-status: active
----
-
 # Docs Boilerplate
 
 A Markdown-first **documentation repository generator** designed primarily for AI coding agents and secondarily for humans. The reusable source lives in [`catalog/`](catalog/), the .NET 10 CLI in [`src/`](src/), and generator tests in [`tests/`](tests/).
@@ -47,5 +40,5 @@ Technology conventions such as test-method naming, HTTP ETag/If-Match concurrenc
 
 The final owner decisions are recorded in [ADR 0007](docs/decisions/0007-final-editorial-policies.md). Document identifiers and approval workflows, and direct API request DTO form binding, are both **independently opt-in**. The documentation catalog does not prescribe client-library development or source-model generation; incomplete code examples must be labeled illustrative and claims of executable examples require real test evidence.
 
-See [implementation status](docs/implementation-status.md), [approved template scope](docs/decisions/0005-approved-template-scope.md), [architectural decisions](docs/decisions/index.md), [remaining owner choices](docs/decisions/owner-decision-backlog.md) and [contributing rules](CONTRIBUTING.md).
+See [implementation status](docs/implementation-status.md), [approved template scope](docs/decisions/0005-approved-template-scope.md), [architectural decisions](docs/decisions/index.md), [completed owner decision review](docs/decisions/owner-decision-backlog.md) and [contributing rules](CONTRIBUTING.md).
 

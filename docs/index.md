@@ -10,7 +10,7 @@ status: active
 This repository contains a generator and reusable documentation sources. It does not host an example product's active requirements.
 
 - [Architecture and code boundaries](architecture/index.md)
-- [Accepted decisions and deferred choices](decisions/index.md)
+- [Accepted decisions and review status](decisions/index.md)
 - [Generator commands](generator.md)
 - [Implementation status and limitations](implementation-status.md)
 - [Canonical documentation conventions](../catalog/base/docs/standards/documentation.md)

@@ -35,4 +35,4 @@ Write one authoritative definition for each rule. Distinguish accepted design, o
 
 The active tree must not contain old project `business/`, `technical/`, `milestones/`, `shared/` folders, root F/M/Q catalogs or migration-only audits. Those materials were extraction inputs, not a supported example application; prior commits remain available in Git history. `tests/repository_hygiene.py` protects this boundary.
 
-Product-specific examples require an explicit owner decision and a clearly separate, opt-in sample with usable verification; do not re-create a legacy source archive inside this boilerplate. Unresolved choices are recorded in the [owner decision backlog](docs/decisions/owner-decision-backlog.md).
+Product-specific examples require an explicit owner decision and a clearly separate, opt-in sample with usable verification; do not re-create a legacy source archive inside this boilerplate. The [owner decision review](docs/decisions/owner-decision-backlog.md) is closed. New options need separate approval.

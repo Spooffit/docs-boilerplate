@@ -85,7 +85,14 @@ static partial class DocsCli
             if (basename is not ("README.md" or "AGENTS.md" or "SKILL.md" or "CONTRIBUTING.md")
                 && !System.Text.RegularExpressions.Regex.IsMatch(basename, "^[a-z0-9]+(?:-[a-z0-9]+)*\\.md$"))
                 errors.Add($"Markdown filename must be kebab-case: {relativeName}");
-            if (!DocumentMetadata.IsValid(text, basename == "SKILL.md"))
+            // Only the root README is exempt from YAML metadata so GitHub
+            // does not render a metadata table above the project heading.
+            if (relativeName == "README.md")
+            {
+                if (text.StartsWith("---\n", StringComparison.Ordinal))
+                    errors.Add("Root README.md must not include YAML frontmatter.");
+            }
+            else if (!DocumentMetadata.IsValid(text, basename == "SKILL.md"))
                 errors.Add($"Invalid or missing YAML frontmatter: {relativeName}");
             if (text.Contains("{{PROJECT_", StringComparison.Ordinal))
                 errors.Add($"Unresolved template field: {file}");

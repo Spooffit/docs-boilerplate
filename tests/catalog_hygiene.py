@@ -18,7 +18,10 @@ for folder in PROTECTED_TREES:
         relative = doc.relative_to(ROOT).as_posix()
         checked += 1
 
-        if not text.startswith("---\n") or "\n---\n" not in text[4:]:
+        if relative == "catalog/base/README.md":
+            if not text.startswith("# "):
+                errors.append(f"{relative}: root README must start with a heading, not frontmatter")
+        elif not text.startswith("---\n") or "\n---\n" not in text[4:]:
             errors.append(f"{relative}: missing frontmatter")
         if doc.name not in ALLOWED_SPECIAL and not DOC_FILENAME.fullmatch(doc.name):
             errors.append(f"{relative}: filename must use lowercase kebab-case")

@@ -319,6 +319,16 @@ Test("metadata is added once and remains valid", () =>
     Expect(first == DocumentMetadata.Prepare("docs/standards/rules.md", first), "Metadata was inserted twice");
     Expect(first.Contains("kind: standard", StringComparison.Ordinal), "Wrong metadata kind");
 });
+Test("root README is readable on GitHub without leaking frontmatter", () =>
+{
+    var readme = "# Example\n\nA descriptive landing page.";
+    Expect(DocumentMetadata.Prepare("README.md", readme) == readme,
+        "Root README received injected YAML metadata");
+    Expect(DocumentMetadata.Prepare("docs/README.md", readme).StartsWith("---\n", StringComparison.Ordinal),
+        "Nested README improperly bypassed normal document metadata");
+    Throws<InvalidOperationException>(() => DocumentMetadata.Prepare(
+        "README.md", "---\ntitle: Example\n---\n\n# Example"));
+});
 Test("invalid or duplicate metadata fields are rejected", () =>
 {
     Expect(!DocumentMetadata.IsValid("# No frontmatter", false), "Missing metadata allowed");

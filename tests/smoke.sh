@@ -101,6 +101,11 @@ run validate --output "$temp/final-conventions"
 # A genuinely minimal repo must not contain dangling links to optional modules.
 run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
 run validate --output "$temp/minimal"
+[[ "$(head -n 1 "$temp/minimal/README.md")" == "# Minimal" ]]
+if grep -q '^---$' "$temp/minimal/README.md"; then
+    echo "Generated root README still contains YAML frontmatter"; exit 1
+fi
+grep -q '^---$' "$temp/minimal/docs/standards/documentation.md"
 python3 - "$temp/minimal/docs.config.json" <<'PY'
 import json,sys
 with open(sys.argv[1],encoding="utf-8") as stream:

@@ -23,6 +23,14 @@ internal static class DocumentMetadata
             return content;
         var filename = Path.GetFileName(path);
         AssertFileName(path);
+        // GitHub renders root README YAML frontmatter as a table above the H1.
+        // Keep the repository landing page readable without relaxing docs/ metadata.
+        if (path == "README.md")
+        {
+            if (content.StartsWith("---\n", StringComparison.Ordinal))
+                throw new InvalidOperationException("Root README.md must start with its Markdown heading, not YAML frontmatter.");
+            return content;
+        }
         if (IsValid(content, filename == "SKILL.md"))
             return content;
         if (content.StartsWith("---\n", StringComparison.Ordinal))

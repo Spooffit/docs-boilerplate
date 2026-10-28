@@ -25,6 +25,9 @@ try {
     $target = Join-Path $root 'generated'
     Invoke-Docs init --name WindowsSmoke --description 'Windows documentation check' --output $target --profiles "dotnet,blazor,mudblazor" --site docsify --non-interactive
     Invoke-Docs validate --output $target
+    if ((Get-Content (Join-Path $target 'README.md') -TotalCount 1) -ne '# WindowsSmoke') {
+        throw 'Root README begins with YAML metadata or a missing project heading'
+    }
     if (-not (Test-Path (Join-Path $target 'index.html'))) { throw 'Missing viewer' }
     if (-not (Test-Path (Join-Path $target 'llms.txt'))) { throw 'Missing agent index' }
     if (-not (Test-Path (Join-Path $target 'docs/standards/blazor/index.md'))) { throw 'Missing folder index' }

@@ -17,7 +17,7 @@ This repository is a reusable Docs-as-Code generator, **not** a business applica
 6. Protect user-authored files. Dry-run and validation must not write; updates require explicit confirmation and fingerprint checks.
 7. Write maintainer and generated guidance in English, use relative Markdown links and valid frontmatter, and follow [documentation conventions](catalog/base/docs/standards/documentation.md).
 8. Validate changes with `dotnet build src/DocsBoilerplate.Cli -c Release`, `bash tests/smoke.sh`, `python tests/catalog_hygiene.py` and `python tests/repository_hygiene.py` where applicable. Do not claim tests passed without evidence.
-9. Keep [pending template decisions](docs/decisions/owner-decision-backlog.md) unapproved until the owner chooses an option. Do not turn a historical implementation pattern into a default profile by assumption.
+9. The [three owner-review blocks](docs/decisions/owner-decision-backlog.md) are complete. Do not infer approval for future changes; record new choices explicitly before expanding defaults. Do not turn a historical implementation pattern into a default profile by assumption.
 10. Treat generated `AGENTS.md`, `llms.txt`, optional `SKILL.md` instructions and documentation conventions as one user-facing contract. An agent must not be instructed to execute a CLI command or read a file that the generated repository does not actually provide. Test both selected and unselected options.
 
 Use [the docs-review skill](.agents/skills/docs-review/SKILL.md) for documentation review.

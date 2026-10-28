@@ -19,7 +19,7 @@ status: active
 
 ## Frontmatter
 
-Every regular Markdown page starts with a single YAML frontmatter block:
+Every regular Markdown page under `docs/` starts with a single YAML frontmatter block. The **root `README.md` is exempt**: it must start with its `#` heading because GitHub renders YAML frontmatter at the top of a README as an unwanted metadata table:
 
 ```yaml
 ---
