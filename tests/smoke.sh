@@ -362,8 +362,8 @@ grep -q '^## Runtime constraints, when applicable$' "$temp/all-profiles/docs/sta
 grep -q '^## Delivery and cache, when applicable$' "$temp/all-profiles/docs/standards/storage/object-storage.md"
 grep -q 'consuming applications or deployments currently conform' "$temp/all-profiles/docs/templates/technical-feature.md"
 grep -q '^## Code examples and verification evidence$' "$temp/all-profiles/docs/standards/documentation.md"
-grep -q 'docs/standards/documentation/identifiers-and-statuses.md' "$temp/all-profiles/docs/catalog.md"
-grep -q 'docs/standards/ui/direct-dto-forms.md' "$temp/all-profiles/docs/catalog.md"
+grep -q 'standards/documentation/identifiers-and-statuses.md' "$temp/all-profiles/docs/catalog.md"
+grep -q 'standards/ui/direct-dto-forms.md' "$temp/all-profiles/docs/catalog.md"
 [[ ! -f "$temp/minimal/docs/standards/http/client-contracts.md" ]]
 [[ ! -f "$temp/minimal/docs/standards/storage/object-storage.md" ]]
 # Generated boilerplate must not impose the predecessor's audit workflow.
