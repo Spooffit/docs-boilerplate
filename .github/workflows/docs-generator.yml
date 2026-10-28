@@ -37,12 +37,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          docker run --detach --rm --name docs-eventbus-ci \
+          docker run --detach --name docs-eventbus-ci \
             -e RABBITMQ_DEFAULT_USER=ci -e RABBITMQ_DEFAULT_PASS=ci-pass \
             -p 5673:5672 rabbitmq:4.1-alpine
           trap 'docker logs docs-eventbus-ci || true; docker rm -f docs-eventbus-ci || true' EXIT
           ready=false
           for attempt in $(seq 1 45); do
+            if [[ "$(docker inspect -f '{{.State.Running}}' docs-eventbus-ci)" != true ]]; then
+              echo "Disposable RabbitMQ exited unexpectedly:" >&2
+              docker logs docs-eventbus-ci >&2
+              exit 1
+            fi
             if docker exec docs-eventbus-ci rabbitmq-diagnostics -q ping >/dev/null 2>&1; then
               ready=true
               break
