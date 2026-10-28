@@ -29,7 +29,7 @@ status: template
 
 ## Lifecycle and history (when applicable)
 
-[If this feature actually saves drafts, requires review, publishes, archives or removes dependencies, describe the observable differences and historical consequences. When approval exists, identify the exact reviewed object/version, whether a decision merely allows a later action, which outcomes are retained in history and what users observe before an asynchronous effect completes. Do not assume these states exist in every project.]
+[If this feature actually saves drafts, requires review, publishes, archives or removes dependencies, describe the observable differences and historical consequences. When approval exists, identify the exact reviewed object/version, whether a decision merely allows a later action, which outcomes are retained in history and what users observe before an asynchronous effect completes. If durable activity history is an accepted requirement, identify which confirmed actions become visible, to which readers and whether the history can appear later than the original operation. Do not equate a UI notification or an attempted action with a permanent confirmed record. Do not assume these states exist in every project.]
 
 ## Alternate and failure scenarios
 
