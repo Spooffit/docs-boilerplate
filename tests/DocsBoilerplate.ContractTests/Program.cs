@@ -170,7 +170,7 @@ Test("discovery links honor relative paths and ignore examples", () =>
         [local](overview.md#purpose)
         [sibling](../architecture/overview.md)
         [encoded](My%20Topic.md)
-        [outside](../../not-a-project-doc.md)
+        [outside](../../../not-a-project-doc.md)
         [web](https://example.com/docs)
         Inline `[fiction](missing.md)`
         ~~~md
