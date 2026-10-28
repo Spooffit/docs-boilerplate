@@ -92,6 +92,17 @@ internal static class UpdateRecovery
         }
     }
 
+    internal static async Task ApplyStagedAsync(
+        string output, int index, string relative, string expectedHash, bool existing)
+    {
+        var source = Snapshot(Location(output), "after", index);
+        var bytes = await File.ReadAllBytesAsync(source);
+        if (Hash(bytes) != expectedHash)
+            throw new IOException($"Prepared update payload was changed: {relative}");
+        var target = SafeFiles.Child(output, relative);
+        File.Move(source, target, overwrite: existing);
+    }
+
     internal static async Task<Outcome> RecoverAsync(string output, bool forceRollback = false)
     {
         var root = Location(output);
@@ -112,7 +123,7 @@ internal static class UpdateRecovery
             throw new IOException("Unsupported or invalid update recovery journal.");
 
         var unique = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var states = new List<(string Path, byte[]? Before, string? CurrentHash, Entry Entry)>();
+        var states = new List<(string Path, string? CurrentHash, Entry Entry)>();
         var allAfter = true;
         for (var i = 0; i < plan.Entries.Length; i++)
         {
@@ -132,16 +143,25 @@ internal static class UpdateRecovery
                 throw new IOException($"Recovery blocked: file was independently changed or removed: {entry.Path}. " +
                     "The journal was retained and no files were modified.");
 
-            byte[]? before = null;
-            if (entry.Existing && !(allAfter && !forceRollback))
-            {
-                var backup = Snapshot(root, "before", i);
-                before = await File.ReadAllBytesAsync(backup);
-                if (Hash(before) != entry.BeforeHash)
-                    throw new IOException($"Recovery blocked: original snapshot is invalid: {entry.Path}");
-            }
-            states.Add((target, before, currentHash, entry));
+            states.Add((target, currentHash, entry));
         }
+        // Verify recorded directories are genuine parents of recorded update targets.
+        var possibleParents = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in plan.Entries)
+        {
+            var parent = entry.Path.LastIndexOf('/');
+            while (parent > 0)
+            {
+                var directory = entry.Path[..parent];
+                possibleParents.Add(directory);
+                parent = directory.LastIndexOf('/');
+            }
+        }
+        var seenDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var directory in plan.CreatedDirectories)
+            if (directory is null || !possibleParents.Contains(directory) || !seenDirectories.Add(directory))
+                throw new IOException("Invalid created-directory entry in recovery journal.");
+
         // Verify the entire journal and all current target states before any restoration.
         // The case where all files match desired content is a committed update whose
         // cleanup was interrupted. It is safer to finalize than undo that update.
@@ -156,7 +176,7 @@ internal static class UpdateRecovery
         var originals = new Dictionary<int, byte[]>();
         for (var i = 0; i < states.Count; i++)
         {
-            if (!states[i].Entry.Existing) continue;
+            if (!states[i].Entry.Existing || states[i].CurrentHash != states[i].Entry.AfterHash) continue;
             var snapshot = await File.ReadAllBytesAsync(Snapshot(root, "before", i));
             if (Hash(snapshot) != states[i].Entry.BeforeHash)
                 throw new IOException($"Recovery blocked: original snapshot is invalid: {states[i].Entry.Path}");
@@ -165,7 +185,7 @@ internal static class UpdateRecovery
         var failures = new List<string>();
         for (var i = states.Count - 1; i >= 0; i--)
         {
-            var (path, _, current, entry) = states[i];
+            var (path, current, entry) = states[i];
             if (current != entry.AfterHash) continue;
             try
             {
@@ -231,8 +251,10 @@ internal static class UpdateRecovery
             var before = Snapshot(root, "before", i);
             if (File.Exists(before)) File.Delete(before);
         }
-        Directory.Delete(SafeFiles.Child(root, "after"));
-        Directory.Delete(SafeFiles.Child(root, "before"));
+        var afterDir = SafeFiles.Child(root, "after");
+        var beforeDir = SafeFiles.Child(root, "before");
+        if (Directory.Exists(afterDir)) Directory.Delete(afterDir);
+        if (Directory.Exists(beforeDir)) Directory.Delete(beforeDir);
         File.Delete(SafeFiles.Child(root, PlanName)); // Plan is removed last.
         Directory.Delete(root);
     }
