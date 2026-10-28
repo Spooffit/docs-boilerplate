@@ -37,9 +37,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # Start as root so the official entrypoint can repair cookie/data
-          # permissions, then drop privileges to its rabbitmq service user.
+          # Give the disposable broker a fresh writable data/cookie directory.
+          # The official entrypoint can then set ownership and drop privileges.
           docker run --detach --name docs-eventbus-ci --user 0:0 \
+            --tmpfs /var/lib/rabbitmq:rw,mode=1777 \
             -e RABBITMQ_DEFAULT_USER=ci -e RABBITMQ_DEFAULT_PASS=ci-pass \
             -e RABBITMQ_ERLANG_COOKIE=docs-eventbus-disposable-ci-cookie \
             -p 5673:5672 rabbitmq:4.1-alpine
