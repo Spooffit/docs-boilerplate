@@ -9,7 +9,7 @@ status: active
 
 - Date: 2026-10-27
 - Scope: targeted review of the source standards `S19-specifications.md`, `S22-eventbus-topology.md`, `technical/frontend/standards/S06-api-client.md`, `S08-testing.md`; additionally checked the existing Blazor/MudBlazor profile content against current official documentation.
-- Status: first generalized extracts; legacy documents remain for further analysis and traceability.
+- Status: initial extraction snapshot. S19 and S22 were later individually retired after full-source and incoming-link review; S06 and S08 remain pending owner choices. See [removal ledger](legacy-removals.md) and [retained-standard closeout](retained-standards-closeout.md).
 
 ## Source review and outcomes
 
