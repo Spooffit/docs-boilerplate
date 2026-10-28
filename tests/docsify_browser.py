@@ -9,13 +9,14 @@ from __future__ import annotations
 import functools
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
+import re
 from pathlib import Path
 import subprocess
 import tempfile
 from threading import Thread
 from urllib.parse import urlsplit
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,9 +60,10 @@ def exercise(page, base_url: str, local_failures: list[str]) -> None:
     page.goto(base_url + "#/templates/index", wait_until="domcontentloaded")
     assert_heading(page, "Choose a documentation template")
     page.locator("#main").get_by_role("link", name="Technical feature").first.click()
-    page.locator("#main h1").first.wait_for(state="visible", timeout=25000)
-    assert page.locator("#main h1").first.inner_text().startswith("Technical feature:"), (
-        "Incorrect technical template page: " + page.locator("#main h1").first.inner_text()
+    # The previous page already has a visible h1; wait for Docsify to swap in
+    # the requested document instead of asserting immediately after navigation.
+    expect(page.locator("#main h1").first).to_have_text(
+        re.compile(r"^Technical feature:"), timeout=25000
     )
     assert "templates/technical-feature" in page.url.lower(), page.url
 
@@ -77,8 +79,7 @@ def exercise(page, base_url: str, local_failures: list[str]) -> None:
 
     # Optional module is created by this test's selected generator configuration.
     page.goto(base_url + "#/architecture/api", wait_until="domcontentloaded")
-    page.locator("#main h1").first.wait_for(state="visible", timeout=25000)
-    assert "api" in page.locator("#main").inner_text().lower()
+    assert_heading(page, "API design")
 
     assert not local_failures, "Missing/failed local Markdown requests:\\n" + "\\n".join(local_failures)
 
