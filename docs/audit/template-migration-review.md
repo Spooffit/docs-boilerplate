@@ -46,3 +46,11 @@ The **generated artifact**, not just the repository's reusable source catalog, n
 The checker compares all newly written files to `docs.config.json`'s managed-file list and SHA-256 fingerprints, rejects predecessor identifiers and old `business/`/`technical/`/generator trees, ensures maintainer-only `docs/audit/` or `docs/legacy/` aren't emitted, and rejects extraneous HTML pages or generated JS/CSS bundles. The only supported site page is the optional Docsify `index.html`; the `--site none` case must have none. It also checks agent entrypoints. Separate **negative fixtures** add a forbidden predecessor name and an unwanted JS asset to prove these specific detections fail the audit.
 
 This test is intended only for **freshly initialized** repositories. User-authored files and modifications are valid after initialization and remain protected by the CLI's normal `validate`/fingerprint update rules. The checker does not assert that every historical document is semantically reusable, that a third-party example compiles, or that Docsify JavaScript works in a real browser. Full-source cleanup remains subject to the project-source deletion gates and the owner's decisions.
+
+## AI-first template navigation without extra files (2026-10-28)
+
+The default generated `docs/templates/index.md` is now authored in `catalog/base/docs/templates/index.md` rather than synthesized as a generic directory list. It distinguishes which of the seven base templates answers a real documentation need, explicitly discourages speculative files, and tells agents to choose installed optional technology variants instead of duplicating a general technical specification.
+
+The **output path and file count are unchanged**. `AddDirectoryIndexes` already respected an authored index, but `validate` mistakenly treated that file as a duplicate directory index. That bug is corrected while catalog preflight still rejects two different sources owning the same path.
+
+The smoke suite checks index content, navigation from `llms.txt` and `docs/catalog.md`, an upgrade from a previously synthesized fingerprint-owned index to the authored one, and rejection of a profile trying to claim the base index. The current default seven-template breadth remains an unresolved project-owner decision; the change does not prune categories or create empty project folders.

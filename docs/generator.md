@@ -67,7 +67,7 @@ For PostgreSQL deployments, `--profiles postgresql` includes a migration rollout
 
 ## Generated navigation
 
-Every new repository receives `docs/catalog.md`, a deterministic navigation list built from the actual selected profiles, optional modules and templates. The documentation homepage links to it. Planned or unselected standards never appear in this catalog. After initialization this is a normal Markdown document that project owners can maintain; no implicit update overwrites it.
+Every new repository receives `docs/catalog.md`, a deterministic navigation list built from the actual selected profiles, optional modules and templates. An authored `docs/templates/index.md` helps agents pick the smallest applicable template without a second directory index. The documentation homepage links to the catalog. Planned or unselected standards never appear in this catalog. After initialization this is a normal Markdown document that project owners can maintain; no implicit update overwrites it.
 
 ## Updating a generated repository
 
