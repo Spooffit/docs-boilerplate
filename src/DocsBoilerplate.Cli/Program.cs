@@ -49,15 +49,23 @@ static partial class DocsCli
                     return await ValidateAsync(Path.GetFullPath(flags.GetValueOrDefault("output") ?? "."), catalog, profiles, skills, modules);
                 case "update":
                     return await UpdateAsync(flags, catalog, profiles, skills, modules);
+                case "recover":
+                    var output = Path.GetFullPath(flags.GetValueOrDefault("output") ?? ".");
+                    var outcome = await UpdateRecovery.RecoverAsync(output);
+                    AnsiConsole.MarkupLine(outcome == UpdateRecovery.Outcome.AlreadyCompleted
+                        ? "[green]Recovered.[/] Completed update finalized; recovery journal removed."
+                        : "[green]Recovered.[/] Interrupted update rolled back; original project files restored.");
+                    return 0;
                 case "doctor":
                     AnsiConsole.MarkupLine("[green]OK[/] Catalog loaded and profile paths validated.");
                     AnsiConsole.WriteLine($"Catalog: {catalog}");
                     return 0;
                 default:
-                    AnsiConsole.WriteLine("Commands: init, update, list, validate, doctor");
+                    AnsiConsole.WriteLine("Commands: init, update, recover, list, validate, doctor");
                     AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--modules glossary,testing] [--site docsify|none] [--dry-run] [--non-interactive] [--catalog PATH]");
                     AnsiConsole.WriteLine("validate: --output PATH [--catalog PATH]");
                     AnsiConsole.WriteLine("update: --output PATH [--apply] [--catalog PATH] (previews by default)");
+                    AnsiConsole.WriteLine("recover: --output PATH [--catalog PATH] (inspect and recover an interrupted update)");
                     return command == "help" ? 0 : 2;
             }
         }

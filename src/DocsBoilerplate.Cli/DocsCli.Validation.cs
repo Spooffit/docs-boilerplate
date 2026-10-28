@@ -8,6 +8,7 @@ static partial class DocsCli
     private static async Task<int> ValidateAsync(string output, string catalog, Catalog profiles, SkillCatalog skills, ModuleCatalog modules)
     {
         SafeFiles.AssertNoLinks(output);
+        UpdateRecovery.AssertNoPending(output);
         // Inspect all entries first; recursion must never follow reparse points or symlinks.
         _ = SafeFiles.Enumerate(output).ToArray();
         var configPath = SafePath(output, ConfigName);

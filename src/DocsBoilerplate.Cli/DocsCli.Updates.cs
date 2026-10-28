@@ -40,6 +40,7 @@ static partial class DocsCli
     {
         var output = Path.GetFullPath(flags.GetValueOrDefault("output") ?? ".");
         SafeFiles.AssertNoLinks(output);
+        UpdateRecovery.AssertNoPending(output);
         if (!Directory.Exists(output))
             throw new DirectoryNotFoundException($"Output directory does not exist: {output}");
         var existingEntries = SafeFiles.EnumerateEntries(output)

@@ -154,6 +154,7 @@ static partial class DocsCli
             "init" => ["catalog", "name", "description", "output", "profiles", "skills", "modules", "site", "dry-run", "non-interactive"],
             "validate" => ["catalog", "output"],
             "update" => ["catalog", "output", "apply"],
+            "recover" => ["catalog", "output"],
             "list" or "doctor" or "help" => ["catalog"],
             _ => []
         };
