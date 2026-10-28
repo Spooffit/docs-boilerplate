@@ -598,4 +598,45 @@ if run update --output "$temp/legacy-project" --catalog "$temp/catalog-retire" -
     echo "Legacy unfingerprinted repository was overwritten"; exit 1
 fi
 
+# Document navigation must remain complete after author-controlled additions and moves.
+cp -a "$temp/minimal" "$temp/nav-authored"
+cat > "$temp/nav-authored/docs/project/release-notes.md" <<'MD'
+---
+title: "Release notes"
+description: "Example author-owned document"
+kind: project
+status: draft
+---
+
+# Release notes
+
+This document was authored after initialization.
+MD
+if run validate --output "$temp/nav-authored"; then
+    echo "Unlisted author page was accepted without navigation"; exit 1
+fi
+printf '%s\n' '- [Release notes](release-notes.md)' >> "$temp/nav-authored/docs/project/index.md"
+if run validate --output "$temp/nav-authored"; then
+    echo "Missing catalog entry was not caught"; exit 1
+fi
+printf '%s\n' '- [Release notes](project/release-notes.md)' >> "$temp/nav-authored/docs/catalog.md"
+run validate --output "$temp/nav-authored"
+if grep -q "release-notes.md" "$temp/nav-authored/llms.txt"; then
+    echo "llms.txt was unexpectedly expanded into a full file inventory"; exit 1
+fi
+mv "$temp/nav-authored/docs/project/release-notes.md" "$temp/nav-authored/docs/project/decision-log.md"
+if run validate --output "$temp/nav-authored"; then
+    echo "Moved page left broken/stale navigation unnoticed"; exit 1
+fi
+python3 - "$temp/nav-authored/docs/project/index.md" "$temp/nav-authored/docs/catalog.md" <<'PY'
+from pathlib import Path
+import sys
+for name in sys.argv[1:]:
+    path = Path(name)
+    content = path.read_text(encoding='utf-8')
+    assert content.count('release-notes.md') == 1
+    path.write_text(content.replace('release-notes.md', 'decision-log.md'), encoding='utf-8')
+PY
+run validate --output "$temp/nav-authored"
+
 echo "Smoke tests passed."

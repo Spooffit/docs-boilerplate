@@ -12,8 +12,8 @@ status: active
 ## Source of truth and discovery
 
 - The **Markdown files**, not the website viewer, are the authoritative project documentation.
-- Read the root `llms.txt` as a curated entry point and `AGENTS.md` for instructions. Neither replaces the referenced source documents or explicit project decisions. The generated index lists only installed project areas and standards, not pending or unselected technologies; it is navigation, not confirmation of requirements.
-- Every directory under `docs/` containing Markdown documents must have `index.md` summarizing its purpose and linking to its contents. Keep links relative to the containing document. The generator creates initial indexes; editors update them after creating, moving or deleting pages.
+- Read the root `llms.txt` as a curated entry point and `AGENTS.md` for instructions. Neither replaces the referenced source documents or explicit project decisions. `docs/catalog.md` is the complete project-doc discovery map, including pages authored after initialization. `llms.txt` remains intentionally short and should link to the catalog; it need not repeat every new document. Initial generated indexes list installed documents, not pending or unselected technologies; navigation is not confirmation of requirements.
+- Every directory under `docs/` containing Markdown documents must have `index.md` summarizing its purpose and linking to its contents. Keep links relative to the containing document. When adding a new Markdown page, link it from its immediate directory's `index.md` and from `docs/catalog.md`. When moving/renaming it, repair both the old and new indexes, catalog entry and inbound links. The generator creates initial indexes; it does **not** overwrite author edits to fix navigation.
 - Documentation files use lowercase **kebab-case** (e.g. `api-versioning.md`) and `index.md` for directory overviews. Established tool-specific entrypoints `README.md`, `AGENTS.md`, `SKILL.md` and `CONTRIBUTING.md` are explicit well-known exceptions; do not rename them.
 - Do not invent a mandatory identifier scheme for features, ADRs or business requirements. Use existing project IDs where adopted; otherwise use descriptive kebab-case filenames.
 
@@ -61,6 +61,6 @@ Docsify is an optional browser-side reader, not a required build tool. Its `inde
 
 ## Checks
 
-Run the generator's `validate` command. It verifies metadata, filenames, ordinary inline relative Markdown links **including common section anchors**, generated-file declarations, folder indexes and `llms.txt` paths/fragments. Reference-style links, dynamically generated links, advanced Markdown/HTML rendering and arbitrary YAML expressions are **not** comprehensively parsed. Verify critical cross-page navigation in the configured Docsify browser view; a passing source-level check cannot prove that every client-side renderer chooses the same slug.
+Run the generator's `validate` command. It verifies metadata, filenames, ordinary inline relative Markdown links **including common section anchors**, generated-file declarations, directory index presence, catalog discovery of every document under `docs/`, immediate-index discovery of additional author-created pages, and `llms.txt` paths/fragments. Reference-style links, dynamically generated links, advanced Markdown/HTML rendering and arbitrary YAML expressions are **not** comprehensively parsed. Verify critical cross-page navigation in the configured Docsify browser view; a passing source-level check cannot prove that every client-side renderer chooses the same slug.
 
 See the community [llms.txt proposal](https://llmstxt.org/) and [Docsify](https://docsify.js.org/) for their separate roles.

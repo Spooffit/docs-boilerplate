@@ -73,6 +73,14 @@ The generated `llms.txt` is a short, **installed-content-only** discovery index.
 
 Every new repository receives `docs/catalog.md`, a deterministic navigation list built from the actual selected profiles, optional modules and templates. An authored `docs/templates/index.md` helps agents pick the smallest applicable template without a second directory index. The documentation homepage links to the catalog. Planned or unselected standards never appear in this catalog. After initialization this is a normal Markdown document that project owners can maintain; no implicit update overwrites it.
 
+### Adding, moving and discovering documents
+
+When an author adds a Markdown document under `docs/`, also link it from its immediate directory `index.md` and from `docs/catalog.md`. `validate` now checks that every project Markdown page is reachable from `docs/catalog.md` and every **additional author-created non-index page** is linked from its immediate directory index. All links remain relative. This deliberately does not enforce a particular feature/ADR naming scheme.
+
+When renaming or moving a document, repair old/new directory indexes, its catalog entry and inbound links (including heading fragments). The validator detects broken existing links; it also detects the newly unlisted destination. The list in `llms.txt` is **curated**, not exhaustive: the root links to `docs/catalog.md`, so adding an ordinary page does not force another `llms.txt` entry. Update `llms.txt` manually for new major entry points only.
+
+Navigation checks are read-only. The original generated indexes and `docs/catalog.md` remain fingerprint-owned for update safety. Authors may edit them, but if upstream also changes the same owned file, `update` will report a conflict requiring human reconciliation; it will not silently regenerate over an edited index. Generated optional technology templates may be discoverable through the catalog alone rather than through every authored category index.
+
 ## First project intake
 
 Fresh repositories include `docs/project/overview.md` and `docs/architecture/overview.md`, both deliberately marked `draft`. These existing documents help an agent distinguish verified requirements, observed code, accepted target architecture and open decisions. They are not a completed system design.

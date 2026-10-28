@@ -26,7 +26,7 @@ Use the optional `docs-init` skill when installed. Do not create feature/module/
 ## Change and verify
 
 - Record unknowns explicitly. Preserve accepted decisions, original source links and meaningful status; do not invent requirements, approvals, owners, endpoints or successful tests.
-- Link to canonical material instead of copying normative rules. When moving or changing a document, update **incoming links**, directory indexes and affected decisions.
+- Link to canonical material instead of copying normative rules. A new page under `docs/` needs a link in its immediate `index.md` and in `docs/catalog.md`. After a move or rename, repair **incoming links**, both affected directory indexes, catalog entries and linked heading fragments. `llms.txt` remains a concise route to the catalog; do not duplicate the full file list there. These navigation files may be authored, so never overwrite them with automatic regeneration.
 - Use the [documentation authoring conventions](docs/standards/documentation.md): frontmatter on Markdown pages, lowercase kebab-case filenames, relative links and an `index.md` in every documentation directory. Keep recognized `README.md`, `AGENTS.md`, `SKILL.md` and `CONTRIBUTING.md` names.
 - Run `docs-boilerplate validate --output <repository-root>` when the CLI is available, and report separately what the validator did **not** establish (for example, factual correctness, approval, complete Markdown anchor validity or browser behavior).
 - Optional agent skills under `.agents/skills/` describe focused workflows. They do **not** override project decisions or selected standards.

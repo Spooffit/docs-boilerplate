@@ -14,7 +14,7 @@ status: active
 - Explicit dependency resolution, catalog path checks and refusal of conflicting user edits. Preview/dry-run is read-only; `update --apply` uses recorded SHA-256 generator-owned file fingerprints and preserves user-authored changes.
 - Generated `README.md`, `AGENTS.md`, `llms.txt`, navigable `docs/` and `docs.config.json` manifest. Generated output includes only selected profiles and optional modules.
 - Optional Docsify browser shell using a single `index.html`. Markdown remains source of truth and no static-site build tree is created.
-- A CLI validator for ordinary relative Markdown links and common heading fragments, frontmatter, directory indexes, managed paths and unresolved required placeholders.
+- A CLI validator for ordinary relative Markdown links and common heading fragments, frontmatter, directory indexes, **catalog coverage for every project Markdown page and local index coverage for newly authored pages**, managed paths and unresolved required placeholders.
 - Cross-platform CI: Linux build, focused .NET contract tests, generation smoke, JSON Schema checks and hygiene; Windows build and smoke; real Chromium/Playwright Docsify navigation checks.
 - Repository and catalog hygiene checks ensuring former project specifications are not shipped or silently reintroduced.
 - Initial project and architecture overviews remain `draft`, distinguish observed code from target decisions and prompt for evidence. The optional `docs-init` skill explains first-pass project intake; smoke tests verify generated onboarding content.
@@ -24,7 +24,7 @@ The generator's boundaries are documented in [the code map](architecture/generat
 ## Known limitations
 
 - The update mechanism deliberately does not perform three-way content merges, arbitrary profile-selection migrations or automatic deletion of retired user files. It assumes a single writer; concurrent hostile file-system changes and crash-atomic multi-file transactions are not guaranteed.
-- Markdown parsing is deliberately scoped to common links/heading formats; not all Markdown extensions, HTML links, dynamic Docsify anchors and YAML constructs are supported.
+- Markdown parsing is deliberately scoped to common links/heading formats; not all Markdown extensions, reference-style/HTML links, dynamic Docsify anchors and YAML constructs are supported. Discoverability checks do not rewrite indexes or require every page to appear in the curated `llms.txt`.
 - Docsify needs a local/static HTTP server and currently loads JavaScript and CSS from a CDN. Chromium smoke verifies selected navigation scenarios but not CDN uptime, all browsers, full accessibility, visual regression or real hosting integration.
 - Focused .NET tests and broad CLI smoke do not replace a dedicated framework-level testing suite, property-based tests or deeper reliability testing.
 - Planned technology profiles are discoverable but cannot be generated until they have supported standards and tests.
