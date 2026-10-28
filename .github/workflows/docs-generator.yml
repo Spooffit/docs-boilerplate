@@ -33,6 +33,22 @@ jobs:
         run: python tests/repository_hygiene.py
       - name: Validate optional HTTP, naming and EventBus documentation examples
         run: python tests/optional_profile_contracts.py
+
+  eventbus-example:
+    name: EventBus example (live RabbitMQ)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Validate extracted optional profile examples
+        run: python tests/optional_profile_contracts.py
       - name: Compile EventBus composition and verify topic routing with disposable RabbitMQ
         shell: bash
         run: |
@@ -43,7 +59,7 @@ jobs:
             --tmpfs /var/lib/rabbitmq:rw,mode=1777 \
             -e RABBITMQ_DEFAULT_USER=ci -e RABBITMQ_DEFAULT_PASS=ci-pass \
             -e RABBITMQ_ERLANG_COOKIE=docs-eventbus-disposable-ci-cookie \
-            -p 5673:5672 rabbitmq:4.1-alpine
+            -p 5673:5672 rabbitmq:4.1
           trap 'docker logs docs-eventbus-ci || true; docker rm -f docs-eventbus-ci || true' EXIT
           ready=false
           for attempt in $(seq 1 45); do
