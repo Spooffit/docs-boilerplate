@@ -56,7 +56,7 @@ Identify cancellation, timeout, idempotency and side-effect behavior where relev
 
 ## Security, reliability and observability
 
-[Record selected authentication/authorization and data protection only when applicable; do not prescribe an architecture by default. Specify actual logs, traces, metrics or audit needs if known.]
+[Record selected authentication, operation authorization, resource-specific constraints and data protection only when applicable. Distinguish server-enforced permissions from advisory UI capabilities, stale session/actor context and checks made before a concurrent change. If a session expires during an edit, define whether unsaved input, original concurrency baseline and unknown mutation outcomes can be recovered safely. Do not prescribe an identity provider, roles, cross-origin deployment or security architecture by default. Link the selected project security document, if present, instead of copying its decisions here. Specify actual logs, traces, metrics or audit needs if known.]
 
 ## Target design versus observed implementation
 
