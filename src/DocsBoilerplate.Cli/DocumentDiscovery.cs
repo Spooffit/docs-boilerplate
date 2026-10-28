@@ -24,14 +24,17 @@ internal static class DocumentDiscovery
             if (!catalogLinks.Contains(path))
                 errors.Add($"Not discoverable from docs/catalog.md: {path}");
 
-            // An authored project file must also appear in the index of its folder.
-            // Existing authored template indexes deliberately don't enumerate every
-            // *installed* optional template; the generated catalog covers those.
-            if (generatorOwned.Contains(path) || path.EndsWith("/index.md", StringComparison.Ordinal))
-                continue;
+            // An authored page must be linked from its immediate directory index.
+            // For an authored nested index, require a link from the parent index
+            // so the directory tree itself remains navigable. Generated/installed
+            // indexes are exempt: curated template indexes need not enumerate
+            // every selected technology document.
+            if (generatorOwned.Contains(path)) continue;
 
             var directory = path[..path.LastIndexOf('/')];
-            var indexPath = directory + "/index.md";
+            var indexPath = path.EndsWith("/index.md", StringComparison.OrdinalIgnoreCase)
+                ? directory[..directory.LastIndexOf('/')] + "/index.md"
+                : directory + "/index.md";
             if (docs.TryGetValue(indexPath, out var index)
                 && !LinkedPaths(indexPath, index).Contains(path))
                 errors.Add($"Not discoverable from {indexPath}: {path}");

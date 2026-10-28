@@ -194,6 +194,35 @@ Test("discoverability identifies missing catalog and local index entries", () =>
     Expect(DocumentDiscovery.FindMissingLinks(docs, owned).Count == 2,
         "Omitting the retained manifest must restore discoverability checks");
 });
+Test("authored nested directory indexes require a parent link", () =>
+{
+    var docs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["docs/index.md"] = "# Home",
+        ["docs/catalog.md"] = "# Catalog\n- [Home](index.md)\n- [Project](project/index.md)\n- [Notes](project/notes/index.md)\n- [Guide](project/notes/guide.md)",
+        ["docs/project/index.md"] = "# Project",
+        ["docs/project/notes/index.md"] = "# Notes\n- [Guide](guide.md)",
+        ["docs/project/notes/guide.md"] = "# Guide"
+    };
+    var owned = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "docs/index.md", "docs/catalog.md", "docs/project/index.md"
+    };
+    var missing = DocumentDiscovery.FindMissingLinks(docs, owned);
+    Expect(missing.Count == 1 && missing[0].Contains("docs/project/index.md")
+        && missing[0].Contains("docs/project/notes/index.md"),
+        "An authored directory escaped parent-index discovery");
+
+    docs["docs/project/index.md"] += "\n- [Notes](notes/index.md)";
+    Expect(DocumentDiscovery.FindMissingLinks(docs, owned).Count == 0,
+        "Complete nested navigation was rejected");
+
+    docs["docs/project/notes/index.md"] = "# Notes";
+    missing = DocumentDiscovery.FindMissingLinks(docs, owned);
+    Expect(missing.Count == 1 && missing[0].Contains("docs/project/notes/index.md")
+        && missing[0].Contains("docs/project/notes/guide.md"),
+        "An authored page without its local index entry escaped validation");
+});
 Test("catalog links with escaped bracket labels are discoverable", () =>
 {
     const string navigation = @"# Catalog
