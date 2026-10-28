@@ -10,7 +10,7 @@ status: active
 - Date: 2026-10-27
 - Scope: **7 backend modules**, **7 frontend modules**, **12 backend technical questions** and **5 frontend technical questions**.
 - Method: inspected each file's section structure and opening content and compared it with the linked business/technical feature families. This screening does not prove the technical soundness of the full implementations or line-by-line contract compatibility.
-- Disposition: `screened-structure`, not deletion approval.
+- Disposition at this first pass: `screened-structure`, not deletion approval. The linked [F16 staff-access review](staff-access-evidence-review.md) subsequently examines frontend Q24 in detail and advances that single question to `reviewed-targeted` without certifying its remaining technical dependencies.
 
 ## Technical module boundaries
 
