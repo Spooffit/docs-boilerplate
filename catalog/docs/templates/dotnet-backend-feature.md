@@ -7,7 +7,7 @@ status: template
 
 # Backend feature: [Capability]
 
-> **Use:** Template for one feature's server responsibilities in a .NET project. Only include layers and libraries actually selected. Do not introduce DDD, CQRS, repositories, messaging, EF Core, OpenAPI or extra abstractions merely to complete a section.
+> **Use:** Optional .NET-specific alternative to the general technical-feature template when its server-side detail is useful. Start with scope, observable behavior, required interfaces and verification. Include only layers and libraries already selected; omit tables and headings without evidence. Do not create a parallel technical-feature document for the same scope.
 
 ## Scope and verified inputs
 
@@ -17,15 +17,15 @@ status: template
 
 [Describe entities, value objects, invariants, legal transitions and concurrency semantics only when these are real parts of the solution.]
 
-### Data model
+### Data model (when needed)
 
-Use a separate row for each *confirmed* property, not a single free-text enumeration:
+Document a field table only when the selected authoritative model or contract does not already provide the necessary information. Include only verified fields:
 
 | Field | Type / nullability | Requiredness | Semantics | Constraints |
 | --- | --- | --- | --- | --- |
 | [Property] | [Exact type or explicitly unknown] | [Required / optional / conditional] | [Ownership and source] | [Known format, domain constraints and invariants] |
 
-Keep external wire format separate from domain models where appropriate. Treat missing, null, zero/false and empty collection differently when the contract does. For structured fields, record stable identity versus display name, list order/uniqueness, decimal/date-time semantics and the scope of constraints only if those concepts exist. When the feature has Save Draft versus Publish, specify different accepted validation states without presuming either operation is mandatory.
+Keep external wire format separate from domain models where appropriate. Treat missing, null, zero/false and empty collection differently when the adopted contract does. Apply specialized field-identity, ordering or numerical/time semantics only when the real domain calls for them. Do not invent a draft/publish workflow.
 
 ## Application use case
 
@@ -39,13 +39,9 @@ Keep external wire format separate from domain models where appropriate. Treat m
 | --- | --- | --- | --- | --- |
 | [Operation] | [Verified] | [Real reference] | [Verified] | [Verified] |
 
-## Internal data flow
+## Behavior and data flow
 
-1. [Input validation and authorization boundary, with source of truth.]
-2. [Required reads and checks; note concurrency races.]
-3. [State changes and actual transactional guarantees.]
-4. [External effects and consistency/retry mechanism, if present.]
-5. [Return and observability.]
+[Describe the actual execution path at the granularity needed to understand the feature. For simple reads or synchronous behavior, do not manufacture transactions, messaging stages, or a fixed sequence of five steps. Record error, retry and concurrency boundaries only when applicable.]
 
 ## Persistence and integrations (when applicable)
 

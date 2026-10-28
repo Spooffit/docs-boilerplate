@@ -7,7 +7,7 @@ status: template
 
 # PostgreSQL migration: [Approved change]
 
-> Use only for a real migration that warrants a rollout review. Replace placeholders with evidence, not guesses. Read the [PostgreSQL persistence standard](../standards/postgresql/persistence.md).
+> **Use:** Optional plan for a PostgreSQL migration where operational impact, compatibility, data loss or rollout risk justify a separate review. Not every schema change needs this document. Retain only applicable steps and evidence; read the [PostgreSQL persistence standard](../standards/postgresql/persistence.md).
 
 ## Owners, versions and affected resources
 
@@ -24,16 +24,11 @@ status: template
 
 If this migration changes typed-value interpretation, explicitly compare old/new treatment of `NULL`, omitted input, Unicode length units, decimal precision, timezone/offset and any JSONB payload schema. A storage type conversion is not proof that historical values retain their meaning; document the conversion authority and unknown values before backfill.
 
-## Planned steps
+## Planned change and rollout
 
-1. [Preflight backups, available disk/WAL, existing constraints and lock budget.]
-2. [Expand: if compatibility requires.]
-3. [Backfill: batches, progress tracking and restartability if required.]
-4. [Switch: deployment ordering of all writers/readers.]
-5. [Contract: removal after the compatibility/retention gate.]
-6. [Post-deployment checks and monitoring.]
+[Document the actual migration sequence. Consider backup/restore, lock impact, data backfill, application compatibility and post-change verification **as applicable**. Expand/backfill/switch/contract is an optional technique for particular compatibility requirements, not a mandatory six-step plan.]
 
-## Lock and failure review
+## Lock and failure review (when material)
 
 | SQL operation | Lock/timeout risk | Rewrites or scans | Transaction-block support | Recovery |
 | --- | --- | --- | --- | --- |

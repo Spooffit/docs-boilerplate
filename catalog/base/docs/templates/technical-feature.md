@@ -7,23 +7,23 @@ status: template
 
 # Technical feature: [Capability and implementation boundary]
 
-> **Use:** Describe the technical responsibilities of a known feature. This is a **technology-neutral** template: remove irrelevant sections and never add architecture layers, brokers, ORMs, frontend frameworks or code generators solely to fill a heading. Read the business feature and selected standards first.
+> **Use:** Document only the technical complexity that is not already clear from an authoritative contract, source code or tests. This template is **technology-neutral**. Begin with scope, relevant boundaries, behavior and evidence; delete unrelated sections rather than creating new services, layers or interfaces. A standalone business feature document is not mandatory.
 
 ## Business outcome and provenance
 
-[Link the existing business feature or confirmed requirement. Record its accepted stage and observable result. Do not paraphrase the entire source into a second competing requirement.]
+[Link the accepted requirement, issue or other actual source of the work. A separate business-feature document is optional; identify the observable outcome without copying the entire source.]
 
 | Decision or behavior | Source of authority | Implementation boundary |
 | --- | --- | --- |
 | [Verified requirement] | [Real document/schema/ADR link] | [Owning component] |
 
-## Scope, assumptions and delivery stage
+## Scope and assumptions
 
-[Identify what this technical specification covers now, what belongs to later stages, and which unresolved items remain proposals. Do not turn a Demo target into an implicit production guarantee.]
+[Record the chosen implementation boundary, confirmed non-goals and unresolved assumptions. Include delivery-stage distinctions only when the project actually defines them.]
 
-## Components and responsibility boundaries
+## Components and responsibilities (when applicable)
 
-[Describe only components required by this feature: application handler, UI component, SDK adapter, persistence mapping, background worker or remote consumer as applicable.]
+[Describe only actual components and cross-component boundaries needed to understand this change. For a straightforward change within one component, omit the table.]
 
 | Component / module | Responsibility | Public dependency or interface | State or resource owned |
 | --- | --- | --- | --- |
@@ -52,15 +52,15 @@ Identify cancellation, timeout, idempotency and side-effect behavior where relev
 
 [For UI or SDK features, describe state ownership and user-visible progress. For backend/integration features, describe conflict handling, transaction rollback, external dependency failure and safe diagnostics. Distinguish invalid inputs, forbidden work, missing resources and concurrent changes. Document additional business states only when supported by the project's approved requirements.]
 
-## Security, reliability and observability
+## Security, reliability and observability (when applicable)
 
-[Record selected authentication, operation authorization, resource-specific constraints and data protection only when applicable. Distinguish server-enforced permissions from advisory UI capabilities, stale session/actor context and checks made before a concurrent change. If a session expires during an edit, define whether unsaved input, original concurrency baseline and unknown mutation outcomes can be recovered safely. Do not prescribe an identity provider, roles, cross-origin deployment or security architecture by default. Link the selected project security document, if present, instead of copying its decisions here. Specify actual logs, traces, metrics or audit requirements only when supported by project evidence.]
+[Link existing security or operational requirements and document only feature-specific implications and risks. Do not invent roles, authentication systems, session workflows, audit history or instrumentation to fill this section.]
 
 ## Target design versus observed implementation
 
 [Separate the accepted intended design from **verified current code**. If a repository snapshot, commit, migration, API document or test result was inspected, record its actual reference and scope. Otherwise write "Not verified" rather than describing a planned interface as implemented. A correct contract specification does not prove that client SDKs or deployments currently conform.]
 
-## Source and contract evidence (when applicable)
+## Source and contract evidence (when material)
 
 | Claim | Accepted target authority | Observed code/contract (version) | Verified execution | Unresolved gap |
 | --- | --- | --- | --- | --- |

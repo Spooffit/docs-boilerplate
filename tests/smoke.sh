@@ -49,6 +49,13 @@ grep -q "^## Shared testing infrastructure and safe migration$" "$temp/minimal/d
 [[ -f "$temp/minimal/docs/templates/index.md" ]]
 grep -q '^# Choose a documentation template$' "$temp/minimal/docs/templates/index.md"
 grep -q 'No separate module, question, milestone or technical specification is mandatory' "$temp/minimal/docs/templates/index.md"
+grep -q '^## Minimal authoring rule$' "$temp/minimal/docs/templates/index.md"
+grep -q 'new unapproved project document should normally begin' "$temp/minimal/docs/templates/index.md"
+grep -q '^# Architecture decision: \[Title\]$' "$temp/minimal/docs/templates/adr.md"
+grep -q 'Do not invent Demo/MVP/Production phases' "$temp/minimal/docs/templates/feature.md"
+grep -q 'not a reason to create this document' "$temp/minimal/docs/templates/module.md"
+grep -q 'Decision status:' "$temp/minimal/docs/templates/question.md"
+grep -q 'A standalone business feature document is not mandatory' "$temp/minimal/docs/templates/technical-feature.md"
 if grep -q '^Documents in this directory:$' "$temp/minimal/docs/templates/index.md"; then
     echo "Curated index was replaced by synthetic folder navigation"; exit 1
 fi
@@ -258,6 +265,9 @@ grep -q '^## Semantic compatibility of typed fields (when applicable)$' "$temp/a
 grep -q '^## Typed constraints and validation stages$' "$temp/all-profiles/docs/standards/dotnet/fluentvalidation.md"
 [[ ! -e "$temp/all-profiles/docs/standards/stateful-workflows.md" ]]
 grep -q 'missing, null, zero/false' "$temp/all-profiles/docs/templates/dotnet-backend-feature.md"
+grep -q 'Do not invent a draft/publish workflow' "$temp/all-profiles/docs/templates/dotnet-backend-feature.md"
+grep -q 'Do not invent edit/save/network states for a static view' "$temp/all-profiles/docs/templates/blazor-frontend-feature.md"
+grep -q 'not a mandatory six-step plan' "$temp/all-profiles/docs/templates/postgresql-migration.md"
 grep -q 'Unicode length units' "$temp/all-profiles/docs/templates/postgresql-migration.md"
 [[ ! -e "$temp/minimal/docs/standards/architecture/ddd.md" ]]
 [[ ! -e "$temp/minimal/docs/standards/postgresql/persistence.md" ]]

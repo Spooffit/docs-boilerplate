@@ -7,7 +7,7 @@ status: template
 
 # Module: [Name]
 
-> **Use:** Describe a cohesive group of capabilities and its boundaries. Do not repeat every child feature's scenarios.
+> **Use:** Group multiple related capabilities only when the grouping carries useful ownership or coordination information. A code folder, service or feature name is not by itself a reason to create this document. Remove optional sections without verified content.
 
 ## Purpose and outcomes
 
@@ -19,21 +19,21 @@ status: template
 
 ## Capability map
 
-| Feature ID | Capability | Existing specification |
-| --- | --- | --- |
-| [ID] | [Purpose] | [Insert a real relative link or omit the column until there is one] |
+| Capability | Existing source (if any) |
+| --- | --- |
+| [Confirmed capability] | [Actual relative link or explicitly not documented] |
 
 ## Cross-feature behavior
 
 [Describe handoffs and sequencing only where needed to understand the combined result. Distinguish module-as-documentation grouping, module-as-runtime boundary and domain bounded context; they are not necessarily the same unit. Link each owned public interface to its authoritative contract instead of restating fields.]
 
-## Delivery stage and ownership
+## Delivery and ownership (when applicable)
 
-[Identify confirmed ownership of mutable state, public read interfaces and work assigned to each delivery milestone. Note explicitly when work is not included in the current milestone.]
+[Describe real responsibilities or agreed checkpoints only when they span several capabilities. Do not imply a deployment boundary or mandatory lifecycle.]
 
-## Specification map
+## Related specifications (when applicable)
 
-[Where a feature has separate business, backend, client or integration specifications, link their existing documents. A missing technical document is not necessarily a defect; create one only where the implementation complexity warrants it.]
+[Link only actual feature, API or technical documents; do not create one file per technology layer by convention.]
 
 ## Open decisions
 

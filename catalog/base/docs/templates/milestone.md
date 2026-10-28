@@ -7,7 +7,7 @@ status: template
 
 # Milestone: [Verified milestone name]
 
-> **Use:** Describe one bounded delivery checkpoint. Replace editorial placeholders with confirmed project facts. This template does not prescribe Demo, MVP, Production or fixed release phases.
+> **Use:** Describe a real, agreed delivery checkpoint that needs its own acceptance or handoff record. Do not turn every task, planned stage or mention of a release into a milestone document. Remove steps and sections not relevant to this checkpoint.
 
 ## Purpose and evidence of value
 
@@ -27,11 +27,9 @@ status: template
 
 [Required environment, approved data, integrations, permissions, access to devices or other prerequisites. Differentiate actual dependencies from assumptions.]
 
-## Demonstration or verification sequence
+## Demonstration or verification (when applicable)
 
-1. [Start from a known, reproducible state.]
-2. [Describe actual user/system actions and observable results.]
-3. [Exercise at least one meaningful failure or boundary scenario where relevant.]
+[Describe the actual check and starting conditions. Use a step-by-step sequence or failure scenario only if needed to demonstrate the outcome.]
 
 ## Acceptance matrix
 
@@ -45,6 +43,6 @@ The existence of this matrix is **not evidence of passed tests**. Only change a 
 
 [List outstanding blockers and their owners. An unanswered question must not silently become an accepted implementation detail.]
 
-## Transition
+## Handoff (when applicable)
 
-[Who reviews the milestone, which decisions follow from the result, and what work may enter the next phase?]
+[Record actual reviewers, follow-up decisions or external handoffs only when known and needed.]

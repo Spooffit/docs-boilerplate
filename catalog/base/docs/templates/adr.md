@@ -1,25 +1,24 @@
 ---
-title: "ADR-NNNN: [Decision title]"
+title: "Architecture decision: [Title]"
 description: "Reusable writing template"
 kind: template
 status: template
 ---
 
-# ADR-NNNN: [Decision title]
+# Architecture decision: [Title]
 
-- **Status:** Proposed
-- **Date:** [YYYY-MM-DD]
-- **Decision owners:** [Responsible people or team]
+> **Use:** Record a consequential architecture choice with genuine alternatives. Do not create a numbered ADR just because the template exists. Use the project's already adopted identifier format, if any. Keep a decision **Proposed** until an authorized person or process accepts it. Remove prompts that lack confirmed answers.
 
-> **Use:** Describe a consequential architectural choice, not a requirement summary. Keep status Proposed until the actual decision owner accepts it. Delete this instruction when completing the ADR.
+- **Decision status:** Proposed (until actually accepted)
+- **Decision authority and date (if verified):** [Real authority/date or omit]
 
 ## Context and forces
 
 [Describe the verified problem, constraints, implementation boundaries, alternatives already considered and sources of evidence.]
 
-## Decision drivers
+## Decision drivers (if useful)
 
-[Identify the few important characteristics: correctness, operability, security, portability, cost, maintenance, and delivery timing as applicable.]
+[Which verified constraints or tradeoffs actually influence this decision? Avoid an exhaustive checklist when only one or two concerns matter.]
 
 ## Options evaluated
 
@@ -31,13 +30,13 @@ status: template
 
 [Describe the approved choice only when accepted. While proposed, write the intended decision and clearly mark its unapproved state.]
 
-## Consequences and migration
+## Consequences
 
-[What will change? Which new obligations, failures or maintenance costs follow? If replacing an existing approach, how will migration be checked and rolled back?]
+[What changes as a result of the selected or proposed approach? Document migration and rollback only if something currently deployed must actually change.]
 
-## Verification
+## Verification (when applicable)
 
-[Which tests, measurements, reviews or operational evidence would confirm the decision is effective? Do not state they passed unless they actually ran.]
+[What evidence would establish the decision works in the selected system? Do not mark planned tests as passed.]
 
 ## Related documentation
 

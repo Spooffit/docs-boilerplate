@@ -7,7 +7,7 @@ status: template
 
 # Standard: [Name]
 
-> **Use:** Author a reusable, technology-scoped rule, not a record of a particular project's requirements. Remove this guidance before publication.
+> **Use:** Author a reusable rule with an explicit applicability boundary. This may be a technology-specific convention or a technology-neutral documentation practice. Do not turn a one-off project decision into a universal requirement. Omit unsupported sections.
 
 ## Applicability
 
@@ -22,9 +22,9 @@ status: template
 - [A single observable, testable requirement with clear applicability.]
 - [Another independent enforceable rule, if necessary.]
 
-## Recommended alternatives
+## Alternatives (when applicable)
 
-[Explain viable approaches and decision criteria. Distinguish MUST from SHOULD and MAY.]
+[Describe meaningful alternatives when the rule permits a choice. Distinguish mandatory requirements from recommendations.]
 
 ## Verification
 

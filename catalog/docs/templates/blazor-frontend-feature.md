@@ -7,7 +7,7 @@ status: template
 
 # Blazor frontend feature: [Capability]
 
-> **Use:** Describe the UI structure and behavior of one feature. This template is opt-in through the Blazor profile. It does not require MudBlazor, FSD, NSwag, a central state store or a particular hosting/rendering model.
+> **Use:** Optional Blazor-focused alternative to the general technical-feature template when UI behavior warrants its own document. Do not require MudBlazor, FSD, NSwag, a state store or a particular rendering model. Omit headings and tables that do not fit the actual feature.
 
 ## User outcome and navigation
 
@@ -21,20 +21,17 @@ status: template
 | --- | --- | --- | --- |
 | [Name] | [Purpose] | [Confirmed] | [Events / state changes] |
 
-## State ownership and transitions
+## State and feedback (when applicable)
 
-[Distinguish initial, editing, loading, validation, saving, success, failed and unknown network-result states.]
+[Document only observed or agreed UI states and their owners. Do not invent edit/save/network states for a static view.]
 
 | State | Owner | Transition trigger | Visible behavior |
 | --- | --- | --- | --- |
 | [Name] | [Page / component / URL / service] | [Action] | [What user sees] |
 
-## Interaction flows
+## Interaction flow (when applicable)
 
-1. [Describe verified user action.]
-2. [Explain API calls or client calculations, with an actual contract reference.]
-3. [Describe updates, concurrency conflicts, cancellation and retry controls.]
-4. [Explain navigation and feedback following the authoritative operation result.]
+[Describe real user actions, data dependencies, navigation and visible feedback. Include API calls, cancellation and retry only if the feature actually uses them; do not require a four-stage workflow.]
 
 ## Data and permissions
 
@@ -46,7 +43,7 @@ status: template
 
 ## Test scenarios and acceptance
 
-[Record component tests for state transitions and browser tests for actual focus, JS integration and navigation. Do not assert bUnit or other tools were chosen until confirmed.]
+[Record the real verification needed for this UI and the evidence if executed. Component and browser tests may prove different things; do not assume a specific library or require a browser test for every static component.]
 
 ## Open questions
 

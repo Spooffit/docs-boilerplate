@@ -7,7 +7,7 @@ status: template
 
 # Feature: [Concise name]
 
-> **Use:** Describe one observable capability from the product/business perspective. Replace this instruction and all bracketed guidance with verified information. Delete irrelevant optional sections. Do not record a discussion transcript here.
+> **Use:** Describe a confirmed or explicitly proposed observable capability. Begin with purpose, scope, behavior and acceptance; keep additional sections only if supported by project evidence. This page is a writing aid, not a ready-to-publish requirement or a request to create implementation documents.
 
 ## Purpose and audience
 
@@ -17,32 +17,30 @@ status: template
 
 [State boundaries, preconditions and explicitly excluded responsibilities. Distinguish accepted scope from proposals.]
 
-## Delivery stage and decision status
+## Approval and delivery scope (when applicable)
 
-[Identify which behaviors are approved for the specific milestone or release. Mark deferred behaviors separately. A feature's future MVP scope is not automatically part of its current Demo or production contract. Record accepted decisions and unresolved choices with links to actual decision records.]
+[State what is accepted, proposed or deferred using existing project evidence. Name a delivery stage only if one has been adopted. Do not invent Demo/MVP/Production phases.]
 
-## Main scenario
+## Observable behavior
 
-1. [Trigger: user or system action with known preconditions.]
-2. [Describe externally observable steps without prescribing an unapproved implementation.]
-3. [Describe the completed result.]
+[Describe the real trigger, expected outcome and essential conditions. Use a numbered scenario only when a sequence matters; do not invent UI steps or backend commands.]
 
-## Alternate and failure scenarios
+## Exceptions and boundary behavior (when applicable)
 
-[What changes if input is invalid, access is denied, a resource is missing, state conflicts or a dependency fails? Define outcomes where known.]
+[Document relevant failures, denied access or conflicting inputs only if they change the observable contract. Use **Unresolved** rather than invent a result.]
 
 ## Acceptance criteria
 
 - [Given a verified precondition, when a specific action occurs, then an observable outcome must hold.]
 - [Include relevant access, invalid input, retry/concurrency and boundary cases.]
 
-## Data and contracts
+## Data and contracts (when applicable)
 
-[Link the canonical domain glossary and contract only if they actually exist. Do not duplicate field definitions from the authoritative schema.]
+[Link existing authoritative field definitions or contracts only if needed for this feature. Do not copy their contents or create new schemas merely to fill a section.]
 
-## Technical implementation
+## Technical references (when applicable)
 
-[Link a technical-feature specification only if this capability needs separate implementation detail. For complex behavior, use the optional `technical-feature.md` template or a technology-specific variant. Do not duplicate implementation details in this business document.]
+[Link an existing technical specification if the feature needs one; do not create an implementation document solely because this section exists.]
 
 ## Dependencies and open decisions
 

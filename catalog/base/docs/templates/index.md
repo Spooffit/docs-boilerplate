@@ -7,7 +7,7 @@ status: active
 
 # Choose a documentation template
 
-**Start from the question, not a folder.** Templates are **blank writing aids**, not proof that a feature, decision or milestone exists. Copy only the template needed for the current task. Replace editorial placeholders and remove irrelevant sections before publishing.
+**Start from the question, not a folder.** Templates are **blank writing aids**, not proof that a feature, decision or milestone exists. Copy only the template needed for the current task. Replace editorial placeholders and remove irrelevant sections before use; do not treat a template as a completed project document.
 
 **First project pass:** Complete the existing [project overview](../project/overview.md) and [architecture overview](../architecture/overview.md) from verified requirements, observed code and accepted decisions. Both start `draft`. No separate mandatory intake file or full family of feature records is needed.
 
@@ -21,6 +21,13 @@ status: active
 | Specify reusable verifiable engineering rules | [Standard](standard.md) | One feature needs a one-off implementation behavior |
 | Define a real delivery checkpoint and acceptance evidence | [Milestone](milestone.md) | Demo, MVP or Production was mentioned hypothetically |
 
+## Minimal authoring rule
+
+1. Identify the actual information gap. If a small addition to an existing authoritative document resolves it, prefer that over a new file.
+2. Select **one** fitting template or technology-specific alternative. Begin with purpose, concrete facts and acceptance/verification. Remove non-applicable headings, example rows, status/date fields and instructional text rather than inventing filler.
+3. Distinguish accepted requirements, proposals, inspected code and executed tests. Only retain real identifiers, owners, version numbers and document links. When no facts are known, state the uncertainty instead of fabricating a detailed document.
+4. After writing, update the immediate directory index and `docs/catalog.md` where appropriate. A blank template remains `status: template`; a new unapproved project document should normally begin `status: draft`. Neither label establishes approval or implementation.
+
 ## Keep one canonical source
 
 - Read [project overview](../project/overview.md), [architecture overview](../architecture/overview.md) and [authoring conventions](../standards/documentation.md) first.
@@ -31,6 +38,6 @@ status: active
 
 ## Technology-specific variants
 
-A selected profile may install specialized templates such as `dotnet-backend-feature.md`, `blazor-frontend-feature.md` or `postgresql-migration.md`. Discover **installed** variants in [the generated catalog](../catalog.md). Use a specialized feature template **instead of** the general technical-feature template for the same document; keep both only if they describe genuinely distinct scopes.
+A selected profile may install specialized templates such as `dotnet-backend-feature.md`, `blazor-frontend-feature.md` or `postgresql-migration.md`. Discover **installed** variants in [the generated catalog](../catalog.md). Use a specialized feature template **instead of** the general technical-feature template for the same document; keep both only if they describe genuinely distinct scopes. Installed templates do not require adopting their example fields or creating new documents.
 
 This directory is a reference library. Do not create empty feature/module/milestone directories or placeholder decision records just to mirror these template names.
