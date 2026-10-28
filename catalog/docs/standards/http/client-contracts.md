@@ -7,17 +7,17 @@ status: active
 
 # HTTP client contracts and reliable request handling
 
-**Applies when:** a project consumes HTTP APIs. It does not require a generated client, SDK, particular framework, API versioning strategy or UI state architecture.
+**Applies when:** a project consumes HTTP APIs. It does not require a particular framework, API versioning strategy or UI state architecture.
 
 ## Source contract and client representation
 
 Use the adopted public HTTP contract to determine methods, routes, headers, request/response fields, nullability, errors and security behavior. Do not infer a public wire shape from an internal entity or historical controller sample.
 
-Generated clients, when selected, should be reproducible from the authoritative schema and configuration. Keep transport metadata such as response headers accessible when the contract uses them. Hand-written adapters or presentation models may be appropriate, but a second inconsistent copy of the same wire contract is not.
+Use the authoritative public API contract to verify client request and response representations. Preserve transport metadata such as response headers when the contract requires it. Client-side presentation models may be appropriate, but they must not redefine the wire contract.
 
 ## Transport, cancellation and ownership
 
-For streamed responses, document header availability, body ownership, disposal and bounded buffering. Make cancellation behavior explicit: stopping the local wait does not necessarily stop a committed remote operation. Do not create a common SDK core, platform adapter package, local cache or UI model layer unless the chosen consumers need them.
+For streamed responses, document header availability, body ownership, disposal and bounded buffering. Make cancellation behavior explicit: stopping the local wait does not necessarily stop a committed remote operation. Do not introduce unrelated client state or caching layers without a concrete need.
 
 Avoid leaking secrets through URLs, diagnostics or error messages. Treat authentication failures, authorization denial, missing resources and concealed resources according to the actual server contract; do not convert security failures to empty successful results.
 
@@ -37,6 +37,6 @@ Only use `202 Accepted` as a completed result if that is what the contract promi
 
 ## Verification
 
-Test serialization, omitted versus null fields, authorization boundaries, expected statuses, required headers, cancellation, retries and uncertain outcomes against the actual service or a faithful contract test environment. Generated code compiling is not proof of runtime compatibility.
+Test serialization, omitted versus null fields, authorization boundaries, expected statuses, required headers, cancellation, retries and uncertain outcomes against the actual service or a faithful contract test environment. A successful build is not proof of runtime compatibility.
 
 References: [RFC 9110 HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110), [Problem Details RFC 9457](https://www.rfc-editor.org/rfc/rfc9457).

@@ -31,11 +31,9 @@ status: template
 
 Do not require fixed Domain/Application/Infrastructure or FSD folder structures unless the selected project architecture explicitly adopts them.
 
-[For SDK- or client-facing features, identify the portable protocol/core responsibilities and concrete platform adapters only when such a split exists. Record actual target runtime, response/stream lifetime, local-state ownership, cancellation and resource cleanup. Shared code is not proof of cross-language or platform support. Use the selected HTTP client and verification standards rather than inventing another SDK architecture.]
-
 ## Contracts and authoritative models
 
-[Link real OpenAPI, JSON Schema, message contract, generated client API or UI model definitions. Show precise shapes only when they are not already authoritative elsewhere. Separate transport DTOs from domain/storage models when those boundaries actually exist.]
+[Link real adopted API or message contracts and actual application models. Show precise shapes only when they are not already authoritative elsewhere. Separate transport DTOs from domain/storage models when those boundaries actually exist.]
 
 ## Behavior and data flow
 
@@ -50,7 +48,7 @@ Identify cancellation, timeout, idempotency and side-effect behavior where relev
 
 ## State and failure handling
 
-[For UI or SDK features, describe state ownership and user-visible progress. For backend/integration features, describe conflict handling, transaction rollback, external dependency failure and safe diagnostics. Distinguish invalid inputs, forbidden work, missing resources and concurrent changes. Document additional business states only when supported by the project's approved requirements.]
+[For UI features, describe relevant form state and user-visible progress. For backend/integration features, describe conflict handling, transaction rollback, external dependency failure and safe diagnostics. Distinguish invalid inputs, forbidden work, missing resources and concurrent changes. Document additional business states only when supported by the project's approved requirements.]
 
 ## Security, reliability and observability (when applicable)
 
@@ -58,7 +56,7 @@ Identify cancellation, timeout, idempotency and side-effect behavior where relev
 
 ## Target design versus observed implementation
 
-[Separate the accepted intended design from **verified current code**. If a repository snapshot, commit, migration, API document or test result was inspected, record its actual reference and scope. Otherwise write "Not verified" rather than describing a planned interface as implemented. A correct contract specification does not prove that client SDKs or deployments currently conform.]
+[Separate the accepted intended design from **verified current code**. If a repository snapshot, commit, migration, API document or test result was inspected, record its actual reference and scope. Otherwise write "Not verified" rather than describing a planned interface as implemented. A correct contract specification does not prove that consuming applications or deployments currently conform.]
 
 ## Source and contract evidence (when material)
 

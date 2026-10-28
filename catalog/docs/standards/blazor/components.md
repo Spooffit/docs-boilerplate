@@ -20,7 +20,7 @@ status: active
 ## Interactions and API boundaries
 
 - Distinguish an editable form's local state, submitted request, accepted server operation and persisted result. Do not show success before the authoritative server confirms it.
-- Generated API clients may help keep DTOs aligned with OpenAPI, but a client-side form is never a proof of server authorization.
+- API request DTOs must conform to the adopted HTTP contract, but a client-side form is never proof of server authorization.
 - Handle transient failures and unknown outcomes of writes distinctly. Do not blindly retry non-idempotent requests.
 - Use validation messages accessible to assistive technologies and appropriate keyboard behavior.
 
@@ -34,7 +34,7 @@ Preserve stable component keys when lists reorder and measured UI state otherwis
 
 When an interactive component saves data or loads information for a changing selection, model local edits, pending HTTP request and authoritative server outcome as separate states. Avoid overwriting new selection state with a late response for an earlier resource; cancel or mark stale work as appropriate. Preserve recoverable form input on validation or network failures when the user experience requires it.
 
-For components using a generated API client, treat request/response DTOs and the client-visible HTTP metadata (including an optional ETag) according to the selected contract. Do not invent a second API source of truth or mandate that every project uses DTOs directly as edit models. Verify the exact request produced by user interaction separately from its visible feedback.
+For components consuming HTTP APIs, treat request/response DTOs and response metadata (including an optional ETag) according to the selected contract. Do not introduce a second API source of truth. Direct DTO form binding is an **independently selected** convention, not a requirement of Blazor itself. Verify the exact request produced by user interaction separately from its visible feedback.
 
 
 ## Verification

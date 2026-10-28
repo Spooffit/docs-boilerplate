@@ -16,7 +16,7 @@ status: active
 - Define request sources, required/optional inputs, validation failures, success and error statuses, authentication, authorization, pagination and concurrency semantics in the authoritative contract.
 - Keep route naming and versioning stable for clients. Adopt URL, header or media-type versioning only as a conscious compatibility decision. A path like `api/v{version:apiVersion}` is **not** automatically required.
 - Do not publish internal domain entities or persistence entities as API DTOs by default. Changes to a serializer or domain model must not silently alter the public contract.
-- Use OpenAPI as a machine-readable description and check the emitted specification against the actual application. Generated clients are consumers of that contract, not a second source of truth.
+- When OpenAPI is adopted, check the published specification against the actual application. The deployed HTTP behavior and approved contract, not historical examples, establish consumer expectations.
 
 ## Application boundaries and cancellation
 

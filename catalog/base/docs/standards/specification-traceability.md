@@ -43,7 +43,7 @@ These are **examples of distinctions to evaluate**, not universal requirements t
 
 ## Source evidence and claim authority
 
-Before calling a specification "implemented" or "verified", identify **which repository, version/ref and actual source/test** supports the claim. A previous code revision, proposed API table, generated SDK and currently deployed endpoint do not represent equivalent evidence.
+Before calling a specification "implemented" or "verified", identify **which repository, version/ref and actual source/test** supports the claim. A previous code revision or proposed API table does not establish the behavior of a currently deployed endpoint.
 
 If a document links to source code outside the repository, resolve and inspect the exact checkout before treating it as a technical fact. A relative link to a missing file is an **unresolved evidence dependency**; do not silently replace it with an invented endpoint or approval.
 
