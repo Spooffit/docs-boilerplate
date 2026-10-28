@@ -69,6 +69,7 @@ static partial class DocsCli
         var name = Ask("name", "Project name:");
         var description = Ask("description", "Short project description:");
         var output = Path.GetFullPath(Ask("output", "Destination directory:"));
+        UpdateRecovery.AssertNoPending(output);
         var selection = args.TryGetValue("profiles", out var listed)
             ? listed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             : unattended || Console.IsInputRedirected
