@@ -119,7 +119,7 @@ jobs:
           Push-Location $env:RUNNER_TEMP
           try {
             $v1 = & $tool version
-            if ($LASTEXITCODE -ne 0 -or $v1 -notmatch '^Docs Boilerplate CLI 0\.1\.0') { throw 'Unexpected initial CLI version' }
+            if ($LASTEXITCODE -ne 0 -or -not ($v1 -match '^Docs Boilerplate CLI 0\.1\.0')) { throw 'Unexpected initial CLI version' }
             & $tool doctor
             if ($LASTEXITCODE -ne 0) { throw 'Installed package catalog is unusable' }
             & $tool init --name WindowsTool --description 'Installed-tool check' --output $generated --profiles dotnet --non-interactive
@@ -134,7 +134,7 @@ jobs:
           Push-Location $env:RUNNER_TEMP
           try {
             $v2 = & $tool version
-            if ($LASTEXITCODE -ne 0 -or $v2 -notmatch '^Docs Boilerplate CLI 0\.1\.1') { throw 'Unexpected upgraded CLI version' }
+            if ($LASTEXITCODE -ne 0 -or -not ($v2 -match '^Docs Boilerplate CLI 0\.1\.1')) { throw 'Unexpected upgraded CLI version' }
             & $tool validate --output $generated
             if ($LASTEXITCODE -ne 0) { throw 'Upgraded tool cannot validate old project' }
             & $tool update --output $generated --apply
