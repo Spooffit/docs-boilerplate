@@ -159,6 +159,7 @@ fi
 [[ -f "$temp/project/.agents/skills/docs-init/SKILL.md" ]]
 grep -q 'First-pass project intake' "$temp/project/.agents/skills/docs-init/SKILL.md"
 grep -q 'docs/project/overview.md' "$temp/project/.agents/skills/docs-init/SKILL.md"
+grep -q 'frontmatter status' "$temp/project/.agents/skills/docs-init/SKILL.md"
 [[ ! -e "$temp/project/docs/standards/dotnet/dapper.md" ]]
 [[ ! -e "$temp/project/docs/project/glossary.md" ]]
 [[ ! -e "$temp/project/.agents/skills/docs-architecture" ]]
@@ -264,6 +265,7 @@ grep -q 'Unicode length units' "$temp/all-profiles/docs/templates/postgresql-mig
 grep -q 'generated repository does not contain the CLI' "$temp/all-profiles/.agents/skills/docs-review/SKILL.md"
 [[ ! -e "$temp/minimal/docs/operations/observability.md" ]]
 [[ ! -e "$temp/minimal/docs/architecture/security.md" ]]
+python3 tests/agent_guidance_contracts.py "$temp/minimal" "$temp/project" "$temp/all-profiles"
 python3 tests/generated_output_hygiene.py "$temp/minimal" "$temp/headless" "$temp/full-stack" "$temp/all-profiles"
 
 # Prove the new artifact guard fails specifically for source contamination and extra assets.

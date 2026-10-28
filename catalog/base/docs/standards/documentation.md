@@ -61,6 +61,8 @@ Docsify is an optional browser-side reader, not a required build tool. Its `inde
 
 ## Checks
 
-Run the generator's `validate` command. It verifies metadata, filenames, ordinary inline relative Markdown links **including common section anchors**, generated-file declarations, directory index presence, catalog discovery of every document under `docs/`, immediate-index discovery of additional author-created pages, and `llms.txt` paths/fragments. Reference-style links, dynamically generated links, advanced Markdown/HTML rendering and arbitrary YAML expressions are **not** comprehensively parsed. Verify critical cross-page navigation in the configured Docsify browser view; a passing source-level check cannot prove that every client-side renderer chooses the same slug.
+If the boilerplate source checkout and .NET 10 SDK are available, run `dotnet run --project src/DocsBoilerplate.Cli -- validate --output <repository-root>` **from that checkout**. The generated documentation repository does not install or contain the CLI. Without the generator, check links, navigation, metadata and source evidence manually and report which automated checks were unavailable.
+
+The validator verifies metadata, filenames, ordinary inline relative Markdown links **including common section anchors**, generated-file declarations, directory index presence, catalog discovery of every document under `docs/`, immediate-index discovery of additional author-created pages, and `llms.txt` paths/fragments. Reference-style links, dynamically generated links, advanced Markdown/HTML rendering and arbitrary YAML expressions are **not** comprehensively parsed. Verify critical cross-page navigation in the configured Docsify browser view; a passing source-level check cannot prove that every client-side renderer chooses the same slug.
 
 See the community [llms.txt proposal](https://llmstxt.org/) and [Docsify](https://docsify.js.org/) for their separate roles.

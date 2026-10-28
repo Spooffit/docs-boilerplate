@@ -28,6 +28,10 @@ try {
     if (-not (Test-Path (Join-Path $target 'index.html'))) { throw 'Missing viewer' }
     if (-not (Test-Path (Join-Path $target 'llms.txt'))) { throw 'Missing agent index' }
     if (-not (Test-Path (Join-Path $target 'docs/standards/blazor/index.md'))) { throw 'Missing folder index' }
+    $agentInstructions = Get-Content (Join-Path $target 'AGENTS.md') -Raw
+    if ($agentInstructions -notmatch 'dotnet run --project src/DocsBoilerplate.Cli -- recover') { throw 'Recovery instruction does not use generator source checkout' }
+    if ($agentInstructions -match '(?<![\w./-])docs-boilerplate\s+(?:init|update|validate|recover|list|doctor)\b') { throw 'Agent instructions require an unavailable installed CLI' }
+    if ($agentInstructions -notmatch 'status: active') { throw 'Agent instructions do not distinguish metadata from evidence' }
 
     Invoke-Docs update --output $target
     Invoke-Docs update --output $target --apply

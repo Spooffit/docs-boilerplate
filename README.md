@@ -25,6 +25,8 @@ dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/demo
 ```
 
+These commands run **from the boilerplate checkout**, not from the generated project. The generated repository contains the selected Markdown and optional Docsify viewer, but not the generator sources or an installed CLI.
+
 Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh` after changing generator behavior. The cross-platform test workflow is [`.github/workflows/docs-generator.yml`](.github/workflows/docs-generator.yml).
 
 To browse a generated repository, run `python -m http.server 3000` in its root and open `http://localhost:3000/`. Docsify renders the Markdown dynamically in the browser without a static-site build. Opening its `index.html` directly via `file://` is not a reliable mode.

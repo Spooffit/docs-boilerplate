@@ -17,7 +17,7 @@ status: active
 - A CLI validator for ordinary relative Markdown links and common heading fragments, frontmatter, directory indexes, **catalog coverage for every project Markdown page and local index coverage for newly authored pages**, managed paths and unresolved required placeholders.
 - Cross-platform CI: Linux build, focused .NET contract tests, generation smoke and hygiene; Windows build and smoke; real Chromium/Playwright Docsify navigation checks.
 - Repository and catalog hygiene checks for unwanted source trees, concrete non-template content, orphan links and unexpected generated assets.
-- Initial project and architecture overviews remain `draft`, distinguish observed code from target decisions and prompt for evidence. The optional `docs-init` skill explains first-pass project intake; smoke tests verify generated onboarding content.
+- Initial project and architecture overviews remain `draft`, distinguish observed code from target decisions and prompt for evidence. Generated agent instructions distinguish metadata status from verified facts, refer to the source checkout for CLI operations, and allow manual review when the generator is unavailable. The optional `docs-init` skill explains first-pass project intake; cross-platform smoke and guidance checks verify onboarding content.
 
 The generator's boundaries are documented in [the code map](architecture/generator-components.md). Selected profile configuration and operation examples are documented in [the generator guide](generator.md).
 

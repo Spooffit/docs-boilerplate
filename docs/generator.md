@@ -91,7 +91,7 @@ Create Feature, Module, Question, ADR or Milestone documents only when needed. R
 
 ## Updating a generated repository
 
-Run these commands from the **boilerplate source checkout** where `src/DocsBoilerplate.Cli` exists. The generated documentation repository does not contain the CLI, a NuGet package, or a release pipeline. Point `--output` at the generated repository. No CLI installation or publication is required.
+Run these commands from the **boilerplate source checkout** where `src/DocsBoilerplate.Cli` exists. The generated documentation repository does not contain the CLI or its source checkout. Point `--output` at the generated repository. No CLI installation or publication is required.
 
 New repositories record SHA-256 fingerprints for all generated files in `docs.config.json`. These fingerprints describe **original template bytes**, not the user's subsequent edits. Update re-renders the selected profiles, skills, modules and site option against a newer catalog.
 
