@@ -39,7 +39,14 @@ internal static class SafeFiles
         return fullPath;
     }
 
-    public static IEnumerable<string> Enumerate(string root)
+    public static IEnumerable<string> Enumerate(string root) => EnumerateAll(root, includeDirectories: false);
+
+    // Used by update preflight: empty directories and path spelling can also
+    // collide with a new source file on case-insensitive file systems.
+    public static IEnumerable<string> EnumerateEntries(string root) =>
+        EnumerateAll(root, includeDirectories: true);
+
+    private static IEnumerable<string> EnumerateAll(string root, bool includeDirectories)
     {
         AssertNoLinks(root);
         if (!Directory.Exists(root))
@@ -55,7 +62,10 @@ internal static class SafeFiles
                 if ((attributes & FileAttributes.ReparsePoint) != 0)
                     throw new IOException($"Symbolic links and reparse points are not permitted: {path}");
                 if ((attributes & FileAttributes.Directory) != 0)
+                {
+                    if (includeDirectories) yield return path;
                     remaining.Push(path);
+                }
                 else
                     yield return path;
             }

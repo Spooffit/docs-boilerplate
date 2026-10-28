@@ -301,6 +301,45 @@ Test("path containment rejects traversal and platform metacharacters", () =>
     foreach (var invalid in new[] { "../secret.md", "docs/../../secret", "/absolute.md", "docs\\evil.md", "docs/C:evil.md", "docs//file.md" })
         Throws<IOException>(() => SafeFiles.Child(temporary.Path, invalid));
 });
+Test("update path preflight rejects case-only files and directory aliases", () =>
+{
+    var entries = new[]
+    {
+        "docs",
+        "docs/standards",
+        "docs/standards/dotnet",
+        "docs/standards/dotnet/USER-NOTE.md",
+        "docs/Guides",
+        "docs/Guides/index.md",
+        "docs/standards/dotnet/existing.md"
+    };
+    Expect(UpdatePathSafety.FindCaseOnlyCollision(
+        "docs/standards/dotnet/user-note.md", entries) == "docs/standards/dotnet/USER-NOTE.md",
+        "Case-only sibling file collision was missed");
+    Expect(UpdatePathSafety.FindCaseOnlyCollision(
+        "docs/guides/new.md", entries) == "docs/Guides",
+        "Case-only ancestor directory collision was missed");
+    Expect(UpdatePathSafety.FindCaseOnlyCollision(
+        "docs/standards/dotnet/new.md", entries) is null,
+        "A non-colliding file was falsely rejected");
+    Expect(UpdatePathSafety.FindCaseOnlyCollision(
+        "docs/standards/dotnet/existing.md", entries) is null,
+        "Exact casing must be handled by ordinary collision logic");
+});
+Test("safe enumeration includes directories without changing file-only enumeration", () =>
+{
+    using var tmp = new TempDirectory();
+    var folder = Path.Combine(tmp.Path, "EmptyFolder");
+    Directory.CreateDirectory(folder);
+    var file = Path.Combine(tmp.Path, "document.md");
+    File.WriteAllText(file, "# Example");
+    Expect(!SafeFiles.Enumerate(tmp.Path).Contains(folder),
+        "Directory leaked into existing file-only enumeration");
+    var entries = SafeFiles.EnumerateEntries(tmp.Path).ToArray();
+    Expect(entries.Contains(folder) && entries.Contains(file),
+        "Update preflight omitted files or empty directories");
+});
+
 Test("symlinked path segment is rejected when platform permits creation", () =>
 {
     using var temporary = new TempDirectory();

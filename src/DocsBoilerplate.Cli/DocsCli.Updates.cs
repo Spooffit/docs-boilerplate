@@ -42,7 +42,9 @@ static partial class DocsCli
         SafeFiles.AssertNoLinks(output);
         if (!Directory.Exists(output))
             throw new DirectoryNotFoundException($"Output directory does not exist: {output}");
-        _ = SafeFiles.Enumerate(output).ToArray();
+        var existingEntries = SafeFiles.EnumerateEntries(output)
+            .Select(path => Path.GetRelativePath(output, path).Replace('\\', '/'))
+            .ToArray();
         var configPath = SafePath(output, ConfigName);
         if (!File.Exists(configPath))
             throw new IOException($"Missing {ConfigName}. Refusing to update an unmanaged directory.");
@@ -89,8 +91,12 @@ static partial class DocsCli
             var newHash = Hash(desired);
             if (!oldPaths.Contains(relative))
             {
-                if (File.Exists(target) || Directory.Exists(target))
-                    conflicts.Add($"Unmanaged file collision: {relative}");
+                var caseCollision = UpdatePathSafety.FindCaseOnlyCollision(relative, existingEntries);
+                if (caseCollision is not null)
+                    conflicts.Add($"Case-only path collision: {relative} conflicts with {caseCollision}. " +
+                        "Rename the existing path (including parent directory casing) before retrying.");
+                else if (File.Exists(target) || Directory.Exists(target))
+                    conflicts.Add($"Unmanaged file collision: {relative}. Rename or reconcile the existing file before retrying.");
                 else
                     writes.Add(new PlannedWrite(relative, desired, false, null));
                 continue;
@@ -132,6 +138,9 @@ static partial class DocsCli
         if (conflicts.Count > 0)
         {
             AnsiConsole.MarkupLine("[red]Update blocked.[/] No files were changed.");
+            AnsiConsole.WriteLine(
+                "Resolve the listed paths in Git against the selected catalog, then preview again. " +
+                "Do not manually change ownership hashes to bypass a conflict.");
             return 1;
         }
         if (!flags.ContainsKey("apply"))

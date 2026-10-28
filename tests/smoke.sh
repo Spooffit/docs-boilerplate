@@ -578,6 +578,19 @@ if run update --output "$temp/unmanaged-project" --catalog "$temp/catalog-collis
 fi
 grep -q 'my personal note' "$temp/unmanaged-project/docs/standards/dotnet/user-note.md"
 
+# Case-only file collisions must fail before any write, even on Linux.
+cp -a "$temp/minimal" "$temp/case-conflict"
+printf '%s\n' 'Owner document' > "$temp/case-conflict/docs/standards/dotnet/USER-NOTE.md"
+cp "$temp/case-conflict/docs.config.json" "$temp/case-original-config.json"
+if run update --output "$temp/case-conflict" --catalog "$temp/catalog-collision-update" --apply > "$temp/case-result.log" 2>&1; then
+    echo "Case-only colliding path was adopted"; exit 1
+fi
+grep -q 'Case-only path collision' "$temp/case-result.log"
+grep -q 'USER-NOTE.md' "$temp/case-result.log"
+cmp "$temp/case-original-config.json" "$temp/case-conflict/docs.config.json"
+grep -q 'Owner document' "$temp/case-conflict/docs/standards/dotnet/USER-NOTE.md"
+[[ ! -f "$temp/case-conflict/docs/standards/dotnet/user-note.md" ]]
+
 # Corrupt v2 fingerprints must fail validation even if all files still exist.
 cp -a "$temp/minimal" "$temp/invalid-hashes"
 python3 - "$temp/invalid-hashes/docs.config.json" <<'PY'

@@ -22,6 +22,7 @@ status: active
 | Markdown navigation | `src/DocsBoilerplate.Cli/MarkdownNavigation.cs` | Parse common inline links and headings, skip fenced/inline code examples, derive duplicate heading anchors |
 | Markdown metadata | `src/DocsBoilerplate.Cli/DocumentMetadata.cs` | Narrow frontmatter policy and kebab-case naming |
 | File system | `src/DocsBoilerplate.Cli/SafeFiles.cs` | Reject traversal, symlink/reparse-point paths and unsafe file-system entries |
+| Update path preflight | `src/DocsBoilerplate.Cli/UpdatePathSafety.cs` | Reject case-only file and directory collisions before an update writes new files |
 | Data contracts | `schemas/*.schema.json` | JSON Schema definitions for input registries and generated `docs.config.json` |
 | Content | `catalog/` | Reusable standards, templates, optional modules, Agent Skills and the Docsify viewer |
 
