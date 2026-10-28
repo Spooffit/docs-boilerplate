@@ -1,16 +1,18 @@
 ---
 name: docs-init
-description: Initialize and verify an agent-first Docs-as-Code project using explicit profiles, skills, and documentation modules.
+description: Initialize Docs-as-Code projects using explicit profiles and evidence-first project intake.
 ---
 
 # Initialize project documentation
 
-1. Confirm the destination, project name, concise factual summary, and actual technologies. An unknown architecture or tool is an unresolved choice, not a default.
-2. Run `docs-boilerplate list` and separate available profiles from planned options. Choose only implemented, applicable profiles and optional document modules and skills.
-3. Preview `init --dry-run` before making files. Refuse collisions or attempted overwrites; never force a migration.
-4. Run `init` with the reviewed flags and then `validate --output <directory>`. A default site selection creates one Docsify `index.html`; `--site none` creates no viewer. Neither adds site build artifacts.
-5. Read `llms.txt`, `AGENTS.md`, `docs/index.md`, the generated `docs/catalog.md` and `docs.config.json`. Verify every selected technology is represented and no unsupported profile was silently added.
-6. Fill in project-specific facts from actual sources. Preserve the YAML frontmatter on regular Markdown pages, kebab-case filenames and `index.md` for each documentation directory. Avoid adding unverified features, APIs, dependencies or approvals.
-7. Report generated files, selected profiles, validation results, and unresolved business/architecture decisions.
+1. Confirm the destination, name and factual summary. Inspect actual requirements, decisions, source code, schemas and available test/deployment evidence. Never invent project facts to fill a template.
+2. Ask for an essential missing choice only when needed; mark unknown technology, architecture and product behavior as **Not yet verified**.
+3. Run `docs-boilerplate list`, select only available applicable profiles, modules and skills. Profile installation does not prove a product uses that technology.
+4. Preview `init --dry-run` and refuse collisions or overwrites. Run the reviewed `init`, then `docs-boilerplate validate --output <directory>`. Docsify adds one root `index.html`; `--site none` omits the viewer.
+5. Read the generated `llms.txt`, `AGENTS.md`, `docs/index.md`, `docs/catalog.md` and `docs.config.json`. Verify installed files and dependencies match the confirmed selection.
+6. **First-pass project intake:** fill `docs/project/overview.md` and `docs/architecture/overview.md` from evidence. Separate observed implementation, accepted target and open decisions. Keep both pages `draft` until reviewed; unavailable facts are not assumptions.
+7. Create only feature, technical-feature, module, question, milestone or ADR documents actually required; select the smallest relevant template from `docs/templates/index.md`. Do not prepopulate empty document families.
+8. Run `validate` after edits; inspect navigation, selected scope and file ownership. A valid document is not automatically an accepted design. Do not edit `docs.config.json` by hand.
+9. Report files and profiles installed, real evidence inspected, remaining drafts/open choices and tests actually performed.
 
-The generator owns initial file planning and ownership hashes. Do not copy its logic into this skill or edit `docs.config.json` by hand.
+Use the generator's preview-first updater for later changes; do not duplicate its ownership or hashing logic in this skill.
