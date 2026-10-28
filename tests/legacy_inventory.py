@@ -66,7 +66,7 @@ def main():
     }
     closeout = (ROOT / "docs/audit/retained-standards-closeout.md").read_text(encoding="utf-8")
     documented = set(re.findall(
-        r"^\\| \`(technical/(?:backend|frontend)/standards/S\\d{2}-[^\`]+\\.md)\` \\|",
+        r"^\| `(technical/(?:backend|frontend)/standards/S\d{2}-[^`]+\.md)` \|",
         closeout,
         re.MULTILINE,
     ))
