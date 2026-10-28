@@ -4,19 +4,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <PackAsTool>true</PackAsTool>
-    <ToolCommandName>docs-boilerplate</ToolCommandName>
-    <PackageId>DocsBoilerplate.Cli</PackageId>
-    <Authors>Docs Boilerplate contributors</Authors>
-    <Description>CLI for generating modular Docs-as-Code repositories.</Description>
-    <RepositoryUrl>https://github.com/Spooffit/docs-boilerplate</RepositoryUrl>
-    <PackageTags>documentation;docs-as-code;docsify;generator;dotnet-tool</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>0.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
-    <None Include="PACKAGE-README.md" Pack="true" PackagePath="README.md" />
-    <None Include="../../catalog/**" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="tools/net10.0/any/catalog/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="../../catalog/**"
+          Link="catalog/%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

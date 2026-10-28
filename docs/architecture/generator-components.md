@@ -16,7 +16,6 @@ status: active
 | Entrypoint | `src/DocsBoilerplate.Cli/Program.cs` | Parse the command name, load a catalog, dispatch `init`, `update`, `validate`, `doctor` and `list` |
 | CLI UX | `src/DocsBoilerplate.Cli/DocsCli.Commands.cs` | Prompt for profiles, validate command options, create a new project |
 | Catalog | `src/DocsBoilerplate.Cli/DocsCli.Catalog.cs` | Resolve dependencies, reject unknown profiles, check catalog integrity and model the manifests |
-| Schema compatibility | `src/DocsBoilerplate.Cli/SchemaCompatibility.cs` | Keep catalog and project manifest version checks separate from the NuGet tool's package version; reject unknown versions |
 | Rendering | `src/DocsBoilerplate.Cli/DocsCli.Rendering.cs` | Compose selected source files, indexes, `llms.txt`, and the generated ownership manifest |
 | Updating | `src/DocsBoilerplate.Cli/DocsCli.Updates.cs` | Preview-first, fingerprint-checked update planning and ownership manifest management |
 | Update transaction | `src/DocsBoilerplate.Cli/UpdateTransaction.cs` | Apply the reviewed plan with per-file promotion of staged bytes and rollback on ordinary errors |

@@ -35,34 +35,6 @@ jobs:
         run: python tests/catalog_hygiene.py
       - name: Ensure obsolete project sources and references stay absent
         run: python tests/repository_hygiene.py
-      - name: Pack, install, and update CLI using an isolated local NuGet source
-        run: |
-          dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release --output "$RUNNER_TEMP/packages"
-          dotnet tool install --tool-path "$RUNNER_TEMP/docs-tool" --add-source "$RUNNER_TEMP/packages" DocsBoilerplate.Cli --version 0.1.0
-          tool="$RUNNER_TEMP/docs-tool/docs-boilerplate"
-          (
-            cd "$RUNNER_TEMP"
-            "$tool" version | grep -q '^Docs Boilerplate CLI 0.1.0'
-            "$tool" --version | grep -q '^Docs Boilerplate CLI 0.1.0'
-            "$tool" doctor
-            "$tool" init --name ToolDemo --description "Tool installation smoke test" --output "$RUNNER_TEMP/tool-demo" --profiles dotnet --non-interactive
-            "$tool" validate --output "$RUNNER_TEMP/tool-demo"
-            "$tool" update --output "$RUNNER_TEMP/tool-demo" --apply
-          )
-          cp "$RUNNER_TEMP/tool-demo/docs.config.json" "$RUNNER_TEMP/tool-demo-before-upgrade.json"
-          # Build a synthetic subsequent package release for the install/update test only.
-          dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release --output "$RUNNER_TEMP/packages" -p:Version=0.1.1
-          dotnet tool update DocsBoilerplate.Cli --tool-path "$RUNNER_TEMP/docs-tool" --add-source "$RUNNER_TEMP/packages" --version 0.1.1 --no-cache
-          (
-            cd "$RUNNER_TEMP"
-            "$tool" version | grep -q '^Docs Boilerplate CLI 0.1.1'
-            "$tool" --version | grep -q '^Docs Boilerplate CLI 0.1.1'
-            "$tool" doctor
-            "$tool" validate --output "$RUNNER_TEMP/tool-demo"
-            "$tool" update --output "$RUNNER_TEMP/tool-demo" --apply
-          )
-          cmp "$RUNNER_TEMP/tool-demo-before-upgrade.json" "$RUNNER_TEMP/tool-demo/docs.config.json"
-          test ! -e "$RUNNER_TEMP/tool-demo/.docs-boilerplate-update"
 
   browser:
     name: Docsify browser (Chromium)
@@ -107,39 +79,3 @@ jobs:
       - name: Smoke-test CLI on Windows
         shell: pwsh
         run: ./tests/windows-smoke.ps1
-      - name: Pack, install, and update local .NET tool on Windows
-        shell: pwsh
-        run: |
-          $packages = Join-Path $env:RUNNER_TEMP 'docs-packages'
-          $toolDir = Join-Path $env:RUNNER_TEMP 'docs-tool'
-          dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release --output $packages
-          if ($LASTEXITCODE -ne 0) { throw 'Base tool package failed' }
-          dotnet tool install DocsBoilerplate.Cli --tool-path $toolDir --add-source $packages --version 0.1.0
-          if ($LASTEXITCODE -ne 0) { throw 'Base tool installation failed' }
-          $tool = Join-Path $toolDir 'docs-boilerplate.exe'
-          $generated = Join-Path $env:RUNNER_TEMP 'tool-project'
-          Push-Location $env:RUNNER_TEMP
-          try {
-            $v1 = & $tool version
-            if ($LASTEXITCODE -ne 0 -or -not ($v1 -match '^Docs Boilerplate CLI 0\.1\.0')) { throw 'Unexpected initial CLI version' }
-            & $tool doctor
-            if ($LASTEXITCODE -ne 0) { throw 'Installed package catalog is unusable' }
-            & $tool init --name WindowsTool --description 'Installed-tool check' --output $generated --profiles dotnet --non-interactive
-            if ($LASTEXITCODE -ne 0) { throw 'Installed tool cannot initialize' }
-            & $tool validate --output $generated
-            if ($LASTEXITCODE -ne 0) { throw 'Installed tool cannot validate' }
-          } finally { Pop-Location }
-          dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release --output $packages -p:Version=0.1.1
-          if ($LASTEXITCODE -ne 0) { throw 'Synthetic upgrade package failed' }
-          dotnet tool update DocsBoilerplate.Cli --tool-path $toolDir --add-source $packages --version 0.1.1 --no-cache
-          if ($LASTEXITCODE -ne 0) { throw 'Tool upgrade failed' }
-          Push-Location $env:RUNNER_TEMP
-          try {
-            $v2 = & $tool version
-            if ($LASTEXITCODE -ne 0 -or -not ($v2 -match '^Docs Boilerplate CLI 0\.1\.1')) { throw 'Unexpected upgraded CLI version' }
-            & $tool validate --output $generated
-            if ($LASTEXITCODE -ne 0) { throw 'Upgraded tool cannot validate old project' }
-            & $tool update --output $generated --apply
-            if ($LASTEXITCODE -ne 0) { throw 'Upgraded tool cannot update old project' }
-          } finally { Pop-Location }
-          if (Test-Path (Join-Path $generated '.docs-boilerplate-update')) { throw 'Upgrade left a recovery journal' }

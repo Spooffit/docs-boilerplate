@@ -75,11 +75,6 @@
         "pattern": "^[a-f0-9]{64}$"
       }
     },
-    "SchemaVersion": {
-      "type": "integer",
-      "const": 1,
-      "description": "Generator manifest format. Missing on original v1 manifests."
-    },
     "RetiredFiles": {
       "type": "array",
       "uniqueItems": true,

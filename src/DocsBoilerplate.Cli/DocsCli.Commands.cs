@@ -157,7 +157,6 @@ static partial class DocsCli
             "update" => ["catalog", "output", "apply"],
             "recover" => ["catalog", "output"],
             "list" or "doctor" or "help" => ["catalog"],
-            "version" => [],
             _ => []
         };
         var booleans = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "dry-run", "non-interactive", "apply" };

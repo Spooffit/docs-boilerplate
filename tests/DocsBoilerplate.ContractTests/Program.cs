@@ -279,21 +279,6 @@ Test("Markdown link targets retain fragments and omit fenced code examples", () 
     Expect(anglePath == "guides/my guide.md" && angleFragment == "section", "Angle-bracket path not supported");
 });
 
-Test("catalog schema rejects unknown future versions", () =>
-{
-    SchemaCompatibility.AssertCatalogVersion(1, 1, 1);
-    Throws<InvalidOperationException>(() => SchemaCompatibility.AssertCatalogVersion(2, 1, 1));
-    Throws<InvalidOperationException>(() => SchemaCompatibility.AssertCatalogVersion(1, 0, 1));
-    Throws<InvalidOperationException>(() => SchemaCompatibility.AssertCatalogVersion(1, 1, 3));
-});
-Test("manifest v1 and legacy unversioned manifests are supported, future schema rejected", () =>
-{
-    SchemaCompatibility.AssertProjectVersion(null);
-    SchemaCompatibility.AssertProjectVersion(1);
-    Throws<InvalidOperationException>(() => SchemaCompatibility.AssertProjectVersion(0));
-    Throws<InvalidOperationException>(() => SchemaCompatibility.AssertProjectVersion(2));
-    Throws<InvalidOperationException>(() => SchemaCompatibility.AssertProjectVersion(-1));
-});
 Test("SHA-256 hashes are stable and use UTF-8", () =>
     Expect(DocsCli.Hash("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
         "SHA-256 does not match known test vector"));

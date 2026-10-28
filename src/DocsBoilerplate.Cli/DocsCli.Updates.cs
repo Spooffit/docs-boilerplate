@@ -56,7 +56,6 @@ static partial class DocsCli
         var oldConfigBytes = await File.ReadAllBytesAsync(configPath);
         var oldConfig = JsonSerializer.Deserialize<ProjectConfig>(oldConfigBytes, Json)
             ?? throw new IOException("Invalid docs.config.json.");
-        SchemaCompatibility.AssertProjectVersion(oldConfig.SchemaVersion);
         AssertFingerprintManifest(oldConfig);
         var profileIds = ResolveProfiles(oldConfig.Profiles, profiles);
         if (profileIds.Count != oldConfig.Profiles.Length)

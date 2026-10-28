@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Reflection;
 using Spectre.Console;
 
 return await DocsCli.RunAsync(args);
@@ -15,24 +14,8 @@ static partial class DocsCli
     {
         try
         {
-            var requestedCommand = args.FirstOrDefault()?.ToLowerInvariant() ?? "help";
-            var command = requestedCommand switch
-            {
-                "--version" or "-v" => "version",
-                "--help" or "-h" => "help",
-                _ => requestedCommand
-            };
+            var command = args.FirstOrDefault()?.ToLowerInvariant() ?? "help";
             var flags = ParseFlags(args.Skip(1).ToArray(), command);
-            if (command == "version")
-            {
-                var version = typeof(DocsCli).Assembly
-                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-                    ?? typeof(DocsCli).Assembly.GetName().Version?.ToString() ?? "unknown";
-                AnsiConsole.WriteLine($"Docs Boilerplate CLI {version}");
-                AnsiConsole.WriteLine($"Catalog schema: {SchemaCompatibility.CatalogVersion}");
-                AnsiConsole.WriteLine($"Project manifest schema: {SchemaCompatibility.ProjectVersion} (legacy unversioned v1 accepted)");
-                return 0;
-            }
             var catalog = Path.GetFullPath(flags.GetValueOrDefault("catalog")
                 ?? Path.Combine(AppContext.BaseDirectory, "catalog"));
             if (!Directory.Exists(catalog))
@@ -78,12 +61,11 @@ static partial class DocsCli
                     AnsiConsole.WriteLine($"Catalog: {catalog}");
                     return 0;
                 default:
-                    AnsiConsole.WriteLine("Commands: init, update, recover, list, validate, doctor, version");
+                    AnsiConsole.WriteLine("Commands: init, update, recover, list, validate, doctor");
                     AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--modules glossary,testing] [--site docsify|none] [--dry-run] [--non-interactive] [--catalog PATH]");
                     AnsiConsole.WriteLine("validate: --output PATH [--catalog PATH]");
                     AnsiConsole.WriteLine("update: --output PATH [--apply] [--catalog PATH] (previews by default)");
                     AnsiConsole.WriteLine("recover: --output PATH [--catalog PATH] (inspect and recover an interrupted update)");
-                    AnsiConsole.WriteLine("version: print CLI version and supported schema versions");
                     return command == "help" ? 0 : 2;
             }
         }

@@ -9,10 +9,6 @@ run() { dotnet run --no-build --configuration Release --project "$project" -- "$
 
 run doctor
 run list
-run version > "$temp/version.log"
-grep -q '^Docs Boilerplate CLI 0.1.0' "$temp/version.log"
-grep -q '^Catalog schema: 1' "$temp/version.log"
-grep -q '^Project manifest schema: 1' "$temp/version.log"
 
 # A genuinely minimal repo must not contain dangling links to optional modules.
 run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
@@ -24,61 +20,7 @@ with open(sys.argv[1],encoding="utf-8") as stream:
 assert len(config["GeneratedHashes"]) == len(config["GeneratedFiles"])
 assert set(config["GeneratedHashes"]) == set(config["GeneratedFiles"])
 assert all(len(value)==64 for value in config["GeneratedHashes"].values())
-assert config["SchemaVersion"] == 1
 PY
-# Old v1 manifests without an explicit SchemaVersion remain usable. Update stamps v1.
-cp -a "$temp/minimal" "$temp/legacy-manifest-format"
-python3 - "$temp/legacy-manifest-format/docs.config.json" <<'PY'
-import json,sys
-path=sys.argv[1]
-with open(path,encoding="utf-8") as stream: config=json.load(stream)
-assert config.pop("SchemaVersion") == 1
-with open(path,"w",encoding="utf-8") as stream: json.dump(config,stream)
-PY
-run validate --output "$temp/legacy-manifest-format"
-run update --output "$temp/legacy-manifest-format" --apply
-run validate --output "$temp/legacy-manifest-format"
-python3 - "$temp/legacy-manifest-format/docs.config.json" <<'PY'
-import json,sys
-with open(sys.argv[1],encoding="utf-8") as stream: config=json.load(stream)
-assert config["SchemaVersion"] == 1
-PY
-
-# Never read or rewrite a manifest from a future, unsupported schema version.
-cp -a "$temp/minimal" "$temp/future-manifest-format"
-python3 - "$temp/future-manifest-format/docs.config.json" <<'PY'
-import json,sys
-path=sys.argv[1]
-with open(path,encoding="utf-8") as stream: config=json.load(stream)
-config["SchemaVersion"]=2
-with open(path,"w",encoding="utf-8") as stream: json.dump(config,stream)
-PY
-cp "$temp/future-manifest-format/docs.config.json" "$temp/future-manifest-before.json"
-if run update --output "$temp/future-manifest-format" --apply > "$temp/future-manifest.log" 2>&1; then
-    echo "Future manifest schema was accepted by update"; exit 1
-fi
-grep -q 'Unsupported docs.config.json SchemaVersion 2' "$temp/future-manifest.log"
-if run validate --output "$temp/future-manifest-format" > "$temp/future-manifest-validate.log" 2>&1; then
-    echo "Future manifest schema was accepted by validate"; exit 1
-fi
-grep -q 'Unsupported docs.config.json SchemaVersion 2' "$temp/future-manifest-validate.log"
-cmp "$temp/future-manifest-before.json" "$temp/future-manifest-format/docs.config.json"
-[[ ! -e "$temp/future-manifest-format/.docs-boilerplate-update" ]]
-
-# Input catalogs must not be consumed when their format version is unsupported.
-cp -a catalog "$temp/catalog-future-schema"
-python3 - "$temp/catalog-future-schema/profiles.json" <<'PY'
-import json,sys
-path=sys.argv[1]
-with open(path,encoding="utf-8") as stream: data=json.load(stream)
-data["schemaVersion"]=2
-with open(path,"w",encoding="utf-8") as stream: json.dump(data,stream)
-PY
-if run doctor --catalog "$temp/catalog-future-schema" > "$temp/future-catalog.log" 2>&1; then
-    echo "Unsupported catalog version was accepted"; exit 1
-fi
-grep -q 'Unsupported catalog schema version' "$temp/future-catalog.log"
-
 # First-use project overviews must be draft and evidence-oriented.
 [[ -f "$temp/minimal/docs/project/overview.md" ]]
 [[ -f "$temp/minimal/docs/architecture/overview.md" ]]

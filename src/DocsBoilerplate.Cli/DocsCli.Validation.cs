@@ -16,7 +16,6 @@ static partial class DocsCli
             throw new IOException("Missing docs.config.json.");
         var config = JsonSerializer.Deserialize<ProjectConfig>(await File.ReadAllTextAsync(configPath), Json)
             ?? throw new IOException("Invalid docs.config.json.");
-        SchemaCompatibility.AssertProjectVersion(config.SchemaVersion);
         if (config.GeneratedHashes is not null)
             AssertFingerprintManifest(config);
         var resolved = ResolveProfiles(config.Profiles, profiles);

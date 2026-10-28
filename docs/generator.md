@@ -12,36 +12,12 @@ Requires .NET 10 SDK. Repository-root usage:
 ```sh
 dotnet run --project src/DocsBoilerplate.Cli -- list
 dotnet run --project src/DocsBoilerplate.Cli -- doctor
-dotnet run --project src/DocsBoilerplate.Cli -- version
 dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive --dry-run
 dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/example
 ```
 
 `--profiles` accepts comma-separated available profile IDs; dependencies are resolved automatically. `--modules` and `--skills` are independently optional. Use `list` for supported values and planned profiles. Omit flags for interactive prompts. The TUI first asks for backend and frontend, then only asks about data access, UI libraries and testing tools when relevant; architecture and modeling are independent. Unsupported profiles remain visible through `list` but cannot be selected.
-
-## Installed .NET Tool and release compatibility
-
-The generator is packaged as `DocsBoilerplate.Cli` with command `docs-boilerplate`. It requires .NET 10. To test the actual package from this repository, build and install into an isolated tool directory:
-
-```sh
-dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts
-dotnet tool install DocsBoilerplate.Cli --tool-path ./tools --add-source ./artifacts --version 0.1.0
-./tools/docs-boilerplate version
-./tools/docs-boilerplate doctor
-```
-
-The installed tool bundles its own `catalog/`. When released to an approved NuGet feed, update the tool using the same installation scope:
-
-```sh
-dotnet tool update DocsBoilerplate.Cli --tool-path ./tools --add-source ./artifacts --version <new-version>
-./tools/docs-boilerplate version
-./tools/docs-boilerplate update --output ./my-docs
-```
-
-Here `<new-version>` is the actual version in a trusted package feed. CI uses **locally built** versions 0.1.0 and simulated 0.1.1 to test installation and upgrade on Linux and Windows; it does not publish version 0.1.1.
-
-**Tool/package version is distinct from the schema versions.** The generated `docs.config.json` now declares `SchemaVersion: 1`. An older fingerprinted v1 manifest with no `SchemaVersion` remains supported and gets the explicit value on the next successful `update --apply`. A manifest declaring another version is rejected without writing. All three catalog registries use `schemaVersion: 1`; unknown catalog versions also fail closed. Upgrading a tool **does not automatically update a project's documents**. Run preview, inspect changes in Git, then explicitly apply them. If a future release changes either schema format, introduce a deliberate tested migration rather than guessing or bypassing fingerprints.
 
 ## Safety
 

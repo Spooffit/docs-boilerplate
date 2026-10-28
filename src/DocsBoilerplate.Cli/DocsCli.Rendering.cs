@@ -65,7 +65,7 @@ static partial class DocsCli
             ids.Order(StringComparer.Ordinal).ToArray(), skills.Order(StringComparer.Ordinal).ToArray(),
             modules.Order(StringComparer.Ordinal).ToArray(), site,
             content.Keys.Order(StringComparer.Ordinal).ToArray(), hashes,
-            retired is { Length: > 0 } ? retired : null, SchemaCompatibility.ProjectVersion);
+            retired is { Length: > 0 } ? retired : null);
     }
 
     internal static string Hash(string content) =>
