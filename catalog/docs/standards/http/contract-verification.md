@@ -37,6 +37,16 @@ For every externally visible change, review:
 
 A modification that seems source-compatible in one language may be a wire-breaking change for another consumer. A successful OpenAPI generation step cannot establish runtime compatibility by itself.
 
+## Semantic compatibility of typed fields (when applicable)
+
+Treat the contract's **logical field identity**, wire property name, display label, type meaning and nesting/container ownership as distinct decisions. A presentation rename is not necessarily a wire rename; reusing an identifier or enum key for a different meaning can corrupt historical data even if the serialized type still compiles. Record whether a field can be removed, renamed, deprecated or reintroduced, and the real compatibility contract for old consumers. Do not impose one irreversible evolution policy on every API.
+
+Requiredness is not synonymous with a non-default CLR value. Test present `false`, zero, empty list, missing member, explicit `null` and invalid values separately for each adopted wire type. An optional field that is present may still need full type and constraint validation. For nested objects and lists, specify whether array order, duplicates, comparison keys and empty versus omitted values are observable parts of the contract.
+
+Review exact decimal encoding, unsupported non-finite floating-point values, integer range, ambiguous timestamp representations and whether two offset timestamps denoting the same instant are semantically equal. The selected serializer, client runtime, API schema and persistence mapping must agree on semantics; generated types alone do not prove they do.
+
+Where a schema includes custom annotations or validation extensions, explicitly identify the component that implements them. Passing a general-purpose JSON Schema validator proves only the supported standard keywords and dialect; it does not establish arbitrary application-specific comparers, sanitized-text semantics, value equality or domain rules.
+
 ## Generated clients and meaningful models
 
 Generated SDK code should be reproducible from its pinned contract and generator settings. Verify compilation in the **target SDK environment** and required runtime behaviors, including access to headers and problem responses. Keep presentation state and transport metadata deliberately owned by the client; do not force every UI or domain type to equal a generated transport DTO.

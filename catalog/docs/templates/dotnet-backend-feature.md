@@ -25,7 +25,7 @@ Use a separate row for each *confirmed* property, not a single free-text enumera
 | --- | --- | --- | --- | --- |
 | [Property] | [Exact type or explicitly unknown] | [Required / optional / conditional] | [Ownership and source] | [Known format, domain constraints and invariants] |
 
-Keep external wire format separate from domain models where appropriate. Treat missing, null and empty collection differently when the contract does.
+Keep external wire format separate from domain models where appropriate. Treat missing, null, zero/false and empty collection differently when the contract does. For structured fields, record stable identity versus display name, list order/uniqueness, decimal/date-time semantics and the scope of constraints only if those concepts exist. When the feature has Save Draft versus Publish, specify different accepted validation states without presuming either operation is mandatory.
 
 ## Application use case
 

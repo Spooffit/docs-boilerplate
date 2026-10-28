@@ -32,6 +32,12 @@ Compose reusable validators for genuinely shared *meaning*, not merely shared CL
 
 References: [including rules](https://docs.fluentvalidation.net/en/latest/including-rules.html), [custom validators](https://docs.fluentvalidation.net/en/latest/custom-validators.html), [complex properties](https://docs.fluentvalidation.net/en/latest/start.html#complex-properties), [collections](https://docs.fluentvalidation.net/en/latest/collections.html).
 
+## Typed constraints and validation stages
+
+When a selected contract models an optional typed field, an omitted value and a present zero, `false` or empty collection must not automatically be treated alike. Use explicit presence/null rules and validate a supplied value's own constraints. If a project distinguishes draft acceptance from publication readiness, select and test separate validation rules or contexts for those operations; do not hide the distinction behind one validator that arbitrarily skips failures.
+
+For numeric steps and bounds, preserve the adopted numeric domain (including decimal precision) without an accidental `decimal` to `double` conversion. For `List<T>`, collection size, item validity, uniqueness and ordering may require different checks, with nested property/index paths in diagnostics. Any comparer or normalizer must follow the contract rather than the machine's current culture. Do not silently sort, fill defaults or rewrite inputs from an input validator.
+
 ## Async rules and ASP.NET Core
 
 If any rule is asynchronous (`MustAsync`, `CustomAsync`, `WhenAsync`), run `ValidateAsync` with a cancellation token. Running synchronous `Validate` on an async validator is unsupported and may throw.

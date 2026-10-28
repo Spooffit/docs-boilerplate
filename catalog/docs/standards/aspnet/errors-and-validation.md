@@ -23,6 +23,14 @@ For each request value, define requiredness, length, permitted character set, en
 
 A bulk endpoint must document whether it is atomic or supports per-item outcomes; when partial results are allowed, expose successes and failures explicitly rather than reporting an unconditional overall success. If a state-changing request times out after reaching the server, clients need a defined retry, status-query or idempotency strategy where applicable. Transport failure alone does not establish that the write was rolled back.
 
+## Validation phases for structured or editable content (when applicable)
+
+When a project supports incomplete authoring followed by an explicit activation, submission or publication step, document which invariants apply at **each** operation. A draft Save might allow a missing required business value while still rejecting malformed types, invalid definition structure or unauthorized edits; a later Publish might require complete nested values, valid references and stronger cross-record invariants. This is a **project-selected workflow**, not permission for every endpoint to accept invalid data and not a requirement to introduce drafts.
+
+Separate an invalid **definition** (for example contradictory minimum/maximum bounds or an unsupported comparer) from an incomplete **instance** of an otherwise valid definition. Never silently repair submitted values by trimming, filling defaults, sorting, deduplicating, coercing numeric types or changing a time zone unless the public operation explicitly promises that transformation. Return addressable error locations for nested fields and list indexes where the adopted error format supports them.
+
+A repeat of validation at the final state-changing boundary is still necessary after a previous preview or draft check: another writer may have changed referenced resources or permissions. Verify that the actual endpoint and application pipeline execute the correct validation level.
+
 ## Response semantics
 
 - Distinguish invalid input, unauthenticated access, forbidden actions, missing or hidden resources, stale state, and transient dependency failures.

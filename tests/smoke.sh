@@ -251,6 +251,19 @@ grep -q '^## Conditional history and audit effects$' "$temp/all-profiles/docs/st
 grep -q 'cross-feature read concern' "$temp/all-profiles/docs/templates/module.md"
 grep -q 'UI notification or an attempted action' "$temp/all-profiles/docs/templates/feature.md"
 grep -q 'does not contain an installed CLI' "$temp/all-profiles/.agents/skills/docs-init/SKILL.md"
+# Universal typed-value distinctions are shipped with their selected standards,
+# not as a schema registry or an opinionated content-modeling project.
+grep -q '^## Typed values and collection meaning (when applicable)$' "$temp/all-profiles/docs/standards/architecture/ddd.md"
+grep -q '^## Validation phases for structured or editable content (when applicable)$' "$temp/all-profiles/docs/standards/aspnet/errors-and-validation.md"
+grep -q '^## Typed application values and database representation$' "$temp/all-profiles/docs/standards/postgresql/persistence.md"
+grep -q '^## Semantic compatibility of typed fields (when applicable)$' "$temp/all-profiles/docs/standards/http/contract-verification.md"
+grep -q '^## Typed constraints and validation stages$' "$temp/all-profiles/docs/standards/dotnet/fluentvalidation.md"
+grep -q '^## Typed-definition evolution and old snapshots (when applicable)$' "$temp/all-profiles/docs/standards/stateful-workflows.md"
+grep -q 'missing, null, zero/false' "$temp/all-profiles/docs/templates/dotnet-backend-feature.md"
+grep -q 'Unicode length units' "$temp/all-profiles/docs/templates/postgresql-migration.md"
+[[ ! -e "$temp/minimal/docs/standards/architecture/ddd.md" ]]
+[[ ! -e "$temp/minimal/docs/standards/postgresql/persistence.md" ]]
+[[ ! -e "$temp/minimal/docs/standards/http/contract-verification.md" ]]
 grep -q 'generated repository does not contain the CLI' "$temp/all-profiles/.agents/skills/docs-review/SKILL.md"
 [[ ! -e "$temp/minimal/docs/operations/observability.md" ]]
 [[ ! -e "$temp/minimal/docs/architecture/security.md" ]]

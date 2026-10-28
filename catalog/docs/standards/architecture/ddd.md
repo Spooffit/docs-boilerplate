@@ -28,6 +28,16 @@ Define the representation of omitted values, `null`, empty strings and whitespac
 
 In .NET, `string.Length` counts UTF-16 code units, not Unicode scalar values or grapheme clusters; specify the unit when it affects a business contract. A relational provider's character limit is not automatically equivalent to every application-level length unit. For regular expressions, decide culture/character-class semantics, matching of the whole value, input-size limits and execution timeouts; a .NET regex is not automatically a portable database `CHECK` expression.
 
+## Typed values and collection meaning (when applicable)
+
+Requiredness, value validity and non-emptiness are **separate rules**. For an adopted type contract, a present `false`, numeric zero, zero duration or empty collection may be valid even when the property is required. Specify explicitly whether a missing member, JSON `null`, an empty string, a whitespace-only string or an empty collection are allowed. Do not silently replace absent values with a CLR default, synthetic identifier or the first enum choice.
+
+For structured values, validate recursively against the **actual selected definition**. Collection-level size, element constraints, uniqueness and order are distinct. Define whether order is meaningful to equality, whether duplicate elements are compared by full semantic value or a chosen key, and whether identity used only by the editor participates in runtime equality. A hash may identify candidate duplicates, but a hash match alone is not necessarily sufficient to prove semantic equality. Never sort, deduplicate, clamp or round authored data as a hidden side effect of validation.
+
+For numbers, specify integer range, floating-point finite-value policy, exact decimal precision/step behavior and overflow handling separately. Avoid comparing exact decimal values through an intermediate binary floating-point conversion. For text, define whether length is measured in bytes, UTF-16 code units, Unicode scalar values or grapheme clusters; sanitized rich-text length may require a distinct extraction rule from storage-size limits.
+
+A calendar date, local wall-clock date/time, UTC instant, timestamp with offset and elapsed duration are **not interchangeable**. Record the accepted transport representation, precision, offset/time-zone interpretation, equality/comparison rule and any intentionally preserved authored offset. Converting a naive historical value to an instant requires an explicit source time zone or other approved migration rule; server or browser local time is not a safe default.
+
 ## Stable domain constraints
 
 Keep a single authoritative definition for each *confirmed* domain rule. Reuse the rule consistently in the domain, application boundary, persistence mapping and API validation **where the project's dependency structure allows it**. Validation at one boundary does not replace the guarantees of another.

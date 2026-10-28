@@ -22,6 +22,8 @@ status: template
 | --- | --- | --- | --- |
 | [Actual object] | [Verified] | [Confirmed] | [Explicit compatibility] |
 
+If this migration changes typed-value interpretation, explicitly compare old/new treatment of `NULL`, omitted input, Unicode length units, decimal precision, timezone/offset and any JSONB payload schema. A storage type conversion is not proof that historical values retain their meaning; document the conversion authority and unknown values before backfill.
+
 ## Planned steps
 
 1. [Preflight backups, available disk/WAL, existing constraints and lock budget.]

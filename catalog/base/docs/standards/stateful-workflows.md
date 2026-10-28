@@ -62,6 +62,14 @@ If an operation can delete dependent objects, describe the exact affected set, u
 
 If records can be copied between evolving schemas, document the matching rule (stable ID, path or an explicit migration), missing-versus-null behavior, incompatible values, orphaned data and how the user can resolve them. Do not invent implicit timezone conversion, type coercion, migration or backfill.
 
+## Typed-definition evolution and old snapshots (when applicable)
+
+For systems that store user-defined field structures or evolving document schemas, distinguish stable logical field identity from a display label, runtime key/type and container path. Copying a definition, resurrecting a removed field and introducing a new field with a familiar name are different operations; document which preserve historical identity and why. Do not infer equivalence from equal labels or equal values.
+
+When constraints are strengthened or a previously valid option is deprecated, define the behavior of old immutable snapshots, current drafts and new publications separately. A deprecated value may need to remain readable even when new authoring discourages it. A copy into a newer definition may preserve a type-compatible value while reporting a new constraint violation; do not silently drop, coerce or reinterpret it. Any conversion between naive date/time and an offset-aware instant needs an explicit approved rule, not a local-time fallback.
+
+If a schema allows drafts that are less complete than a publishable version, keep their validation statuses and enforcement boundaries distinct; this is conditional on the real product workflow, not a universal template requirement.
+
 ## Verification
 
 For the stateful flows that exist, check competing edits, stale operations, original historical reads, retries after uncertain outcomes, changed destructive impact and partial batches. Connect every claim to actual SUT/test evidence; a precise specification is not proof of implementation.

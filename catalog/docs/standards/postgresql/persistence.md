@@ -15,6 +15,16 @@ Use database constraints for invariants that must remain true under concurrent t
 
 For operations requiring an atomic change to multiple rows or tables, use a database transaction with an explicit boundary. Avoid performing irreversible external effects in the same assumed transaction unless a distributed consistency design is in place.
 
+## Typed application values and database representation
+
+A column constraint and a higher-level contract may measure **different things**. Map each adopted string length unit, decimal range/scale, timestamp interpretation, collection comparison and nullable/absent semantics explicitly to the PostgreSQL representation. An API's missing field is not the same as SQL `NULL`; default expressions and column defaults must not silently override the operation's intended meaning.
+
+PostgreSQL `CHECK` constraints generally pass when their expression evaluates to **unknown** (`NULL`); use appropriate `NOT NULL` or explicit predicates when absence must be rejected. Application-level Unicode scalar counts or sanitized HTML text length are not automatically equivalent to `length(text)`, `varchar(n)` or an ORM `HasMaxLength` rule. Validate cross-layer equivalence with representative Unicode, null, empty and nested data rather than assuming one limit enforces every boundary.
+
+Distinguish `date` (calendar date), `timestamp without time zone` (local/naive date-time), `timestamptz` (instant) and separately persisted original offset or zone information, if the product needs it. `timestamptz` does not preserve the originally submitted UTC offset. Choose conversions from an explicit contract, especially for historical values that lack zone context.
+
+If application documents store evolving typed content in `jsonb`, document which definition owns validity and how untrusted/old data is checked before publish or read. PostgreSQL does not automatically enforce an application-specific nested field schema or preserve an external canonical JSON byte representation merely because JSON is valid and stored in `jsonb`. Use checked, version-appropriate validation or justified database constraints at the actual enforcing boundary.
+
 ## Durable references and history
 
 Where durable records refer to historical snapshots or other retained content, use constraints or an explicitly justified consistency process to prevent dangling references and silent loss of readable history. Referential integrity, scoped uniqueness and ownership need protection at the persistence boundary when concurrent writers can race; an application-side collection check alone is insufficient.
