@@ -21,7 +21,7 @@ dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/exam
 
 ## Safety
 
-`--dry-run` prints the file plan without writing. Initialization refuses changed generated files and does not overwrite user-created documents. An identical re-run succeeds even if the repository also contains unrelated user-authored files. The generated `docs.config.json` records exact selection and file ownership. `validate` checks selection consistency, missing owned files, unresolved template tokens and basic relative Markdown links.
+`--dry-run` prints the file plan without writing. Initialization refuses changed generated files and does not overwrite user-created documents. An identical re-run succeeds even if the repository also contains unrelated user-authored files. The generated `docs.config.json` records exact selection and file ownership. `validate` checks selection consistency, missing owned files, unresolved template tokens, ordinary relative Markdown links, common heading fragments and generated `llms.txt` targets. It supports `#local-heading` and `file.md#heading` with fenced-code exclusion and duplicate heading suffixes. It does **not** implement every Markdown/Docsify anchor variant or a real browser-rendering check.
 
 Updates with fingerprint-based conflict detection are supported (see below). Automatic three-way merges and arbitrary site-engine migrations are intentionally not supported.
 

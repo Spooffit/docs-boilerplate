@@ -46,6 +46,8 @@ Do not add invented owner names, review dates, adoption status or unsupported te
 ## Rules for linking
 
 - Write relative paths, including the `.md` suffix, to existing documents.
+- When linking to a section, use a matching Markdown fragment, e.g. `[scope](feature.md#scope)` or `[checks](#checks)`. Prefer short, stable heading names; duplicate headings acquire numeric suffixes such as `#setup-1`. Use percent-encoding for non-ASCII URL fragments where required.
+- The CLI checks ordinary inline links, local fragment targets, and common ATX/Setext heading slugs while ignoring fenced code samples; it does **not** implement every CommonMark or Docsify anchor rule. Avoid relying on renderer-specific heading syntax without verifying the actual rendered page.
 - Update inbound references after moving a page.
 - A document should link to the canonical standard, contract, ADR or feature rather than copy it.
 - Technical standards describe verifiable rules and must state their applicability. Optional libraries require selected technology profiles.
@@ -59,6 +61,6 @@ Docsify is an optional browser-side reader, not a required build tool. Its `inde
 
 ## Checks
 
-Run the generator's `validate` command. It verifies metadata, filenames, basic relative links, generated-file declarations and directory indexes. Markdown anchor semantics and all possible YAML expressions are **not** comprehensively parsed in this first implementation.
+Run the generator's `validate` command. It verifies metadata, filenames, ordinary inline relative Markdown links **including common section anchors**, generated-file declarations, folder indexes and `llms.txt` paths/fragments. Reference-style links, dynamically generated links, advanced Markdown/HTML rendering and arbitrary YAML expressions are **not** comprehensively parsed. Verify critical cross-page navigation in the configured Docsify browser view; a passing source-level check cannot prove that every client-side renderer chooses the same slug.
 
 See the community [llms.txt proposal](https://llmstxt.org/) and [Docsify](https://docsify.js.org/) for their separate roles.

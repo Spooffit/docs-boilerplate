@@ -135,9 +135,16 @@ static partial class DocsCli
                 }
                 try
                 {
-                    var target = SafePath(output, Uri.UnescapeDataString(targetText));
+                    var (relative, fragment) = MarkdownNavigation.SplitLocalTarget(targetText);
+                    if (string.IsNullOrEmpty(relative))
+                        throw new IOException("llms.txt requires an explicit file path.");
+                    var target = SafePath(output, relative);
                     if (!File.Exists(target))
                         errors.Add($"Broken llms.txt link: {targetText}");
+                    else if (!string.IsNullOrEmpty(fragment)
+                        && target.EndsWith(".md", StringComparison.OrdinalIgnoreCase)
+                        && !MarkdownNavigation.Anchors(await File.ReadAllTextAsync(target)).Contains(fragment))
+                        errors.Add($"Missing Markdown heading anchor in llms.txt: {targetText}");
                 }
                 catch (IOException)
                 {
