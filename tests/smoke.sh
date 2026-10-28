@@ -54,7 +54,7 @@ if grep -q '^Documents in this directory:$' "$temp/minimal/docs/templates/index.
 fi
 grep -q 'templates/index.md' "$temp/minimal/docs/catalog.md"
 grep -q 'docs/templates/index.md' "$temp/minimal/llms.txt"
-[[ -f "$temp/minimal/docs/standards/stateful-workflows.md" ]]
+[[ ! -e "$temp/minimal/docs/standards/stateful-workflows.md" ]]
 [[ -f "$temp/minimal/docs/standards/specification-traceability.md" ]]
 [[ ! -e "$temp/minimal/docs/testing/strategy.md" ]]
 [[ ! -e "$temp/minimal/.agents" ]]
@@ -243,22 +243,19 @@ grep -q '^## Consumer cache and platform-managed assets (when applicable)$' "$te
 grep -q 'cross-language or platform support' "$temp/all-profiles/docs/templates/technical-feature.md"
 [[ ! -f "$temp/minimal/docs/standards/http/client-contracts.md" ]]
 [[ ! -f "$temp/minimal/docs/standards/storage/object-storage.md" ]]
-# Optional audit-history review prompts must render only with the selected modules.
-grep -q '^## Durable activity history (only when required)$' "$temp/all-profiles/docs/operations/observability.md"
-grep -q 'source owner' "$temp/all-profiles/docs/operations/observability.md"
-grep -q 'visibility before counts, pagination and filter suggestions' "$temp/all-profiles/docs/architecture/security.md"
-grep -q '^## Conditional history and audit effects$' "$temp/all-profiles/docs/standards/data-flows.md"
-grep -q 'cross-feature read concern' "$temp/all-profiles/docs/templates/module.md"
-grep -q 'UI notification or an attempted action' "$temp/all-profiles/docs/templates/feature.md"
+# Generated boilerplate must not impose the predecessor's audit workflow.
+if grep -q '^## Durable activity history' "$temp/all-profiles/docs/operations/observability.md"; then
+    echo "Unexpected activity-history guidance"; exit 1
+fi
 grep -q 'does not contain an installed CLI' "$temp/all-profiles/.agents/skills/docs-init/SKILL.md"
 # Universal typed-value distinctions are shipped with their selected standards,
 # not as a schema registry or an opinionated content-modeling project.
 grep -q '^## Typed values and collection meaning (when applicable)$' "$temp/all-profiles/docs/standards/architecture/ddd.md"
-grep -q '^## Validation phases for structured or editable content (when applicable)$' "$temp/all-profiles/docs/standards/aspnet/errors-and-validation.md"
+grep -q '^## Validation at the correct operation boundary$' "$temp/all-profiles/docs/standards/aspnet/errors-and-validation.md"
 grep -q '^## Typed application values and database representation$' "$temp/all-profiles/docs/standards/postgresql/persistence.md"
 grep -q '^## Semantic compatibility of typed fields (when applicable)$' "$temp/all-profiles/docs/standards/http/contract-verification.md"
 grep -q '^## Typed constraints and validation stages$' "$temp/all-profiles/docs/standards/dotnet/fluentvalidation.md"
-grep -q '^## Typed-definition evolution and old snapshots (when applicable)$' "$temp/all-profiles/docs/standards/stateful-workflows.md"
+[[ ! -e "$temp/all-profiles/docs/standards/stateful-workflows.md" ]]
 grep -q 'missing, null, zero/false' "$temp/all-profiles/docs/templates/dotnet-backend-feature.md"
 grep -q 'Unicode length units' "$temp/all-profiles/docs/templates/postgresql-migration.md"
 [[ ! -e "$temp/minimal/docs/standards/architecture/ddd.md" ]]

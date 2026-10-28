@@ -36,17 +36,16 @@ When a rule changes, verify (as applicable) its business observable outcome, tec
 
 Ask whether the documentation accidentally equates any of these different events:
 
-- saving a draft and publishing a version;
-- approving a release and activating it;
-- returning an HTTP success and completing a background operation;
-- retaining historical data and making it available to a current client;
-- granting a permission in UI and enforcing it on the server.
+- accepting an HTTP request and finishing an asynchronous operation;
+- showing an available action in the UI and authorizing it on the server;
+- validating an input and committing its effect;
+- verifying source-code compatibility and checking deployed behavior.
 
 These are **examples of distinctions to evaluate**, not universal requirements that every project has all these stages.
 
 ## Source evidence and claim authority
 
-Before calling a specification "implemented" or "verified", identify **which repository, version/ref and actual source/test** supports the claim. A historical snapshot, proposed API table, published schema, generated SDK and current service endpoint do not represent equivalent evidence.
+Before calling a specification "implemented" or "verified", identify **which repository, version/ref and actual source/test** supports the claim. A previous code revision, proposed API table, generated SDK and currently deployed endpoint do not represent equivalent evidence.
 
 If a document links to source code outside the repository, resolve and inspect the exact checkout before treating it as a technical fact. A relative link to a missing file is an **unresolved evidence dependency**; do not silently replace it with an invented endpoint or approval.
 

@@ -24,14 +24,11 @@ These are **questions for the repository owner**, not approved engineering requi
 | MVC and CQRS API style | ASP.NET Core/MVC/CQRS are composable independent selections | Offer explicit MVC+CQRS conventions with real bus/result mapper samples; no specialized profile |
 | Optimistic HTTP concurrency | Generic HTTP/client guidance requires selection of actual wire semantics | Optional strong ETag/If-Match reference profile; leave contracts fully project-defined |
 | SDK platform adapter policy | Shared protocol behavior may use optional transport/storage/resource adapters; platform-specific threading and runtime constraints are verified per selected target | Keep only technology-neutral guidance; offer an opt-in SDK adapter template with explicit runtime acceptance checks; choose platform-specific requirements per project |
-| Typed-value semantics and draft validation | Standards now separate missing/null/default values, exact numeric and temporal semantics, ordered/unique collections, and conditional draft-versus-publish validation | Keep these as optional contract review checks; offer a dedicated schema-driven content modeling template only when a project needs it; make a specific validation lifecycle the default |
 | Code generation verification examples | Generated models need contract fidelity and runtime proof, but the template does not ship an executable compiler/codegen example | Keep verification prompts; offer separately reviewed optional examples for chosen schema/codegen technologies; no default code generator |
 | Generated API client state | Client generation and UI view/form state boundaries are defined by consuming application | Opinionated direct-generated-DTO form model; adapter/view-model approach; no default |
 | Messaging topology | MassTransit/RabbitMQ guidance avoids hardcoding one project topology | Optional concrete contract/package/topology conventions after testing; stay tool/transport-neutral by default |
 | Data-flow detail | Transport and internal flows are distinguished when applicable | Optional detailed DF-ID template; lightweight traceability only |
 | Milestone examples | Stages are project-defined | Example Demo/MVP/Production plan as opt-in guidance; no prescribed stages |
-| Persistent activity-history documentation | Security and observability scaffolds include conditional prompts for durable history without requiring an audit subsystem | Keep prompts within existing modules; add a dedicated opt-in activity-history writing template; omit history-specific guidance unless explicitly selected |
-| Review/approval workflow examples | Generic stateful workflow checklist describes review only when applicable | Keep the checklist; add an opt-in review decision template; offer an independently verified example |
 
 ## Approval requirements
 

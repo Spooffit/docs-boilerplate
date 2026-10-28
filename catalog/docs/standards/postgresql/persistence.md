@@ -23,13 +23,13 @@ PostgreSQL `CHECK` constraints generally pass when their expression evaluates to
 
 Distinguish `date` (calendar date), `timestamp without time zone` (local/naive date-time), `timestamptz` (instant) and separately persisted original offset or zone information, if the product needs it. `timestamptz` does not preserve the originally submitted UTC offset. Choose conversions from an explicit contract, especially for historical values that lack zone context.
 
-If application documents store evolving typed content in `jsonb`, document which definition owns validity and how untrusted/old data is checked before publish or read. PostgreSQL does not automatically enforce an application-specific nested field schema or preserve an external canonical JSON byte representation merely because JSON is valid and stored in `jsonb`. Use checked, version-appropriate validation or justified database constraints at the actual enforcing boundary.
+If application documents store evolving typed content in `jsonb`, document which definition owns validity and how untrusted/old data is checked before it is relied on by an application. PostgreSQL does not automatically enforce an application-specific nested field schema or preserve an external canonical JSON byte representation merely because JSON is valid and stored in `jsonb`. Use checked, version-appropriate validation or justified database constraints at the actual enforcing boundary.
 
-## Durable references and history
+## Referential integrity and transaction scope
 
-Where durable records refer to historical snapshots or other retained content, use constraints or an explicitly justified consistency process to prevent dangling references and silent loss of readable history. Referential integrity, scoped uniqueness and ownership need protection at the persistence boundary when concurrent writers can race; an application-side collection check alone is insufficient.
+Protect actual references, uniqueness and ownership constraints against concurrent writes. An application-side existence query is not proof that an invariant survives a competing commit.
 
-If a snapshot, its current pointer and a history record must become visible together, define a transaction that spans those **database** writes and verify recovery after failures. Do not extend PostgreSQL transaction guarantees to external object stores or message brokers. When effects cross stores, specify staged states, recovery and idempotency separately.
+Use an explicit database transaction when several database writes must be atomic. Do not extend that guarantee to an independent broker or object store.
 
 ## MVCC, isolation and concurrent access
 

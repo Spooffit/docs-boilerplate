@@ -45,9 +45,9 @@ For nontrivial cases, describe **only** the steps required by the actual use cas
 
 A DB commit and a broker publish are not magically one atomic event. Multiple stores have independent commits unless a concrete coordination mechanism says otherwise. Do not claim exactly-once delivery by default.
 
-## Stateful transitions
+## Concurrent changes
 
-Where a workflow includes edits, immutable versions, publication or destructive changes, apply the [conditional stateful-workflow checklist](stateful-workflows.md) rather than assuming a basic CRUD lifecycle.
+When writes may race, describe the applicable consistency guarantee and server-side conflict handling. Never invent a business state machine, publication process or entity lifecycle solely to populate a flow.
 
 ## Input trust and failure semantics
 
@@ -58,10 +58,6 @@ Document normalization explicitly: allowed alphabet, case or Unicode normalizati
 Distinguish invalid input, denied access, an unknown resource, a stale state, a result not ready yet, a conflicting write and an unavailable dependency. Define which failure is observable to the caller and which internal details remain private. An exception from infrastructure is not automatically a public error contract. Do not return a successful empty response on failure.
 
 For batch operations, specify whether processing is atomic or partial and make any per-item outcomes observable. An operation that promised all-or-nothing semantics must not acknowledge partial completion as success. A timed-out write or missing response is an **unknown outcome**, not proof that a commit did not occur.
-
-## Conditional history and audit effects
-
-Where a requirement calls for durable history of confirmed actions, identify the **source commit** that makes a fact true and the point when that fact reaches its history reader. A queued event, dispatched message or optimistic UI row is not a completed audit append. The history projection may lag without undoing the original committed operation. Specify stable fact identity, idempotent append, changes under replay, failure recovery and the distinction between one stage's committed result and an entire multi-stage workflow. An ordinary observability log is not automatically the authoritative history; do not require an activity subsystem when the project has no such requirement.
 
 ## Repeat and recovery semantics
 

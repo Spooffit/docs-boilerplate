@@ -29,7 +29,7 @@ Define the actual behavior for the following cases. The table is a review checkl
 | Same message identity, same immutable facts | Is replay acknowledged without repeating side effects? | Duplicate effects |
 | Same message identity, contradictory facts | Is the conflict quarantined or rejected? | Identity reuse hides corruption |
 | New message, older entity state | Does the consumer ignore or reconcile stale input? | State regression |
-| Equal entity version and equal state | Is re-publication a safe no-op? | Unnecessary work |
+| Equal entity version and equal state | Is reapplication a safe no-op? | Unnecessary work |
 | Equal entity version and conflicting state | What is the authoritative resolution path? | Silent overwrite |
 | Higher version with unavailable dependency | Is pending work durable and resumable? | Lost update |
 | Unsupported contract version | Is processing blocked with a meaningful diagnostic? | Misinterpreted data |
@@ -48,7 +48,7 @@ Never assume that a single local database transaction spans separate stores, a b
 
 Specify whether an out-of-order child state waits for a parent, is rejected or triggers repair. Define how a new candidate supersedes obsolete pending work without allowing an old worker to commit stale results.
 
-A reconciliation process may republish authoritative snapshots, perform a complete listing with an explicit completeness marker or use a separately versioned repair API. Choose one only after documenting the actual contract. **Absence from a partial snapshot set is not proof of deletion**. Explicit lifecycle changes, a complete authoritative snapshot boundary or equivalent evidence are required before removing projected state.
+A reconciliation process may republish authoritative snapshots, perform a complete listing with an explicit completeness marker or use a separately versioned repair API. Choose one only after documenting the actual contract. **Absence from a partial snapshot set is not proof of deletion**. A complete authoritative data set, explicit deletion signal or equivalent evidence is required before removing projected state.
 
 Distinguish reconciliation being *scheduled* from source messages being *published*, consumer updates being *applied* and final state being *verified*.
 
@@ -56,11 +56,9 @@ Distinguish reconciliation being *scheduled* from source messages being *publish
 
 Some multi-stage workflows need **command execution identity** independently of the entity, message, event or content hash. If an API supports original-result replay after an uncertain response, document the operation's scope, trusted actor, request identity, meaningful input comparison, retained original result and durable commit boundary.
 
-A confirmed retry of the *same* accepted operation should not silently perform a fresh Create, publish, moderation, history append or other business mutation. A new user intent may legitimately create a second artifact with equal content, so content hashes must not be used as universal deduplication keys. Define operation-retention limits and the behavior when the original outcome is no longer known.
+A confirmed retry of the *same* accepted operation should not silently perform a duplicate non-idempotent operation. A new user intent may legitimately create a second artifact with equal content, so content hashes must not be used as universal deduplication keys. Define operation-retention limits and the behavior when the original outcome is no longer known.
 
-For workflows divided by a job, human approval, broker, or independent owner, identify each stage's durable identity/inputs, terminal outcomes, continuation prerequisites and separately committed side effects. If a worker crashes or another writer supersedes its input, the resumed worker must verify its accepted correlation and actual current constraints before changing state. A later stage cannot reuse a previous transaction's lock or assume another owner's facts remained fresh.
-
-An owning resource token and a separate *user-visible comparison basis* may have different freshness semantics. Confirm business consent against the relevant versioned inputs when the actual use case requires it; matching own `ETag` alone does not prove cross-owner consistency.
+For work divided across jobs, brokers or independent system owners, identify each stage's durable identity/inputs, terminal outcomes, continuation prerequisites and separately committed side effects. If a worker crashes or another writer supersedes its input, the resumed worker must verify its accepted correlation and actual current constraints before changing state. A later stage cannot reuse a previous transaction's lock or assume another owner's facts remained fresh.
 
 ## Operational evidence
 

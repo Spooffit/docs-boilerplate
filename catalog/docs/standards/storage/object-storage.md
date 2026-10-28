@@ -35,13 +35,9 @@ An object store and application metadata database usually do **not** share one t
 
 Document which process owns cleanup and how failed/in-progress objects become visible to operators. Do not claim `Available` merely because object upload bytes were received.
 
-## Immutable references and lifecycle
+## References and deletion
 
-Decide whether replacing bytes mutates the same logical identity or creates a new one. If published historical content must remain reproducible, define retention and versioning at the correct boundary.
-
-Before deletion, determine which drafts, published versions, external references, caches and retained historical records still require the object. Do not equate "metadata query returned no references" with proof of no use if some authoritative dependency source is unavailable. Previewed impact can change before deletion; revalidate the precise dependency set when the workflow requires it.
-
-Archive, retire, withdrawal, physical removal and restoration are separate optional semantics. Do not introduce all of them just because a previous project had them.
+When the adopted API allows object deletion, check its actual references and retention requirements before removal. An unavailable reference source is not proof of no references; recheck under the concurrency guarantees applicable to the application. Do not invent archive, withdrawal, publication or versioning states.
 
 ## Access, caching and partial reads
 
@@ -57,6 +53,6 @@ Where a platform produces a texture, sprite, audio object or engine asset from d
 
 ## Verification
 
-Test mismatched MIME/signatures, executable payloads, filename/path attacks, oversized streams, incomplete uploads, crashes after object write but before metadata commit, duplicate requests, forbidden downloads, deletion while referenced, range/cache validators and historical reads. Use the actual object provider and access gateway for integration claims.
+Test mismatched MIME/signatures, executable payloads, filename/path attacks, oversized streams, incomplete uploads, crashes after object write but before metadata commit, duplicate requests, forbidden downloads, deletion while referenced, range/cache validators and referenced-object reads. Use the actual object provider and access gateway for integration claims.
 
 References: [ASP.NET Core secure file upload guidance](https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads), [AWS multipart object upload and checksum behavior](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html), [RFC 9110 Range Requests](https://www.rfc-editor.org/rfc/rfc9110.html#section-14).

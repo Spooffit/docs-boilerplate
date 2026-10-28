@@ -48,17 +48,13 @@ Do not require fixed Domain/Application/Infrastructure or FSD folder structures 
 
 Identify cancellation, timeout, idempotency and side-effect behavior where relevant. A client timeout is not proof that server writes rolled back.
 
-## State and version history (when applicable)
-
-[For actual versioned or multi-writer resources, describe the selected baseline, concurrent update behavior, history and destructive impact. See the [stateful-workflow checklist](../standards/stateful-workflows.md). Delete this section for stateless features.]
-
 ## State and failure handling
 
-[For UI or SDK features, describe state ownership and user-visible progress. For backend/integration features, describe conflict handling, transaction rollback, external dependency failure and safe diagnostics. Distinguish invalid inputs, forbidden work, missing resources and concurrent changes. If a review/approval gate exists, document its exact target/version, retained decision history, reviewer permissions, independent comparison/consent basis, concurrency protections and the separate point at which a permitted action becomes effective; apply the selected stateful-workflow standard instead of inventing a generic approval engine.]
+[For UI or SDK features, describe state ownership and user-visible progress. For backend/integration features, describe conflict handling, transaction rollback, external dependency failure and safe diagnostics. Distinguish invalid inputs, forbidden work, missing resources and concurrent changes. Document additional business states only when supported by the project's approved requirements.]
 
 ## Security, reliability and observability
 
-[Record selected authentication, operation authorization, resource-specific constraints and data protection only when applicable. Distinguish server-enforced permissions from advisory UI capabilities, stale session/actor context and checks made before a concurrent change. If a session expires during an edit, define whether unsaved input, original concurrency baseline and unknown mutation outcomes can be recovered safely. Do not prescribe an identity provider, roles, cross-origin deployment or security architecture by default. Link the selected project security document, if present, instead of copying its decisions here. Specify actual logs, traces, metrics or audit needs if known. If a persistent activity trail is confirmed, identify the committed source fact, actor/initiator, exact target, durable capture and delivery boundaries, replay behavior, safe recorded details, reader authorization and retention. Do not confuse a successful stage with the whole workflow or invent an activity journal when no requirement exists.]
+[Record selected authentication, operation authorization, resource-specific constraints and data protection only when applicable. Distinguish server-enforced permissions from advisory UI capabilities, stale session/actor context and checks made before a concurrent change. If a session expires during an edit, define whether unsaved input, original concurrency baseline and unknown mutation outcomes can be recovered safely. Do not prescribe an identity provider, roles, cross-origin deployment or security architecture by default. Link the selected project security document, if present, instead of copying its decisions here. Specify actual logs, traces, metrics or audit requirements only when supported by project evidence.]
 
 ## Target design versus observed implementation
 
