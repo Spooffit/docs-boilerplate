@@ -29,7 +29,7 @@ status: template
 
 ## Lifecycle and history (when applicable)
 
-[If this feature actually saves drafts, publishes, archives or removes dependencies, describe the observable differences and historical consequences. Do not assume these states exist in every project.]
+[If this feature actually saves drafts, requires review, publishes, archives or removes dependencies, describe the observable differences and historical consequences. When approval exists, identify the exact reviewed object/version, whether a decision merely allows a later action, which outcomes are retained in history and what users observe before an asynchronous effect completes. Do not assume these states exist in every project.]
 
 ## Alternate and failure scenarios
 
