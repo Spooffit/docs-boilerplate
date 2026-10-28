@@ -130,7 +130,6 @@ legacy_client_patterns = [
         r"\bgenerated (?:api )?(?:client|dto|model)s?\b",
         r"\b(?:cross-platform|client|platform|custom) SDK\b",
         r"\bSDK (?:core|architecture|adapter|package|development)\b",
-        r"\bSDKs\b",
         r"\bplatform adapters?\b",
     )
 ]
