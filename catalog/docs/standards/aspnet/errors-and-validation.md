@@ -31,6 +31,13 @@ A bulk endpoint must document whether it is atomic or supports per-item outcomes
 - Do not turn a failed operation into an empty successful response.
 - Do not leak internal exceptions or sensitive data; include a safe trace/correlation reference where useful.
 
+## Error status versus actual middleware behavior
+
+Plan error outcomes for route misses, malformed bodies, failed authentication, permission denial, missing or hidden resources, application conflicts and dependency faults **at the layer where they arise**. A handler-specific result mapper cannot by itself transform every route, authentication or binding failure. Keep safe diagnostics and correlation where appropriate; don't publish internal exception details.
+
+Distinguish a failed HTTP `If-Match` precondition from a business conflict. A `412` is normally appropriate for a false precondition; a `409` can remain a separate state conflict even when preconditions pass. A missing header warrants `428` only when the documented endpoint requires it. Invalid route constraints can yield `404` before model validation, so test actual requests instead of inferring behavior solely from controller attributes.
+
+
 ## Framework pipeline
 
 Use centralized exception handling when unexpected failures cross the HTTP boundary. For ASP.NET Core's Problem Details service, `AddProblemDetails` and `UseExceptionHandler` are available; check content-negotiation behavior and configure a fallback correctly. `UseStatusCodePages` may populate error responses that have no body, subject to content type support and project requirements.

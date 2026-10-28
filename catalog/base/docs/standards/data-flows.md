@@ -23,6 +23,15 @@ Link the two by a stable local flow name or identifier where needed. Never dupli
 
 Do not label a local domain event as an external broker message unless it is actually transported. An outbox write is not necessarily an independent network transport.
 
+## Flow inventory and local traceability
+
+For multi-stage features, an optional **local flow identifier** (for example `DF01`) can connect the external interaction, detailed implementation steps, unanswered requirements and proof/test evidence. Do not force globally numbered IDs on unrelated documents; choose an identifier system only if the project has adopted one.
+
+When the contract is complex, the transport inventory should make it possible to locate: initiator, transport/channel and destination, authentication/permission policy, route/query/body/header or message payload, application action, expected response or event, observable success and meaningful failure. Name the real trigger/completion condition for jobs and background processing. Treat outbox persistence as a durable stage, **not automatically an independent network delivery**. Never infer that an in-process domain event is a broker publication.
+
+A use-case flow can link to authoritative DTO, message and API schemas rather than duplicate them. Keep the transport inventory distinct from the implementation table: the latter names real state owners, reads, transformations, guards, commits, outgoing effects and failure recovery. Do not manufacture a five-step command/transaction workflow for a simple read.
+
+
 ## Internal data and state flow
 
 For nontrivial cases, describe **only** the steps required by the actual use case:
@@ -55,6 +64,15 @@ For batch operations, specify whether processing is atomic or partial and make a
 For flows where retries matter, document idempotency scope, deduplication window, message acknowledgements, ordering, stale input and partial failure recovery. Explain how users or operators distinguish a failed write from a lost acknowledgement.
 
 A client cancellation or HTTP timeout does not by itself prove server-side rollback.
+
+## Traceable outcomes and unfinished design
+
+For each high-risk behavior, link the actual input flow to the corresponding internal state/effect boundary and the suite that proves its **observable** result. A verification matrix can record flow ID, scenario, SUT, isolated setup, expected outcome and actual test/evidence. Classify tests by the system exercised, not by whether their class names contain “Integration” or “E2E”.
+
+For reads, include filter/order/page/snapshot freshness when they materially affect correctness; read models may lag the authoritative writer. For writes, distinguish pre-commit cancellation, commit failure and cancellation after durable commit, plus the caller's knowledge of each outcome. For multi-store flows, list separate commits, compensation/reconciliation responsibilities and how partial progress becomes visible. Receiving a message, committing outbox intent, broker delivery, consumer durable acceptance and external visibility are different milestones.
+
+Use **Unresolved** with a concrete issue reference for missing decisions and **Not applicable** for consciously absent mechanisms. Neither an unapproved suggestion nor an unverified implementation claim can silently become an accepted contract. A diagram or arrow sequence may supplement a table but is not evidence that the flow exists.
+
 
 ## Evidence and unknowns
 

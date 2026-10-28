@@ -39,6 +39,17 @@ These are **not approvals**. Historic project documents may keep describing thei
 
 Neither row is approval. Avoid changing the generator's default profile selections on the basis of these original-project documents alone.
 
+## S16/S17 retained design choices
+
+| Topic | Historically fixed S16/S17 behavior | Options for the owner |
+| --- | --- | --- |
+| Opinionated ASP.NET Core MVC API style | S16 requires MVC controllers, `ICommandBus`/`IQueryBus`, `ToActionResult`, `ApiResponse<T>`, centralized route/version/group constants, and a `200` JSON envelope for common mutations | Retain only the neutral ASP.NET Core/MVC profiles; add an explicitly selected opinionated MVC+CQRS variant with tested code; reuse existing conventions only within each consuming project |
+| HTTP conditional-write policy | S16 uses strong ETags derived from internal `int Version` with mandatory `If-Match` for mutable resources, `428` when omitted and `412` on mismatch | Provide an optional optimistic-concurrency design/profile; have each project's API contract explicitly select its own wire/precondition semantics; preserve a tested illustrative example without making the `int` mapping universal |
+| Data-flow table and identifiers | S17 requires transport/internal tables and local `DF01` identifiers for every relevant server feature | Preserve a detailed optional flow template; make only traceability/outcome boundaries mandatory; allow project-chosen IDs and presentation |
+
+These questions remain **unapproved** and are separate from any semantic rule extraction completed in this block.
+
+
 ## Required evidence before consultation
 
 - The structural inventory and detailed migration notes are reconciled with source files.

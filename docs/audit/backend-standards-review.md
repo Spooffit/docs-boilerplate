@@ -81,6 +81,15 @@ The predecessor's application test execution, DB migrations and production contr
 
 Following a whole-file review and reusable-rule extraction, the four inbound links to each retired source were updated. S02 mapped to the base stateful-workflows review and selected EF Core conventions; S03 to base data-flow trust/failure rules and opt-in ASP.NET Core error semantics. Project-specific mandatory Ardalis, constraint-class naming and FluentValidation decisions are **not** presumed for every new project. The full source-to-target trace is in the preceding comparison section. The original documents remain available through Git history, and successful CI remains the deletion gate.
 
+## S16/S17 full-content review and extraction (2026-10-28)
+
+S16 (the original 791-line MVC/CQRS-oriented API profile) was read in full. Its reusable HTTP protocol requirements, route-constraint versus `400` behavior, conditional request semantics, response status fidelity, authorization/model-binding boundaries, selected app abstraction reuse and OpenAPI/middleware verification are now in `catalog/docs/standards/aspnet/http-api.md`, `mvc-controllers.md` and `errors-and-validation.md`. HTTP semantics were cross-checked against ASP.NET Core routing documentation and RFC 9110. S16's fixed buses, response mapper/envelope, `api/v{version:apiVersion}` route, 200-for-mutations policy and `int Version` ETag design are **not** universal defaults. The large illustrative controllers and owner-specific choices remain preserved in the old source until a decision is made about optional executable examples.
+
+S17 (the original 89-line data-flow standard) was read in full. Its transport-versus-internal flow distinction, optional local flow IDs, rich input/output/authorization inventory, actual state/commit boundaries, retry and recovery semantics, explicit unknowns, and SUT-based verification matrix are now in `catalog/base/docs/standards/data-flows.md`. A fixed DF01/table shape is not required of every project. S17 is eligible for retirement **only once all its inbound Markdown references have been reconciled and the deletion check passes**.
+
+Neither text migration certifies the original application's implementation, tests, published APIs or external links as operational evidence. The old project source remains a separate historical artifact from generated documentation.
+
+
 ## Completed S18/S19/S20 retirement (2026-10-28)
 
 S18 and S19 were compared in full with their respective **optional** FluentValidation and Ardalis.Specification profiles; the specialized composition, execution, provider fidelity and validation requirements have been retained without a mandatory dependency for unselected projects. The entire two-line S20 source was reconciled into optional CQRS handler-placement guidance, with concrete architectural layering left to a real project decision. The deletion decision for each and evidence of zero recognized incoming links are recorded in [the historical removal ledger](legacy-removals.md). Updated documentation is not executable verification of the old project's tests or third-party library examples.

@@ -19,6 +19,17 @@ Prefer `ControllerBase` for API-only controllers and `[ApiController]` where aut
 - Keep OpenAPI endpoint summaries and response metadata consistent with actual behavior.
 - Map application outcomes to HTTP consistently; custom `ApiResponse<T>`, `ToActionResult` or CQRS buses are **project-selected adapters**, not built-in ASP.NET Core components.
 
+## Controller integration with selected application abstractions
+
+A controller can dispatch to project-selected command/query buses or call another adopted application service boundary. If a project has existing `ICommandBus`, `IQueryBus`, `ToActionResult` or a shared `ApiResponse<T>`, reuse the **actual contracts already present** rather than introducing a second mediator, mapping layer or response envelope. None of these names are native MVC APIs.
+
+Keep binding sources explicit where this affects compatibility: `[FromRoute]`, `[FromQuery]`, `[FromBody]` and header processing have different trust/serialization behavior. For numerous related query filters, a purpose-built request type can make the transport contract clearer; do not automatically split or regroup a published API's parameters.
+
+Use a centralized permission scheme where the project has adopted it. Do not invent `/admin`, anonymous access, custom permission attributes, extra response statuses or a route prefix from naming conventions. These are **public contract choices**, not properties of a typical C# controller. Prefer one consistent operation/result-mapping path and keep domain orchestration outside the transport adapter.
+
+For API-only controllers, `sealed`, primary constructors, centralized version constants, `EndpointGroupName`, summary/description attributes and response annotations can be useful conventions. Require them only if supported by the selected ASP.NET Core version and the project codebase. Metadata is descriptive: adding `ProducesResponseType` does not implement an authorization policy, error mapper or precondition check.
+
+
 ## API versioning is optional
 
 ASP.NET API Versioning (`Asp.Versioning.Mvc`) can provide `[ApiVersion]` and route-constraint support, but it is not installed or required by the MVC framework itself. A centralized route prefix and shared endpoint group identifiers may be valuable for large versioned APIs, but the choice belongs to project architecture.

@@ -31,6 +31,19 @@ Accept a request `CancellationToken` where relevant and propagate it to cancella
 - A conflict without an HTTP precondition may be expressed with `409 Conflict` where appropriate. Distinguish conflict from malformed input.
 - Define whether clients can safely retry after timeouts or unknown outcomes; idempotency keys are one available design, not a default implementation.
 
+## HTTP request, response and precondition fidelity
+
+Distinguish **route matching** from input validation. A type constraint such as `{id:guid}` can cause an invalid path segment to miss an endpoint and return `404`, even when a different API contract expects `400` for malformed input. Choose route constraints for routing needs, not as a substitute for request validation; verify invalid inputs through the actual HTTP pipeline.
+
+If clients use conditional mutations, document the source and meaning of the selected representation's `ETag`. For `If-Match`, the server uses **strong comparison** and checks the current representation before applying a change. A failed precondition normally returns `412`; `428` is for an API that **deliberately requires** conditional requests, not a default result for all updates. Keep transport representation validators separate from internal concurrency tokens, business versions and unrelated integration sequence numbers.
+
+An ETag need not encode an integer counter. Mapping an internal `int Version` to `ETag: "7"` is one possible implementation, not an HTTP or .NET requirement. The wire format, accepted syntax, support for wildcard/list conditions and client recovery from a mismatch belong in the adopted contract. The server must enforce the precondition at a boundary that actually prevents stale writes; parsing a header alone is not concurrency protection.
+
+A request can fail before any application handler runs, for instance during routing, authentication, authorization or binding. Document those response paths and verify that metadata describes what the deployed pipeline actually emits. `200` with a response envelope is legitimate for a selected contract, but it is **not a universal default for all writes**. `201`, `202` and `204` convey different meanings; `204` does not carry a JSON body. If a request queues asynchronous work and responds `202`, specify how the caller learns its eventual result when needed. Binary responses require their own media type and header contract, not an arbitrary JSON wrapper.
+
+Official references: [ASP.NET Core routing](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing), [RFC 9110 conditional requests](https://www.rfc-editor.org/rfc/rfc9110#section-13), [HTTP status codes](https://www.rfc-editor.org/rfc/rfc9110#section-15).
+
+
 ## Status codes and errors
 
 Use statuses matching behavior: `201` for created resources when applicable, `202` for accepted asynchronous work, `204` for successful responses with no body, `400` for invalid requests, `401` for missing/invalid authentication, `403` for denied authorization, `404` when a resource is absent or intentionally not disclosed, and `5xx` for server failures. These are context-sensitive examples, not an exhaustive mapping.
