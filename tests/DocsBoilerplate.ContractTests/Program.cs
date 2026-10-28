@@ -338,6 +338,8 @@ Test("root README is readable on GitHub without leaking frontmatter", () =>
         "Nested README improperly bypassed normal document metadata");
     Throws<InvalidOperationException>(() => DocumentMetadata.Prepare(
         "README.md", "---\ntitle: Example\n---\n\n# Example"));
+    Throws<InvalidOperationException>(() => DocumentMetadata.Prepare(
+        "README.md", "No top-level heading"));
 });
 Test("invalid or duplicate metadata fields are rejected", () =>
 {

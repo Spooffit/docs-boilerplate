@@ -27,8 +27,8 @@ internal static class DocumentMetadata
         // Keep the repository landing page readable without relaxing docs/ metadata.
         if (path == "README.md")
         {
-            if (content.StartsWith("---\n", StringComparison.Ordinal))
-                throw new InvalidOperationException("Root README.md must start with its Markdown heading, not YAML frontmatter.");
+            if (!content.StartsWith("# ", StringComparison.Ordinal))
+                throw new InvalidOperationException("Root README.md must start with a Markdown H1, not YAML frontmatter or other text.");
             return content;
         }
         if (IsValid(content, filename == "SKILL.md"))

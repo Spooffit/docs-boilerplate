@@ -89,8 +89,8 @@ static partial class DocsCli
             // does not render a metadata table above the project heading.
             if (relativeName == "README.md")
             {
-                if (text.StartsWith("---\n", StringComparison.Ordinal))
-                    errors.Add("Root README.md must not include YAML frontmatter.");
+                if (!text.StartsWith("# ", StringComparison.Ordinal))
+                    errors.Add("Root README.md must start with a Markdown H1 instead of YAML frontmatter.");
             }
             else if (!DocumentMetadata.IsValid(text, basename == "SKILL.md"))
                 errors.Add($"Invalid or missing YAML frontmatter: {relativeName}");

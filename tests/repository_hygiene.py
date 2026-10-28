@@ -94,6 +94,9 @@ def main():
     docs.update(ROOT / f for f in ("README.md", "AGENTS.md", "CONTRIBUTING.md"))
     docs.add(ROOT / "llms.txt")
 
+    if not (ROOT / "README.md").read_text(encoding="utf-8").startswith("# "):
+        errors.append("Repository README.md must start with its Markdown H1, not GitHub-rendered YAML metadata.")
+
     checked = 0
     for p in sorted(docs):
         if not p.is_file():
