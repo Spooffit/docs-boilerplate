@@ -9,7 +9,7 @@ status: active
 
 - Date: 2026-10-27
 - Scope: source `technical/backend/standards/S17-data-flows.md`, `S21-aggregate-constraints.md`, `technical/frontend/standards/S05-ui-and-forms.md` and `S07-accessibility.md`.
-- Status: targeted content review, not deletion authorization. The source remains preserved.
+- Status: initial targeted content review, not deletion authorization. Since this snapshot, S17, S05 and S07 were individually migrated and retired; S21 remains in the historical tree pending the owner decision. See [removal ledger](legacy-removals.md) and [retained-standard closeout](retained-standards-closeout.md).
 
 ## Decisions
 
@@ -33,7 +33,7 @@ The nested Aggregate Constraints class shape, exact names, and universal FluentV
 - Source files listed above were read in the connected repository, including the S21 constraints content.
 - UI guidance is cross-checked against [WCAG 2.2](https://www.w3.org/TR/WCAG22/) and [WAI form errors](https://www.w3.org/WAI/WCAG22/Understanding/error-identification).
 - No claim is made that any particular project or UI is WCAG certified.
-- Do not remove the historical files until all relevant use cases and the final cleanup checklist have been reviewed.
+- Do not infer permission to remove remaining historical files from this initial review. Apply each documented removal gate to the specific source, especially the retained S21 teaching example.
 
 ## Follow-up
 
