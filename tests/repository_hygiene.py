@@ -8,6 +8,7 @@ catalog_hygiene.py; generated file scope lives in generated_output_hygiene.py.
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import posixpath
 import re
 from urllib.parse import unquote
@@ -17,6 +18,10 @@ FORBIDDEN_ROOTS = ("business", "technical", "milestones", "shared")
 FORBIDDEN_FILES = ("features.md", "modules.md", "questions.md", "standards.md")
 FORBIDDEN_DIRECTORIES = ("docs/audit", "docs/legacy")
 FORBIDDEN_TESTS = ("legacy_inventory.py", "legacy_link_graph.py", "source_evidence_links.py")
+FORBIDDEN_GENERATOR_FORMAT_FILES = (
+    "schemas", "tests/schema_contracts.py", "src/DocsBoilerplate.Cli/SchemaCompatibility.cs",
+    "src/DocsBoilerplate.Cli/PACKAGE-README.md",
+)
 NON_TEMPLATE_MARKER = re.compile(r"\bUNREUSABLE_PROJECT_CONTENT\b")
 INLINE_LINK = re.compile(r"\]\(\s*<?([^\s)<>]+)>?(?:\s+[^)]*)?\)")
 REFERENCE_LINK = re.compile(r"^\s{0,3}\[[^\]]+\]:\s*<?([^\s<>]+)>?", re.M)
@@ -62,6 +67,27 @@ def main():
     for f in FORBIDDEN_TESTS:
         if (ROOT / "tests" / f).exists():
             errors.append(f"Obsolete migration-only test returned: tests/{f}")
+
+    # The template generator intentionally has no schema registry, format
+    # versioning or standalone CLI distribution/release machinery.
+    for path in FORBIDDEN_GENERATOR_FORMAT_FILES:
+        if (ROOT / path).exists():
+            errors.append(f"Generator-only format or distribution artifact returned: {path}")
+    for name in ("profiles", "modules", "skills"):
+        catalog_path = ROOT / "catalog" / f"{name}.json"
+        data = json.loads(catalog_path.read_text(encoding="utf-8"))
+        if "schemaVersion" in data:
+            errors.append(f"Catalog format version returned: {catalog_path.relative_to(ROOT)}")
+    for code in (ROOT / "src" / "DocsBoilerplate.Cli").rglob("*.cs"):
+        if "SchemaVersion" in code.read_text(encoding="utf-8"):
+            errors.append(f"Generator manifest versioning returned: {code.relative_to(ROOT)}")
+    project = (ROOT / "src" / "DocsBoilerplate.Cli" / "DocsBoilerplate.Cli.csproj").read_text(encoding="utf-8")
+    for token in ("PackAsTool", "PackageId", "PackageReadmeFile"):
+        if token in project:
+            errors.append(f"CLI package metadata returned: {token}")
+    workflow = (ROOT / ".github" / "workflows" / "docs-generator.yml").read_text(encoding="utf-8")
+    if "dotnet pack" in workflow or "dotnet tool install" in workflow or "dotnet tool update" in workflow:
+        errors.append("CLI package release/install job returned")
 
     docs = set((ROOT / "docs").rglob("*.md"))
     docs.update((ROOT / "catalog").rglob("*.md"))
