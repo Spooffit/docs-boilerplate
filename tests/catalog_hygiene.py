@@ -31,6 +31,61 @@ viewer_files = sorted(path.name for path in (CATALOG / "sites").iterdir() if pat
 if viewer_files != ["docsify.html"]:
     errors.append(f"Unexpected site assets: {viewer_files}. Only docsify.html is supported.")
 
+
+# Approved owner decisions (ADR 0005): guard the existing reusable inventory.
+# These are source-level checks; end-to-end profile and draft checks live in smoke.sh.
+import json
+
+GENERAL_TEMPLATES = {
+    "feature.md", "technical-feature.md", "module.md", "question.md",
+    "adr.md", "standard.md", "milestone.md",
+}
+OPTIONAL_TEMPLATES = {
+    "dotnet-backend-feature.md", "blazor-frontend-feature.md",
+    "postgresql-migration.md",
+}
+PLANNED_PROFILES = {"go", "angular", "react", "blazorise", "custom-ui"}
+
+general_dir = CATALOG / "base/docs/templates"
+actual_general = {p.name for p in general_dir.glob("*.md")} - {"index.md"}
+if actual_general != GENERAL_TEMPLATES:
+    errors.append(f"Approved general template set changed: {sorted(actual_general)}")
+optional_dir = CATALOG / "docs/templates"
+actual_optional = {p.name for p in optional_dir.glob("*.md")}
+if actual_optional != OPTIONAL_TEMPLATES:
+    errors.append(f"Approved optional template set changed: {sorted(actual_optional)}")
+
+with (CATALOG / "profiles.json").open(encoding="utf-8") as stream:
+    catalog_data = json.load(stream)
+profiles = catalog_data["profiles"]
+planned = {p["id"] for p in profiles if p["status"] == "planned"}
+if planned != PLANNED_PROFILES:
+    errors.append(f"Approved visible planned profiles changed: {sorted(planned)}")
+for profile in profiles:
+    if profile["id"] in PLANNED_PROFILES and profile["files"]:
+        errors.append(f"Planned profile gained selectable content: {profile['id']}")
+optional_sources = {"docs/templates/" + name for name in OPTIONAL_TEMPLATES}
+owners = {path for profile in profiles if profile["status"] == "available" for path in profile["files"]}
+if not optional_sources.issubset(owners):
+    errors.append(f"Technology-specific templates lost opt-in profile ownership: {sorted(optional_sources - owners)}")
+
+for relative in ("project/overview.md", "architecture/overview.md"):
+    document = CATALOG / "base/docs" / relative
+    content = document.read_text(encoding="utf-8") if document.is_file() else ""
+    if not content.startswith("---\n") or "\nstatus: draft\n" not in content:
+        errors.append(f"Approved initial draft missing or promoted: {document.relative_to(ROOT)}")
+
+flow_doc = (CATALOG / "base/docs/standards/data-flows.md").read_text(encoding="utf-8")
+milestone_doc = (general_dir / "milestone.md").read_text(encoding="utf-8")
+overview_doc = (CATALOG / "base/docs/project/overview.md").read_text(encoding="utf-8")
+if "Do not force globally numbered IDs" not in flow_doc:
+    errors.append("Data-flow guidance lost optional flow-ID policy")
+if "Do not turn every task" not in milestone_doc or "Do not invent Demo/MVP/Production stages" not in overview_doc:
+    errors.append("Milestone guidance introduced assumed project stages")
+
+for unwanted in ("demo", "demos", "example-project", "examples", "samples"):
+    if (ROOT / unwanted).exists() or (CATALOG / unwanted).exists():
+        errors.append(f"Unapproved demonstration project directory: {unwanted}")
 for error in errors:
     print("ERROR", error)
 print(f"Active catalog hygiene: {checked} Markdown files examined; {len(errors)} findings.")

@@ -1,20 +1,17 @@
 ---
-title: "Deferred decisions for template finalization"
-description: "Owner choices that remain open after boilerplate engineering work"
+title: "Remaining decisions for template finalization"
+description: "Unresolved owner choices after approval of the initial template scope"
 kind: guide
 status: draft
 ---
 
-# Deferred template decisions
+# Remaining template decisions
 
-These are **questions for the repository owner**, not approved engineering requirements or instructions for an AI agent to select a default. Address them together after the remaining generator, template and verification work.
+The first five scope choices were **approved on 2026-10-28** and are recorded in [ADR 0005](0005-approved-template-scope.md). The remaining **13 questions** below are **not approved requirements** and must not be selected by an AI agent. Revisit them in groups, preserving the neutral approach until the repository owner decides otherwise.
 
 | Topic | Current neutral approach | Options for later owner approval |
 | --- | --- | --- |
-| Planned profile visibility | Five technology profiles are explicitly marked `planned`, have no standards, and cannot be selected | Keep planned entries discoverable; hide them until implemented; remove unused planned entries |
-| Permanent template set | Feature, technical feature, module, question, ADR, standard and milestone templates exist without requiring each one | Smaller core; keep the current templates; specialized optional templates |
 | File identifiers and workflow status | Descriptive names and explicit decision status are encouraged without mandatory numbered global IDs | Opt-in F/M/Q-like IDs; purely descriptive names; project-defined scheme |
-| Example policy | Active catalog contains generic editorial placeholders, not real business specifications | No product examples; a small isolated opt-in example; separate demonstrator repository with tests |
 | Code-example verification | Only evidence-backed, version-compatible examples should be called executable | Require CI-compiling samples; allow explicitly labeled pseudocode; maintain a separate library of verified examples |
 | Technology selection | .NET/Blazor/PostgreSQL and related standards are opt-in and tool-neutral where practical | Keep neutral profiles; provide a separately selected opinionated stack with executable verification |
 | Testing method names | Behavior-focused descriptions without a global enforced shape | Optional `MethodUnderTest_Scenario_ExpectedBehavior`; a different configured convention; no enforced form |
@@ -27,21 +24,19 @@ These are **questions for the repository owner**, not approved engineering requi
 | Code generation verification examples | Generated models need contract fidelity and runtime proof, but the template does not ship an executable compiler/codegen example | Keep verification prompts; offer separately reviewed optional examples for chosen schema/codegen technologies; no default code generator |
 | Generated API client state | Client generation and UI view/form state boundaries are defined by consuming application | Opinionated direct-generated-DTO form model; adapter/view-model approach; no default |
 | Messaging topology | MassTransit/RabbitMQ guidance avoids hardcoding one project topology | Optional concrete contract/package/topology conventions after testing; stay tool/transport-neutral by default |
-| Data-flow detail | Transport and internal flows are distinguished when applicable | Optional detailed DF-ID template; lightweight traceability only |
-| Milestone examples | Stages are project-defined | Example Demo/MVP/Production plan as opt-in guidance; no prescribed stages |
 
 ## Review sequence after the technical audit
 
 Review existing questions in three passes, without treating the order as priority or consent:
 
-1. **Scope and permanent defaults:** planned-profile visibility, permanent template set, file identifiers and statuses, technology selection, example policy, milestone examples and data-flow detail. A valid choice is to keep the core minimal or declare an inherited suggestion out of scope.
+1. **Remaining scope choices:** file identifiers and workflow statuses, and whether separately selected opinionated technology stacks are desirable. The approved default documents, template inventory, planned profile visibility, absence of a demo product and lightweight data flows/milestones are not up for implicit reinterpretation; see [ADR 0005](0005-approved-template-scope.md).
 2. **Optional technology conventions:** testing method names, test UI tooling, .NET validation, persistence/query patterns, MVC/CQRS API style, optimistic HTTP concurrency and messaging topology. No specialized stack should be generated unless it is explicitly selected and verifiable.
 3. **Optional integration and example policies:** code-example verification, SDK platform adapter policy, code generation verification examples and generated API client state. These are *candidates for review*, not evidence that the boilerplate needs an SDK, business schema, client cache or source generator.
 
-The existing table is the decision register; the passes above are only a review route, not additional requirements. Closing a proposal as **not applicable** requires no replacement template. Keep all entries pending until an explicit owner decision is recorded.
+The existing table is the decision register; the passes above are only a review route, not additional requirements. Closing a proposal as **not applicable** requires no replacement template. Keep all **remaining** entries pending until an explicit owner decision is recorded.
 
 ## Approval requirements
 
 For each choice record the selected default versus opt-in scope, reason, affected manifest/template paths, implementation and test evidence, and any migration impact on previously generated docs. A historical pattern alone never grants authority to change generated defaults.
 
-**All options remain pending.** The active repository is for reusable writing guidance, not for any individual application's requirements. Examples must be generic or explicitly opt-in and verified.
+**All 13 choices in the table remain pending.** The five approved scope decisions are documented separately in [ADR 0005](0005-approved-template-scope.md). The active repository is for reusable writing guidance, not for any individual application's requirements. Only generic technical examples are within the approved scope; a demonstrator product is not approved.
