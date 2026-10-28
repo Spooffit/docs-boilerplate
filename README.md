@@ -43,5 +43,7 @@ To browse a generated repository, run `python -m http.server 3000` in its root a
 
 The CLI is a generator, not an implementation or a business requirement registry. Examples in templates are placeholders or explicitly optional technical illustrations; they are never evidence that a generated project's code exists. Planned technology profiles are visible but not selectable. Docsify requires browser network access to CDN assets unless self-hosted, and opening Markdown through a local web server is preferred.
 
+Technology conventions such as test-method naming, HTTP ETag/If-Match concurrency and three-project MassTransit EventBus composition are independently **opt-in** profiles. Their examples and verification do not add a demonstration application to the generated repository. See [ADR 0006](docs/decisions/0006-optional-technology-conventions.md).
+
 See [implementation status](docs/implementation-status.md), [approved template scope](docs/decisions/0005-approved-template-scope.md), [architectural decisions](docs/decisions/index.md), [remaining owner choices](docs/decisions/owner-decision-backlog.md) and [contributing rules](CONTRIBUTING.md).
 

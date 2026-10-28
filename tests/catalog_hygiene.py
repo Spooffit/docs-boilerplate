@@ -86,6 +86,22 @@ if "Do not turn every task" not in milestone_doc or "Do not invent Demo/MVP/Prod
 for unwanted in ("demo", "demos", "example-project", "examples", "samples"):
     if (ROOT / unwanted).exists() or (CATALOG / unwanted).exists():
         errors.append(f"Unapproved demonstration project directory: {unwanted}")
+# ADR 0006: three optional variants, no accidental default/profile coupling.
+approved_optional = {
+    "test-naming-convention": (["dotnet"], "docs/standards/dotnet/test-naming-convention.md"),
+    "http-etag-concurrency": (["http-contracts"], "docs/standards/http/etag-concurrency.md"),
+    "masstransit-eventbus-composition": (["masstransit-rabbitmq"], "docs/standards/dotnet/eventbus-composition.md"),
+}
+by_id = {p["id"]: p for p in profiles}
+for profile_id, (dependencies, target) in approved_optional.items():
+    entry = by_id.get(profile_id)
+    if entry is None or entry["status"] != "available":
+        errors.append(f"Missing approved opt-in profile {profile_id}")
+    elif entry["requires"] != dependencies or entry["files"] != [target]:
+        errors.append(f"Approved optional profile changed dependencies or content: {profile_id}")
+for entry in profiles:
+    if entry["id"] not in approved_optional and set(entry["requires"]) & approved_optional.keys():
+        errors.append(f"Base profile unexpectedly requires optional convention: {entry['id']}")
 for error in errors:
     print("ERROR", error)
 print(f"Active catalog hygiene: {checked} Markdown files examined; {len(errors)} findings.")

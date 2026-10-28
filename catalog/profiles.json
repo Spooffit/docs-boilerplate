@@ -298,6 +298,42 @@
         "docs/standards/dotnet/aspire-testing.md"
       ],
       "category": "testing"
+    },
+    {
+      "id": "test-naming-convention",
+      "name": "Method_Scenario_ExpectedBehavior test naming convention",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/test-naming-convention.md"
+      ],
+      "category": "testing"
+    },
+    {
+      "id": "http-etag-concurrency",
+      "name": "HTTP strong ETag and If-Match concurrency",
+      "status": "available",
+      "requires": [
+        "http-contracts"
+      ],
+      "files": [
+        "docs/standards/http/etag-concurrency.md"
+      ],
+      "category": "web"
+    },
+    {
+      "id": "masstransit-eventbus-composition",
+      "name": "MassTransit RabbitMQ three-project EventBus composition",
+      "status": "available",
+      "requires": [
+        "masstransit-rabbitmq"
+      ],
+      "files": [
+        "docs/standards/dotnet/eventbus-composition.md"
+      ],
+      "category": "messaging"
     }
   ]
 }
