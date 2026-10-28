@@ -12,7 +12,7 @@ status: active
 ## Source of truth and discovery
 
 - The **Markdown files**, not the website viewer, are the authoritative project documentation.
-- Read the root `llms.txt` as a curated entry point and `AGENTS.md` for instructions. Neither replaces the referenced source documents or explicit project decisions.
+- Read the root `llms.txt` as a curated entry point and `AGENTS.md` for instructions. Neither replaces the referenced source documents or explicit project decisions. The generated index lists only installed project areas and standards, not pending or unselected technologies; it is navigation, not confirmation of requirements.
 - Every directory under `docs/` containing Markdown documents must have `index.md` summarizing its purpose and linking to its contents. Keep links relative to the containing document. The generator creates initial indexes; editors update them after creating, moving or deleting pages.
 - Documentation files use lowercase **kebab-case** (e.g. `api-versioning.md`) and `index.md` for directory overviews. Established tool-specific entrypoints `README.md`, `AGENTS.md`, `SKILL.md` and `CONTRIBUTING.md` are explicit well-known exceptions; do not rename them.
 - Do not invent a mandatory identifier scheme for features, ADRs or business requirements. Use existing project IDs where adopted; otherwise use descriptive kebab-case filenames.
@@ -49,7 +49,9 @@ Do not add invented owner names, review dates, adoption status or unsupported te
 - Update inbound references after moving a page.
 - A document should link to the canonical standard, contract, ADR or feature rather than copy it.
 - Technical standards describe verifiable rules and must state their applicability. Optional libraries require selected technology profiles.
-- A template is guidance, not confirmation that a design has been approved or built.
+- A template is guidance, not confirmation that a design has been approved or built. The installed technology profile list is also not approval of any business requirement.
+- For **accepted decisions**, use the canonical ADR/decision and requirements; for an external wire format use the adopted schema and deployed contract; for observed implementation verify source code and actual tests. If sources disagree, identify the conflict and the responsible owner instead of silently picking the most recent-looking document.
+- Read only documents relevant to the current task. Use the generated catalog and template selection guide to navigate, not as a reason to expand every document category.
 
 ## Viewer and local preview
 

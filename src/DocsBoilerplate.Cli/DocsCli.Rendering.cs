@@ -130,7 +130,8 @@ static partial class DocsCli
         sb.AppendLine();
         sb.AppendLine("> " + summary.Replace('\n', ' ').Replace('\r', ' '));
         sb.AppendLine();
-        sb.AppendLine("Read AGENTS.md for agent instructions and docs/index.md for the project home page. These files are the authoritative Markdown sources.");
+        sb.AppendLine("Navigation only: read AGENTS.md for instructions and the relevant Markdown source before claiming a project decision or implemented behavior.");
+        sb.AppendLine("The project selection in docs.config.json identifies installed profiles, not approved product requirements.");
         sb.AppendLine();
         sb.AppendLine("## Essential");
         sb.AppendLine();
@@ -138,6 +139,27 @@ static partial class DocsCli
             if (files.ContainsKey(path))
                 sb.AppendLine($"- [{TitleFromMarkdown(files[path], path)}]({path})");
         sb.AppendLine();
+        // Publish optional project/architecture documents only when they actually exist.
+        // The main index, catalog, templates and selected standards have their own sections.
+        var essential = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "docs/index.md", "docs/catalog.md", "docs/project/overview.md", "docs/architecture/overview.md"
+        };
+        var projectDocs = files.Keys.Where(path => path.StartsWith("docs/", StringComparison.Ordinal)
+                && path.EndsWith(".md", StringComparison.Ordinal)
+                && !path.EndsWith("/index.md", StringComparison.Ordinal)
+                && !path.StartsWith("docs/standards/", StringComparison.Ordinal)
+                && !path.StartsWith("docs/templates/", StringComparison.Ordinal)
+                && !essential.Contains(path))
+            .Order(StringComparer.Ordinal).ToArray();
+        if (projectDocs.Length > 0)
+        {
+            sb.AppendLine("## Project areas");
+            sb.AppendLine();
+            foreach (var path in projectDocs)
+                sb.AppendLine($"- [{TitleFromMarkdown(files[path], path)}]({path})");
+            sb.AppendLine();
+        }
         sb.AppendLine("## Reference");
         sb.AppendLine();
         foreach (var path in files.Keys.Where(path => path.StartsWith("docs/standards/", StringComparison.Ordinal)

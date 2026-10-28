@@ -1,12 +1,26 @@
 ---
 title: "Agent instructions"
-description: "Documentation entry point"
+description: "Read-on-demand navigation and source-of-truth boundaries for project documentation"
 kind: guide
 status: active
 ---
 
 # Agent instructions
 
-Read `llms.txt`, `README.md`, `docs/index.md` and `docs.config.json` before changing documentation. Follow applicable documents in `docs/standards/`. Preserve project decisions in `docs/` and do not invent absent requirements. Use relative links; update incoming links when moving files. Validate after changes. Skills in `.agents/skills/` describe procedures, not overriding standards.
+Treat this repository's **Markdown documents as sources**, not the website or generated navigation as authority. Start with [llms.txt](llms.txt) to find relevant documents and [documentation home](docs/index.md) for the project map. Read **only the applicable sources** before changing a claim; do not load every profile, example or template by default.
 
-Use [documentation authoring conventions](docs/standards/documentation.md): YAML frontmatter on pages, lowercase kebab-case names, and an `index.md` in every documentation directory. `README.md`, `AGENTS.md` and `SKILL.md` are special reserved exceptions.
+## Find the authoritative source
+
+1. Read [project overview](docs/project/overview.md) for product context and [architecture overview](docs/architecture/overview.md) for recorded system boundaries. Both are *draft scaffolds* until filled with real evidence.
+2. Use [the document catalog](docs/catalog.md) to locate installed standards and optional project areas. The [docs.config.json](docs.config.json) selection tells you which technology profiles, skills and modules were installed. **Selection is not approval of business decisions or proof of implementation.**
+3. For an actual behavior or requirement, follow its owning feature/requirement and approved decisions; for an architecture choice, follow its accepted ADR; for a public API or message format, inspect the **adopted** schema/contract; for observed implementation, inspect the relevant code and executed tests. Never promote a proposed template, example or plan into a verified fact.
+4. Read [applicable standards](docs/standards/index.md) only for the selected technology and problem. Do not import rules from an unselected library, historical example or unrelated project.
+5. To create a document, use [the template selection guide](docs/templates/index.md) and prefer the smallest appropriate artifact. Do not create duplicate Feature, Technical Feature, Module, ADR or Question records without a real distinct owner or scope.
+
+## Change and verify
+
+- Record unknowns explicitly. Preserve accepted decisions, original source links and meaningful status; do not invent requirements, approvals, owners, endpoints or successful tests.
+- Link to canonical material instead of copying normative rules. When moving or changing a document, update **incoming links**, directory indexes and affected decisions.
+- Use the [documentation authoring conventions](docs/standards/documentation.md): frontmatter on Markdown pages, lowercase kebab-case filenames, relative links and an `index.md` in every documentation directory. Keep recognized `README.md`, `AGENTS.md`, `SKILL.md` and `CONTRIBUTING.md` names.
+- Run `docs-boilerplate validate --output <repository-root>` when the CLI is available, and report separately what the validator did **not** establish (for example, factual correctness, approval, complete Markdown anchor validity or browser behavior).
+- Optional agent skills under `.agents/skills/` describe focused workflows. They do **not** override project decisions or selected standards.
