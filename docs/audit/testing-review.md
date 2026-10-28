@@ -9,7 +9,7 @@ status: active
 
 - Date: 2026-10-27
 - Sources: original `technical/backend/standards/S04-testing.md`, `S09-architecture-tests.md`, `S10-unit-tests.md`, `S11-integration-tests.md`, `S12-functional-tests.md`, `S13-e2e-tests.md`, `S14-test-environments.md`, `S15-test-engineering.md` and `technical/frontend/standards/S08-testing.md`.
-- Status: Targeted review and first consolidation. Not a complete line-by-line audit.
+- Status: initial targeted review and consolidation, retained here as a chronological audit. S09–S15 were subsequently retired under recorded source-by-source decisions; S04 and frontend S08 remain historical pending owner decisions. See [removal ledger](legacy-removals.md) and [retained-standard closeout](retained-standards-closeout.md).
 
 ## Disposition
 
