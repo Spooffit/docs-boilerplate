@@ -180,6 +180,15 @@ run init --name All --description "Full stack" --output "$temp/full-stack" --pro
 run validate --output "$temp/full-stack"
 [[ -f "$temp/full-stack/index.html" ]]
 
+# Exercise every available (not planned) profile/module/agent skill together.
+# Audit the *rendered output*, not only catalog Markdown sources.
+all_profiles="$(python3 -c 'import json; print(",".join(p["id"] for p in json.load(open("catalog/profiles.json", encoding="utf-8"))["profiles"] if p["status"] == "available"))')"
+all_modules="$(python3 -c 'import json; print(",".join(p["id"] for p in json.load(open("catalog/modules.json", encoding="utf-8"))["modules"]))')"
+all_skills="$(python3 -c 'import json; print(",".join(p["id"] for p in json.load(open("catalog/skills.json", encoding="utf-8"))["skills"]))')"
+run init --name PortableCanary --description 'Generated artifact scope audit' --output "$temp/all-profiles" --profiles "$all_profiles" --modules "$all_modules" --skills "$all_skills" --site docsify --non-interactive
+run validate --output "$temp/all-profiles"
+python3 tests/generated_output_hygiene.py "$temp/minimal" "$temp/headless" "$temp/full-stack" "$temp/all-profiles"
+
 # Only docsify/none are supported; retired site engines cannot run or be updated.
 if run init --name InvalidViewer --description Test --output "$temp/invalid-viewer" --profiles dotnet --site legacy-engine --non-interactive; then
   echo "Unsupported site engine accepted by init"; exit 1
