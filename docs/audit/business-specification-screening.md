@@ -10,7 +10,7 @@ status: active
 - Date: 2026-10-27
 - Scope: all **23** `business/features/F01–F23` files, all **7** `business/modules/M01–M07` files, and all **23** listed `business/questions/Q*` files.
 - Method: inspected each file's available body, title, section structure and introduction, and compared representative scope/decision distinctions with the existing generic templates. This is **structural screening**, not a complete semantic, code or line-by-line audit.
-- Inventory status **at this initial structural pass**: `screened-structure`; no deletion is authorized by this screening alone. Later targeted semantic work on [F16/Q10/M06](staff-access-evidence-review.md) updates those three entries to `reviewed-targeted` without certifying the remaining feature/module/question documents.
+- Inventory status **at this initial structural pass**: `screened-structure`; no deletion is authorized by this screening alone. Later targeted semantic work on [F16/Q10/M06](staff-access-evidence-review.md) and [F17/Q28](content-review-evidence-review.md) updates those entries to `reviewed-targeted` without certifying the remaining feature/module/question documents.
 
 ## Feature family overview
 
