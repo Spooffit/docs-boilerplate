@@ -93,7 +93,7 @@ Applied state + conflict closure фиксируются одной CatalogAccess
 3. Pending target типизирован и полон. Невозможность прочитать parent/impact не равна «нет blockers». Недоступный dependency port является технической ошибкой/ожиданием, не решением безопасного move.
 4. Новый snapshot, исправляющий source relation/последствия, может быть применён и закрыть Open автоматически после тех же guards. Возврат к applied parent не объявляется всегда безопасным без повторной проверки lifecycle/local facts.
 5. Repair/Resolution не переписывают старые Releases/PublicationRevisions, не пересчитывают историческую composition и не меняют pinned Delivery session. Resolve не публикует, не Activate/Unwithdraw и не выдаёт grant; эти действия остаются отдельными защищёнными операциями. Новая публикация после move проходит обычный F09–F13 workflow.
-6. По [S21](../standards/S21-aggregate-constraints.md) root constraints принадлежат целевому CatalogConflictConstraints: допустимые статусы/transition, single Open и согласованность snapshot identities/version/metadata. Source limits F06 переиспользуются; числовые лимиты explanation/history/paging не выбираются здесь.
+6. По [S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions) root constraints принадлежат целевому CatalogConflictConstraints: допустимые статусы/transition, single Open и согласованность snapshot identities/version/metadata. Source limits F06 переиспользуются; числовые лимиты explanation/history/paging не выбираются здесь.
 
 Матрица operation guards:
 
@@ -427,7 +427,7 @@ F06 receiver acceptance earlier durable commit atomically stores receipt/latesta
 
 ### 8.1. RabbitMQ / MassTransit
 
-Вход — existing state-carrying Product/ProductVariant snapshots F06. Topology/Contracts/RabbitMq/Default adapters по [S22](../standards/S22-eventbus-topology.md); wire long/version/lifecycle mapping и current transport names Q23 не переименовываются по догадке. Business incompatible move заканчивается durable pending/conflict accepted outcome, не endless retry/DLQ. Technical port/storage failure остаётся техническим retry/operational failure по политике F06/Q23; Receiver ACK means durable acceptance receipt/candidate+work/fault only; worker apply/conflict complete separate NEW first-gate commit. Missing parent remains recoverable waiting, not receiver poison. Новый conflict-specific exchange/event не вводится без потребителя.
+Вход — existing state-carrying Product/ProductVariant snapshots F06. Topology/Contracts/RabbitMq/Default adapters по [S22](../../../catalog/docs/standards/dotnet/masstransit-rabbitmq.md#optional-three-project-eventbus-composition); wire long/version/lifecycle mapping и current transport names Q23 не переименовываются по догадке. Business incompatible move заканчивается durable pending/conflict accepted outcome, не endless retry/DLQ. Technical port/storage failure остаётся техническим retry/operational failure по политике F06/Q23; Receiver ACK means durable acceptance receipt/candidate+work/fault only; worker apply/conflict complete separate NEW first-gate commit. Missing parent remains recoverable waiting, not receiver poison. Новый conflict-specific exchange/event не вводится без потребителя.
 
 ### 8.2. Publishing public-query adapter / Host
 

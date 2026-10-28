@@ -68,7 +68,7 @@ CanonicalRepresentation profile/exact bytes/digest persisted atomically with Pub
 
 ### 2.3. Инварианты и constraints
 
-[Q08](../../../business/questions/Q08-keys-and-drafts.md), [Q34](../../../business/questions/Q34-schema-field-semantics.md), [S21](../standards/S21-aggregate-constraints.md). Статические metadata/field/option ограничения берутся из владельцев F01/F02; state/evolution/ownership — Domain policy, не новые literals FV/EF.
+[Q08](../../../business/questions/Q08-keys-and-drafts.md), [Q34](../../../business/questions/Q34-schema-field-semantics.md), [S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions). Статические metadata/field/option ограничения берутся из владельцев F01/F02; state/evolution/ownership — Domain policy, не новые literals FV/EF.
 
 - ExpectedVersion выбранного Draft совпадает, Status=Draft, logical owner доступен для authoring. Null base == null current допустимо первой публикации.
 - BasePublishedVersionId == current LatestPublishedVersionId; source старой Published или copied stale Draft не получает автоматический rebase.

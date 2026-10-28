@@ -131,7 +131,7 @@ Domain method не выполняет HTTP/EF/query чужого BC. Existing ro
 6. F15 blocks проверяются в scope конкретного Product/операции; чтение существующего состава остаётся возможным.
 7. Продуктовые source lifecycle/new-use restrictions F06/Q27 не заменяют own assignment Version. Catalog ETag или publication-state revision не является assignment ETag.
 
-[S21](../standards/S21-aggregate-constraints.md): `ProductContentAssignmentConstraints` — целевой единый контейнер root/Items/reference constraints. Non-empty IDs и uniqueness применяются Domain/FV/EF согласованно. Максимальный размер набора, order semantics и строковые limits display metadata не выбраны; не переносить page size/catalog Name constraints на количество items.
+[S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions): `ProductContentAssignmentConstraints` — целевой единый контейнер root/Items/reference constraints. Non-empty IDs и uniqueness применяются Domain/FV/EF согласованно. Максимальный размер набора, order semantics и строковые limits display metadata не выбраны; не переносить page size/catalog Name constraints на количество items.
 
 Неизменённая ранее сохранённая exact reference может остаться в whole-set Save после Retired/Withdrawn версии, Archived logical owner/schema либо иной недоступности. Backend сохраняет прежние authoritative IDs, не заменяет latest и не требует new-use eligibility для удержания этой же reference. Это не разрешение создать release: такая dependency попадает в ReleaseBlockers F09. Новая позиция и замена exact version являются новым использованием и требуют полной текущей eligibility; display reorder сам по себе новым использованием не является.
 

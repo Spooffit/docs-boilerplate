@@ -32,8 +32,8 @@
 | S18 | [FluentValidation и композиция правил](catalog/docs/standards/dotnet/fluentvalidation.md) | — |
 | S19 | [Фильтрация: Ardalis.Specification](catalog/docs/standards/dotnet/ardalis-specification.md) | — |
 | S20 | [CQRS: размещение обработчиков](catalog/docs/standards/architecture/cqrs.md#handler-responsibilities-and-dependency-direction) | — |
-| S21 | [Ограничения агрегатов: единый источник в Domain](technical/backend/standards/S21-aggregate-constraints.md) | — |
-| S22 | [MassTransit / RabbitMQ EventBus topology](technical/backend/standards/S22-eventbus-topology.md) | — |
+| S21 | [Ограничения агрегатов: единый источник в Domain](catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions) | — |
+| S22 | [MassTransit / RabbitMQ EventBus topology](catalog/docs/standards/dotnet/masstransit-rabbitmq.md#optional-three-project-eventbus-composition) | — |
 | S23 | [.NET project files, migrated reusable profile](catalog/docs/standards/dotnet/project-files.md) | — |
 
 

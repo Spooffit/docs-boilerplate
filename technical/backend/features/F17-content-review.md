@@ -93,7 +93,7 @@ Domain не обращается к Identity/CatalogAccess/Delivery DB или HT
 7. Новые blockers после Submit не auto Reject/Withdraw/delete iteration. Pending остаётся читаемым с причиной недопустимости Approve; разрешённые Comment/Withdraw/Reject не запрещаются только по F15 flag как новые activation actions.
 8. Shared specialists, independent combined roles, self-approval при обеих permissions; нет CreatedBy/SubmittedBy ownership restriction, обязательного four-eyes или admin-only Submit.
 
-[S21](../standards/S21-aggregate-constraints.md): ModerationIterationConstraints — transitions/terminal metadata/one Pending, ModerationCommentConstraints — meaning/content constraints; defined text limits/normalization Q15/Q28, не guessed numbers. Candidate validity защищается до commit: own iteration Version не покрывает mutable F10 lifecycle/foreign distribution/F15 facts. Read tracking/FluentValidation недостаточны; MVP gate §7.2; carrier/profile Q20/Q23.
+[S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions): ModerationIterationConstraints — transitions/terminal metadata/one Pending, ModerationCommentConstraints — meaning/content constraints; defined text limits/normalization Q15/Q28, не guessed numbers. Candidate validity защищается до commit: own iteration Version не покрывает mutable F10 lifecycle/foreign distribution/F15 facts. Read tracking/FluentValidation недостаточны; MVP gate §7.2; carrier/profile Q20/Q23.
 
 ### 2.4. Domain events
 
@@ -470,7 +470,7 @@ Cross-BC F15/committed CM distribution facts читаются independent primar
 
 ### 8.1. RabbitMQ / MassTransit и F11 continuation
 
-[S22](../standards/S22-eventbus-topology.md): normalized committed moderation outcomes через agreed Publishing outbox/broker/consumer либо выбранный same-BC durable handler mechanism; concrete Contract/RabbitMq/default registrations/names/envelope Q20. Approved payload exact iteration/revision/actor/time, Rejected progress exact same target; no Delivery activation message from Approval.
+[S22](../../../catalog/docs/standards/dotnet/masstransit-rabbitmq.md#optional-three-project-eventbus-composition): normalized committed moderation outcomes через agreed Publishing outbox/broker/consumer либо выбранный same-BC durable handler mechanism; concrete Contract/RabbitMq/default registrations/names/envelope Q20. Approved payload exact iteration/revision/actor/time, Rejected progress exact same target; no Delivery activation message from Approval.
 
 F11 consumer loads durable operation/item/bound ModerationId, rechecks terminal exact outcome/current target eligibility/current stage/applicability. Matching Approved activates only exact prepared revision via F11 protected transition; Rejected leaves old active revision и records per-item result. Duplicates/order/late approvals после manual changes/new operation require current head/captured Product Version/Variant Sequence F11, no latest-wins/active pointer reset simply from event.
 

@@ -148,7 +148,7 @@ Retired→Withdrawn допустимый terminal запрет существу�
 7. Historical materialized content неизменен после base/source/content algorithm/lifecycle изменений. Read не reruns new-use validation как gate к stored history; Withdrawal distribution ban отдельный F13 check.
 8. Current active revision нельзя Retire до замены/Unpublish. Withdraw current → null/history/outbox атомарно в Publishing, no automatic fallback; inactive Withdrawal тоже запрещает historical/frozen выдачу этого ID. Runtime dependency restrictions follow final-effective closure, не suppressed source/evidence graph.
 
-[S21](../standards/S21-aggregate-constraints.md): ProductVariantPublicationRevisionConstraints переиспользует общие exact-reference/patch value constraints и фиксирует source selection, Items/source-kind consistency, ChangeComment/WithdrawalReason constraints после выбора Q15. No guessed string limits/order/number. Hash constraints/profile Q19 отдельно от own concurrency Version.
+[S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions): ProductVariantPublicationRevisionConstraints переиспользует общие exact-reference/patch value constraints и фиксирует source selection, Items/source-kind consistency, ChangeComment/WithdrawalReason constraints после выбора Q15. No guessed string limits/order/number. Hash constraints/profile Q19 отдельно от own concurrency Version.
 
 ### 2.4. Domain events
 

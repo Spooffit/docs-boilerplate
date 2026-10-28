@@ -523,7 +523,7 @@ No Domain method edits immutable snapshot Items or plan target after creation. P
 22. Ephemeral lease ≤min now+configured5s/session expiry/next finite policy boundary INCLUDING Freeze. Independent monotonic deadline cancels writes/upstream even renewal blocked; periodic fresh checkpoint can renew before deadline, late renewal cannot resurrect canceled response. Boundary may require NEW HTTP with same still-valid session.
 23. Committed CM ban denies new checkpoint; active lease cancels when known or deadline. No zero-latency/physical-network5s SLA, already buffered bytes not recalled; unknown external VRS change before receipt not instant knowledge. After headers transport abort→SDK Unknown, not assumed Revoke/new-plan rebinding; installed data not deleted.
 
-[S21](../standards/S21-aggregate-constraints.md): ProductVariantDeliveryStateConstraints, DeliveryPublicationSnapshotConstraints, RevisionDistributionRestrictionConstraints, DeliverySessionConstraints + shared exact-reference/hash/scope values. Application plan/selection/operation constraints named once; no invented TTL/session length/record cap/retry/lease numbers. Hash/order profile Q19, period/public guard Q12/Q20/Q23.
+[S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions): ProductVariantDeliveryStateConstraints, DeliveryPublicationSnapshotConstraints, RevisionDistributionRestrictionConstraints, DeliverySessionConstraints + shared exact-reference/hash/scope values. Application plan/selection/operation constraints named once; no invented TTL/session length/record cap/retry/lease numbers. Hash/order profile Q19, period/public guard Q12/Q20/Q23.
 
 ### 2.4. Domain events
 
@@ -1346,7 +1346,7 @@ Reconnect открывает data request того же plan от durable applic
 
 ### 8.2. RabbitMQ / MassTransit
 
-MVP consumers Publishing transition/terminal withdrawal/confirmed credential/license/grant revoke, inbox/idempotency and source catch-up contracts. [S22](../standards/S22-eventbus-topology.md): topology/package/event identity/order/retry/DLQ details Q20/Q16; no literal guessed exchange names. Ordered history catch-up source contract sufficient beyond trigger event; baseline/history completeness and recovery Q17, no silently importing obsolete Catalog bootstrap design into Demo. Ban dominates delayed activation, outbox/inbox no exactly-once transport promise.
+MVP consumers Publishing transition/terminal withdrawal/confirmed credential/license/grant revoke, inbox/idempotency and source catch-up contracts. [S22](../../../catalog/docs/standards/dotnet/masstransit-rabbitmq.md#optional-three-project-eventbus-composition): topology/package/event identity/order/retry/DLQ details Q20/Q16; no literal guessed exchange names. Ordered history catch-up source contract sufficient beyond trigger event; baseline/history completeness and recovery Q17, no silently importing obsolete Catalog bootstrap design into Demo. Ban dominates delayed activation, outbox/inbox no exactly-once transport promise.
 
 ### 8.3. VR School HTTP и session credential
 

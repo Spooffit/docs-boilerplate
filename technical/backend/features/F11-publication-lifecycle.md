@@ -157,7 +157,7 @@ Rollback не требует повторной moderation той же exact App
 8. CancelAutomaticItem имеет exact ItemId+own item precondition; cancelling old item не cancels replacement head и не создаёт history. Withdraw exact bound moderation cancels item; new manual iteration не reattaches. Rejected сохраняет старый pointer. Item Cancelled/Superseded не withdraws human moderation и не autoresume после Restore/Resolve/event; Approved artifact остаётся доступен manual Activate с fresh guards.
 9. Publishing Activated и Delivery ready независимы; replay processed/terminal item читает durable result без повторной activation после later manual action.
 
-[S21](../standards/S21-aggregate-constraints.md): state/history/operation/item/intent/command-execution constraints обеспечивают unique frozen membership, exact tuple, own item Version, head ownership и ABA fences. Codec/limits/claims/lease/retry numbers/privacy и wire status остаются Q15/Q20.
+[S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions): state/history/operation/item/intent/command-execution constraints обеспечивают unique frozen membership, exact tuple, own item Version, head ownership и ABA fences. Codec/limits/claims/lease/retry numbers/privacy и wire status остаются Q15/Q20.
 
 ### 2.4. Domain events
 
@@ -588,7 +588,7 @@ F11 gate обязателен для DF02 promotion membership capture, DF03 Cle
 
 ### 8.1. RabbitMQ / MassTransit
 
-Durable Publishing outbox dispatches state changes to Delivery и committed exact moderation outcomes to continuation; decision consumer принимает versioned F17 facts с inbox. [S22](../standards/S22-eventbus-topology.md) используется после проверки точного topology/contract package; конкретные exchange/queue/routing keys/retry counts уточняются Q20. Duplicate delivery допускается, duplicate domain effects запрещены; ACK после relevant local commit. Crash после send до marking dispatched требует consumer dedup, no exactly-once transport promise.
+Durable Publishing outbox dispatches state changes to Delivery и committed exact moderation outcomes to continuation; decision consumer принимает versioned F17 facts с inbox. [S22](../../../catalog/docs/standards/dotnet/masstransit-rabbitmq.md#optional-three-project-eventbus-composition) используется после проверки точного topology/contract package; конкретные exchange/queue/routing keys/retry counts уточняются Q20. Duplicate delivery допускается, duplicate domain effects запрещены; ACK после relevant local commit. Crash после send до marking dispatched требует consumer dedup, no exactly-once transport promise.
 
 Delivery owns [F13](F13-content-delivery.md#21-aggregates-entities-и-value-objects) source-processing receipts, actual history and first saved primary observation evidence separately. One actual full graph/pointer/history+Pending evidence commit per source transition; known terminal blocked outcome only advances processed source/inbox, no fake history. Ordered source completeness/catch-up, null/replay rules do not require Publishing transaction to wait for consumer/time confirmation. Terminal exact-ID withdrawal restriction dominates delayed activation/rebuild; stale event не снимает ban. Payload completeness/checksum/canonical hash Q19/F13; producer не пишет DeliveryDbContext. F17 moderation и Delivery projection могут жить in-process, но ownership/atomic boundary не меняются.
 

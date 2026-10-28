@@ -145,7 +145,7 @@ Read display names/Keys могут быть enrichment, но не merge authorit
 7. Optional provenance не hard-pins VariantRelease к одному ProductRelease и не подменяет явно выбранный F10 source. Reuse с другим release того же Product проверяется заново.
 8. Collision выбранного ReleaseValidationContext блокирует Variant release. Explicit empty ProductContentRelease и entirely empty schema selections и legacy patch VariantContentRelease allowed; EmptyBase — явный transient context, не synthetic release/read failure. F10 всё равно требует ≥1 exact source и final nonempty. Intentional Create с новым ClientOperationId всегда создаёт новый artifact ID даже identical content/comment; hash не dedup.
 
-[S21](../standards/S21-aggregate-constraints.md): целевые ProductContentReleaseConstraints и ProductVariantContentReleaseConstraints переиспользуют общие reference/ChangeComment definitions и F08 patch constraints, не копируя их literals; comment limits выбираются Q15. Comment plain text без отдельного Title и редактирования после Create. Не задавать guessed length/normalization/default comment или release sequence. Lifecycle/check constraints не independent копия бизнесовых правил.
+[S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions): целевые ProductContentReleaseConstraints и ProductVariantContentReleaseConstraints переиспользуют общие reference/ChangeComment definitions и F08 patch constraints, не копируя их literals; comment limits выбираются Q15. Comment plain text без отдельного Title и редактирования после Create. Не задавать guessed length/normalization/default comment или release sequence. Lifecycle/check constraints не independent копия бизнесовых правил.
 
 ### 2.4. Domain events
 

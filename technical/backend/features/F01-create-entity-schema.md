@@ -360,7 +360,7 @@ Generic notation задаёт known typed variants, не свободный T/ty
 ### 2.3. Инварианты и constraints
 
 
-Единый источник постоянных ограничений — Domain constraints по [S21](../standards/S21-aggregate-constraints.md). Schema metadata принадлежат `EntitySchemaConstraints`; version metadata и subtree — целевому `EntitySchemaVersionConstraints`. Переиспользуемые field/option constraints остаются рядом с соответствующими VO и подключаются владельцем, без копирования literals в Application/EF.
+Единый источник постоянных ограничений — Domain constraints по [S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions). Schema metadata принадлежат `EntitySchemaConstraints`; version metadata и subtree — целевому `EntitySchemaVersionConstraints`. Переиспользуемые field/option constraints остаются рядом с соответствующими VO и подключаются владельцем, без копирования literals в Application/EF.
 
 
 | Инвариант | Защита |

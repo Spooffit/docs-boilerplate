@@ -120,7 +120,7 @@ Repeated lifecycle actions/no-op Save — общий mutation profile Q15; Creat
 
 ### 2.3. Инварианты и constraints
 
-Единый источник постоянных ограничений — EntitySchemaVersionConstraints и field/option constraints рядом с VO по [S21](../standards/S21-aggregate-constraints.md). Limits/normalization — Q15, без новых literals в FV/EF.
+Единый источник постоянных ограничений — EntitySchemaVersionConstraints и field/option constraints рядом с VO по [S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions). Limits/normalization — Q15, без новых literals в FV/EF.
 
 - Save только Draft и Active schema; несколько Draft допустимы; business number до Publish отсутствует.
 - Existing FieldId/Key/Type/semantic List.Item identity и identity всей parent chain неизменны. Возврат ранее удалённого FieldId допустим только с теми же Key/Type/meaning/context и monotonic историческими flags; перенос к другому parent создаёт новый server FieldId. Name/HelpText изменяемы; Required только true→false, Deprecated только false→true. Deprecated+Required запрещено. Inverse transition запрещён уже при Save, независимо от baseline.

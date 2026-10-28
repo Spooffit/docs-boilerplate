@@ -97,4 +97,4 @@ Mutable API CatalogAccess относится только к локальном�
 
 ## Связи
 
-[Q11 — ownership](../../../business/questions/Q11-catalog-ownership.md) · [Q23 — source synchronization](../questions/Q23-source-synchronization.md) · [Q25 — conflict semantics](../../../business/questions/Q25-catalog-conflicts.md) · [S22 — EventBus topology](../standards/S22-eventbus-topology.md).
+[Q11 — ownership](../../../business/questions/Q11-catalog-ownership.md) · [Q23 — source synchronization](../questions/Q23-source-synchronization.md) · [Q25 — conflict semantics](../../../business/questions/Q25-catalog-conflicts.md) · [S22 — EventBus topology](../../../catalog/docs/standards/dotnet/masstransit-rabbitmq.md#optional-three-project-eventbus-composition).

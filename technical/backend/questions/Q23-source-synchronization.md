@@ -39,7 +39,7 @@ Pending state остаётся до появления parent, более нов
 Перенос существующего ProductVariant между Product поддерживается в MVP и не входит в Demo.
 Если новый ProductId совместим с локальным CM state, relation применяется. Если перенос конфликтует с local items/overrides/assignments/publishing/policy dependencies, newest source snapshot сохраняется как ожидающее состояние F15, а специалист разрешает последствия вручную.
 ## Subscription topology
-CM и Project Storage получают события через независимые queues; реплики CM конкурируют в собственной CM queue. Применяется [S22](../standards/S22-eventbus-topology.md) Contracts/RabbitMq/Default; stable exchange/queue names, package/ACL и конкретные retry/error registrations материализуются явно. CLR rename не переименовывает существующую topology молча.
+CM и Project Storage получают события через независимые queues; реплики CM конкурируют в собственной CM queue. Применяется [S22](../../../catalog/docs/standards/dotnet/masstransit-rabbitmq.md#optional-three-project-eventbus-composition) Contracts/RabbitMq/Default; stable exchange/queue names, package/ACL и конкретные retry/error registrations материализуются явно. CLR rename не переименовывает существующую topology молча.
 ## Versioned integration contracts
 ProductSnapshotV2/ProductVariantSnapshotV2 — отдельный выбранный контракт с int Version и Active/Archived lifecycle, не несовместимая перезапись V1 long EntityRevision/IsDeleted. DTO определены один раз в [F06](../features/F06-product-catalog.md). Package SemVer/registry conventions и coexistence/cutover wiring ещё инженерная детализация; source IDs/version continuity и независимый Project Storage flow сохраняются.
 ## Activation key boundary

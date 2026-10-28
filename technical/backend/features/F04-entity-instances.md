@@ -257,7 +257,7 @@ Copy — отдельное создание Draft через mapping stable IDs
 ### 2.3. Инварианты и constraints
 
 
-Единый source постоянных ограничений — EntityInstanceConstraints/EntityInstanceVersionConstraints и value-specific shared constraints F01/Q34 по [S21](../standards/S21-aggregate-constraints.md). Unique/lifecycle/baseline — state policies. Числовые payload limits/Key regex не придумываются.
+Единый source постоянных ограничений — EntityInstanceConstraints/EntityInstanceVersionConstraints и value-specific shared constraints F01/Q34 по [S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions). Unique/lifecycle/baseline — state policies. Числовые payload limits/Key regex не придумываются.
 
 
 - Instance Key unique внутри SchemaId, immutable после create; Name mutable label. Target version same schema, immutable после Draft create. Для смены target создаётся другой Draft, не PUT нового SchemaVersionId.

@@ -145,7 +145,7 @@ ContentType в Pending — только принятая на регистрац
 
 ### 2.3. Инварианты и constraints
 
-Постоянные ограничения FileName/Kind/Format/ContentType/location/hash задаёт MediaAssetConstraints в Domain по [S21](../standards/S21-aggregate-constraints.md). FluentValidation и EF используют те же определения. Provider/request limits относятся к согласованной upload policy Q21 и эксплуатационным целям [Q22](../../../business/questions/Q22-quality-targets.md). Current EF512/255 и MaxBytes1GiB не назначаются как target.
+Постоянные ограничения FileName/Kind/Format/ContentType/location/hash задаёт MediaAssetConstraints в Domain по [S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions). FluentValidation и EF используют те же определения. Provider/request limits относятся к согласованной upload policy Q21 и эксплуатационным целям [Q22](../../../business/questions/Q22-quality-targets.md). Current EF512/255 и MaxBytes1GiB не назначаются как target.
 
 - Успешный upload возвращает только Available с реальными size/hash/time и сохранённым object. Bytes и AssetId не меняются при Archive/Restore. Одинаковый файл или filename не запускает автоматический dedup: новый upload создаёт новую identity.
 - Filename, declared MIME/length и client hash — недоверенные сведения. Backend проверяет выбранный AssetKind, central allowlist extension/MIME и фактическую file signature/container, вычисляет actual size/SHA-256. Frontend hints не authority. Per-kind max bytes обязательны в configuration и выдаются policy query.

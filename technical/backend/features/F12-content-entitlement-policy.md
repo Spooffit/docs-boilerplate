@@ -218,7 +218,7 @@ Own state Version изменяется при policy action согласно в�
 11. Multi-license evaluates each verified requested basis independently. Any necessary unknown yields whole Indeterminate; never skip unknown to claim global maximum. Known Denied others + Allowed may choose most current whole Allowed by authoritative effective order, no item merge/implicit organization license expansion.
 12. Existing pinned-session behavior uses separate EvaluatePinnedRevision and F13 accepted Q16 absolute TTL/epoch/current-period/cutoff/response leases. New-selection rules never auto-repin original session.
 
-[S21](../standards/S21-aggregate-constraints.md): own policy/history/agreement/binding constraints enforce exact nontransferable scope, immutable source-confirmed agreement, unique tuple, enum/provenance and caller replay. Physical indexes/codecs/auth scheme/retry numbers/current source mapping and observation storage/codec remain engineering Q15/Q20/Q23; conservative time semantics approved Q17.
+[S21](../../../catalog/docs/standards/architecture/ddd.md#aggregate-owned-rule-definitions): own policy/history/agreement/binding constraints enforce exact nontransferable scope, immutable source-confirmed agreement, unique tuple, enum/provenance and caller replay. Physical indexes/codecs/auth scheme/retry numbers/current source mapping and observation storage/codec remain engineering Q15/Q20/Q23; conservative time semantics approved Q17.
 
 ### 2.4. Domain events
 
@@ -667,7 +667,7 @@ F13 owns activation-key HTTP validation, F12 integration caller is authenticated
 
 ### 8.2. RabbitMQ / MassTransit
 
-PolicyChanged fact durable in Publishing outbox; optional consumer invalidates read/cache/diagnostic projection по scope/Sequence/inbox profile, no existing-period rebinding. [S22](../standards/S22-eventbus-topology.md): exact contract package/topology/queue/dispatch/retry/cache completeness rules Q20. Versioned license/period/revoke facts are F06 integration; effective-state/terminal-ban facts F11/F10. Transport at-least-once/replay требуют stable identity/order, no exactly-once promise.
+PolicyChanged fact durable in Publishing outbox; optional consumer invalidates read/cache/diagnostic projection по scope/Sequence/inbox profile, no existing-period rebinding. [S22](../../../catalog/docs/standards/dotnet/masstransit-rabbitmq.md#optional-three-project-eventbus-composition): exact contract package/topology/queue/dispatch/retry/cache completeness rules Q20. Versioned license/period/revoke facts are F06 integration; effective-state/terminal-ban facts F11/F10. Transport at-least-once/replay требуют stable identity/order, no exactly-once promise.
 
 ### 8.3. Clock и source normalization
 

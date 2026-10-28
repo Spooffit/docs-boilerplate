@@ -487,7 +487,7 @@ Create own audit records/full-fidelity source evidence/profile/keyset indexes/in
 
 ### 8.1. Durable transport / Host
 
-[S22](../standards/S22-eventbus-topology.md): source dispatcher sends immutable versioned StaffActivityEvent after source commit at-least-once with stable EventId. Queue/envelope/type registration/retry/quarantine operational profiles Q20; source event semantic fact independent of retry envelope. Broker or selected durable same-process transport must preserve source atomic capture/recovery/unique append, not memory callback.
+[S22](../../../catalog/docs/standards/dotnet/masstransit-rabbitmq.md#optional-three-project-eventbus-composition): source dispatcher sends immutable versioned StaffActivityEvent after source commit at-least-once with stable EventId. Queue/envelope/type registration/retry/quarantine operational profiles Q20; source event semantic fact independent of retry envelope. Broker or selected durable same-process transport must preserve source atomic capture/recovery/unique append, not memory callback.
 
 Host registers fixed ActionProfile registry/typed source result builders/source-own intent participants, dispatcher/consumer Append handler/audit append store/inbox, query readers/cursor codec/clock and F16 permissions audit.activity.read(common Specialist+Administrator), audit.staff-access.read(Administrator only). No role/direct grant editor, Demo fake actor, Audit bootstrap password dependency, realtime notifications/purge/export.
 
