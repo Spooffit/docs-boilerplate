@@ -67,6 +67,8 @@ For PostgreSQL deployments, `--profiles postgresql` includes a migration rollout
 
 ## Generated navigation
 
+The generated `llms.txt` is a short, **installed-content-only** discovery index. It starts with project and architecture entrypoints, adds a `Project areas` section only for optional project-specific documents actually present in the generated output, and links to selected standards groups and the authored template guide. Planned or unselected modules are never linked. `AGENTS.md` explains which source establishes an approved decision, actual wire contract, or observed implementation; neither navigation index is proof of project adoption. Agents should follow only documents relevant to their current task.
+
 Every new repository receives `docs/catalog.md`, a deterministic navigation list built from the actual selected profiles, optional modules and templates. An authored `docs/templates/index.md` helps agents pick the smallest applicable template without a second directory index. The documentation homepage links to the catalog. Planned or unselected standards never appear in this catalog. After initialization this is a normal Markdown document that project owners can maintain; no implicit update overwrites it.
 
 ## Updating a generated repository

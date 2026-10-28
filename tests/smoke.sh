@@ -23,6 +23,10 @@ assert all(len(value)==64 for value in config["GeneratedHashes"].values())
 PY
 [[ -f "$temp/minimal/docs/catalog.md" ]]
 [[ -f "$temp/minimal/llms.txt" ]]
+if grep -q '^## Project areas$' "$temp/minimal/llms.txt"; then
+    echo "Optional project areas leaked into minimal documentation"; exit 1
+fi
+grep -q 'docs/architecture/overview.md' "$temp/minimal/llms.txt"
 [[ -f "$temp/minimal/docs/standards/index.md" ]]
 [[ -f "$temp/minimal/docs/standards/dotnet/index.md" ]]
 grep -q "docs/standards/dotnet/index.md" "$temp/minimal/llms.txt"
@@ -89,6 +93,11 @@ run validate --output "$temp/http-consumer"
 [[ -f "$temp/http-consumer/docs/standards/http/client-contracts.md" ]]
 [[ -f "$temp/http-consumer/docs/standards/http/contract-verification.md" ]]
 [[ -f "$temp/http-consumer/docs/architecture/api.md" ]]
+grep -q '^## Project areas$' "$temp/http-consumer/llms.txt"
+grep -q 'docs/architecture/api.md' "$temp/http-consumer/llms.txt"
+if grep -q 'docs/testing/strategy.md' "$temp/http-consumer/llms.txt"; then
+    echo "Unselected testing documentation leaked into llms.txt"; exit 1
+fi
 [[ ! -e "$temp/http-consumer/docs/standards/dotnet" ]]
 [[ ! -e "$temp/http-consumer/docs/standards/aspnet" ]]
 [[ ! -e "$temp/http-consumer/docs/standards/postgresql" ]]
@@ -131,6 +140,11 @@ run validate --output "$temp/project"
 grep -q "blazor/mudblazor.md" "$temp/project/docs/catalog.md"
 grep -q "testing/strategy.md" "$temp/project/docs/catalog.md"
 [[ -f "$temp/project/docs/testing/strategy.md" ]]
+grep -q 'docs/testing/strategy.md' "$temp/project/llms.txt"
+grep -q 'docs/operations/observability.md' "$temp/project/llms.txt"
+if grep -q 'docs/architecture/security.md' "$temp/project/llms.txt"; then
+    echo "Unselected security module leaked into llms.txt"; exit 1
+fi
 [[ -f "$temp/project/docs/operations/observability.md" ]]
 [[ -f "$temp/project/.agents/skills/docs-review/SKILL.md" ]]
 [[ ! -e "$temp/project/docs/standards/dotnet/dapper.md" ]]
@@ -206,6 +220,9 @@ all_modules="$(python3 -c 'import json; print(",".join(p["id"] for p in json.loa
 all_skills="$(python3 -c 'import json; print(",".join(p["id"] for p in json.load(open("catalog/skills.json", encoding="utf-8"))["skills"]))')"
 run init --name PortableCanary --description 'Generated artifact scope audit' --output "$temp/all-profiles" --profiles "$all_profiles" --modules "$all_modules" --skills "$all_skills" --site docsify --non-interactive
 run validate --output "$temp/all-profiles"
+grep -q 'docs/project/requirements.md' "$temp/all-profiles/llms.txt"
+grep -q 'docs/architecture/security.md' "$temp/all-profiles/llms.txt"
+grep -q 'docs/operations/runbook.md' "$temp/all-profiles/llms.txt"
 python3 tests/generated_output_hygiene.py "$temp/minimal" "$temp/headless" "$temp/full-stack" "$temp/all-profiles"
 
 # Prove the new artifact guard fails specifically for source contamination and extra assets.

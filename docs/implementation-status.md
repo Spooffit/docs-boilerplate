@@ -17,7 +17,7 @@ status: active
 - Preview-first updates using original generated file fingerprints, preflight conflict detection, additive files and no automatic deletion.
 - Optional documentation modules: glossary, requirements, API, integrations, security, testing, operations.
 - Optional agent skills: docs-review, docs-maintain, docs-architecture, docs-init, docs-testing.
-- A canonical `docs/` source tree, generated content/navigation catalog and Docsify (single HTML shell).
+- A canonical `docs/` source tree, generated content/navigation catalog and Docsify (single HTML shell). Root `llms.txt` discovers installed optional project documents; `AGENTS.md` routes agents to approved decisions, contracts and observed source evidence on demand.
 - A curated AI-first template index explaining when each document is useful, replacing the synthesized index at the same path without increasing the generated footprint.
 - A CLI validator for generated-file manifests, unresolved initialization placeholders, basic local Markdown links, kebab-case filenames, YAML frontmatter, folder indexes and llms.txt references. Authored folder indexes can replace synthetic indexes, with source ownership collisions still rejected.
 - Incoming legacy Markdown references and deleted-file links are checked with a shared tested parser in Linux CI.

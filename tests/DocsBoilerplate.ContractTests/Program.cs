@@ -85,6 +85,39 @@ Test("root llms.txt only references installed documents", () =>
     Expect(!text.Contains("docs/templates/index.md", StringComparison.Ordinal), "Invented optional section");
     Expect(!text.Contains("docs/project/overview.md", StringComparison.Ordinal), "Invented absent file");
 });
+Test("llms.txt lists installed project areas without leaking absent modules", () =>
+{
+    var docs = new Dictionary<string, string>
+    {
+        ["AGENTS.md"] = "# Agent",
+        ["docs/index.md"] = "# Home",
+        ["docs/catalog.md"] = "# Catalog",
+        ["docs/project/overview.md"] = "# Overview",
+        ["docs/architecture/overview.md"] = "# Architecture",
+        ["docs/architecture/api.md"] = "# Public API",
+        ["docs/project/requirements.md"] = "# Requirements",
+        ["docs/testing/strategy.md"] = "# Test strategy",
+        ["docs/standards/http/index.md"] = "# HTTP",
+        ["docs/templates/index.md"] = "# Templates"
+    };
+    var generated = DocsCli.BuildLlmsIndex("Sample", "Summary", docs);
+    Expect(generated.Contains("## Project areas", StringComparison.Ordinal), "Missing project area section");
+    foreach (var path in new[] { "docs/architecture/api.md", "docs/project/requirements.md", "docs/testing/strategy.md" })
+        Expect(generated.Contains($"]({path})", StringComparison.Ordinal), $"Missing installed module: {path}");
+    Expect(generated.Contains("docs/standards/http/index.md", StringComparison.Ordinal), "Missing chosen standard group");
+    Expect(generated.Contains("docs/templates/index.md", StringComparison.Ordinal), "Missing installed templates");
+    Expect(!generated.Contains("docs/architecture/security.md", StringComparison.Ordinal), "Unselected security module leaked");
+    Expect(!generated.Contains("docs/operations/runbook.md", StringComparison.Ordinal), "Unselected operations module leaked");
+    Expect(!generated.Contains("docs/catalog.md)\n- [", StringComparison.Ordinal), "Unexpected duplicate catalog entry");
+    var replay = DocsCli.BuildLlmsIndex("Sample", "Summary", docs);
+    Expect(generated == replay, "Navigation order is not deterministic");
+
+    var minimal = DocsCli.BuildLlmsIndex("Sample", "Summary",
+        new Dictionary<string, string> { ["AGENTS.md"] = "# Agent", ["docs/index.md"] = "# Home" });
+    Expect(!minimal.Contains("## Project areas", StringComparison.Ordinal), "Empty optional section was generated");
+    Expect(!minimal.Contains("docs/project/requirements.md", StringComparison.Ordinal), "Invented optional requirements");
+});
+
 Test("document catalog lists only selected technology", () =>
 {
     var content = new Dictionary<string, string>

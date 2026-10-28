@@ -54,3 +54,11 @@ The default generated `docs/templates/index.md` is now authored in `catalog/base
 The **output path and file count are unchanged**. `AddDirectoryIndexes` already respected an authored index, but `validate` mistakenly treated that file as a duplicate directory index. That bug is corrected while catalog preflight still rejects two different sources owning the same path.
 
 The smoke suite checks index content, navigation from `llms.txt` and `docs/catalog.md`, an upgrade from a previously synthesized fingerprint-owned index to the authored one, and rejection of a profile trying to claim the base index. The current default seven-template breadth remains an unresolved project-owner decision; the change does not prune categories or create empty project folders.
+
+## Agent navigation and source-of-truth review (2026-10-28)
+
+The previous `llms.txt` builder linked the root landing pages, standards directory indexes and template guide, but **omitted installed project-specific module documents** (for example `docs/architecture/api.md`, `docs/project/requirements.md` or `docs/testing/strategy.md`). Agents had to traverse the entire `docs/catalog.md` to locate them.
+
+The updated index now creates `## Project areas` **only** for actual installed project documents not already in the essential section, excluding standards and templates that have their own sections. It uses existing real paths and titles in deterministic order; no new generated file, requirement or source-dependent profile is introduced. The root `AGENTS.md` now provides concise read-on-demand guidance: distinguish approved requirements and decisions, adopted schemas, observed code/tests, standards of selected technologies and unapproved example/template text. `docs/index.md` points to the curated template chooser.
+
+Contract tests verify present/absent optional sections and stable ordering. Smoke scenarios inspect minimal, HTTP consumer, testing/operations and all-profile output for correct links and no unselected module leakage. Existing `validate` still checks local `llms.txt` targets. This change cannot certify external schema authority, current source correctness, approval status or full Markdown anchor semantics.
