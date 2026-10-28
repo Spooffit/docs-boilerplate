@@ -42,6 +42,42 @@ try {
     Invoke-Docs update --output $target --apply
     if (-not ((Get-Content $userFile -Raw) -match 'Human-authored note')) { throw 'User modification was lost' }
 
+    # Authored nested documentation must be linked by its parent, not just the catalog.
+    $guides = Join-Path $target 'docs/project/guides'
+    New-Item -ItemType Directory -Path $guides | Out-Null
+    Set-Content -Encoding utf8 -LiteralPath (Join-Path $guides 'index.md') -Value @'
+---
+title: "Guides"
+description: "Windows navigation test directory"
+kind: index
+status: draft
+---
+
+# Guides
+
+- [Guide](guide.md)
+'@
+    Set-Content -Encoding utf8 -LiteralPath (Join-Path $guides 'guide.md') -Value @'
+---
+title: "Guide"
+description: "Windows navigation test page"
+kind: project
+status: draft
+---
+
+# Guide
+'@
+    Add-Content -LiteralPath (Join-Path $target 'docs/catalog.md') -Value '- [Guides](project/guides/index.md)'
+    Add-Content -LiteralPath (Join-Path $target 'docs/catalog.md') -Value '- [Guide](project/guides/guide.md)'
+    Assert-Fail validate --output $target
+    Add-Content -LiteralPath (Join-Path $target 'docs/project/index.md') -Value '- [Guides](guides/index.md)'
+    Invoke-Docs validate --output $target
+    Invoke-Docs update --output $target --apply
+    Invoke-Docs validate --output $target
+    if (-not ((Get-Content (Join-Path $target 'docs/project/index.md') -Raw) -match 'guides/index.md')) {
+        throw 'Upstream update erased authored parent navigation'
+    }
+
     $headless = Join-Path $root 'headless'
     Invoke-Docs init --name Headless --description 'Markdown only' --output $headless --profiles dotnet --site none --non-interactive
     Invoke-Docs validate --output $headless

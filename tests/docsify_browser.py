@@ -88,6 +88,18 @@ def exercise(page, base_url: str, local_failures: list[str]) -> None:
     page.locator("#main").get_by_role("link", name="Testing strategy", exact=True).first.click()
     assert_heading(page, "Testing strategy")
 
+    # Author-created nested directories must remain navigable in the real viewer.
+    page.goto(base_url + "#/project/index", wait_until="domcontentloaded")
+    page.locator("#main").get_by_role("link", name="Project notes", exact=True).first.click()
+    assert_heading(page, "Project notes")
+    page.locator("#main").get_by_role("link", name="Review guide", exact=True).first.click()
+    assert_heading(page, "Review guide")
+    assert "project/notes/review-guide" in page.url.lower(), page.url
+    page.goto(base_url + "#/catalog", wait_until="domcontentloaded")
+    assert_heading(page, "Documentation catalog")
+    page.locator("#main").get_by_role("link", name="Review guide", exact=True).first.click()
+    assert_heading(page, "Review guide")
+
     assert not local_failures, "Missing/failed local Markdown requests:\\n" + "\\n".join(local_failures)
 
 
@@ -114,6 +126,31 @@ def main() -> int:
         manifest = json.loads((output / "docs.config.json").read_text(encoding="utf-8"))
         assert "index.html" in manifest["GeneratedFiles"]
         assert not any(path.endswith((".js", ".css")) for path in manifest["GeneratedFiles"])
+
+        # A real project owner may add Markdown without touching generated CLI files.
+        notes = output / "docs/project/notes"
+        notes.mkdir()
+        (notes / "index.md").write_text(
+            '---\ntitle: "Project notes"\ndescription: "Authored notes index"\n'
+            'kind: index\nstatus: draft\n---\n\n# Project notes\n\n'
+            '- [Review guide](review-guide.md#review-scope)\n', encoding="utf-8"
+        )
+        (notes / "review-guide.md").write_text(
+            '---\ntitle: "Review guide"\ndescription: "Authored browser navigation page"\n'
+            'kind: project\nstatus: draft\n---\n\n# Review guide\n\n'
+            '## Review scope\n\nAn author-owned document.\n', encoding="utf-8"
+        )
+        with (output / "docs/project/index.md").open("a", encoding="utf-8") as stream:
+            stream.write("\n- [Project notes](notes/index.md)\n")
+        with (output / "docs/catalog.md").open("a", encoding="utf-8") as stream:
+            stream.write("\n- [Project notes](project/notes/index.md)\n")
+            stream.write("- [Review guide](project/notes/review-guide.md#review-scope)\n")
+        subprocess.run(
+            ["dotnet", "run", "--no-build", "--configuration", "Release",
+             "--project", str(ROOT / "src/DocsBoilerplate.Cli"), "--",
+             "validate", "--output", str(output)],
+            cwd=ROOT, check=True,
+        )
 
         handler = functools.partial(Handler, directory=str(output))
         server = ThreadingHTTPServer(("127.0.0.1", 0), handler)

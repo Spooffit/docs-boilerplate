@@ -776,6 +776,106 @@ run validate --output "$temp/nav-authored"
 cmp "$temp/authored-catalog-before.md" "$temp/nav-authored/docs/catalog.md"
 cmp "$temp/authored-index-before.md" "$temp/nav-authored/docs/project/index.md"
 
+# Authored nested pages need a local index, a parent-directory link and catalog entries.
+cp -a "$temp/nav-authored" "$temp/nav-nested"
+mkdir -p "$temp/nav-nested/docs/project/guides"
+cat > "$temp/nav-nested/docs/project/guides/index.md" <<'MD'
+---
+title: "Guides"
+description: "Index of author-owned guides"
+kind: index
+status: draft
+---
+
+# Guides
+
+- [Review guide](review-guide.md#scope)
+MD
+cat > "$temp/nav-nested/docs/project/guides/review-guide.md" <<'MD'
+---
+title: "Review guide"
+description: "An author-owned navigation test page"
+kind: project
+status: draft
+---
+
+# Review guide
+
+## Scope
+
+Test navigation without requiring a boilerplate profile.
+MD
+printf '%s\n' '- [Guides](project/guides/index.md)' '- [Review guide](project/guides/review-guide.md#scope)' >> "$temp/nav-nested/docs/catalog.md"
+if run validate --output "$temp/nav-nested" > "$temp/nav-nested-missing-parent.log" 2>&1; then
+    echo "An authored nested directory without a parent index link was accepted"; exit 1
+fi
+grep -q 'Not discoverable from docs/project/index.md: docs/project/guides/index.md' "$temp/nav-nested-missing-parent.log"
+printf '%s\n' '- [Guides](guides/index.md)' >> "$temp/nav-nested/docs/project/index.md"
+run validate --output "$temp/nav-nested"
+
+# A move requires repairing both the nested index and the catalog, including fragments.
+mv "$temp/nav-nested/docs/project/guides/review-guide.md" "$temp/nav-nested/docs/project/guides/updated-guide.md"
+if run validate --output "$temp/nav-nested" > "$temp/nav-nested-moved.log" 2>&1; then
+    echo "Moved nested document left stale links undetected"; exit 1
+fi
+python3 - "$temp/nav-nested/docs/project/guides/index.md" "$temp/nav-nested/docs/catalog.md" <<'PY'
+from pathlib import Path
+import sys
+for name in sys.argv[1:]:
+    path = Path(name)
+    old = path.read_text(encoding="utf-8")
+    assert "review-guide.md" in old
+    path.write_text(old.replace("review-guide.md", "updated-guide.md"), encoding="utf-8")
+PY
+run validate --output "$temp/nav-nested"
+cp "$temp/nav-nested/docs/catalog.md" "$temp/nav-nested-catalog-before.md"
+cp "$temp/nav-nested/docs/project/index.md" "$temp/nav-nested-parent-before.md"
+cp "$temp/nav-nested/docs/project/guides/index.md" "$temp/nav-nested-index-before.md"
+
+# An unrelated upstream change must apply without resetting any authored navigation.
+cp -a catalog "$temp/catalog-navigation-update"
+printf '\n## Follow-up reference\n\nOnly actual project evidence can establish architecture.\n' >> "$temp/catalog-navigation-update/base/docs/architecture/overview.md"
+run update --output "$temp/nav-nested" --catalog "$temp/catalog-navigation-update" --apply
+run validate --output "$temp/nav-nested" --catalog "$temp/catalog-navigation-update"
+cmp "$temp/nav-nested-catalog-before.md" "$temp/nav-nested/docs/catalog.md"
+cmp "$temp/nav-nested-parent-before.md" "$temp/nav-nested/docs/project/index.md"
+cmp "$temp/nav-nested-index-before.md" "$temp/nav-nested/docs/project/guides/index.md"
+
+# If upstream navigation changes too, user-owned catalog edits must block the
+# entire update, including otherwise safe new files and the ownership manifest.
+cp -a "$temp/catalog-navigation-update" "$temp/catalog-navigation-conflict"
+cat > "$temp/catalog-navigation-conflict/docs/standards/dotnet/extra-reference.md" <<'MD'
+---
+title: "Extra reference"
+description: "A new optional technical reference"
+kind: standard
+status: active
+---
+
+# Extra reference
+
+Reference guidance only.
+MD
+python3 - "$temp/catalog-navigation-conflict/profiles.json" <<'PY'
+import json
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+catalog = json.loads(path.read_text(encoding="utf-8"))
+next(p for p in catalog["profiles"] if p["id"] == "dotnet")["files"].append("docs/standards/dotnet/extra-reference.md")
+path.write_text(json.dumps(catalog, indent=2) + "\n", encoding="utf-8")
+PY
+cp "$temp/nav-nested/docs.config.json" "$temp/nav-nested-config-before.json"
+if run update --output "$temp/nav-nested" --catalog "$temp/catalog-navigation-conflict" --apply > "$temp/nav-nested-conflict.log" 2>&1; then
+    echo "Conflicting upstream navigation silently overwrote authored catalog"; exit 1
+fi
+grep -q 'Both the user and the template changed: docs/catalog.md' "$temp/nav-nested-conflict.log"
+cmp "$temp/nav-nested-config-before.json" "$temp/nav-nested/docs.config.json"
+cmp "$temp/nav-nested-catalog-before.md" "$temp/nav-nested/docs/catalog.md"
+cmp "$temp/nav-nested-parent-before.md" "$temp/nav-nested/docs/project/index.md"
+[[ ! -e "$temp/nav-nested/docs/standards/dotnet/extra-reference.md" ]]
+run validate --output "$temp/nav-nested" --catalog "$temp/catalog-navigation-update"
+
 # An llms.txt entry point must keep its link to the complete catalog.
 cp -a "$temp/minimal" "$temp/llms-without-catalog"
 python3 - "$temp/llms-without-catalog/llms.txt" <<'PY'
