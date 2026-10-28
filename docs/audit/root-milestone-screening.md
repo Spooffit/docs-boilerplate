@@ -32,7 +32,7 @@ The inventory's six `root-config-or-guidance` entries are not all historical pro
 
 - `.editorconfig` and `.gitignore` contain ordinary formatting and generated-output exclusions.
 - Root `README.md`, `CONTRIBUTING.md`, `AGENTS.md` are active maintainer entrypoints, maintained separately from the generated project sources.
-- `.ai/mcp/mcp.json` is currently empty. Its mere presence does not demonstrate a working MCP setup; retain it pending an explicit repository cleanup decision, rather than advertising connector functionality.
+- `.ai/mcp/mcp.json` was empty **at the time of this structural screening**. It was subsequently removed as a zero-byte placeholder under the [recorded cleanup](legacy-removals.md). Neither its former presence nor its removal demonstrates a working MCP setup.
 
 The six files are marked `screened-structure` to document classification. They are **not** approved for deletion merely because they originated in the baseline inventory.
 
