@@ -33,7 +33,7 @@ The generator's boundaries are documented in [the code map](architecture/generat
 ## Maintenance and next steps
 
 1. Keep the catalog reusable and free of project-specific feature documents; do not add example applications unless the owner explicitly selects one.
-2. Improve generator update and input/path safety, test diagnostics, browser coverage and packaging.
+2. Improve generator update and input/path safety, test diagnostics, browser coverage and generated-template cleanliness.
 3. Expand technology guidance only when profile selection, compatibility and verification are grounded.
 4. Resolve [deferred owner choices](decisions/owner-decision-backlog.md) before adding opinionated defaults or specialized example profiles.
 

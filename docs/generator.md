@@ -91,12 +91,14 @@ Create Feature, Module, Question, ADR or Milestone documents only when needed. R
 
 ## Updating a generated repository
 
+Run these commands from the **boilerplate source checkout** where `src/DocsBoilerplate.Cli` exists. The generated documentation repository does not contain the CLI, a NuGet package, or a release pipeline. Point `--output` at the generated repository. No CLI installation or publication is required.
+
 New repositories record SHA-256 fingerprints for all generated files in `docs.config.json`. These fingerprints describe **original template bytes**, not the user's subsequent edits. Update re-renders the selected profiles, skills, modules and site option against a newer catalog.
 
 ```sh
-docs-boilerplate update --output ./my-docs
-docs-boilerplate update --output ./my-docs --apply
-docs-boilerplate validate --output ./my-docs
+dotnet run --project src/DocsBoilerplate.Cli -- update --output ./my-docs
+dotnet run --project src/DocsBoilerplate.Cli -- update --output ./my-docs --apply
+dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./my-docs
 
 # Only if an interrupted update is detected:
 docs-boilerplate recover --output ./my-docs
@@ -119,8 +121,8 @@ The `.docs-boilerplate-update/` directory exists **only during an active or inte
 When `update` or `validate` detects this directory, it stops rather than trusting a potentially half-updated project. Inspect the working tree, then run:
 
 ```sh
-docs-boilerplate recover --output ./my-docs
-docs-boilerplate validate --output ./my-docs
+dotnet run --project src/DocsBoilerplate.Cli -- recover --output ./my-docs
+dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./my-docs
 ```
 
 If only some planned changes were written, recovery verifies **all current target hashes and required backups before restoring anything**. It rolls back only content matching the journal's generated hash; unexpected user edits cause a safe refusal and the journal is retained for manual reconciliation. If *all* desired file hashes are present (including the new `docs.config.json`), recovery treats the update as completed and only removes the journal.
