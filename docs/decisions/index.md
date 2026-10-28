@@ -12,6 +12,7 @@ status: active
 - [Docsify viewer](0004-docsify-viewer.md)
 - [Approved default documents and template scope](0005-approved-template-scope.md)
 - [Independent technologies and optional conventions](0006-optional-technology-conventions.md)
+- [Final documentation and UI conventions](0007-final-editorial-policies.md)
 - [Remaining owner choices](owner-decision-backlog.md)
 
 Do not treat a superseded ADR as current engineering policy.

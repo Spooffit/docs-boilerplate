@@ -334,6 +334,29 @@
         "docs/standards/dotnet/eventbus-composition.md"
       ],
       "category": "messaging"
+    },
+    {
+      "id": "document-identifiers-and-statuses",
+      "name": "Document identifiers and approval statuses",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/documentation/identifiers-and-statuses.md"
+      ],
+      "category": "documentation"
+    },
+    {
+      "id": "ui-direct-dto-forms",
+      "name": "Direct HTTP DTO models in UI forms",
+      "status": "available",
+      "requires": [
+        "http-contracts",
+        "ui-accessibility"
+      ],
+      "files": [
+        "docs/standards/ui/direct-dto-forms.md"
+      ],
+      "category": "frontend-practice"
     }
   ]
 }
