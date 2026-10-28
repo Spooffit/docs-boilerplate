@@ -13,11 +13,11 @@ Name actual consumers, transport choices and ownership boundaries.
 
 ## Contracts
 
-Link the authoritative OpenAPI, Protocol Buffers, AsyncAPI or other published contract files. Do not maintain a second copy of the schema in Markdown.
+Link the actual authoritative API contract, such as OpenAPI or another adopted wire schema, when it exists. Do not invent a machine-readable contract or maintain a competing Markdown copy.
 
-## Consumers and generated SDKs
+## Client compatibility (when applicable)
 
-When the project has consumer SDKs, record the exact contract source and generator configuration, supported client versions, necessary response headers and fallback/error behavior. The standalone `http-contracts` profile offers an optional language-neutral review and test checklist; it does not choose NSwag, a frontend framework or an API server implementation.
+For real consumers, document required compatibility, headers and error behavior. Record code-generation inputs only if generated clients actually exist. The separate `http-contracts` profile is optional and does not follow automatically from selecting this documentation module.
 
 ## Compatibility and versions
 

@@ -77,9 +77,16 @@ def exercise(page, base_url: str, local_failures: list[str]) -> None:
     assert_heading(page, "Choose a documentation template")
     assert "id=keep-one-canonical-source" in page.url, page.url
 
-    # Optional module is created by this test's selected generator configuration.
-    page.goto(base_url + "#/architecture/api", wait_until="domcontentloaded")
+    # The generated catalog must navigate to selected optional modules.
+    page.goto(base_url + "#/catalog", wait_until="domcontentloaded")
+    assert_heading(page, "Documentation catalog")
+    assert page.locator("#main").get_by_role("link", name="Security architecture", exact=True).count() == 0
+    page.locator("#main").get_by_role("link", name="API design", exact=True).first.click()
     assert_heading(page, "API design")
+    page.goto(base_url + "#/catalog", wait_until="domcontentloaded")
+    assert_heading(page, "Documentation catalog")
+    page.locator("#main").get_by_role("link", name="Testing strategy", exact=True).first.click()
+    assert_heading(page, "Testing strategy")
 
     assert not local_failures, "Missing/failed local Markdown requests:\\n" + "\\n".join(local_failures)
 

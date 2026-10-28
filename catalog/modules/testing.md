@@ -21,6 +21,6 @@ Describe which product behaviors and infrastructure boundaries require evidence.
 
 Record fixture lifecycle, reset rules and concurrency constraints.
 
-## CI and release gates
+## Executed checks and planned gates
 
-Describe checks actually run; distinguish planned checks from enforced gates.
+Link checks actually run and distinguish proposed tests from enforced CI gates. Do not imply a release or publishing pipeline exists.

@@ -174,6 +174,25 @@ grep -q 'frontmatter status' "$temp/project/.agents/skills/docs-init/SKILL.md"
 [[ ! -e "$temp/project/catalog" ]]
 [[ -f "$temp/project/index.html" ]]
 
+# Skills and project modules compose without requiring each other's documents or a stack.
+run init --name MixedGuidance --description 'Independent skills and modules' --output "$temp/mixed-guidance" --profiles http-contracts --skills docs-architecture,docs-testing --modules glossary,security --site none --non-interactive
+run validate --output "$temp/mixed-guidance"
+[[ -f "$temp/mixed-guidance/.agents/skills/docs-architecture/SKILL.md" ]]
+[[ -f "$temp/mixed-guidance/.agents/skills/docs-testing/SKILL.md" ]]
+[[ -f "$temp/mixed-guidance/docs/project/glossary.md" ]]
+[[ -f "$temp/mixed-guidance/docs/architecture/security.md" ]]
+[[ ! -e "$temp/mixed-guidance/docs/testing/strategy.md" ]]
+[[ ! -e "$temp/mixed-guidance/docs/standards/dotnet" ]]
+[[ ! -e "$temp/mixed-guidance/docs/standards/integrations" ]]
+[[ ! -e "$temp/mixed-guidance/.agents/skills/docs-init" ]]
+[[ ! -e "$temp/mixed-guidance/index.html" ]]
+grep -q 'architecture/security.md' "$temp/mixed-guidance/docs/catalog.md"
+grep -q 'project/glossary.md' "$temp/mixed-guidance/llms.txt"
+if grep -q 'testing/strategy.md' "$temp/mixed-guidance/docs/catalog.md"; then
+    echo "Unselected testing module leaked into mixed guidance output"; exit 1
+fi
+python3 tests/agent_guidance_contracts.py "$temp/mixed-guidance"
+
 # Messaging and query specifications stay opt-in and do not imply a particular database.
 run init --name Integration --description 'Message handling' --output "$temp/integration" --profiles masstransit-rabbitmq,ardalis-specification --non-interactive
 run validate --output "$temp/integration"
@@ -749,6 +768,13 @@ for name in sys.argv[1:]:
     path.write_text(content.replace('release-notes.md', 'decision-log.md'), encoding='utf-8')
 PY
 run validate --output "$temp/nav-authored"
+# A no-op upstream update must preserve authored catalog and local index links.
+cp "$temp/nav-authored/docs/catalog.md" "$temp/authored-catalog-before.md"
+cp "$temp/nav-authored/docs/project/index.md" "$temp/authored-index-before.md"
+run update --output "$temp/nav-authored" --apply
+run validate --output "$temp/nav-authored"
+cmp "$temp/authored-catalog-before.md" "$temp/nav-authored/docs/catalog.md"
+cmp "$temp/authored-index-before.md" "$temp/nav-authored/docs/project/index.md"
 
 # An llms.txt entry point must keep its link to the complete catalog.
 cp -a "$temp/minimal" "$temp/llms-without-catalog"

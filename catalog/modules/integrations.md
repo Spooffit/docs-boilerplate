@@ -11,9 +11,9 @@ status: draft
 
 Identify actual external systems, direction of data flow, owner and contract location.
 
-## Applied profile and contracts
+## Contracts and boundaries
 
-[If the project uses event synchronization, replay or resumable data exchange, consider selecting the independent `integration-reliability` profile. It documents reliability and representation boundaries without implying a programming language, broker, ORM or exact HTTP endpoints.]
+Link the actual published schemas, protocols and integration owners. An integration document does not itself select a message broker, synchronization mechanism or `integration-reliability` technology profile. Include reliability guidance only when the project has explicitly selected it and the relevant failure modes exist.
 
 ## Delivery guarantees
 
@@ -25,4 +25,4 @@ Record observed failure modes, relevant telemetry and recovery procedures.
 
 ## Open decisions
 
-Use ADRs to resolve consequential transport or coupling choices.
+Link an existing decision or create an ADR only for a consequential unresolved tradeoff. Omit this section when no open choices exist.

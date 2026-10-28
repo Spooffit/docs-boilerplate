@@ -8,6 +8,7 @@ unsourced business claims; they do not certify factual correctness.
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import re
 import sys
 
@@ -15,6 +16,8 @@ BARE_COMMAND = re.compile(
     r"(?<![\w./-])docs-boilerplate\s+(?:init|update|validate|recover|list|doctor)\b"
 )
 SOURCE_COMMAND = "dotnet run --project src/DocsBoilerplate.Cli -- "
+DOC_REF = re.compile(r"`(docs/(?:[a-z0-9-]+/)*[a-z0-9-]+\\.md)`")
+CONDITIONAL_REF = re.compile(r"\\b(?:if|when|where|optional|selected|installed|present|available)\\b", re.I)
 GUIDANCE = [
     Path("AGENTS.md"),
     Path("docs/standards/documentation.md"),
@@ -23,6 +26,14 @@ GUIDANCE = [
 
 def check(root: Path) -> list[str]:
     errors: list[str] = []
+    selected = set()
+    try:
+        selected = set(json.loads((root / "docs.config.json").read_text(encoding="utf-8"))["Skills"])
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        errors.append(f"{root}: cannot read selected skills: {exc}")
+    installed = {path.parent.name for path in (root / ".agents" / "skills").glob("*/SKILL.md")}
+    if installed != selected:
+        errors.append(f"{root}: installed skills {sorted(installed)} differ from selection {sorted(selected)}")
     targets = GUIDANCE + sorted((root / ".agents" / "skills").glob("*/SKILL.md"))
     for relative in targets:
         path = root / relative
@@ -32,7 +43,11 @@ def check(root: Path) -> list[str]:
         content = path.read_text(encoding="utf-8")
         if BARE_COMMAND.search(content):
             errors.append(f"{root}: undocumented installed CLI invocation in {relative}")
-        # Every CLI reference must use the source-checkout invocation above.
+        for number, line in enumerate(content.splitlines(), 1):
+            for ref in DOC_REF.findall(line):
+                if not (root / ref).is_file() and not CONDITIONAL_REF.search(line):
+                    errors.append(f"{root}: missing unconditional document reference {ref} in {relative}:{number}")
+        # Source-only CLI commands are documented with a checkout boundary.
     agent = (root / "AGENTS.md").read_text(encoding="utf-8")
     for needle in (
         SOURCE_COMMAND + "recover --output",

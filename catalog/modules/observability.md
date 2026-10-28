@@ -9,7 +9,7 @@ status: draft
 
 ## Signals and ownership
 
-Record where application logs, traces, metrics and alerts live and who operates each destination.
+Identify which logs, traces, metrics or alerts actually exist, where they are stored and who maintains them. Do not invent missing telemetry systems or dashboards.
 
 ## Instrumentation
 

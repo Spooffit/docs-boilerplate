@@ -13,13 +13,13 @@ status: draft
 
 Identify protected information and operations, human/service/browser actors, relevant external identities and data owners. Distinguish identity used to sign in from authorization to act on a particular resource. State which systems own credentials, permissions, business records and audit evidence; a documentation module does not automatically own a database or bounded context.
 
-Identify the deployment and trust boundaries of browsers, APIs, reverse proxies, service calls and administrative tools, but only where they exist. Record the accepted security scope for each delivery stage. A deliberately unauthenticated prototype does not prove that a later authenticated product is safe.
+Identify the deployment and trust boundaries of browsers, APIs, reverse proxies, service calls and administrative tools, but only where they exist. Record the accepted security scope; identify delivery-stage differences only where the project actually has them. A limited unauthenticated prototype does not establish the safety of a future authenticated product.
 
 ## Identity, credentials and sessions (when applicable)
 
 Document the selected authentication method, credential lifecycle, secure provisioning and recovery paths, session creation, expiration, logout and revocation guarantees. Specify the security effect of account disablement, password reset and permission changes, including whether already-authorized in-flight operations may complete. Distinguish per-request evidence from stale UI or cached role claims.
 
-Record which provider owns password hashing, credential reset, replay prevention and account state. Never duplicate credential stores or assume a default password, open registration, multi-factor policy or session duration without an approved requirement. State who can recover administration access and how concurrent access changes preserve any selected administrative-availability invariant.
+Record which actual component owns credential security and recovery, when these features exist. Never assume a default password, open registration, multi-factor policy, administrative role model or session duration. Document any administration-recovery requirements only if adopted by the project.
 
 ## Authorization and resource ownership
 
