@@ -53,7 +53,7 @@ grep -q '^## Minimal authoring rule$' "$temp/minimal/docs/templates/index.md"
 grep -q 'new unapproved project document should normally begin' "$temp/minimal/docs/templates/index.md"
 grep -q '^# Architecture decision: \[Title\]$' "$temp/minimal/docs/templates/adr.md"
 grep -q 'Do not invent Demo/MVP/Production phases' "$temp/minimal/docs/templates/feature.md"
-grep -q 'not a reason to create this document' "$temp/minimal/docs/templates/module.md"
+grep -q 'not by itself a reason to create this document' "$temp/minimal/docs/templates/module.md"
 grep -q 'Decision status:' "$temp/minimal/docs/templates/question.md"
 grep -q 'A standalone business feature document is not mandatory' "$temp/minimal/docs/templates/technical-feature.md"
 if grep -q '^Documents in this directory:$' "$temp/minimal/docs/templates/index.md"; then
