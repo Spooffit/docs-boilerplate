@@ -130,6 +130,60 @@ Test("document catalog lists only selected technology", () =>
     Expect(!text.Contains("blazor", StringComparison.Ordinal), "Unselected technology leaked");
     Expect(text.Contains("standards/dotnet/testing.md", StringComparison.Ordinal), "Missing installed document");
 });
+Test("discoverability identifies missing catalog and local index entries", () =>
+{
+    var docs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["docs/index.md"] = "# Home",
+        ["docs/catalog.md"] = "# Catalog\n- [Home](index.md)\n- [Index](project/index.md)\n- [Overview](project/overview.md)",
+        ["docs/project/index.md"] = "# Project\n- [Overview](overview.md)",
+        ["docs/project/overview.md"] = "# Overview",
+        ["docs/project/new-guide.md"] = "# New guide"
+    };
+    var owned = new HashSet<string>(docs.Keys.Where(p => p != "docs/project/new-guide.md"),
+        StringComparer.OrdinalIgnoreCase);
+    var missing = DocumentDiscovery.FindMissingLinks(docs, owned);
+    Expect(missing.Count == 2 && missing.Any(x => x.Contains("docs/catalog.md"))
+        && missing.Any(x => x.Contains("docs/project/index.md")),
+        "An unindexed authored document escaped discovery checks");
+
+    docs["docs/project/index.md"] += "\n- [New guide](new-guide.md#overview)";
+    missing = DocumentDiscovery.FindMissingLinks(docs, owned);
+    Expect(missing.Count == 1 && missing[0].Contains("docs/catalog.md"),
+        "Local index repair incorrectly replaced catalog discovery");
+    docs["docs/catalog.md"] += "\n- [New guide](project/new-guide.md)";
+    Expect(DocumentDiscovery.FindMissingLinks(docs, owned).Count == 0,
+        "Fully indexed new document was rejected");
+
+    docs["docs/project/renamed.md"] = docs["docs/project/new-guide.md"];
+    docs.Remove("docs/project/new-guide.md");
+    missing = DocumentDiscovery.FindMissingLinks(docs, owned);
+    Expect(missing.Count == 2, "Moving a user document left navigation silently stale");
+    docs["docs/catalog.md"] = docs["docs/catalog.md"].Replace("new-guide.md", "renamed.md");
+    docs["docs/project/index.md"] = docs["docs/project/index.md"].Replace("new-guide.md", "renamed.md");
+    Expect(DocumentDiscovery.FindMissingLinks(docs, owned).Count == 0,
+        "Updated navigation after a move was rejected");
+});
+Test("discovery links honor relative paths and ignore examples", () =>
+{
+    var linked = DocumentDiscovery.LinkedPaths("docs/project/index.md", """
+        [local](overview.md#purpose)
+        [sibling](../architecture/overview.md)
+        [encoded](My%20Topic.md)
+        [outside](../../not-a-project-doc.md)
+        [web](https://example.com/docs)
+        Inline `[fiction](missing.md)`
+        ~~~md
+        [also fictional](not-real.md)
+        ~~~
+        """);
+    Expect(linked.Contains("docs/project/overview.md"), "Local path lost");
+    Expect(linked.Contains("docs/architecture/overview.md"), "Relative parent path lost");
+    Expect(linked.Contains("docs/project/My Topic.md"), "Encoded link lost");
+    Expect(!linked.Contains("not-a-project-doc.md") && !linked.Contains("docs/project/missing.md")
+        && !linked.Contains("docs/project/not-real.md"), "Invalid or example path was included");
+});
+
 Test("Markdown heading anchors are scoped, duplicated, and Unicode-safe", () =>
 {
     const string source = """

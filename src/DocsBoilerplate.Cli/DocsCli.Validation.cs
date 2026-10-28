@@ -116,6 +116,17 @@ static partial class DocsCli
                 }
             }
         }
+        // Guard discovery of every doc in the catalog, and user-owned docs in their
+        // local directory index. The curated llms.txt intentionally stays brief.
+        var docsByPath = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var file in allMarkdown)
+        {
+            var path = Path.GetRelativePath(output, file).Replace('\\', '/');
+            if (path.StartsWith("docs/", StringComparison.Ordinal))
+                docsByPath.Add(path, await File.ReadAllTextAsync(file));
+        }
+        errors.AddRange(DocumentDiscovery.FindMissingLinks(docsByPath, declared));
+
         var llmsPath = SafePath(output, "llms.txt");
         if (File.Exists(llmsPath))
         {
