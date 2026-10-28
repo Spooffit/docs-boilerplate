@@ -301,6 +301,108 @@ Test("path containment rejects traversal and platform metacharacters", () =>
     foreach (var invalid in new[] { "../secret.md", "docs/../../secret", "/absolute.md", "docs\\evil.md", "docs/C:evil.md", "docs//file.md" })
         Throws<IOException>(() => SafeFiles.Child(temporary.Path, invalid));
 });
+Test("update rollback restores all prior bytes, removes additions and cleans directories", () =>
+{
+    foreach (var failAfter in new[] { 2, 3 })
+    {
+        using var tmp = new TempDirectory();
+        var projectDir = Path.Combine(tmp.Path, "docs", "project");
+        Directory.CreateDirectory(projectDir);
+        var originalPath = Path.Combine(projectDir, "overview.md");
+        var configPath = Path.Combine(tmp.Path, "docs.config.json");
+        var userPath = Path.Combine(projectDir, "personal.txt");
+        File.WriteAllText(originalPath, "original page");
+        File.WriteAllText(configPath, "original manifest");
+        File.WriteAllText(userPath, "do not touch");
+        var writes = new[]
+        {
+            new UpdateTransaction.Write("docs/project/overview.md",
+                Encoding.UTF8.GetBytes("new page"), true, DocsCli.Hash("original page")),
+            new UpdateTransaction.Write("docs/new/deep/feature.md",
+                Encoding.UTF8.GetBytes("new feature"), false, null),
+            new UpdateTransaction.Write("docs.config.json",
+                Encoding.UTF8.GetBytes("new manifest"), true, DocsCli.Hash("original manifest"))
+        };
+        IOException? failure = null;
+        try
+        {
+            UpdateTransaction.ApplyAsync(tmp.Path, writes, count =>
+                count == failAfter
+                    ? Task.FromException(new InvalidOperationException("injected post-write failure"))
+                    : Task.CompletedTask).GetAwaiter().GetResult();
+        }
+        catch (IOException ex) { failure = ex; }
+
+        Expect(failure is not null && failure.Message.Contains("Completed changes were rolled back"),
+            "Fault was not reported as successfully rolled back");
+        Expect(File.ReadAllText(originalPath) == "original page", "Changed template file was not restored");
+        Expect(File.ReadAllText(configPath) == "original manifest", "Manifest changed after failure");
+        Expect(File.ReadAllText(userPath) == "do not touch", "User-owned file was modified by rollback");
+        Expect(!Directory.Exists(Path.Combine(tmp.Path, "docs", "new")),
+            "Rollback left newly created directories");
+        Expect(!Directory.EnumerateFiles(tmp.Path, ".docs-boilerplate-*.tmp",
+            SearchOption.AllDirectories).Any(), "Temporary files survived rollback");
+    }
+});
+Test("update rollback also handles stale hashes after earlier writes", () =>
+{
+    using var tmp = new TempDirectory();
+    var userPath = Path.Combine(tmp.Path, "existing.md");
+    File.WriteAllText(userPath, "owner's latest revision");
+    var writes = new[]
+    {
+        new UpdateTransaction.Write("new/guide.md", Encoding.UTF8.GetBytes("new content"), false, null),
+        new UpdateTransaction.Write("existing.md", Encoding.UTF8.GetBytes("upstream"), true,
+            DocsCli.Hash("obsolete baseline"))
+    };
+    IOException? failure = null;
+    try { UpdateTransaction.ApplyAsync(tmp.Path, writes).GetAwaiter().GetResult(); }
+    catch (IOException ex) { failure = ex; }
+    Expect(failure is not null && failure.Message.Contains("File changed after planning"),
+        "Stale expected fingerprint did not block write");
+    Expect(File.ReadAllText(userPath) == "owner's latest revision", "Concurrent user content was overwritten");
+    Expect(!Directory.Exists(Path.Combine(tmp.Path, "new")),
+        "Earlier successful writes were not reversed");
+});
+Test("rollback refuses to erase a later concurrent change", () =>
+{
+    using var tmp = new TempDirectory();
+    var page = Path.Combine(tmp.Path, "owned.md");
+    File.WriteAllText(page, "baseline");
+    IOException? failure = null;
+    try
+    {
+        UpdateTransaction.ApplyAsync(tmp.Path,
+            [new UpdateTransaction.Write("owned.md", Encoding.UTF8.GetBytes("new upstream"),
+                true, DocsCli.Hash("baseline"))],
+            _ =>
+            {
+                File.WriteAllText(page, "edited after generator write");
+                return Task.FromException(new InvalidOperationException("fault after external modification"));
+            }).GetAwaiter().GetResult();
+    }
+    catch (IOException ex) { failure = ex; }
+    Expect(failure is not null && failure.Message.Contains("Rollback was incomplete"),
+        "Concurrent edit was not reported as an incomplete rollback");
+    Expect(File.ReadAllText(page) == "edited after generator write",
+        "Rollback erased a later independent edit");
+});
+Test("successful update transaction applies old and new files", () =>
+{
+    using var tmp = new TempDirectory();
+    var owned = Path.Combine(tmp.Path, "owned.md");
+    File.WriteAllText(owned, "before");
+    UpdateTransaction.ApplyAsync(tmp.Path,
+        [
+            new UpdateTransaction.Write("owned.md", Encoding.UTF8.GetBytes("after"), true,
+                DocsCli.Hash("before")),
+            new UpdateTransaction.Write("added/subdir/new.md", Encoding.UTF8.GetBytes("created"), false, null)
+        ]).GetAwaiter().GetResult();
+    Expect(File.ReadAllText(owned) == "after", "Expected replacement was missing");
+    Expect(File.ReadAllText(Path.Combine(tmp.Path, "added", "subdir", "new.md")) == "created",
+        "Expected addition was missing");
+});
+
 Test("update path preflight rejects case-only files and directory aliases", () =>
 {
     var entries = new[]
