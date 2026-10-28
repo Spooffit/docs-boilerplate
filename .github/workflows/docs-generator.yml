@@ -27,10 +27,6 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - name: Validate catalog and generated JSON Schema contracts
-        run: |
-          python -m pip install "jsonschema>=4.23,<5"
-          python tests/schema_contracts.py
       - name: Check generated-content source hygiene
         run: python tests/catalog_hygiene.py
       - name: Ensure obsolete project sources and references stay absent

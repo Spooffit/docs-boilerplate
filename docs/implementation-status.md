@@ -15,7 +15,7 @@ status: active
 - Generated `README.md`, `AGENTS.md`, `llms.txt`, navigable `docs/` and `docs.config.json` manifest. Generated output includes only selected profiles and optional modules.
 - Optional Docsify browser shell using a single `index.html`. Markdown remains source of truth and no static-site build tree is created.
 - A CLI validator for ordinary relative Markdown links and common heading fragments, frontmatter, directory indexes, **catalog coverage for every project Markdown page and local index coverage for newly authored pages**, managed paths and unresolved required placeholders.
-- Cross-platform CI: Linux build, focused .NET contract tests, generation smoke, JSON Schema checks and hygiene; Windows build and smoke; real Chromium/Playwright Docsify navigation checks.
+- Cross-platform CI: Linux build, focused .NET contract tests, generation smoke and hygiene; Windows build and smoke; real Chromium/Playwright Docsify navigation checks.
 - Repository and catalog hygiene checks ensuring former project specifications are not shipped or silently reintroduced.
 - Initial project and architecture overviews remain `draft`, distinguish observed code from target decisions and prompt for evidence. The optional `docs-init` skill explains first-pass project intake; smoke tests verify generated onboarding content.
 

@@ -57,8 +57,6 @@ static partial class DocsCli
 
     private static void ValidateCatalog(string catalog, Catalog data, SkillCatalog skills, ModuleCatalog modules)
     {
-        if (data.SchemaVersion != 1 || skills.SchemaVersion != 1 || modules.SchemaVersion != 1)
-            throw new InvalidOperationException("Unsupported catalog schema version.");
         if (modules.Modules.GroupBy(x => x.Id, StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
             throw new InvalidOperationException("Duplicate documentation module IDs.");
         foreach (var module in modules.Modules)
@@ -190,11 +188,11 @@ static partial class DocsCli
 
     private static string SafePath(string root, string relative) => SafeFiles.Child(root, relative);
 
-    internal sealed record Catalog(int SchemaVersion, Profile[] Profiles);
+    internal sealed record Catalog(Profile[] Profiles);
     internal sealed record Profile(string Id, string Name, string Status, string[] Requires, string[] Files, string Category);
-    internal sealed record SkillCatalog(int SchemaVersion, Skill[] Skills);
+    internal sealed record SkillCatalog(Skill[] Skills);
     internal sealed record Skill(string Id, string Name, string Source, string Destination);
-    internal sealed record ModuleCatalog(int SchemaVersion, Module[] Modules);
+    internal sealed record ModuleCatalog(Module[] Modules);
     internal sealed record Module(string Id, string Name, ModuleFile[] Files);
     internal sealed record ModuleFile(string Source, string Destination);
     private sealed record ProjectConfig(

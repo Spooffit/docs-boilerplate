@@ -7,7 +7,7 @@ status: active
 
 # Contributing to Docs Boilerplate
 
-This repository maintains a reusable Markdown-first documentation generator. The canonical catalog is `catalog/`, the CLI is `src/`, shared schemas are `schemas/`, and tests are `tests/`. Do not add a project's real feature specifications to this repository.
+This repository maintains a reusable Markdown-first documentation generator. The canonical catalog is `catalog/`, the CLI is `src/`, and tests are `tests/`. Do not add a project's real feature specifications to this repository.
 
 ## Change workflow
 

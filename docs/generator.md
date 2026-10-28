@@ -65,7 +65,7 @@ For PostgreSQL deployments, `--profiles postgresql` includes a migration rollout
 
 ## Catalog integrity
 
-`doctor` performs a whole-catalog preflight: all published profile dependencies must resolve without cycles, every profile/module/skill destination must be unique (case-insensitively for cross-platform use), and generated project paths cannot escape the repository. This validation occurs **before** output creation and also rejects collisions in currently unselected profiles.
+`doctor` performs a whole-catalog preflight: all available profile dependencies must resolve without cycles, every profile/module/skill destination must be unique (case-insensitively for cross-platform use), and generated project paths cannot escape the repository. This validation occurs **before** output creation and also rejects collisions in currently unselected profiles.
 
 ## Generated navigation
 

@@ -25,7 +25,6 @@ status: active
 | Markdown metadata | `src/DocsBoilerplate.Cli/DocumentMetadata.cs` | Narrow frontmatter policy and kebab-case naming |
 | File system | `src/DocsBoilerplate.Cli/SafeFiles.cs` | Reject traversal, symlink/reparse-point paths and unsafe file-system entries |
 | Update path preflight | `src/DocsBoilerplate.Cli/UpdatePathSafety.cs` | Reject case-only file and directory collisions before an update writes new files |
-| Data contracts | `schemas/*.schema.json` | JSON Schema definitions for input registries and generated `docs.config.json` |
 | Content | `catalog/` | Reusable standards, templates, optional modules, Agent Skills and the Docsify viewer |
 
 The CLI is still one executable and uses a **partial static class** split by responsibility. This is a maintainability step, not a new domain layering scheme or separate shared library. Keep project-specific feature content out of these files.
@@ -36,7 +35,6 @@ The CLI is still one executable and uses a **partial static class** split by res
 - **End-to-end CLI verification:** `tests/smoke.sh` exercises generated profiles, updates, conflicts, invalid manifests, file-system safety and Docsify HTTP delivery on Linux.
 - **Real browser verification:** `tests/docsify_browser.py` exercises rendered Docsify in Playwright/Chromium, including nested routes, fragment links and refresh, with CI failure traces; it does not add dependencies to generated projects.
 - **Windows CLI verification:** `tests/windows-smoke.ps1` checks an independent real Windows execution path.
-- **JSON Schema contracts:** `tests/schema_contracts.py` validates catalog files and representative generated config; CI installs `jsonschema` for these checks only.
 - **Repository cleanliness:** `tests/repository_hygiene.py` protects the boilerplate from reintroducing predecessor project sources and links.
 
 A passing focused check does not prove browser interactivity, all Markdown link variants or crash-atomic multi-file updates. The CI browser job checks selected Chromium scenarios only, not full accessibility, CDN uptime or other browsers. Fragment checks support ordinary inline links, common headings and explicit HTML anchors, but do not implement every Docsify-renderer convention or reference-style link. Keep these limitations explicit.
