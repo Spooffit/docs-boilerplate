@@ -12,7 +12,7 @@ import re
 import sys
 
 BARE_COMMAND = re.compile(
-    r"(?<![\\w./-])docs-boilerplate\\s+(?:init|update|validate|recover|list|doctor)\\b"
+    r"(?<![\w./-])docs-boilerplate\s+(?:init|update|validate|recover|list|doctor)\b"
 )
 SOURCE_COMMAND = "dotnet run --project src/DocsBoilerplate.Cli -- "
 GUIDANCE = [
@@ -32,9 +32,7 @@ def check(root: Path) -> list[str]:
         content = path.read_text(encoding="utf-8")
         if BARE_COMMAND.search(content):
             errors.append(f"{root}: undocumented installed CLI invocation in {relative}")
-        for line in content.splitlines():
-            if SOURCE_COMMAND in line and "src/DocsBoilerplate.Cli" not in line:
-                errors.append(f"{root}: invalid source checkout invocation in {relative}")
+        # Every CLI reference must use the source-checkout invocation above.
     agent = (root / "AGENTS.md").read_text(encoding="utf-8")
     for needle in (
         SOURCE_COMMAND + "recover --output",
