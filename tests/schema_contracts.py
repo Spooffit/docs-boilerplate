@@ -57,6 +57,16 @@ def run():
         validator = Draft202012Validator(config_schema)
         data = json.loads((output / "docs.config.json").read_text(encoding="utf-8"))
         validator.validate(data)
+        assert data["SchemaVersion"] == 1, "Newly generated manifests must declare v1"
+        unversioned = deepcopy(data)
+        del unversioned["SchemaVersion"]
+        validator.validate(unversioned)  # Historical fingerprinted v1 configs remain valid.
+        future_version = deepcopy(data)
+        future_version["SchemaVersion"] = 2
+        assert_invalid(validator, future_version, "future project manifest schema")
+        zero_version = deepcopy(data)
+        zero_version["SchemaVersion"] = 0
+        assert_invalid(validator, zero_version, "zero project manifest schema")
 
         retired = deepcopy(data)
         retired["RetiredFiles"] = ["docs/standards/dotnet/retired.md"]
