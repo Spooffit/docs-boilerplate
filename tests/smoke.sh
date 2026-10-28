@@ -189,6 +189,22 @@ run init --name PortableCanary --description 'Generated artifact scope audit' --
 run validate --output "$temp/all-profiles"
 python3 tests/generated_output_hygiene.py "$temp/minimal" "$temp/headless" "$temp/full-stack" "$temp/all-profiles"
 
+# Prove the new artifact guard fails specifically for source contamination and extra assets.
+cp -a "$temp/headless" "$temp/project-leak"
+printf '\nContentManager\n' >> "$temp/project-leak/docs/project/overview.md"
+if python3 tests/generated_output_hygiene.py "$temp/project-leak" > "$temp/project-leak.log" 2>&1; then
+    echo "Historical product content escaped generated-output audit"; exit 1
+fi
+grep -q "predecessor identifier" "$temp/project-leak.log"
+cp -a "$temp/headless" "$temp/asset-leak"
+mkdir -p "$temp/asset-leak/assets"
+printf 'unexpected browser bundle\n' > "$temp/asset-leak/assets/app.js"
+if python3 tests/generated_output_hygiene.py "$temp/asset-leak" > "$temp/asset-leak.log" 2>&1; then
+    echo "Unexpected frontend assets escaped generated-output audit"; exit 1
+fi
+grep -q "unexpected generated asset" "$temp/asset-leak.log"
+grep -q "unexpected file" "$temp/asset-leak.log"
+
 # Only docsify/none are supported; retired site engines cannot run or be updated.
 if run init --name InvalidViewer --description Test --output "$temp/invalid-viewer" --profiles dotnet --site legacy-engine --non-interactive; then
   echo "Unsupported site engine accepted by init"; exit 1

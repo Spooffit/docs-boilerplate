@@ -38,3 +38,11 @@ Both `technical/backend/templates/module.md` and `technical/frontend/templates/m
 The old business `adr.md` and `standard.md` are also covered by the new base `docs/templates/adr.md` and `docs/templates/standard.md`. Old template README files were reviewed for project-specific references and general authoring advice; source-specific ID conventions and fixed runtime technologies are not universally required.
 
 Source files remain preserved until cleanup; `reviewed-targeted` indicates classification, **not** exhaustive verification of all linked project documents.
+
+## Generated repository footprint audit (2026-10-28)
+
+The **generated artifact**, not just the repository's reusable source catalog, now has an explicit smoke-test integrity check at `tests/generated_output_hygiene.py`. A new test case selects **every currently available** profile from `catalog/profiles.json`, every module from `catalog/modules.json`, and every agent skill from `catalog/skills.json`, then runs `init` and `validate`. Planned profiles are deliberately excluded.
+
+The checker compares all newly written files to `docs.config.json`'s managed-file list and SHA-256 fingerprints, rejects predecessor identifiers and old `business/`/`technical/`/generator trees, ensures maintainer-only `docs/audit/` or `docs/legacy/` aren't emitted, and rejects extraneous HTML pages or generated JS/CSS bundles. The only supported site page is the optional Docsify `index.html`; the `--site none` case must have none. It also checks agent entrypoints. Separate **negative fixtures** add a forbidden predecessor name and an unwanted JS asset to prove these specific detections fail the audit.
+
+This test is intended only for **freshly initialized** repositories. User-authored files and modifications are valid after initialization and remain protected by the CLI's normal `validate`/fingerprint update rules. The checker does not assert that every historical document is semantically reusable, that a third-party example compiles, or that Docsify JavaScript works in a real browser. Full-source cleanup remains subject to the project-source deletion gates and the owner's decisions.

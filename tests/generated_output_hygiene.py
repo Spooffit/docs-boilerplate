@@ -18,6 +18,7 @@ OLD_SOURCE_ROOTS = {
     "business", "technical", "milestones", "catalog", "src", "tests", "schemas", "shared",
 }
 UNWANTED_ASSET_EXTENSIONS = {".js", ".css", ".map", ".mjs", ".cjs", ".ts", ".tsx"}
+MAINTAINER_ONLY_PREFIXES = ("docs/audit/", "docs/legacy/")
 
 
 def check(root: Path) -> list[str]:
@@ -57,6 +58,8 @@ def check(root: Path) -> list[str]:
         rel = Path(path)
         if path.split("/")[0] in OLD_SOURCE_ROOTS:
             errors.append(f"{root}: predecessor/generator tree included: {path}")
+        if path.startswith(MAINTAINER_ONLY_PREFIXES):
+            errors.append(f"{root}: maintainer-only historical docs included: {path}")
         if rel.suffix.lower() in UNWANTED_ASSET_EXTENSIONS:
             errors.append(f"{root}: unexpected generated asset: {path}")
         if rel.suffix.lower() == ".html" and path != "index.html":
