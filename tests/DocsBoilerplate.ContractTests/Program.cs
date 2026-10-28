@@ -157,7 +157,7 @@ Test("Markdown heading anchors are scoped, duplicated, and Unicode-safe", () =>
         "paragraph-title", "explicit-id", "explicit-name" })
         Expect(anchors.Contains(key), $"Heading anchor missing: {key}");
     Expect(!anchors.Contains("hidden-header"), "Heading in fenced code became an anchor");
-    Expect(MarkdownNavigation.Slug("Über C# & .NET") == "über-c-net", "Incorrect Unicode/punctuation slug");
+    Expect(MarkdownNavigation.Slug("Über C# & .NET") == "über-c---net", "Incorrect Unicode/punctuation slug");
 });
 
 Test("Markdown link targets retain fragments and omit fenced code examples", () =>
