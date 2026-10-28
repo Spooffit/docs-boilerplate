@@ -9,11 +9,13 @@ status: active
 
 This is a dependency assessment, not authorization to delete a document merely because its subject has been migrated.
 
+**Current snapshot (2026-10-28):** five substantive historical technology standards remain: backend S04, S16, S21 and frontend S06, S08. Their [individual technical closeout](retained-standards-closeout.md) and [unapproved owner choices](owner-decision-backlog.md) are the current handoff. Counts and statements below describe **earlier measured stages of migration** and must not be interpreted as the present file inventory.
+
 ## First measured result and disposition
 
-The initial scan of **395 Markdown files** found **24 historical technology standards**. **23 had recognized incoming links**; only `technical/backend/standards/S24-code-formatting.md` had none. The number of incoming documents ranged from one (S01) to 31 (S04). All 23 linked standards remain in `main` pending content and dependency review.
+The initial scan of **395 Markdown files** found **24 historical technology standards**. **23 had recognized incoming links**; only `technical/backend/standards/S24-code-formatting.md` had none. The number of incoming documents ranged from one (S01) to 31 (S04). At that baseline, all 23 linked standards remained in `main` pending content and dependency review.
 
-S24's entire formatter instruction has now been migrated to the `.NET conventions` catalog source and the old file removed under a recorded individual disposition. After S01/S23 were fully reviewed and their one/two incoming links updated, future scans examine **21** surviving legacy technology standards. This is the only substantive historical standard removed in this phase.
+S24's entire formatter instruction has now been migrated to the `.NET conventions` catalog source and the old file removed under a recorded individual disposition. After S01/S23 were fully reviewed and their one/two incoming links updated, future scans examine **21** surviving legacy technology standards. At that point, this was the only substantive historical standard removed in the first cleanup phase.
 
 ## Automated check
 
