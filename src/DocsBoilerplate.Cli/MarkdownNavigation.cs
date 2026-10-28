@@ -28,8 +28,41 @@ internal static class MarkdownNavigation
     internal static IEnumerable<string> InlineTargets(string markdown)
     {
         foreach (var line in VisibleLines(markdown))
-            foreach (Match match in InlineLink.Matches(line))
+            foreach (Match match in InlineLink.Matches(MaskInlineCode(line)))
                 yield return match.Groups["target"].Value.Trim();
+    }
+
+    private static string MaskInlineCode(string line)
+    {
+        var result = line.ToCharArray();
+        for (var i = 0; i < line.Length;)
+        {
+            if (line[i] != '`' || (i > 0 && line[i - 1] == '\\'))
+            {
+                i++;
+                continue;
+            }
+            var start = i;
+            var run = 0;
+            while (i < line.Length && line[i] == '`')
+            {
+                run++;
+                i++;
+            }
+            var end = -1;
+            for (var j = i; j < line.Length;)
+            {
+                if (line[j] != '`') { j++; continue; }
+                var k = j;
+                while (k < line.Length && line[k] == '`') k++;
+                if (k - j == run) { end = k; break; }
+                j = k;
+            }
+            if (end < 0) continue;
+            Array.Fill(result, ' ', start, end - start);
+            i = end;
+        }
+        return new string(result);
     }
 
     internal static HashSet<string> Anchors(string markdown)
