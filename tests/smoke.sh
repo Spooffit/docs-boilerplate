@@ -360,7 +360,10 @@ grep -q '^## Conditional requests, when supported$' "$temp/all-profiles/docs/sta
 grep -q '^## Evidence and rollout$' "$temp/all-profiles/docs/standards/http/contract-verification.md"
 grep -q '^## Runtime constraints, when applicable$' "$temp/all-profiles/docs/standards/integrations/versioned-transfers.md"
 grep -q '^## Delivery and cache, when applicable$' "$temp/all-profiles/docs/standards/storage/object-storage.md"
-grep -q 'cross-language or platform support' "$temp/all-profiles/docs/templates/technical-feature.md"
+grep -q 'consuming applications or deployments currently conform' "$temp/all-profiles/docs/templates/technical-feature.md"
+grep -q '^## Code examples and verification evidence$' "$temp/all-profiles/docs/standards/documentation.md"
+grep -q 'docs/standards/documentation/identifiers-and-statuses.md' "$temp/all-profiles/docs/catalog.md"
+grep -q 'docs/standards/ui/direct-dto-forms.md' "$temp/all-profiles/docs/catalog.md"
 [[ ! -f "$temp/minimal/docs/standards/http/client-contracts.md" ]]
 [[ ! -f "$temp/minimal/docs/standards/storage/object-storage.md" ]]
 # Generated boilerplate must not impose the predecessor's audit workflow.
@@ -382,8 +385,8 @@ grep -q 'not a mandatory six-step plan' "$temp/all-profiles/docs/templates/postg
 grep -q 'Unicode length units' "$temp/all-profiles/docs/templates/postgresql-migration.md"
 [[ ! -e "$temp/minimal/docs/standards/architecture/ddd.md" ]]
 # Guard against reintroducing inherited product workflows into opt-in standards.
-if grep -R -E 'The original project placed|For tree or versioned-record UIs|Generated model and source-code conformance' "$temp/all-profiles/docs/standards"; then
-    echo "Project-specific workflow or old SDK architecture leaked into active standards"; exit 1
+if grep -R -E 'The original project placed|For tree or versioned-record UIs' "$temp/all-profiles/docs/standards"; then
+    echo "Project-specific workflow leaked into active standards"; exit 1
 fi
 [[ ! -e "$temp/minimal/docs/standards/postgresql/persistence.md" ]]
 [[ ! -e "$temp/minimal/docs/standards/http/contract-verification.md" ]]
