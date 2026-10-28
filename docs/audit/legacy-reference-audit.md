@@ -69,3 +69,7 @@ Both complete sources were compared to the canonical baseline. Four known incomi
 ## S18/S19/S20 completed source-and-link migration (2026-10-28)
 
 After full-source review and extraction into their selected profiles, S18/S19/S20 were redirected from the predecessor tree. The prior passing report counted 26/21/18 inbound **documents** respectively. The reference graph on commit `da787f4a715fd8f73deb8331ce2e12080443d987` reported **zero incoming documents** for each. Their deletion leaves **9** historical candidate-technology standards, subject to final CI and inventory checks. The portability decision is to keep `fluentvalidation`, `ardalis-specification` and `cqrs` opt-in; framework/library mandates and exact handler placement are deferred to owner review rather than silently made universal.
+
+## S21/S22 incoming-link reconciliation (2026-10-28)
+
+The last passing GitHub Actions run for commit `6e7afdb8d45f02abcd1e918bfd6c59256622803d` reported **zero** recognized incoming documents for each of S21 and S22, after redirecting references from **17** and **10** previously referring documents respectively. S22's normative topology guidance is now in the optional MassTransit/RabbitMQ profile and S22 is retired with its original text in history. S21 is **intentionally retained**, even without incoming links, because its uncompiled cross-layer example remains an unresolved content-retention choice in the owner backlog. The remaining historical candidate-technology standard count is **8** pending final deletion-gate CI.

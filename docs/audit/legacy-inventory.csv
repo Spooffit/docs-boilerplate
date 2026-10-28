@@ -143,7 +143,7 @@ technical/backend/standards/S18-fluent-validation.md,candidate-technology-standa
 technical/backend/standards/S19-specifications.md,candidate-technology-standard,removed-cleanup,8882
 technical/backend/standards/S20-cqrs.md,candidate-technology-standard,removed-cleanup,314
 technical/backend/standards/S21-aggregate-constraints.md,candidate-technology-standard,reviewed-targeted,30457
-technical/backend/standards/S22-eventbus-topology.md,candidate-technology-standard,reviewed-targeted,8390
+technical/backend/standards/S22-eventbus-topology.md,candidate-technology-standard,removed-cleanup,8390
 technical/backend/standards/S23-csproj.md,candidate-technology-standard,removed-cleanup,6062
 technical/backend/standards/S24-code-formatting.md,candidate-technology-standard,removed-cleanup,585
 technical/backend/templates/backend-feature.md,candidate-template,reviewed-targeted,15181
