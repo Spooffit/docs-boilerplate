@@ -43,6 +43,7 @@ jobs:
           (
             cd "$RUNNER_TEMP"
             "$tool" version | grep -q '^Docs Boilerplate CLI 0.1.0'
+            "$tool" --version | grep -q '^Docs Boilerplate CLI 0.1.0'
             "$tool" doctor
             "$tool" init --name ToolDemo --description "Tool installation smoke test" --output "$RUNNER_TEMP/tool-demo" --profiles dotnet --non-interactive
             "$tool" validate --output "$RUNNER_TEMP/tool-demo"
@@ -55,6 +56,7 @@ jobs:
           (
             cd "$RUNNER_TEMP"
             "$tool" version | grep -q '^Docs Boilerplate CLI 0.1.1'
+            "$tool" --version | grep -q '^Docs Boilerplate CLI 0.1.1'
             "$tool" doctor
             "$tool" validate --output "$RUNNER_TEMP/tool-demo"
             "$tool" update --output "$RUNNER_TEMP/tool-demo" --apply

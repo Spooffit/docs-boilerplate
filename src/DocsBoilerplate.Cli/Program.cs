@@ -15,7 +15,13 @@ static partial class DocsCli
     {
         try
         {
-            var command = args.FirstOrDefault()?.ToLowerInvariant() ?? "help";
+            var requestedCommand = args.FirstOrDefault()?.ToLowerInvariant() ?? "help";
+            var command = requestedCommand switch
+            {
+                "--version" or "-v" => "version",
+                "--help" or "-h" => "help",
+                _ => requestedCommand
+            };
             var flags = ParseFlags(args.Skip(1).ToArray(), command);
             if (command == "version")
             {
