@@ -16,8 +16,8 @@ BARE_COMMAND = re.compile(
     r"(?<![\w./-])docs-boilerplate\s+(?:init|update|validate|recover|list|doctor)\b"
 )
 SOURCE_COMMAND = "dotnet run --project src/DocsBoilerplate.Cli -- "
-DOC_REF = re.compile(r"`(docs/(?:[a-z0-9-]+/)*[a-z0-9-]+\\.md)`")
-CONDITIONAL_REF = re.compile(r"\\b(?:if|when|where|optional|selected|installed|present|available)\\b", re.I)
+DOC_REF = re.compile(r"`(docs/(?:[a-z0-9-]+/)*[a-z0-9-]+\.md)`")
+CONDITIONAL_REF = re.compile(r"\b(?:if|when|where|optional|selected|installed|present|available)\b", re.I)
 GUIDANCE = [
     Path("AGENTS.md"),
     Path("docs/standards/documentation.md"),
