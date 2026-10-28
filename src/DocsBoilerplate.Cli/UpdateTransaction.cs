@@ -34,7 +34,8 @@ internal static class UpdateTransaction
                     throw new IOException($"Unmanaged file appeared after planning: {write.Path}");
 
                 EnsureParents(output, Path.GetDirectoryName(target)!);
-                await AtomicWriteAsync(target, write.Content, !write.Existing);
+                await UpdateRecovery.ApplyStagedAsync(
+                    output, i, write.Path, HashBytes(write.Content), write.Existing);
                 if (afterWrite is not null)
                     await afterWrite(i + 1);
             }
@@ -69,22 +70,6 @@ internal static class UpdateTransaction
             SafeFiles.AssertNoLinks(current);
             if (Directory.Exists(current)) continue;
             Directory.CreateDirectory(current);
-        }
-    }
-
-    private static async Task AtomicWriteAsync(string target, byte[] content, bool createNew)
-    {
-        var directory = Path.GetDirectoryName(target)!;
-        SafeFiles.AssertNoLinks(directory);
-        var temporary = Path.Combine(directory, $".docs-boilerplate-{Guid.NewGuid():N}.tmp");
-        try
-        {
-            await File.WriteAllBytesAsync(temporary, content);
-            File.Move(temporary, target, overwrite: !createNew);
-        }
-        finally
-        {
-            if (File.Exists(temporary)) File.Delete(temporary);
         }
     }
 
