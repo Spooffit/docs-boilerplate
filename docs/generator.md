@@ -107,8 +107,10 @@ docs-boilerplate validate --output ./my-docs
 - Reject collisions with newly proposed paths that are already user-owned, including file or parent-folder names that differ only by letter case, and existing files where a new profile needs a directory. This prevents case-sensitive/case-insensitive conflicts and failures partway through an update.
 - Add new files when selected profiles gain documentation.
 - Preserve retired files, but remove their paths from managed ownership and regenerated navigation. Their exact paths are carried as `RetiredFiles` in `docs.config.json`, so validation does not mistake them for newly authored, unindexed pages. No automatic deletion.
-- Record new fingerprints and update `docs.config.json` last; attempt rollback of completed writes if a write fails.
+- Record new fingerprints and update `docs.config.json` last. If an ordinary write fails, restore original file bytes, delete newly added files and remove directories created by the failed update **only when empty**. When a file was independently modified after writing, report an incomplete rollback rather than overwrite that modification.
 
 Repositories generated before fingerprints were introduced cannot be updated automatically. Their original bytes cannot be proven, so upgrade by initializing a new output and manually reviewing the diffs. There is no unconditional `--force`.
+
+**Rollback verification:** Focused .NET tests inject failures after multiple successful writes, including immediately after the ownership manifest is written. They verify restoration of prior bytes, deletion of new files and empty directories, preservation of user-owned documents, and explicit reporting of concurrent edits that cannot safely be reversed. The fault-injection hook is internal to tests, not a user-facing CLI option.
 
 **Limits:** This is a safe single-writer workflow, not a fully transactional filesystem migration. A system crash, sudden power loss, or a hostile process racing on the same filesystem may interrupt the operation. Commit project changes to Git and review the preview before applying.
