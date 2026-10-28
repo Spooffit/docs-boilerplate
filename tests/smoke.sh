@@ -616,6 +616,10 @@ cp -a "$temp/minimal" "$temp/interrupted-staging"
 mkdir "$temp/interrupted-staging/.docs-boilerplate-update"
 printf '%s\n' 'preserve unknown staging data' > "$temp/interrupted-staging/.docs-boilerplate-update/unknown-note.txt"
 cp "$temp/interrupted-staging/docs.config.json" "$temp/interrupted-staging-config.json"
+if run init --name Minimal --description 'Minimal docs' --output "$temp/interrupted-staging" --profiles dotnet --non-interactive > "$temp/interrupt-init.log" 2>&1; then
+    echo "Init ignored interrupted recovery journal"; exit 1
+fi
+grep -q 'docs-boilerplate recover' "$temp/interrupt-init.log"
 if run update --output "$temp/interrupted-staging" --apply > "$temp/interrupt-update.log" 2>&1; then
     echo "Update ignored interrupted recovery journal"; exit 1
 fi
