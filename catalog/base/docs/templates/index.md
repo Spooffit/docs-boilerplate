@@ -9,6 +9,8 @@ status: active
 
 **Start from the question, not a folder.** Templates are **blank writing aids**, not proof that a feature, decision or milestone exists. Copy only the template needed for the current task. Replace editorial placeholders and remove irrelevant sections before publishing.
 
+**First project pass:** Complete the existing [project overview](../project/overview.md) and [architecture overview](../architecture/overview.md) from verified requirements, observed code and accepted decisions. Both start `draft`. No separate mandatory intake file or full family of feature records is needed.
+
 | Need | Start with | Do not create it merely because |
 | --- | --- | --- |
 | Define an observable product capability and acceptance | [Feature](feature.md) | A class or endpoint was added without a separately defined outcome |

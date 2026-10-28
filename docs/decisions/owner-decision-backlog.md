@@ -1,7 +1,7 @@
 ---
 title: "Deferred decisions for template finalization"
 description: "Owner choices that remain open after boilerplate engineering work"
-kind: decision-backlog
+kind: guide
 status: draft
 ---
 

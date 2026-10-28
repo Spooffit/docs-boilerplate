@@ -41,7 +41,7 @@ Fields are required and have these meanings:
 
 Do not add invented owner names, review dates, adoption status or unsupported technology version constraints. If ownership or dates become required, adopt a documented schema change and only record real values. Keep metadata concise.
 
-`SKILL.md` is a **special case**: preserve its agent-skill specification's `name` and `description` frontmatter fields, which are not replaced by `title`/`kind`/`status`. Historical source documents still awaiting migration may remain in their old format until reviewed.
+`SKILL.md` is a **special case**: preserve its agent-skill specification's `name` and `description` frontmatter fields, which are not replaced by `title`/`kind`/`status`. Newly generated project and architecture overviews are intentionally `draft` until verified. Passing generator validation proves structure, not factual or owner approval.
 
 ## Rules for linking
 

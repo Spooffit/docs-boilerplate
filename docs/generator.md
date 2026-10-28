@@ -73,6 +73,14 @@ The generated `llms.txt` is a short, **installed-content-only** discovery index.
 
 Every new repository receives `docs/catalog.md`, a deterministic navigation list built from the actual selected profiles, optional modules and templates. An authored `docs/templates/index.md` helps agents pick the smallest applicable template without a second directory index. The documentation homepage links to the catalog. Planned or unselected standards never appear in this catalog. After initialization this is a normal Markdown document that project owners can maintain; no implicit update overwrites it.
 
+## First project intake
+
+Fresh repositories include `docs/project/overview.md` and `docs/architecture/overview.md`, both deliberately marked `draft`. These existing documents help an agent distinguish verified requirements, observed code, accepted target architecture and open decisions. They are not a completed system design.
+
+After initialization, examine real project sources and fill these pages with traceable claims. Leave unknown facts as **Not yet verified** and keep the draft status until accepted. Technology-profile selection installs writing guidance, not evidence of implementation. The optional `docs-init` skill provides the same first-pass process.
+
+Create Feature, Module, Question, ADR or Milestone documents only when needed. Run `validate` after changes: a successful structural check is not proof that product decisions or source claims are correct.
+
 ## Updating a generated repository
 
 New repositories record SHA-256 fingerprints for all generated files in `docs.config.json`. These fingerprints describe **original template bytes**, not the user's subsequent edits. Update re-renders the selected profiles, skills, modules and site option against a newer catalog.

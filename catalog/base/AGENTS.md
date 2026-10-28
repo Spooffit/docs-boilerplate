@@ -17,6 +17,12 @@ Treat this repository's **Markdown documents as sources**, not the website or ge
 4. Read [applicable standards](docs/standards/index.md) only for the selected technology and problem. Do not import rules from an unselected library, historical example or unrelated project.
 5. To create a document, use [the template selection guide](docs/templates/index.md) and prefer the smallest appropriate artifact. Do not create duplicate Feature, Technical Feature, Module, ADR or Question records without a real distinct owner or scope.
 
+## First-pass project intake
+
+Newly initialized `docs/project/overview.md` and `docs/architecture/overview.md` are **draft scaffolds**, not project facts. Establish the problem, relevant sources, implementation observations and accepted architecture before promoting them to `active`. Mark unknowns as unverified and distinguish a source file from proof a requirement or test passed. Markdown validation checks structure, not factual approval.
+
+Use the optional `docs-init` skill when installed. Do not create feature/module/question/milestone documents solely because templates exist.
+
 ## Change and verify
 
 - Record unknowns explicitly. Preserve accepted decisions, original source links and meaningful status; do not invent requirements, approvals, owners, endpoints or successful tests.
