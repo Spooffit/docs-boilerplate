@@ -48,7 +48,7 @@ Page передаёт exact Product/Variant context и координирует 
 | SaveContentPolicy | features / save-content-policy / api, model | Отправить own policy с exact If-Match и вернуть подтверждённый результат | Создать; оба scopes | §3.3 |
 | ContentPolicy read/summary/history | entities / content-policy / api, ui | Generated read model, представления own/source/effective и immutable history | Создать по контракту backend, без ручной копии DTO | §3.3 |
 | Catalog context/blocker | Публичные блоки F06/F15 | Read-only идентичность и подтверждённые ограничения операции | Переиспользовать | [F06](F06-product-catalog.md), [F15](F15-catalog-conflicts.md) |
-| Controls/transport/guard | shared / ui, api, lib | Общие controls, metadata headers, ошибки и navigation guard | Переиспользовать/изменить инфраструктуру | [S05](../standards/S05-ui-and-forms.md), [S06](../standards/S06-api-client.md) |
+| Controls/transport/guard | shared / ui, api, lib | Общие controls, metadata headers, ошибки и navigation guard | Переиспользовать/изменить инфраструктуру | [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback), [S06](../standards/S06-api-client.md) |
 
 `app` подключает принятые routes/вкладку и существующие API services; отдельная policy business orchestration там не появляется. Физические namespaces и окончательный состав slices уточняются по реализации; существующий inline tab не доказывает наличие перечисленных будущих блоков.
 
@@ -222,7 +222,7 @@ ETag сохраняется как exact строка из HTTP рядом с ge
 | Complete confirmed null / late Unpublish | No frozen revision либо сохранённое до cutoff historical право | Confirmed null не error; no previous-nonnull fallback; late ordinary Unpublish не отменяет earlier frozen state |
 | Exact ban / required authority unknown | Known terminal refusal отдельно от unknown restriction facts | Inactive/unmaterialized ban доминирует Freeze и replay; unknown не разрешение; agreed policy/history не переписаны |
 
-Доступ к просмотру/редактированию определяется серверной авторизацией и подтверждёнными permissions; точные имена и sign-in flow здесь не назначаются. Кнопки имеют понятные подписи; основное изменение/Save/Cancel доступно с клавиатуры, ошибки не передаются только цветом. SC03 получает фокус при открытии и возвращает его к запускающему действию при закрытии. Dirty guard не скрывает введённое значение за unrelated reload. Применяются [S05](../standards/S05-ui-and-forms.md) и [S07](../standards/S07-accessibility.md).
+Доступ к просмотру/редактированию определяется серверной авторизацией и подтверждёнными permissions; точные имена и sign-in flow здесь не назначаются. Кнопки имеют понятные подписи; основное изменение/Save/Cancel доступно с клавиатуры, ошибки не передаются только цветом. SC03 получает фокус при открытии и возвращает его к запускающему действию при закрытии. Dirty guard не скрывает введённое значение за unrelated reload. Применяются [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback) и [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics).
 
 ## 10. Проверки и приёмка
 

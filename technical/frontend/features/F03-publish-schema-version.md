@@ -91,7 +91,7 @@ SchemaWorkspacePage использует PublishSchemaVersion через exact c
 
 SchemaEditor принимает diagnostics и переход к field/path через публичную границу F01/F02. Для Publish он не сериализует editor input и не вычисляет strict evolution. Presentation helpers не дублируют server DTO; shared transport хранит headers рядом с generated result, без business-полей в новой FormModel.
 
-Browser использует NSwag-generated clients/models напрямую; Domain/EF-сборки не импортируются. Общие правила [S06](../standards/S06-api-client.md) применяются к generation/headers, [S05](../standards/S05-ui-and-forms.md) — к состояниям действий. Точные C# signatures будущих блоков не объявляются готовыми.
+Browser использует NSwag-generated clients/models напрямую; Domain/EF-сборки не импортируются. Общие правила [S06](../standards/S06-api-client.md) применяются к generation/headers, [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback) — к состояниям действий. Точные C# signatures будущих блоков не объявляются готовыми.
 
 ## 6. Данные и владение состоянием
 
@@ -171,7 +171,7 @@ Publish не отправляет VersionNumber, ContentHash, PublishedAt, BaseP
 | Ошибка rail/header refresh после success | Published уже подтверждён; отдельная ошибка обновления read context | Retry соответствующих reads | Publish не повторяется; confirmed DTO не теряется |
 | 403, если возвращён сервером | Отличимый отказ, без false success | Вернуться/сохранить context | Demo login flow не добавляется; MVP access F16 отдельно |
 
-[Q15](../../backend/questions/Q15-api-and-source-code.md) определяет окончательное восстановление при lost response и адресацию строгих diagnostics; неизвестный DTO/status не заполняется догадкой. По [S05](../standards/S05-ui-and-forms.md)/[S07](../standards/S07-accessibility.md) действие и переход к issue доступны с клавиатуры, disabled reason/status/error понятны без цвета, summary переводит focus к адресуемой проблеме. F02 guard/dialog возвращает focus; новый обязательный dialog здесь не вводится.
+[Q15](../../backend/questions/Q15-api-and-source-code.md) определяет окончательное восстановление при lost response и адресацию строгих diagnostics; неизвестный DTO/status не заполняется догадкой. По [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) действие и переход к issue доступны с клавиатуры, disabled reason/status/error понятны без цвета, summary переводит focus к адресуемой проблеме. F02 guard/dialog возвращает focus; новый обязательный dialog здесь не вводится.
 
 ## 10. Проверки и приёмка
 

@@ -51,7 +51,7 @@ Pages владеют route и связывают чтения/действия. 
 | PublicationRevisionView / source views | Public F10/F09/F01–F04 | Exact immutable content/sources/SchemaVersion/InstanceVersion/provenance | [F10 §3](F10-publication-revisions.md#3-карта-fsd-блоков); локально только read-only review |
 | PublicationStateView / PromotionResults | Public F11 | Separate active/effective/automatic continuation результат | [F11 §3](F11-publication-lifecycle.md#3-карта-fsd-блоков) |
 | CurrentStaff / FormReauthentication | Public F16 | Current capabilities и same-user recovery ввода | [F16 §3](F16-staff-access.md#3-карта-fsd-блоков) |
-| Headers/errors/controls/confirmation | shared / api, ui | Общий DTO+ETag transport, pending/errors/focus | [S05](../standards/S05-ui-and-forms.md), [S06](../standards/S06-api-client.md), [S07](../standards/S07-accessibility.md) |
+| Headers/errors/controls/confirmation | shared / api, ui | Общий DTO+ETag transport, pending/errors/focus | [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback), [S06](../standards/S06-api-client.md), [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) |
 
 ### 3.3. Входы, выходы и владение
 
@@ -242,7 +242,7 @@ Specialist Submit/WithdrawPending и admin Comment/Approve/Reject проверя
 
 Comment доступен админу пока iteration Pending по выбранному backend правилу; терминальное редактирование/удаление comments и ответы специалиста не входят в MVP. Значимый Reject Reason обязателен; max length и остальные точные validation codes остаются Q15. F15 blocker не превращает весь workspace в недоступную область.
 
-По [S05](../standards/S05-ui-and-forms.md)/[S07](../standards/S07-accessibility.md) поля имеют понятные подписи, обязательность/error не показываются только цветом. Основные действия/selection доступны с клавиатуры. При SC03/SC04 и возврате из sign-in фокус остаётся в исходном допустимом context; pending, reason и conflict понятны без знания transport. Layout, клавиши и browser/storage retention не выбираются здесь.
+По [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) поля имеют понятные подписи, обязательность/error не показываются только цветом. Основные действия/selection доступны с клавиатуры. При SC03/SC04 и возврате из sign-in фокус остаётся в исходном допустимом context; pending, reason и conflict понятны без знания transport. Layout, клавиши и browser/storage retention не выбираются здесь.
 
 ## 10. Проверки и приёмка
 

@@ -41,7 +41,7 @@ Page координирует Product context/navigation. Widget объедин�
 | SaveProductContentAssignment | features / save-product-content-assignment / model, api | Whole-set PUT с assignment If-Match | SC01/guard Save | §3.3 |
 | ContentReferenceView / instance reads | entities / entity-instance / ui, api | Name/Key, exact version/schema context/availability | SC01/SC02; public reads F04 | §3.3; [F04](F04-entity-instances.md#8-использование-api-и-nswag) |
 | CatalogRecordView и предупреждение F15 | entities / product; widgets / каталоговый конфликт | Read-only Product/persistent blocker | Переиспользовать в SC01 | [F06](F06-product-catalog.md#3-карта-fsd-блоков), [F15](F15-catalog-conflicts.md#карта-блоков-и-состояния) |
-| Controls, guard, API/errors | shared / ui, api | Диалог/loading/errors/transport metadata | Переиспользовать; расширение общей инфраструктуры §8 | [S05](../standards/S05-ui-and-forms.md), [S06](../standards/S06-api-client.md), [S07](../standards/S07-accessibility.md) |
+| Controls, guard, API/errors | shared / ui, api | Диалог/loading/errors/transport metadata | Переиспользовать; расширение общей инфраструктуры §8 | [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback), [S06](../standards/S06-api-client.md), [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) |
 
 ### 3.3. Ответственность и публичные интерфейсы
 
@@ -241,7 +241,7 @@ ETag рядом с DTO относится только к exact assignment. Call
 
 Saved означает подтверждённую запись mutable assignment; диагностика и CanCreateRelease описывают его текущую пригодность отдельно. SaveBlockers блокируют Save, ReleaseBlockers — новый release, Warnings объясняют неблокирующие обстоятельства. Unchanged unavailable refs не превращаются в intrinsic SaveBlockers. Own ETag и diagnostic basis разделены; failure диагностики не показывается как пустой valid результат. Source restriction, F15, reference lifecycle и concurrency различаются. История releases/revisions доступна через соседние sections при блокировке новых mutations.
 
-По [S05](../standards/S05-ui-and-forms.md)/[S07](../standards/S07-accessibility.md) labels, exact version, dirty/errors/disabled reasons понятны без цвета. Add/Replace/Remove/Save/Cancel доступны с клавиатуры; picker получает focus, закрытие возвращает его запуску; issue позволяет найти item context. Razor/HTML/CSS/MudBlazor attributes не задаются.
+По [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) labels, exact version, dirty/errors/disabled reasons понятны без цвета. Add/Replace/Remove/Save/Cancel доступны с клавиатуры; picker получает focus, закрытие возвращает его запуску; issue позволяет найти item context. Razor/HTML/CSS/MudBlazor attributes не задаются.
 
 ## 10. Проверки и приёмка
 

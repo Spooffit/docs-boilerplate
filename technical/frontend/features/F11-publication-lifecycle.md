@@ -48,7 +48,7 @@ Pages координируют context и соседние F09/F10/F17, два w
 | CancelAutomaticItem | features / cancel-automatic-item / model, api | Явная отмена exact unfinished item со своим precondition; без publication transition | UI09 / SC05; wire Q15 |
 | PublicationStateView / ActivationHistory / PromotionResults, reads | entities / publication-state, promotion-operation / ui, api | Read-only generated state/history/operation, navigation events | DF01/DF03/DF07–DF08 |
 | ContentReleaseView / PublicationRevisionView / moderation link / Catalog context | public blocks F09/F10/F17/F06/F15 | Exact identity/источники/доступность/Approved/context | [F09 §3](F09-content-releases.md#3-карта-fsd-блоков), [F10 §3](F10-publication-revisions.md#3-карта-fsd-блоков), F17 |
-| API headers/errors, controls, confirmation | shared / api, ui | DTO + отдельная metadata; generic pending/error/focus | [S05](../standards/S05-ui-and-forms.md), [S06](../standards/S06-api-client.md), [S07](../standards/S07-accessibility.md) |
+| API headers/errors, controls, confirmation | shared / api, ui | DTO + отдельная metadata; generic pending/error/focus | [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback), [S06](../standards/S06-api-client.md), [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) |
 
 ### 3.3. Ответственность и публичные интерфейсы
 

@@ -238,7 +238,7 @@ Current generated methods собирают headers внутри, но caller п�
 | Network failure/lost response | Read error либо unknown write outcome различимы | Safe read; reconciliation Q15; новый write explicit | Comment/sent context сохранены; cancellation не rollback |
 | Retired snapshot | Badge, read-only content в owner history | Restore при разрешении, historical reads | Не новое использование F10; old revisions/Delivery сохранены |
 
-Disabled actions поясняют UX, не заменяют server guards/access. По [S05](../standards/S05-ui-and-forms.md)/[S07](../standards/S07-accessibility.md): явные подписи Create/Retire/Restore, различимые ошибки/unknown outcome, основные действия с клавиатуры, управление фокусом при открытии/закрытии режима. Layout/focus API не назначается. Comment Cancel/уход, lifecycle confirmation и navigation details — Q13.
+Disabled actions поясняют UX, не заменяют server guards/access. По [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics): явные подписи Create/Retire/Restore, различимые ошибки/unknown outcome, основные действия с клавиатуры, управление фокусом при открытии/закрытии режима. Layout/focus API не назначается. Comment Cancel/уход, lifecycle confirmation и navigation details — Q13.
 
 ## 10. Проверки и приёмка
 

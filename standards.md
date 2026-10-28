@@ -16,9 +16,9 @@
 | S02 | [Хранение и целостность](catalog/base/docs/standards/stateful-workflows.md#durable-snapshots-and-retained-history) | — |
 | S03 | [Валидация и ошибки](catalog/base/docs/standards/data-flows.md#input-trust-and-failure-semantics) | — |
 | S04 | [Общая модель тестирования](technical/backend/standards/S04-testing.md) | — |
-| S05 | — | [Интерфейсы и формы](technical/frontend/standards/S05-ui-and-forms.md) |
+| S05 | — | [Интерфейсы и формы](catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback) |
 | S06 | — | [Работа с API](technical/frontend/standards/S06-api-client.md) |
-| S07 | — | [Доступность интерфейса](technical/frontend/standards/S07-accessibility.md) |
+| S07 | — | [Доступность интерфейса](catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) |
 | S08 | — | [Тестирование клиента: Blazor/bUnit, FSD и браузерные проверки](technical/frontend/standards/S08-testing.md) |
 | S09 | [Архитектурные тесты: базовый .NET-стандарт](catalog/docs/standards/dotnet/testing.md) | — |
 | S10 | [Unit tests](catalog/docs/standards/dotnet/testing.md#unit-tests) | — |

@@ -191,7 +191,7 @@ Records immutable/read-only: F18 не требует ETag/If-Match mutation API 
 
 Каждый list/exact/options HTTP read использует current IdentityAccess fixed-role permissions/F16 fresh request snapshot. `audit.activity.read` общий Specialist+Administrator, staff-access records/options требуют `audit.staff-access.read` Administrator. Серверная visibility действует до paging/counters/options, скрытых rows/suggestions/metadata нет в DTO. Нет personal-only-my-history isolation. Audit read не authorizes target/reason/staff management: owner проверяет своё право; unavailable target не удаляет record. Уже checked in-flight semantics остаются F16, stale browser role не authority.
 
-По [S05](../standards/S05-ui-and-forms.md)/[S07](../standards/S07-accessibility.md) фильтры и действия имеют понятные подписи, error/pending/unavailable различимы без цвета. Selection, paging, retry и переход к exact target доступны с клавиатуры. Открытие/закрытие SC02 и восстановление входа сохраняют понятный focus context; неизвестные browser/device/key bindings/tooling не назначаются. Сообщения не требуют от пользователя знания outbox/transport и не раскрывают secrets.
+По [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) фильтры и действия имеют понятные подписи, error/pending/unavailable различимы без цвета. Selection, paging, retry и переход к exact target доступны с клавиатуры. Открытие/закрытие SC02 и восстановление входа сохраняют понятный focus context; неизвестные browser/device/key bindings/tooling не назначаются. Сообщения не требуют от пользователя знания outbox/transport и не раскрывают secrets.
 
 ## 10. Проверки и приёмка
 

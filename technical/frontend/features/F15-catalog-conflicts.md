@@ -64,7 +64,7 @@ Pages владеют route/query и загрузкой; widget связывае�
 | CatalogConflictWarning | widgets / catalog-conflict-warning / ui | Persistent server restriction и navigation intent | Создать SC04, переиспользовать F06–F12 | §3.3 |
 | CorrectCatalogConflictPatch | features / correct-catalog-conflict-patch / ui, model | Preview и save только допустимого corrective Variant patch; no move success | Создать SC05 после DF07 OpenAPI | §3.3; §7–§8 |
 | CatalogRecordView | entities / product, product-variant / ui | Read-only имена/IDs/applied context | Переиспользовать summary/navigation | [F06](F06-product-catalog.md#3-карта-fsd-блоков) |
-| API metadata/dialog/error/navigation primitives | shared / api, ui | Per-call headers, generic errors/confirmation/focus/guard | Переиспользовать; headers уточняются §8 | [S05](../standards/S05-ui-and-forms.md), [S06](../standards/S06-api-client.md), [S07](../standards/S07-accessibility.md) |
+| API metadata/dialog/error/navigation primitives | shared / api, ui | Per-call headers, generic errors/confirmation/focus/guard | Переиспользовать; headers уточняются §8 | [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback), [S06](../standards/S06-api-client.md), [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) |
 
 ### 3.3. Публичные обязанности блоков
 

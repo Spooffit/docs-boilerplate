@@ -221,7 +221,7 @@ NSwag CM web client не применяется: F23 не вводит web фо�
 
 Mapping/manifest/Addressables failures живут в add-on/Unity слое, не DotNet universal contracts. Диагностика содержит безопасный AssetId, этап/описание; tokens, secret URLs и sensitive payload не логируются. Callback thread/main-thread transitions и release API проверяются выбранной матрицей; Core DTO не превращаются в MonoBehaviour/ScriptableObject.
 
-Кнопки/поля/keyboard/focus [S05](../standards/S05-ui-and-forms.md)/[S07](../standards/S07-accessibility.md) не применяются: UI не вводится. Функциональная доступность интеграции — понятные программные операции/исходы и документация lifecycle. Экран приложения имеет собственного UX-владельца; F23 не выдумывает controls.
+Кнопки/поля/keyboard/focus [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) не применяются: UI не вводится. Функциональная доступность интеграции — понятные программные операции/исходы и документация lifecycle. Экран приложения имеет собственного UX-владельца; F23 не выдумывает controls.
 
 ## 10. Проверки и приёмка
 

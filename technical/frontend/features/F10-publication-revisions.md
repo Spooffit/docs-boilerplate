@@ -52,7 +52,7 @@ Page координирует route/context и F09/F10/F11/F17. Один widget 
 | PublicationRevisionView / reads | entities / publication-revision / ui, api | Generated preview/exact/list views/read; SC02/SC03; public input для F17 |
 | ContentReleaseView / reads | entities F09 / content-release / ui, api | Exact choice/details/availability/schema selections и четыре legacy-группы; [F09 §3](F09-content-releases.md#3-карта-fsd-блоков) |
 | ContentReferenceView; CatalogRecordView/F15 banner | entities/widgets F04/F06/F15 | Exact versions/applied context/blocker; public reuse |
-| API metadata/errors/confirmation/controls | shared / api, ui | Per-call headers/pending/errors/focus; [S05](../standards/S05-ui-and-forms.md)/[S06](../standards/S06-api-client.md) |
+| API metadata/errors/confirmation/controls | shared / api, ui | Per-call headers/pending/errors/focus; [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S06](../standards/S06-api-client.md) |
 
 ### 3.3. Ответственность и публичные интерфейсы
 
@@ -234,7 +234,7 @@ Revision имеет собственный internal `int Version` для lifecyc
 | Timeout после send | Unknown Create/Lifecycle outcome | Explicit reconciliation/read | Current/submitted preserved; no false refusal/retry |
 | Success/token/refresh failure | Запись confirmed/read неполон | Explicit read | No repeated command; next mutation ждёт ETag |
 
-Backend guards permissions/lifecycle/ownership/dependencies/active/F15; disabled UX не authorization. Roles/permissions Q13/F17 не вводятся F10. По [S05](../standards/S05-ui-and-forms.md)/[S07](../standards/S07-accessibility.md) exact versions/A→B/provenance/exclusion scope/lifecycle/errors различимы без цвета; основные actions с клавиатуры, focus picker/confirmation возвращается к запуску. CSS/Razor/MudBlazor attributes не задаются.
+Backend guards permissions/lifecycle/ownership/dependencies/active/F15; disabled UX не authorization. Roles/permissions Q13/F17 не вводятся F10. По [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) exact versions/A→B/provenance/exclusion scope/lifecycle/errors различимы без цвета; основные actions с клавиатуры, focus picker/confirmation возвращается к запуску. CSS/Razor/MudBlazor attributes не задаются.
 
 ## 10. Проверки и приёмка
 

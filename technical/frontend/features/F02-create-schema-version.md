@@ -233,7 +233,7 @@ ETag — strong header отдельно от DTO у exact owner. Save/delete/acc
 
 Archive Schema блокирует authoring/new Draft/instances/new publishing; Restore возвращает доступность без Publish/Activate. Historical Delivery сохраняется, Withdrawal — F13. Retired остаётся в owner history, не общем Archive. Existing Draft instances на retired version не удаляются; их Publish ограничен F04/F03.
 
-По [S05](../standards/S05-ui-and-forms.md)/[S07](../standards/S07-accessibility.md) rail/tree/actions доступны с клавиатуры; selection/вложенность/errors ясны без цвета. Summary переводит focus к проблеме. Dialog объясняет scope/countdown/disabled; Cancel/Stay возвращают focus. Tooltip объясняет readonly identity/monotonic transition. UI availability не заменяет server checks.
+По [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) rail/tree/actions доступны с клавиатуры; selection/вложенность/errors ясны без цвета. Summary переводит focus к проблеме. Dialog объясняет scope/countdown/disabled; Cancel/Stay возвращают focus. Tooltip объясняет readonly identity/monotonic transition. UI availability не заменяет server checks.
 
 ## 10. Проверки и приёмка
 

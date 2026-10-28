@@ -72,7 +72,7 @@ bUnit не исполняет JavaScript и не подтверждает browse
 
 При соответствующем контракте проверяются первоначальная загрузка/deep link/reload, routes и navigation, JS-heavy controls, focus/keyboard, upload/download и работа API-origin. Для credentialed API отдельно проверяются настоящий browser credentials/CORS/cookie/CSRF flow; UI permission state не считается серверной авторизацией. Не каждый компонент обязан иметь browser test: туда выносятся границы, которые bUnit доказать не может, и основные пользовательские цепочки.
 
-В Playwright предпочтительны role/accessible name/label либо стабильный test-id вместо привязки к DOM-индексу/CSS структуре. Используются auto-waiting и retrying assertions, не фиксированные sleeps. На тест выделяются собственный browser context, данные и cleanup; неожиданные JS errors/unhandled errors отражаются в результате. При failure сохраняется диагностика сценария, например trace/screenshot, без credentials и чувствительных данных. Наличие role/label selector само по себе не подтверждает всю доступность по [S07](S07-accessibility.md).
+В Playwright предпочтительны role/accessible name/label либо стабильный test-id вместо привязки к DOM-индексу/CSS структуре. Используются auto-waiting и retrying assertions, не фиксированные sleeps. На тест выделяются собственный browser context, данные и cleanup; неожиданные JS errors/unhandled errors отражаются в результате. При failure сохраняется диагностика сценария, например trace/screenshot, без credentials и чувствительных данных. Наличие role/label selector само по себе не подтверждает всю доступность по [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics).
 
 ## Общие сценарии
 

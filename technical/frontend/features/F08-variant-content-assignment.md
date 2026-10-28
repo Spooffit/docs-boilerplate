@@ -47,7 +47,7 @@ Page координирует Variant identity, applied context и navigation. �
 | SaveVariantContentAssignment | features / save-variant-content-assignment / model, api | Whole-patch PUT с assignment If-Match | Создать для SC01/guard Save | §3.3 |
 | ContentReferenceView / instance reads | entities / entity-instance / ui, api | Exact reference, schema/availability и публичные F04 reads | Переиспользовать в SC01/SC02 | [F07](F07-product-content-assignment.md#3-карта-fsd-блоков), [F04](F04-entity-instances.md#8-использование-api-и-nswag) |
 | CatalogRecordView и предупреждение F15 | entities / product-variant, product; widgets / каталоговый конфликт | Applied summary и persistent blocker | Переиспользовать в SC01 | [F06](F06-product-catalog.md#3-карта-fsd-блоков), [F15](F15-catalog-conflicts.md#карта-блоков-и-состояния) |
-| Controls, guard, API/errors | shared / ui, api | Общие controls, metadata, dirty/error presentation | Переиспользовать; header infrastructure §8 | [S05](../standards/S05-ui-and-forms.md), [S06](../standards/S06-api-client.md), [S07](../standards/S07-accessibility.md) |
+| Controls, guard, API/errors | shared / ui, api | Общие controls, metadata, dirty/error presentation | Переиспользовать; header infrastructure §8 | [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback), [S06](../standards/S06-api-client.md), [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) |
 
 Логическое размещение не означает уже существующих namespace/путей.
 
@@ -230,7 +230,7 @@ Shared API infrastructure предоставляет per-call If-Match и respon
 
 Authorization/lifecycle/F15 проверяет backend. Disabled действия видны с причиной; source restriction, preview collision и 412 не получают один общий текст. F15 не снимается закрытием banner. Limited maintenance не снимает CatalogConflict и не открывает additions/расширение контента. SaveBlockers блокируют Save; ReleaseBlockers — create для соответствующего basis; Warnings поясняют неблокирующие обстоятельства. Неизвестный/failed diagnostic result не выдаётся за CanCreateRelease=true.
 
-По [S05](../standards/S05-ui-and-forms.md)/[S07](../standards/S07-accessibility.md) provenance, A→B, exclusion scope, exact version, dirty/error/disabled reasons различимы без цвета. Основные действия доступны с клавиатуры; picker получает focus и возвращает запуску; ошибка позволяет найти rule/item. CSS/Razor/MudBlazor attributes не задаются.
+По [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback)/[S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) provenance, A→B, exclusion scope, exact version, dirty/error/disabled reasons различимы без цвета. Основные действия доступны с клавиатуры; picker получает focus и возвращает запуску; ошибка позволяет найти rule/item. CSS/Razor/MudBlazor attributes не задаются.
 
 ## 10. Проверки и приёмка
 

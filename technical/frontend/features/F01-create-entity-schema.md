@@ -337,7 +337,7 @@ Server validation paths связываются с metadata controls либо rec
 При подтверждённом отказе после исправления разрешён новый ручной Create. Неизвестный исход не равен rollback; uniqueness key не делает POST idempotent. Success response без нужных IDs — ошибка contract: fake GUID или произвольная выбранная версия не подставляются.
 
 
-По [S05](../standards/S05-ui-and-forms.md) и [S07](../standards/S07-accessibility.md) controls имеют понятные подписи, required/error не передаются только цветом. Основные add/select/remove/input/Create/Cancel доступны с клавиатуры; видны selection/вложенность. Summary переводит focus к ошибке; Stay возвращает focus к месту запуска guard. Блокировка кнопок — UX, не server validation/authorization.
+По [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback) и [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics) controls имеют понятные подписи, required/error не передаются только цветом. Основные add/select/remove/input/Create/Cancel доступны с клавиатуры; видны selection/вложенность. Summary переводит focus к ошибке; Stay возвращает focus к месту запуска guard. Блокировка кнопок — UX, не server validation/authorization.
 
 
 ## 10. Проверки и приёмка

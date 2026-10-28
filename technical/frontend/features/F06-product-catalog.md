@@ -45,7 +45,7 @@ Page владеет route/read model и связывает чтение с пе�
 | CatalogRecordView / catalog read operations | entities / product, product-variant / ui, api | Generated Product/Variant read models: ID/Name/Description/parent/lifecycle, accepted/applied/assessment/fault/readiness и eligibility | SC01–SC04; no duplicate DTO/VM/source form | §3.3 |
 | ChooseCatalogRecipient | features / choose-catalog-recipient / ui, model | Поиск только eligible candidates, Confirm/Cancel допустимого ID | SC04 у родительского сценария | §3.3 |
 | Предупреждение о конфликте | widgets / каталоговый конфликт | Persistent blocker и переход с identity | Переиспользовать в SC02/SC03; локальный compact summary | [F15: карта блоков](F15-catalog-conflicts.md#карта-блоков-и-состояния) |
-| Общие controls/API/error presentation | shared / ui, api | Подписи, loading/error/retry, диалог и HTTP | Переиспользовать существующие средства | [S05](../standards/S05-ui-and-forms.md), [S06](../standards/S06-api-client.md); §8 |
+| Общие controls/API/error presentation | shared / ui, api | Подписи, loading/error/retry, диалог и HTTP | Переиспользовать существующие средства | [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback), [S06](../standards/S06-api-client.md); §8 |
 
 ### 3.3. Публичные обязанности блоков
 
@@ -195,7 +195,7 @@ F06 читает внешнюю проекцию и не изменяет exact 
 
 Unresolved catalog conflict не блокирует чтение, resolution, историческую Delivery materialized revisions по ранее подтверждённому entitlement, включая новые sessions, сам по себе; withdrawal/revoke относятся к отдельным основаниям. UI не показывает pending перенос как успешное изменение рабочей базы. Disabled actions получают explanation; разрешения не обеспечиваются одним скрытием кнопки.
 
-Основные действия и ссылки доступны с клавиатуры; labels/reasons не передаются только цветом. При открытии/закрытии SC04 управляется фокус и возврат к его инициатору. Source, applied, pending и historical контекст подписаны по смыслу. Подробности доступности — [S07](../standards/S07-accessibility.md); общий вид сообщений — [S05](../standards/S05-ui-and-forms.md).
+Основные действия и ссылки доступны с клавиатуры; labels/reasons не передаются только цветом. При открытии/закрытии SC04 управляется фокус и возврат к его инициатору. Source, applied, pending и historical контекст подписаны по смыслу. Подробности доступности — [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics); общий вид сообщений — [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback).
 
 ## 10. Проверки и приёмка
 
@@ -245,4 +245,4 @@ Unresolved catalog conflict не блокирует чтение, resolution, и
 | [Q10](../../../business/questions/Q10-permissions-and-isolation.md), [Q24](../questions/Q24-admin-sign-in.md#принятый-протокол-identityaccess-и-восстановления-формы) | F16 IdentityAccess/fresh per-request checks и open-tab same-user recovery selected; exact permission/context carriers engineering; Demo без входа |
 | [Q25](../../../business/questions/Q25-catalog-conflicts.md), [F15](F15-catalog-conflicts.md) | Согласованный corrective repair/отдельный Resolve; детали confirmation/rights/wire и координация newest source state; F06 не создаёт вторую resolution form |
 
-Ownership Q11, MVP move с сохранением identity, read-only CM, отсутствие bootstrap и Demo зависимости уже определены. Routes/navigation/state ownership определены Q13 и не возвращаются в список неопределённых только из-за отставания current code. Применимые соглашения: [S05](../standards/S05-ui-and-forms.md), [S06](../standards/S06-api-client.md), [S07](../standards/S07-accessibility.md), [S08](../standards/S08-testing.md).
+Ownership Q11, MVP move с сохранением identity, read-only CM, отсутствие bootstrap и Demo зависимости уже определены. Routes/navigation/state ownership определены Q13 и не возвращаются в список неопределённых только из-за отставания current code. Применимые соглашения: [S05](../../../catalog/docs/standards/ui/forms-and-accessibility.md#form-state-and-user-feedback), [S06](../standards/S06-api-client.md), [S07](../../../catalog/docs/standards/ui/forms-and-accessibility.md#access-and-semantics), [S08](../standards/S08-testing.md).
