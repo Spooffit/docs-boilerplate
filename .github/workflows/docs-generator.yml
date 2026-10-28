@@ -31,6 +31,29 @@ jobs:
         run: python tests/catalog_hygiene.py
       - name: Check template repository scope and references
         run: python tests/repository_hygiene.py
+      - name: Validate optional HTTP, naming and EventBus documentation examples
+        run: python tests/optional_profile_contracts.py
+      - name: Compile EventBus composition and verify topic routing with disposable RabbitMQ
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --detach --rm --name docs-eventbus-ci \
+            -e RABBITMQ_DEFAULT_USER=ci -e RABBITMQ_DEFAULT_PASS=ci-pass \
+            -p 5673:5672 rabbitmq:4.1-alpine
+          trap 'docker logs docs-eventbus-ci || true; docker rm -f docs-eventbus-ci || true' EXIT
+          ready=false
+          for attempt in $(seq 1 45); do
+            if docker exec docs-eventbus-ci rabbitmq-diagnostics -q ping >/dev/null 2>&1; then
+              ready=true
+              break
+            fi
+            sleep 2
+          done
+          if [[ "$ready" != true ]]; then
+            echo "Disposable RabbitMQ did not become ready" >&2
+            exit 1
+          fi
+          python tests/optional_profile_contracts.py --run-eventbus
 
   browser:
     name: Docsify browser (Chromium)

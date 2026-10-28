@@ -58,6 +58,28 @@ with open("catalog/profiles.json", encoding="utf-8") as stream:
 PY
 )
 
+# Owner-approved technology variants are separate opt-in selections.
+run init --name OptionalConventions --description 'Optional engineering rules' --output "$temp/optional-conventions" --profiles test-naming-convention,http-etag-concurrency,masstransit-eventbus-composition --site none --non-interactive
+run validate --output "$temp/optional-conventions"
+python3 - "$temp/optional-conventions/docs.config.json" <<'PY'
+import json,sys
+from pathlib import Path
+manifest=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+assert set(manifest["Profiles"]) == {
+ "dotnet", "test-naming-convention", "http-contracts", "http-etag-concurrency",
+ "masstransit-rabbitmq", "masstransit-eventbus-composition"
+}, manifest["Profiles"]
+assert manifest["Modules"] == [] and manifest["Skills"] == []
+PY
+[[ -f "$temp/optional-conventions/docs/standards/dotnet/test-naming-convention.md" ]]
+[[ -f "$temp/optional-conventions/docs/standards/http/etag-concurrency.md" ]]
+[[ -f "$temp/optional-conventions/docs/standards/dotnet/eventbus-composition.md" ]]
+[[ ! -f "$temp/optional-conventions/docs/standards/dotnet/ef-core.md" ]]
+[[ ! -f "$temp/optional-conventions/docs/standards/architecture/cqrs.md" ]]
+[[ ! -f "$temp/optional-conventions/docs/standards/aspnet/mvc-controllers.md" ]]
+run update --output "$temp/optional-conventions" --apply
+run validate --output "$temp/optional-conventions"
+
 # A genuinely minimal repo must not contain dangling links to optional modules.
 run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
 run validate --output "$temp/minimal"
@@ -70,6 +92,9 @@ assert set(config["GeneratedHashes"]) == set(config["GeneratedFiles"])
 assert all(len(value)==64 for value in config["GeneratedHashes"].values())
 PY
 # First-use project overviews must be draft and evidence-oriented.
+[[ ! -f "$temp/minimal/docs/standards/dotnet/test-naming-convention.md" ]]
+[[ ! -f "$temp/minimal/docs/standards/dotnet/eventbus-composition.md" ]]
+[[ ! -f "$temp/minimal/docs/standards/http/etag-concurrency.md" ]]
 [[ -f "$temp/minimal/docs/project/overview.md" ]]
 [[ -f "$temp/minimal/docs/architecture/overview.md" ]]
 grep -q '^status: draft$' "$temp/minimal/docs/project/overview.md"

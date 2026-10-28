@@ -78,6 +78,14 @@ status: draft
         throw 'Upstream update erased authored parent navigation'
     }
 
+    $variants = Join-Path $root 'optional-conventions'
+    Invoke-Docs init --name OptionalConventions --description 'Optional standards' --output $variants --profiles 'test-naming-convention,http-etag-concurrency,masstransit-eventbus-composition' --site none --non-interactive
+    Invoke-Docs validate --output $variants
+    foreach ($file in @('docs/standards/dotnet/test-naming-convention.md', 'docs/standards/http/etag-concurrency.md', 'docs/standards/dotnet/eventbus-composition.md')) {
+        if (-not (Test-Path (Join-Path $variants $file))) { throw "Missing opt-in profile content: $file" }
+    }
+    if (Test-Path (Join-Path $variants 'docs/standards/dotnet/ef-core.md')) { throw 'Unselected data access profile leaked' }
+
     $headless = Join-Path $root 'headless'
     Invoke-Docs init --name Headless --description 'Markdown only' --output $headless --profiles dotnet --site none --non-interactive
     Invoke-Docs validate --output $headless
