@@ -57,8 +57,8 @@ static partial class DocsCli
 
     private static void ValidateCatalog(string catalog, Catalog data, SkillCatalog skills, ModuleCatalog modules)
     {
-        if (data.SchemaVersion != 1 || skills.SchemaVersion != 1 || modules.SchemaVersion != 1)
-            throw new InvalidOperationException("Unsupported catalog schema version.");
+        SchemaCompatibility.AssertCatalogVersion(
+            data.SchemaVersion, skills.SchemaVersion, modules.SchemaVersion);
         if (modules.Modules.GroupBy(x => x.Id, StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
             throw new InvalidOperationException("Duplicate documentation module IDs.");
         foreach (var module in modules.Modules)
@@ -201,5 +201,7 @@ static partial class DocsCli
         string Name, string Description, string[] Profiles, string[] Skills, string[] Modules,
         string Site, string[] GeneratedFiles, Dictionary<string, string>? GeneratedHashes = null,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        string[]? RetiredFiles = null);
+        string[]? RetiredFiles = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        int? SchemaVersion = null);
 }
