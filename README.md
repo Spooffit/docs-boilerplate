@@ -24,6 +24,8 @@ Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh` 
 
 To browse a generated repository, run `python -m http.server 3000` in its root and open `http://localhost:3000/`. Docsify renders the Markdown dynamically in the browser without a static-site build. Opening its `index.html` directly via `file://` is not a reliable mode.
 
+To initialize only the shared Markdown documentation without any technology standards, use `--profiles none --site none` with the required project name, description and output path.
+
 ## What the generator does
 
 - Creates a minimal repository with `README.md`, `AGENTS.md`, `llms.txt`, `docs/`, a generated-file ownership manifest and an optional Docsify viewer.

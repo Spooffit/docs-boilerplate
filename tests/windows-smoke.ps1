@@ -97,6 +97,13 @@ status: draft
     }
     if (Test-Path (Join-Path $final 'docs/standards/blazor')) { throw 'Unselected Blazor profile leaked' }
 
+    $plain = Join-Path $root 'plain-docs'
+    Invoke-Docs init --name PlainDocs --description 'No selected stack' --output $plain --profiles none --site none --non-interactive
+    Invoke-Docs validate --output $plain
+    if (Test-Path (Join-Path $plain 'docs/standards/dotnet')) { throw 'No-stack mode installed .NET guidance' }
+    $plainManifest = Get-Content (Join-Path $plain 'docs.config.json') -Raw | ConvertFrom-Json
+    if (@($plainManifest.Profiles).Count -ne 0) { throw 'No-stack mode selected profiles' }
+
     $headless = Join-Path $root 'headless'
     Invoke-Docs init --name Headless --description 'Markdown only' --output $headless --profiles dotnet --site none --non-interactive
     Invoke-Docs validate --output $headless

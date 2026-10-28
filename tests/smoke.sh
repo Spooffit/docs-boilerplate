@@ -58,6 +58,18 @@ with open("catalog/profiles.json", encoding="utf-8") as stream:
 PY
 )
 
+# A project without a selected technology must be first-class in headless mode.
+run init --name PlainDocs --description 'Pure Markdown documentation' --output "$temp/plain-docs" --profiles none --site none --non-interactive
+run validate --output "$temp/plain-docs"
+[[ ! -e "$temp/plain-docs/docs/standards/dotnet" ]]
+[[ ! -e "$temp/plain-docs/index.html" ]]
+python3 - "$temp/plain-docs/docs.config.json" <<'PY'
+import json, sys
+from pathlib import Path
+manifest = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+assert manifest["Profiles"] == [] and manifest["Modules"] == [] and manifest["Skills"] == []
+PY
+
 # Owner-approved technology variants are separate opt-in selections.
 run init --name OptionalConventions --description 'Optional engineering rules' --output "$temp/optional-conventions" --profiles test-naming-convention,http-etag-concurrency,masstransit-eventbus-composition --site none --non-interactive
 run validate --output "$temp/optional-conventions"

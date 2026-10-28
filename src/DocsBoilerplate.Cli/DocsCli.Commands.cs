@@ -94,7 +94,9 @@ static partial class DocsCli
         var output = Path.GetFullPath(Ask("output", "Destination directory:"));
         UpdateRecovery.AssertNoPending(output);
         var selection = args.TryGetValue("profiles", out var listed)
-            ? listed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            ? string.Equals(listed, "none", StringComparison.OrdinalIgnoreCase)
+                ? []
+                : listed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             : unattended || Console.IsInputRedirected
                 ? throw new InvalidOperationException("--profiles is required for non-interactive initialization.")
                 : PromptProfiles(available);
