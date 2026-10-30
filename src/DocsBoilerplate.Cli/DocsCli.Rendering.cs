@@ -7,7 +7,7 @@ static partial class DocsCli
 {
     private static async Task<Dictionary<string, string>> RenderAsync(
         string catalog, Catalog available, SkillCatalog skillCatalog, ModuleCatalog moduleCatalog,
-        string name, string description, string output, HashSet<string> ids,
+        string name, string output, HashSet<string> ids,
         HashSet<string> skillIds, HashSet<string> moduleIds, string site, string language = "en")
     {
         var expected = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -15,8 +15,7 @@ static partial class DocsCli
         {
             var relative = Path.GetRelativePath(Path.Combine(catalog, "base"), full).Replace('\\', '/');
             Add(relative, (await ReadLocalizedAsync(catalog, Path.GetRelativePath(catalog, full).Replace('\\', '/'), language))
-                .Replace("{{PROJECT_NAME}}", name, StringComparison.Ordinal)
-                .Replace("{{PROJECT_DESCRIPTION}}", description, StringComparison.Ordinal));
+                .Replace("{{PROJECT_NAME}}", name, StringComparison.Ordinal));
         }
         foreach (var id in ids)
         {
@@ -42,7 +41,6 @@ static partial class DocsCli
             var html = (await File.ReadAllTextAsync(SafePath(catalog, "sites/docsify.html")))
                 .Replace("{{DOCUMENT_LANGUAGE}}", language, StringComparison.Ordinal)
                 .Replace("{{PROJECT_NAME_HTML}}", System.Net.WebUtility.HtmlEncode(name), StringComparison.Ordinal)
-                .Replace("{{PROJECT_DESCRIPTION_HTML}}", System.Net.WebUtility.HtmlEncode(description), StringComparison.Ordinal)
                 .Replace("{{SITE_LOADING_HTML}}", language == "ru" ? "Загрузка документации..." : "Loading documentation...", StringComparison.Ordinal)
                 .Replace("{{SITE_SEARCH_PLACEHOLDER_JSON}}",
                     JsonSerializer.Serialize(language == "ru" ? "Поиск по документации" : "Search documentation"), StringComparison.Ordinal)
@@ -52,7 +50,7 @@ static partial class DocsCli
         // Every documentation directory has a human- and agent-readable index.
         AddDirectoryIndexes(expected, language);
         Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available, language));
-        Add("llms.txt", BuildLlmsIndex(name, description, expected, language));
+        Add("llms.txt", BuildLlmsIndex(name, expected, language));
         return expected;
         void Add(string path, string value)
         {
@@ -64,7 +62,7 @@ static partial class DocsCli
     }
 
     private static ProjectConfig BuildConfig(
-        string name, string description, IEnumerable<string> ids, IEnumerable<string> skills,
+        string name, IEnumerable<string> ids, IEnumerable<string> skills,
         IEnumerable<string> modules, string site, Dictionary<string, string> content,
         IEnumerable<string>? retiredPaths = null, string language = "en")
     {
@@ -72,7 +70,7 @@ static partial class DocsCli
         foreach (var (path, value) in content.OrderBy(x => x.Key, StringComparer.Ordinal))
             hashes.Add(path, Hash(value));
         var retired = retiredPaths?.Order(StringComparer.Ordinal).ToArray();
-        return new ProjectConfig(name, null,
+        return new ProjectConfig(name,
             ids.Order(StringComparer.Ordinal).ToArray(), skills.Order(StringComparer.Ordinal).ToArray(),
             modules.Order(StringComparer.Ordinal).ToArray(), site,
             content.Keys.Order(StringComparer.Ordinal).ToArray(), hashes,
@@ -163,12 +161,10 @@ static partial class DocsCli
         return heading is null ? Path.GetFileNameWithoutExtension(path) : heading[2..].Trim();
     }
 
-    internal static string BuildLlmsIndex(string projectName, string summary, Dictionary<string, string> files, string language = "en")
+    internal static string BuildLlmsIndex(string projectName, Dictionary<string, string> files, string language = "en")
     {
         var sb = new StringBuilder();
         sb.AppendLine("# " + projectName.Replace('\n', ' ').Replace('\r', ' '));
-        sb.AppendLine();
-        sb.AppendLine("> " + summary.Replace('\n', ' ').Replace('\r', ' '));
         sb.AppendLine();
         sb.AppendLine(language == "ru" ? "Навигационный указатель: прочитайте AGENTS.md и соответствующий Markdown-файл, прежде чем утверждать, что решение согласовано или функция реализована." : "Navigation only: read AGENTS.md for instructions and the relevant Markdown source before claiming a project decision or implemented behavior.");
         sb.AppendLine(language == "ru" ? "Выбранные профили в docs.config.json отражают набор документации, а не утверждённые требования продукта." : "The project selection in docs.config.json identifies installed profiles, not approved product requirements.");
