@@ -130,6 +130,21 @@ status: draft
     Invoke-Docs init --name S3 --description 'MinIO SDK' --output $s3 --profiles 'infra-s3-client-minio' --non-interactive
     if (-not (Test-Path (Join-Path $s3 'docs/standards/infrastructure/s3-client-minio.md'))) { throw 'Missing MinIO SDK profile' }
 
+    $russian = Join-Path $root 'russian'
+    Invoke-Docs init --name Russian --description 'Документация проекта' --output $russian --profiles 'dotnet,xunit,blazor,bunit' --language ru --non-interactive
+    Invoke-Docs validate --output $russian
+    $ruManifest = Get-Content (Join-Path $russian 'docs.config.json') -Raw | ConvertFrom-Json
+    if ($ruManifest.Language -ne 'ru') { throw 'Language was not preserved in manifest' }
+    $ruAgent = Get-Content (Join-Path $russian 'AGENTS.md') -Raw -Encoding UTF8
+    if (-not $ruAgent.Contains('Инструкции ИИ-агентам')) { throw 'Russian agent guidance missing' }
+    $ruViewer = Get-Content (Join-Path $russian 'index.html') -Raw -Encoding UTF8
+    if (-not $ruViewer.Contains('lang="ru"')) { throw 'Docsify did not select Russian' }
+    Invoke-Docs bootstrap-complete --output $russian --apply
+    Invoke-Docs validate --output $russian
+    Invoke-Docs update --output $russian --apply
+    Invoke-Docs validate --output $russian
+    if ((Get-Content (Join-Path $russian 'docs.config.json') -Raw | ConvertFrom-Json).Language -ne 'ru') { throw 'Update changed documentation language' }
+
     Assert-Fail init --name Invalid --description 'Invalid' --output (Join-Path $root 'invalid') --profiles dotnet --site retired-site --non-interactive
     Assert-Fail init --name Unsafe --description 'Unsafe' --output (Join-Path $root 'unsafe') --profiles dotnet --unknown-flag --non-interactive
     Write-Host 'Windows smoke tests passed.'
