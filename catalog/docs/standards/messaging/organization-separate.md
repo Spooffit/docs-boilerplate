@@ -16,3 +16,9 @@ Separate stable wire contracts, broker-specific adapters and application-owned c
 ## Verification
 
 Record actual versions, settings and executed test evidence; the template does not decide them for the project.
+
+## Dependency and compatibility boundaries
+
+- Keep shared wire contracts independent of transport frameworks, ORM and application internals. Adapters own broker delivery; consumers remain application-owned.
+- Introduce separate assemblies or repositories only when deployment or versioning requires them. No mandatory three-project EventBus structure.
+- Define producer/consumer compatibility windows, schema evolution ownership and independent versioning where justified. Test contract compatibility and dependency direction.
