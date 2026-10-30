@@ -216,20 +216,29 @@ static partial class DocsCli
             throw new IOException($"Output directory is not empty: {output}. Refusing to overwrite any files.");
         }
         AnsiConsole.MarkupLine($"[bold]Selected configuration for {Markup.Escape(name)}[/]");
-        foreach (var group in ids.Select(id => available.Profiles.Single(p => p.Id == id))
-            .GroupBy(p => p.Category).OrderBy(g => g.Key, StringComparer.Ordinal))
+        var requestedProfiles = new HashSet<string>(selection, StringComparer.Ordinal);
+        var selectedProfiles = ids.Where(requestedProfiles.Contains)
+            .Select(id => available.Profiles.Single(p => p.Id == id)).ToArray();
+        foreach (var group in selectedProfiles.GroupBy(p => p.Category)
+            .OrderBy(g => g.Key, StringComparer.Ordinal))
         {
             AnsiConsole.MarkupLine($"[blue]{Markup.Escape(group.Key)}[/]");
             foreach (var profile in group.OrderBy(p => p.Name, StringComparer.Ordinal))
                 AnsiConsole.MarkupLine($"  [green]✓[/] {Markup.Escape(profile.Name)}");
         }
-        if (ids.Count == 0) AnsiConsole.MarkupLine("  No optional technology profiles");
+        if (selectedProfiles.Length == 0)
+            AnsiConsole.MarkupLine("  No optional technology profiles");
+        var dependencies = ids.Where(id => !requestedProfiles.Contains(id))
+            .Select(id => available.Profiles.Single(p => p.Id == id).Name)
+            .Order(StringComparer.Ordinal).ToArray();
+        if (dependencies.Length > 0)
+            AnsiConsole.MarkupLine($"[blue]Included dependencies:[/] {Markup.Escape(string.Join(", ", dependencies))}");
         AnsiConsole.MarkupLine($"[blue]Documentation:[/] {skillIds.Count} agent skills and {moduleIds.Count} modules (included)");
         AnsiConsole.MarkupLine($"[blue]Site:[/] {Markup.Escape(site)}");
         AnsiConsole.MarkupLine($"[blue]Destination:[/] {Markup.Escape(output)}");
         if (args.ContainsKey("dry-run"))
             return 0;
-        if (!unattended && !Console.IsInputRedirected && !AnsiConsole.Confirm("Create these files?", defaultValue: false))
+        if (!unattended && !Console.IsInputRedirected && !AnsiConsole.Confirm("Generate documentation with these options?", defaultValue: false))
             return 2;
         var created = new List<string>();
         try
