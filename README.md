@@ -29,14 +29,14 @@ New releases are created **only by version tags** (for example `v1.0.2`), not by
 docs-boilerplate init
 ```
 
-Spectre.Console prompts for project name, description, destination and documentation language (`en` or `ru`), then a **three-stage wizard**: backend, frontend and optional infrastructure. Options are grouped into labeled blocks. Compatible tools use checkboxes; exclusive choices use a single-choice selector: **TUnit or xUnit**, storage type, **MinIO or AWS S3 client**, logs, metrics, traces and deployment. bUnit is a normal Blazor component-testing checkbox. At the end, the CLI shows the selected configuration instead of a file plan and **runs validation automatically after generation**.
+Spectre.Console prompts for project name, destination and documentation language (`en` or `ru`), then a **three-stage wizard**: backend, frontend and optional infrastructure. Options are grouped into labeled blocks. Compatible tools use checkboxes; exclusive choices use a single-choice selector: **TUnit or xUnit**, storage type, **MinIO or AWS S3 client**, logs, metrics, traces and deployment. bUnit is a normal Blazor component-testing checkbox. At the end, the CLI shows the selected configuration instead of a file plan and **runs validation automatically after generation**.
 
 For automation, pass explicit profiles and optionally `--language en` (default) or `--language ru`. **All 80 catalog Markdown sources have Russian translations**, including agent instructions, the intake questionnaire, project templates and available technology standards. English lives at the canonical `catalog/` paths; translations use the matching `catalog/locales/ru/` paths. The generator rejects missing translations rather than silently mixing languages; generated filenames remain language-neutral.
 
 For automation, pass explicit profiles:
 
 ```powershell
-docs-boilerplate init --name MyProject --description "Project documentation" --output ./MyProject.Docs --profiles dotnet,aspnet-core,infra-logging-loki,infra-deploy-compose --site docsify --non-interactive
+docs-boilerplate init --name MyProject --output ./MyProject.Docs --profiles dotnet,aspnet-core,infra-logging-loki,infra-deploy-compose --site docsify --non-interactive
 docs-boilerplate validate --output ./MyProject.Docs
 ```
 
@@ -57,8 +57,8 @@ Requires .NET SDK 10:
 ```sh
 dotnet run --project src/DocsBoilerplate.Cli -- list
 dotnet run --project src/DocsBoilerplate.Cli -- doctor
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive --dry-run
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --output ./scratch/demo --profiles dotnet,ef-core --non-interactive --dry-run
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --output ./scratch/demo --profiles dotnet,ef-core --non-interactive
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/demo
 ```
 
@@ -68,7 +68,7 @@ Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh` 
 
 To browse a generated repository, run `python -m http.server 3000` in its root and open `http://localhost:3000/`. Docsify renders the Markdown dynamically in the browser without a static-site build. Opening its `index.html` directly via `file://` is not a reliable mode.
 
-To initialize only the shared Markdown documentation without any technology standards, use `--profiles none --site none` with the required project name, description and output path.
+To initialize only the shared Markdown documentation without any technology standards, use `--profiles none --site none` with the required project name and output path.
 
 ## What the generator does
 
@@ -82,7 +82,7 @@ To initialize only the shared Markdown documentation without any technology stan
 
 The CLI is a generator, not an implementation or a business requirement registry. Examples in templates are placeholders or explicitly optional technical illustrations; they are never evidence that a generated project's code exists. Planned technology profiles are visible but not selectable. Docsify requires browser network access to CDN assets unless self-hosted, and opening Markdown through a local web server is preferred.
 
-Technology conventions such as test-method naming, HTTP ETag/If-Match concurrency and three-project MassTransit EventBus composition are independently **opt-in** profiles. Their examples and verification do not add a demonstration application to the generated repository. See [ADR 0006](docs/decisions/0006-optional-technology-conventions.md).
+Technology conventions such as test-method naming and HTTP ETag/If-Match concurrency remain independently **opt-in**. Message transport, client and organization are chosen separately. Their examples and verification do not add a demonstration application to the generated repository. See [ADR 0006](docs/decisions/0006-optional-technology-conventions.md).
 
 The original editorial choices are recorded in [ADR 0007](docs/decisions/0007-final-editorial-policies.md); the latest defaults supersede its optional document-ID/approval choice. **Stable document IDs are mandatory, approval statuses are not**, while direct API request DTO form binding remains opt-in. The documentation catalog does not prescribe client-library development or source-model generation; incomplete code examples must be labeled illustrative and claims of executable examples require real test evidence.
 
