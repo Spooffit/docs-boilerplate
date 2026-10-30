@@ -16,3 +16,10 @@ Treat Kafka as an append-only partitioned log, not a queue with RabbitMQ semanti
 ## Evidence
 
 Record actual installed versions and authoritative contracts. Keep unsettled decisions open. Validate with a real integration test where external behavior matters; do not claim generated documentation proves the application works.
+
+## Consumption verification
+
+- Define partition keys according to required ordering and concurrency, not as a substitute for global ordering.
+- Document when offsets are committed relative to database writes. Offset commits do not make external side effects atomic; replay may create duplicates.
+- Establish retention, compatible schema evolution, poison-record processing and consumer lag monitoring according to the selected application's requirements.
+- Exercise rebalances, replay, failed handlers, duplicates and recovery with a representative Kafka cluster. Record the observed behavior and installed client versions.
