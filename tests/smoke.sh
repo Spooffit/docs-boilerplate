@@ -12,7 +12,7 @@ run doctor
 run list
 
 # Stage two is ephemeral, owner-approved and never part of the permanent manifest.
-run init --name IntakeSmoke --description "Two-stage documentation" --output "$temp/intake" --profiles none --site none --non-interactive
+run init --name IntakeSmoke --output "$temp/intake" --profiles none --site none --non-interactive
 run validate --output "$temp/intake"
 [[ -f "$temp/intake/bootstrap.md" ]]
 [[ -f "$temp/intake/.agents/bootstrap/questionnaire.md" ]]
@@ -43,7 +43,7 @@ run validate --output "$temp/intake"
 
 # Russian baseline is a complete localized source overlay: no implicit
 # English fallback, with stable canonical output paths and automatic validate.
-run init --name РусскийПроект --description "Тест документации" --output "$temp/ru-baseline" --profiles none --language ru --site docsify --non-interactive > "$temp/ru-baseline-init.log"
+run init --name РусскийПроект --output "$temp/ru-baseline" --profiles none --language ru --site docsify --non-interactive > "$temp/ru-baseline-init.log"
 grep -q 'Validating repository' "$temp/ru-baseline-init.log"
 grep -q 'Документация проекта' "$temp/ru-baseline/docs/index.md"
 grep -q 'Инструкции ИИ-агентам' "$temp/ru-baseline/AGENTS.md"
@@ -86,38 +86,38 @@ run validate --output "$temp/ru-baseline"
 [[ ! -f "$temp/ru-baseline/bootstrap.md" ]]
 grep -Fq '<html lang="ru">' "$temp/ru-baseline/index.html"
 # User input must be escaped in the HTML shell, never interpreted as markup.
-run init --name 'Docs <Safe> & Co' --description 'Description "A&B" <x>' --output "$temp/ru-html-safe" --profiles none --language ru --site docsify --non-interactive
+run init --name 'Docs <Safe> & Co' --output "$temp/ru-html-safe" --profiles none --language ru --site docsify --non-interactive
 grep -Fq '<title>Docs &lt;Safe&gt; &amp; Co</title>' "$temp/ru-html-safe/index.html"
 grep -Fq 'content="Description &quot;A&amp;B&quot; &lt;x&gt;"' "$temp/ru-html-safe/index.html"
 run validate --output "$temp/ru-html-safe"
-if run init --name BadLocale --description Test --output "$temp/bad-locale" --profiles none --language de --non-interactive; then
+if run init --name BadLocale --output "$temp/bad-locale" --profiles none --language de --non-interactive; then
     echo "Unknown documentation locale accepted"; exit 1
 fi
-run init --name RussianXunit --description "Русские тесты" --output "$temp/ru-xunit" --profiles xunit --language ru --site none --non-interactive
+run init --name RussianXunit --output "$temp/ru-xunit" --profiles xunit --language ru --site none --non-interactive
 grep -q 'Тестирование .NET с xUnit.net' "$temp/ru-xunit/docs/standards/dotnet/xunit.md"
 grep -Fq '[.NET](dotnet/index.md)' "$temp/ru-xunit/docs/standards/index.md"
 run validate --output "$temp/ru-xunit"
-run init --name RussianBlazor --description "Тесты компонентов" --output "$temp/ru-blazor" --profiles bunit --language ru --site none --non-interactive
+run init --name RussianBlazor --output "$temp/ru-blazor" --profiles bunit --language ru --site none --non-interactive
 grep -q 'Компонентное тестирование с bUnit' "$temp/ru-blazor/docs/standards/blazor/bunit.md"
 run validate --output "$temp/ru-blazor"
-run init --name RussianS3 --description "Русская инфраструктура" --output "$temp/ru-s3" --profiles infra-storage-s3 --language ru --site none --non-interactive
+run init --name RussianS3 --output "$temp/ru-s3" --profiles infra-storage-s3 --language ru --site none --non-interactive
 grep -q 'S3-совместимое объектное хранилище' "$temp/ru-s3/docs/standards/infrastructure/storage-s3.md"
 grep -Fq '[Инфраструктура](infrastructure/index.md)' "$temp/ru-s3/docs/standards/index.md"
 run validate --output "$temp/ru-s3"
 # A missing translation must reject init rather than silently fallback to English.
 cp -a catalog "$temp/catalog-ru-missing"
 rm "$temp/catalog-ru-missing/locales/ru/docs/standards/dotnet/xunit.md"
-if run init --catalog "$temp/catalog-ru-missing" --name MixedLanguage --description Test --output "$temp/mixed-language" --profiles xunit --language ru --non-interactive; then
+if run init --catalog "$temp/catalog-ru-missing" --name MixedLanguage --output "$temp/mixed-language" --profiles xunit --language ru --non-interactive; then
     echo "Incomplete Russian technology profile unexpectedly accepted"; exit 1
 fi
 [[ ! -e "$temp/mixed-language" ]]
 # Infrastructure choices are opt-in, with one choice per incompatible category.
-run init --name InfraSmoke --description "Placeholder-only infrastructure" --output "$temp/infra" --profiles infra-logging-loki,infra-metrics-prometheus,infra-tracing-tempo,infra-deploy-compose,infra-devops-gitops-repo,infra-orchestration-aspire --site none --non-interactive
+run init --name InfraSmoke --output "$temp/infra" --profiles infra-logging-loki,infra-metrics-prometheus,infra-tracing-tempo,infra-deploy-compose,infra-devops-gitops-repo,infra-orchestration-aspire --site none --non-interactive
 run validate --output "$temp/infra"
 grep -q 'Placeholder only' "$temp/infra/docs/standards/infrastructure/deploy-compose.md"
 [[ -f "$temp/infra/docs/standards/infrastructure/orchestration-aspire.md" ]]
 [[ ! -e "$temp/infra/docs/standards/infrastructure/deploy-kubernetes.md" ]]
-if run init --name InvalidInfra --description "Conflicting deployment" --output "$temp/invalid-infra" --profiles infra-deploy-compose,infra-deploy-kubernetes --site none --non-interactive; then
+if run init --name InvalidInfra --output "$temp/invalid-infra" --profiles infra-deploy-compose,infra-deploy-kubernetes --site none --non-interactive; then
   echo "Conflicting infrastructure targets were accepted"; exit 1
 fi
 
@@ -153,7 +153,7 @@ while IFS= read -r profile; do
       cqrs-wolverine) selected="wolverine-rabbitmq,cqrs-wolverine" ;;
     esac
     output="$temp/profile-matrix/$profile"
-    run init --name ProfileAudit --description "Independent profile audit" --output "$output" --profiles "$selected" --site none --non-interactive > "$temp/profile-matrix-init.log"
+    run init --name ProfileAudit --output "$output" --profiles "$selected" --site none --non-interactive > "$temp/profile-matrix-init.log"
     run validate --output "$output" > "$temp/profile-matrix-validate.log"
     python3 - "$output/docs.config.json" "$profile" <<'PY'
 import json
@@ -171,7 +171,7 @@ PY
     # init performs its own full validate; no second explicit process is
     # needed for each Russian profile. This cuts redundant CI executions.
     localized="$temp/ru-profile-matrix/$profile"
-    run init --name RussianMatrix --description "Проверка профиля" --output "$localized" --profiles "$selected" --language ru --site none --non-interactive > "$temp/ru-profile-init.log"
+    run init --name RussianMatrix --output "$localized" --profiles "$selected" --language ru --site none --non-interactive > "$temp/ru-profile-init.log"
     grep -q 'Validating repository' "$temp/ru-profile-init.log"
     python3 - "$localized/docs.config.json" "$profile" <<'PY'
 import json,sys
@@ -193,7 +193,7 @@ PY
 )
 
 # A project without a selected technology must be first-class in headless mode.
-run init --name PlainDocs --description 'Pure Markdown documentation' --output "$temp/plain-docs" --profiles none --site none --non-interactive
+run init --name PlainDocs --output "$temp/plain-docs" --profiles none --site none --non-interactive
 run validate --output "$temp/plain-docs"
 [[ ! -e "$temp/plain-docs/docs/standards/dotnet" ]]
 [[ ! -e "$temp/plain-docs/index.html" ]]
@@ -205,7 +205,7 @@ assert set(manifest["Profiles"]) == {"ddd", "ui-accessibility", "ui-direct-dto-f
 PY
 
 # Owner-approved technology variants are separate opt-in selections.
-run init --name OptionalConventions --description 'Optional engineering rules' --output "$temp/optional-conventions" --profiles test-naming-convention,http-etag-concurrency --site none --non-interactive
+run init --name OptionalConventions --output "$temp/optional-conventions" --profiles test-naming-convention,http-etag-concurrency --site none --non-interactive
 run validate --output "$temp/optional-conventions"
 python3 - "$temp/optional-conventions/docs.config.json" <<'PY'
 import json,sys
@@ -227,7 +227,7 @@ run update --output "$temp/optional-conventions" --apply
 run validate --output "$temp/optional-conventions"
 
 # Document IDs, DDD, integration reliability and both UI form rules are baseline.
-run init --name FinalConventions --description "Direct DTO forms" --output "$temp/final-conventions" --profiles ui-direct-dto-forms --site none --non-interactive
+run init --name FinalConventions --output "$temp/final-conventions" --profiles ui-direct-dto-forms --site none --non-interactive
 run validate --output "$temp/final-conventions"
 [[ -f "$temp/final-conventions/docs/standards/document-identifiers.md" ]]
 [[ -f "$temp/final-conventions/docs/standards/integrations/reliable-synchronization.md" ]]
@@ -244,7 +244,7 @@ PY
 run update --output "$temp/final-conventions" --apply
 run validate --output "$temp/final-conventions"
 # A genuinely minimal repo must not contain dangling links to optional modules.
-run init --name Minimal --description 'Minimal docs' --output "$temp/minimal" --profiles dotnet --non-interactive
+run init --name Minimal --output "$temp/minimal" --profiles dotnet --non-interactive
 run validate --output "$temp/minimal"
 [[ "$(head -n 1 "$temp/minimal/README.md")" == "# Minimal" ]]
 if grep -q '^---$' "$temp/minimal/README.md"; then
@@ -312,13 +312,13 @@ grep -q 'docs/templates/index.md' "$temp/minimal/llms.txt"
 [[ ! -e "$temp/minimal/docs/standards/ui" ]]
 if grep -q "blazor/components.md" "$temp/minimal/docs/catalog.md"; then echo "Unselected standard leaked into catalog"; exit 1; fi
 [[ -f "$temp/minimal/index.html" ]]
-run init --name Headless --description "No site viewer" --output "$temp/headless" --profiles dotnet --site none --non-interactive
+run init --name Headless --output "$temp/headless" --profiles dotnet --site none --non-interactive
 run validate --output "$temp/headless"
 [[ ! -e "$temp/headless/index.html" ]]
 [[ -f "$temp/headless/llms.txt" ]]
 
 # Optional HTTP and persistence profiles must compose without implicit extra libraries.
-run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles dotnet,aspnet-core,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
+run init --name Web --output "$temp/web" --profiles dotnet,aspnet-core,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
 run validate --output "$temp/web"
 [[ -f "$temp/web/docs/standards/aspnet/http-api.md" ]]
 [[ -f "$temp/web/docs/standards/aspnet/errors-and-validation.md" ]]
@@ -333,13 +333,13 @@ run validate --output "$temp/web"
 [[ ! -e "$temp/web/docs/standards/dotnet/dapper.md" ]]
 [[ ! -e "$temp/web/docs/standards/dotnet/testcontainers.md" ]]
 [[ ! -e "$temp/web/docs/standards/dotnet/tunit.md" ]]
-run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles dotnet,aspnet-core,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
+run init --name Web --output "$temp/web" --profiles dotnet,aspnet-core,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
 
 # Prior releases synthesized this same path. Verify a fingerprint-owned, unedited
 # directory index upgrades in place to the curated template guide.
 cp -a catalog "$temp/catalog-old-index"
 rm "$temp/catalog-old-index/base/docs/templates/index.md"
-run init --name PriorIndex --description 'Synthetic template navigation' --output "$temp/prior-index" --catalog "$temp/catalog-old-index" --profiles dotnet --non-interactive
+run init --name PriorIndex --output "$temp/prior-index" --catalog "$temp/catalog-old-index" --profiles dotnet --non-interactive
 run validate --output "$temp/prior-index" --catalog "$temp/catalog-old-index"
 grep -q '^Documents in this directory:$' "$temp/prior-index/docs/templates/index.md"
 run update --output "$temp/prior-index" --apply
@@ -347,7 +347,7 @@ run validate --output "$temp/prior-index"
 grep -q '^# Choose a documentation template$' "$temp/prior-index/docs/templates/index.md"
 
 # HTTP contract guidance can be selected by any client, without .NET or MVC.
-run init --name HttpConsumer --description 'Contract-driven client' --output "$temp/http-consumer" --profiles http-contracts --modules api --non-interactive
+run init --name HttpConsumer --output "$temp/http-consumer" --profiles http-contracts --modules api --non-interactive
 run validate --output "$temp/http-consumer"
 [[ -f "$temp/http-consumer/docs/standards/http/client-contracts.md" ]]
 [[ -f "$temp/http-consumer/docs/standards/http/contract-verification.md" ]]
@@ -364,14 +364,14 @@ run update --output "$temp/http-consumer" --apply
 run validate --output "$temp/http-consumer"
 
 # Base ASP.NET Core does not silently add MVC or FluentValidation.
-run init --name Api --description 'Minimal HTTP API' --output "$temp/api" --profiles aspnet-core --non-interactive
+run init --name Api --output "$temp/api" --profiles aspnet-core --non-interactive
 run validate --output "$temp/api"
 [[ -f "$temp/api/docs/standards/aspnet/http-api.md" ]]
 [[ ! -e "$temp/api/docs/standards/aspnet/mvc-controllers.md" ]]
 [[ ! -e "$temp/api/docs/standards/dotnet/fluentvalidation.md" ]]
 
 # A database profile is usable without assuming a particular language or ORM.
-run init --name Storage --description 'Database docs' --output "$temp/storage" --profiles postgresql --non-interactive
+run init --name Storage --output "$temp/storage" --profiles postgresql --non-interactive
 run validate --output "$temp/storage"
 [[ -f "$temp/storage/docs/standards/postgresql/persistence.md" ]]
 [[ -f "$temp/storage/docs/templates/postgresql-migration.md" ]]
@@ -381,20 +381,20 @@ run validate --output "$temp/storage"
 grep -q 'basePath: "docs/"' "$temp/web/index.html"
 
 # Single-choice unit test runners and S3 SDKs reject conflicting selections.
-run init --name XUnit --description "xUnit framework" --output "$temp/xunit" --profiles xunit,testcontainers --non-interactive
+run init --name XUnit --output "$temp/xunit" --profiles xunit,testcontainers --non-interactive
 [[ -f "$temp/xunit/docs/standards/dotnet/xunit.md" ]]
 [[ ! -f "$temp/xunit/docs/standards/dotnet/tunit.md" ]]
-if run init --name Both --description "Conflicting runners" --output "$temp/both-tests" --profiles xunit,tunit --non-interactive; then
+if run init --name Both --output "$temp/both-tests" --profiles xunit,tunit --non-interactive; then
     echo "Both test frameworks were accepted"; exit 1
 fi
-run init --name S3 --description "MinIO client" --output "$temp/s3" --profiles infra-s3-client-minio --non-interactive
+run init --name S3 --output "$temp/s3" --profiles infra-s3-client-minio --non-interactive
 [[ -f "$temp/s3/docs/standards/infrastructure/s3-client-minio.md" ]]
 [[ -f "$temp/s3/docs/standards/infrastructure/storage-s3.md" ]]
 [[ -f "$temp/s3/docs/standards/storage/object-storage.md" ]]
-if run init --name BothS3 --description "Conflicting S3 SDKs" --output "$temp/both-s3" --profiles infra-s3-client-minio,infra-s3-client-aws --non-interactive; then
+if run init --name BothS3 --output "$temp/both-s3" --profiles infra-s3-client-minio,infra-s3-client-aws --non-interactive; then
     echo "Both S3 clients were accepted"; exit 1
 fi
-run init --name Summary --description "Readable summary" --output "$temp/summary" --profiles xunit --site none --non-interactive > "$temp/summary.log"
+run init --name Summary --output "$temp/summary" --profiles xunit --site none --non-interactive > "$temp/summary.log"
 grep -q 'Selected configuration' "$temp/summary.log"
 grep -q 'xUnit.net' "$temp/summary.log"
 grep -q 'Validating repository' "$temp/summary.log"
@@ -410,14 +410,14 @@ assert len(ids)==len(set(ids))
 PY
 
 # Testing add-ons are independent and resolved through their .NET prerequisite.
-run init --name Addons --description 'Testing tools' --output "$temp/addons" --profiles tunit,testcontainers --non-interactive
+run init --name Addons --output "$temp/addons" --profiles tunit,testcontainers --non-interactive
 run validate --output "$temp/addons"
 [[ -f "$temp/addons/docs/standards/dotnet/testing.md" ]]
 [[ -f "$temp/addons/docs/standards/dotnet/tunit.md" ]]
 [[ -f "$temp/addons/docs/standards/dotnet/testcontainers.md" ]]
 [[ ! -e "$temp/addons/docs/standards/blazor" ]]
 
-args=(--name Example --description 'Test documentation' --output "$temp/project" --profiles dotnet,ef-core,blazor,mudblazor,modular-monolith --skills docs-review,docs-maintain,docs-init --modules testing,operations --site docsify --non-interactive)
+args=(--name Example --output "$temp/project" --profiles dotnet,ef-core,blazor,mudblazor,modular-monolith --skills docs-review,docs-maintain,docs-init --modules testing,operations --site docsify --non-interactive)
 run init "${args[@]}" --dry-run
 [[ ! -d "$temp/project" ]] || { echo "Dry run unexpectedly wrote files"; exit 1; }
 
@@ -445,7 +445,7 @@ grep -q 'frontmatter status' "$temp/project/.agents/skills/docs-init/SKILL.md"
 [[ -f "$temp/project/index.html" ]]
 
 # Skills and project modules compose without requiring each other's documents or a stack.
-run init --name MixedGuidance --description 'Independent skills and modules' --output "$temp/mixed-guidance" --profiles http-contracts --skills docs-architecture,docs-testing --modules glossary,security --site none --non-interactive
+run init --name MixedGuidance --output "$temp/mixed-guidance" --profiles http-contracts --skills docs-architecture,docs-testing --modules glossary,security --site none --non-interactive
 run validate --output "$temp/mixed-guidance"
 [[ -f "$temp/mixed-guidance/.agents/skills/docs-architecture/SKILL.md" ]]
 [[ -f "$temp/mixed-guidance/.agents/skills/docs-testing/SKILL.md" ]]
@@ -464,7 +464,7 @@ fi
 python3 tests/agent_guidance_contracts.py "$temp/mixed-guidance"
 
 # Messaging and query specifications stay opt-in and do not imply a particular database.
-run init --name Integration --description 'Message handling' --output "$temp/integration" --profiles messaging-rabbitmq,masstransit,ardalis-specification --non-interactive
+run init --name Integration --output "$temp/integration" --profiles messaging-rabbitmq,masstransit,ardalis-specification --non-interactive
 run validate --output "$temp/integration"
 [[ -f "$temp/integration/docs/standards/dotnet/masstransit.md" ]]
 [[ -f "$temp/integration/docs/standards/dotnet/ardalis-specification.md" ]]
@@ -473,7 +473,7 @@ run validate --output "$temp/integration"
 [[ ! -e "$temp/integration/docs/standards/postgresql" ]]
 
 # Language-neutral reliable synchronization does not bring in an ORM, .NET, or broker.
-run init --name Sync --description "Cross-system state replication" --output "$temp/sync" --profiles none --modules integrations --non-interactive
+run init --name Sync --output "$temp/sync" --profiles none --modules integrations --non-interactive
 run validate --output "$temp/sync"
 [[ -f "$temp/sync/docs/standards/integrations/reliable-synchronization.md" ]]
 [[ -f "$temp/sync/docs/standards/integrations/versioned-transfers.md" ]]
@@ -486,7 +486,7 @@ run update --output "$temp/sync" --apply
 run validate --output "$temp/sync"
 
 # Storage guidance is independent of provider, language and specific HTTP stack.
-run init --name Assets --description 'Binary storage' --output "$temp/assets" --profiles object-storage --non-interactive
+run init --name Assets --output "$temp/assets" --profiles object-storage --non-interactive
 run validate --output "$temp/assets"
 [[ -f "$temp/assets/docs/standards/storage/object-storage.md" ]]
 [[ -f "$temp/assets/docs/standards/storage/index.md" ]]
@@ -497,7 +497,7 @@ run update --output "$temp/assets" --apply
 run validate --output "$temp/assets"
 
 # Aspire testing is opt-in, requires .NET and does not select TUnit, Testcontainers, or a broker.
-run init --name AspireApp --description 'AppHost scenarios' --output "$temp/aspire" --profiles aspire-testing --non-interactive
+run init --name AspireApp --output "$temp/aspire" --profiles aspire-testing --non-interactive
 run validate --output "$temp/aspire"
 [[ -f "$temp/aspire/docs/standards/dotnet/testing.md" ]]
 [[ -f "$temp/aspire/docs/standards/dotnet/aspire-testing.md" ]]
@@ -508,7 +508,7 @@ run update --output "$temp/aspire" --apply
 run validate --output "$temp/aspire"
 
 # bUnit requires Blazor, but does not implicitly choose MudBlazor.
-run init --name Components --description 'UI component tests' --output "$temp/components" --profiles bunit --non-interactive
+run init --name Components --output "$temp/components" --profiles bunit --non-interactive
 run validate --output "$temp/components"
 [[ -f "$temp/components/docs/standards/blazor/bunit.md" ]]
 [[ -f "$temp/components/docs/standards/blazor/components.md" ]]
@@ -518,7 +518,7 @@ run validate --output "$temp/components"
 [[ -f "$temp/components/docs/standards/dotnet/project-files.md" ]]
 [[ ! -e "$temp/components/docs/standards/blazor/mudblazor.md" ]]
 
-run init --name All --description "Full stack" --output "$temp/full-stack" --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs,messaging-rabbitmq,masstransit,ardalis-specification,blazor,mudblazor,bunit --site docsify --non-interactive
+run init --name All --output "$temp/full-stack" --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs,messaging-rabbitmq,masstransit,ardalis-specification,blazor,mudblazor,bunit --site docsify --non-interactive
 run validate --output "$temp/full-stack"
 [[ -f "$temp/full-stack/index.html" ]]
 
@@ -549,7 +549,7 @@ PY
 )"
 all_modules="$(python3 -c 'import json; print(",".join(p["id"] for p in json.load(open("catalog/modules.json", encoding="utf-8"))["modules"]))')"
 all_skills="$(python3 -c 'import json; print(",".join(p["id"] for p in json.load(open("catalog/skills.json", encoding="utf-8"))["skills"]))')"
-run init --name PortableCanary --description 'Generated artifact scope audit' --output "$temp/all-profiles" --profiles "$all_profiles" --modules "$all_modules" --skills "$all_skills" --site docsify --non-interactive
+run init --name PortableCanary --output "$temp/all-profiles" --profiles "$all_profiles" --modules "$all_modules" --skills "$all_skills" --site docsify --non-interactive
 run validate --output "$temp/all-profiles"
 grep -q 'docs/project/requirements.md' "$temp/all-profiles/llms.txt"
 grep -q 'docs/architecture/security.md' "$temp/all-profiles/llms.txt"
@@ -612,7 +612,7 @@ grep -q "unexpected generated asset" "$temp/asset-leak.log"
 grep -q "unexpected file" "$temp/asset-leak.log"
 
 # Only docsify/none are supported; retired site engines cannot run or be updated.
-if run init --name InvalidViewer --description Test --output "$temp/invalid-viewer" --profiles dotnet --site legacy-engine --non-interactive; then
+if run init --name InvalidViewer --output "$temp/invalid-viewer" --profiles dotnet --site legacy-engine --non-interactive; then
   echo "Unsupported site engine accepted by init"; exit 1
 fi
 cp -a "$temp/minimal" "$temp/invalid-viewer-config"
@@ -637,13 +637,13 @@ run init "${args[@]}"
 run init "${args[@]}"
 
 # Reject unknown flags, missing values and invalid boolean-flag values.
-if run init --name Flag --description Test --output "$temp/flag" --profiles dotnet --foo bar --non-interactive; then
+if run init --name Flag --output "$temp/flag" --profiles dotnet --foo bar --non-interactive; then
     echo "Unknown CLI option was accepted"; exit 1
 fi
-if run init --name Flag --description Test --output --profiles dotnet --non-interactive; then
+if run init --name Flag --output --profiles dotnet --non-interactive; then
     echo "Missing option value was accepted"; exit 1
 fi
-if run init --name Flag --description Test --output "$temp/flag" --profiles dotnet --dry-run false --non-interactive; then
+if run init --name Flag --output "$temp/flag" --profiles dotnet --dry-run false --non-interactive; then
     echo "Boolean flag value was accepted"; exit 1
 fi
 
@@ -651,12 +651,12 @@ fi
 mkdir -p "$temp/external"
 printf 'sentinel\n' > "$temp/external/keep.txt"
 ln -s "$temp/external" "$temp/output-link"
-if run init --name Linked --description Test --output "$temp/output-link" --profiles dotnet --non-interactive; then
+if run init --name Linked --output "$temp/output-link" --profiles dotnet --non-interactive; then
     echo "Symlink output root was accepted"; exit 1
 fi
 mkdir -p "$temp/poison"
 ln -s "$temp/external" "$temp/poison/docs"
-if run init --name Poison --description Test --output "$temp/poison" --profiles dotnet --non-interactive; then
+if run init --name Poison --output "$temp/poison" --profiles dotnet --non-interactive; then
     echo "Nested symlink in target directory was accepted"; exit 1
 fi
 ln -s "$temp/external" "$temp/minimal/docs/external-link"
@@ -821,13 +821,13 @@ if run validate --output "$temp/project"; then
 fi
 mv "$temp/original.json" "$temp/project/docs.config.json"
 
-if run init --name Example --description 'Test documentation' --output "$temp/invalid-profile" --profiles go --non-interactive; then
+if run init --name Example --output "$temp/invalid-profile" --profiles go --non-interactive; then
     echo "Planned profile was accepted"; exit 1
 fi
-if run init --name Example --description 'Test documentation' --output "$temp/invalid-skill" --profiles dotnet --skills unknown --non-interactive; then
+if run init --name Example --output "$temp/invalid-skill" --profiles dotnet --skills unknown --non-interactive; then
     echo "Unknown agent skill was accepted"; exit 1
 fi
-if run init --name Example --description 'Test documentation' --output "$temp/invalid-module" --profiles dotnet --modules unknown --non-interactive; then
+if run init --name Example --output "$temp/invalid-module" --profiles dotnet --modules unknown --non-interactive; then
     echo "Unknown documentation module was accepted"; exit 1
 fi
 
@@ -974,7 +974,7 @@ cp -a "$temp/minimal" "$temp/interrupted-staging"
 mkdir "$temp/interrupted-staging/.docs-boilerplate-update"
 printf '%s\n' 'preserve unknown staging data' > "$temp/interrupted-staging/.docs-boilerplate-update/unknown-note.txt"
 cp "$temp/interrupted-staging/docs.config.json" "$temp/interrupted-staging-config.json"
-if run init --name Minimal --description 'Minimal docs' --output "$temp/interrupted-staging" --profiles dotnet --non-interactive > "$temp/interrupt-init.log" 2>&1; then
+if run init --name Minimal --output "$temp/interrupted-staging" --profiles dotnet --non-interactive > "$temp/interrupt-init.log" 2>&1; then
     echo "Init ignored interrupted recovery journal"; exit 1
 fi
 grep -q 'docs-boilerplate recover' "$temp/interrupt-init.log"
