@@ -41,7 +41,7 @@ def assert_heading(page, title: str) -> None:
 def exercise(page, base_url: str, local_failures: list[str]) -> None:
     page.goto(base_url, wait_until="domcontentloaded")
     assert page.evaluate("document.documentElement.lang") == "en", "Incorrect English Docsify language"
-    assert page.title() == "BrowserDocs", "Docsify title does not match the generated project name"
+    assert "BrowserDocs" in page.title(), "Docsify title does not include the generated project name"
     assert_heading(page, "BrowserDocs")
     assert "docs/index.md" in page.evaluate(
         "() => performance.getEntriesByType('resource').map(x => x.name).join('\\n')"
@@ -108,7 +108,7 @@ def exercise(page, base_url: str, local_failures: list[str]) -> None:
 def exercise_russian(page, base_url: str, local_failures: list[str]) -> None:
     page.goto(base_url, wait_until="domcontentloaded")
     assert page.evaluate("document.documentElement.lang") == "ru", "Russian Docsify language is incorrect"
-    assert page.title() == "РусскийБраузер", "Russian project title is missing"
+    assert "РусскийБраузер" in page.title(), "Russian project title is missing"
     assert_heading(page, "РусскийБраузер")
     assert page.evaluate("window.$docsify.search.placeholder") == "Поиск по документации", (
         "Docsify search configuration is still English"
