@@ -2,7 +2,7 @@
 
 A Markdown-first **documentation repository generator** designed primarily for AI coding agents and secondarily for humans. The reusable source lives in [`catalog/`](catalog/), the .NET 10 CLI in [`src/`](src/), and generator tests in [`tests/`](tests/).
 
-This is the **boilerplate itself**, not a working application's business specification. It contains no example product requirements, feature backlogs or historical project implementation documents. Technology-specific guidance is opt-in; a newly generated repository receives only the selected files.
+This is the **boilerplate itself**, not a working application's business specification. It contains no example product requirements, feature backlogs or historical project implementation documents. Technology-specific choices are conditional; every new repository also receives the default DDD and accessible UI-form guidance.
 
 Start with [`llms.txt`](llms.txt), [agent instructions](AGENTS.md), the [documentation index](docs/index.md), the [generator guide](docs/generator.md), and the [authoring standard](catalog/base/docs/standards/documentation.md).
 
@@ -29,9 +29,9 @@ New releases are created **only by version tags** (for example `v1.0.2`), not by
 docs-boilerplate init
 ```
 
-Spectre.Console prompts for project name, destination and documentation language (`en` or `ru`), then a **three-stage wizard**: backend, frontend and optional infrastructure. Options are grouped into labeled blocks. Compatible tools use checkboxes; exclusive choices use a single-choice selector: **TUnit or xUnit**, storage type, **MinIO or AWS S3 client**, logs, metrics, traces and deployment. bUnit is a normal Blazor component-testing checkbox. At the end, the CLI shows the selected configuration instead of a file plan and **runs validation automatically after generation**.
+Spectre.Console prompts for project name, destination and documentation language (`en` or `ru`), then a **three-stage wizard**: backend, frontend and optional infrastructure. Options are grouped into labeled blocks. Compatible tools use checkboxes, while exclusive choices use single-choice selectors. Backend decisions include EF Core or Dapper, optional EF Core specifications, RabbitMQ or Kafka followed by its messaging client and organization, CQRS handlers, mapper, OpenAPI UI and PostgreSQL pooler (PgBouncer/Odyssey). Architecture supports a modular monolith, microservices or a hybrid. Infrastructure includes Alloy and Mimir. bUnit is a normal Blazor component-testing checkbox. At the end, the CLI shows the selected configuration instead of a file plan and **runs validation automatically after generation**.
 
-For automation, pass explicit profiles and optionally `--language en` (default) or `--language ru`. **All 80 catalog Markdown sources have Russian translations**, including agent instructions, the intake questionnaire, project templates and available technology standards. English lives at the canonical `catalog/` paths; translations use the matching `catalog/locales/ru/` paths. The generator rejects missing translations rather than silently mixing languages; generated filenames remain language-neutral.
+For automation, pass explicit profiles and optionally `--language en` (default) or `--language ru`. **Every catalog Markdown source has a Russian translation**, including agent instructions, the intake questionnaire, project templates and available technology standards. English lives at the canonical `catalog/` paths; translations use the matching `catalog/locales/ru/` paths. The generator rejects missing translations rather than silently mixing languages; generated filenames remain language-neutral.
 
 For automation, pass explicit profiles:
 
@@ -68,7 +68,7 @@ Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh` 
 
 To browse a generated repository, run `python -m http.server 3000` in its root and open `http://localhost:3000/`. Docsify renders the Markdown dynamically in the browser without a static-site build. Opening its `index.html` directly via `file://` is not a reliable mode.
 
-To initialize only the shared Markdown documentation without any technology standards, use `--profiles none --site none` with the required project name and output path.
+To skip the independently selectable technologies, use `--profiles none --site none` with a project name and output path. The baseline DDD, accessible forms, HTTP client contracts and agent guidance are still included.
 
 ## What the generator does
 
@@ -84,7 +84,7 @@ The CLI is a generator, not an implementation or a business requirement registry
 
 Technology conventions such as test-method naming and HTTP ETag/If-Match concurrency remain independently **opt-in**. Message transport, client and organization are chosen separately. Their examples and verification do not add a demonstration application to the generated repository. See [ADR 0006](docs/decisions/0006-optional-technology-conventions.md).
 
-The original editorial choices are recorded in [ADR 0007](docs/decisions/0007-final-editorial-policies.md); the latest defaults supersede its optional document-ID/approval choice. **Stable document IDs are mandatory, approval statuses are not**, while direct API request DTO form binding remains opt-in. The documentation catalog does not prescribe client-library development or source-model generation; incomplete code examples must be labeled illustrative and claims of executable examples require real test evidence.
+The original editorial choices are recorded in [ADR 0007](docs/decisions/0007-final-editorial-policies.md); the latest defaults supersede its optional document-ID/approval choice. **Stable document IDs are mandatory, approval statuses are not**, while direct API request DTO form binding and accessible form guidance are installed by default. The documentation catalog does not prescribe client-library development or source-model generation; incomplete code examples must be labeled illustrative and claims of executable examples require real test evidence.
 
 See [implementation status](docs/implementation-status.md), [approved template scope](docs/decisions/0005-approved-template-scope.md), [architectural decisions](docs/decisions/index.md), [completed owner decision review](docs/decisions/owner-decision-backlog.md) and [contributing rules](CONTRIBUTING.md).
 
