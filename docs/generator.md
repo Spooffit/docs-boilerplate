@@ -36,8 +36,8 @@ Requires .NET 10 SDK. Repository-root usage:
 ```sh
 dotnet run --project src/DocsBoilerplate.Cli -- list
 dotnet run --project src/DocsBoilerplate.Cli -- doctor
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive --dry-run
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive --dry-run
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/example
 ```
 
@@ -51,7 +51,7 @@ Updates with fingerprint-based conflict detection are supported (see below). Aut
 
 ## Optional website: Docsify
 
-The default generated repository includes only a root `index.html` using Docsify and the existing Markdown under `docs/`. It adds **no build directory, Node dependencies, Python packages or generated HTML pages beyond that one shell**. Pass `--site none` to omit the viewer. For `--language ru`, the same shell uses `lang=ru`, Russian loading/search labels, and an HTML-escaped project title and description; the Markdown paths and Docsify routing remain unchanged.
+The default generated repository includes only a root `index.html` using Docsify and the existing Markdown under `docs/`. It adds **no build directory, Node dependencies, Python packages or generated HTML pages beyond that one shell**. Pass `--site none` to omit the viewer. For `--language ru`, the same shell uses `lang=ru`, Russian loading/search labels, and an HTML-escaped project title; the Markdown paths and Docsify routing remain unchanged.
 
 Docsify requests Markdown over HTTP. **Do not rely on double-clicking `index.html` via `file://`**, which commonly fails due to modern browser CORS restrictions. For a local preview, from the generated repository root run:
 
@@ -76,10 +76,10 @@ Use `--profiles dotnet` for C#/.NET backend guidance. `aspnet-core` is a separat
 Example:
 
 ```sh
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --description "Backend documentation" --output ./scratch/backend --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --output ./scratch/backend --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
 ```
 
-Additional optional profiles include `masstransit-rabbitmq`, `ardalis-specification`, `bunit`, and `http-contracts`. **Reliable integration/synchronization guidance is always installed**, independent of the selected stack. Infrastructure offers S3-compatible object storage; selecting `infra-s3-client-minio` or `infra-s3-client-aws` adds a single .NET S3 client and the common object-storage safety rules. The S3 documents are explicitly draft placeholders, not ready-to-deploy configurations. Selecting bUnit requires Blazor but not MudBlazor. The Tests block offers mutually exclusive `tunit` and `xunit` selections; supporting tools like Testcontainers remain independent.
+Additional optional profiles include `masstransit`, `ardalis-specification`, `bunit`, and `http-contracts`. **Reliable integration/synchronization guidance is always installed**, independent of the selected stack. Infrastructure offers S3-compatible object storage; selecting `infra-s3-client-minio` or `infra-s3-client-aws` adds a single .NET S3 client and the common object-storage safety rules. The S3 documents are explicitly draft placeholders, not ready-to-deploy configurations. Selecting bUnit requires Blazor but not MudBlazor. The Tests block offers mutually exclusive `tunit` and `xunit` selections; supporting tools like Testcontainers remain independent.
 
 ## Cross-platform HTTP and migration guidance
 
