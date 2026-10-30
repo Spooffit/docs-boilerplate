@@ -1,6 +1,6 @@
 ---
 title: "Reliable state synchronization and reconciliation"
-description: "Optional principles for delivery, ordering, deduplication and recovery across independent systems"
+description: "Baseline principles for delivery, ordering, deduplication and recovery across independent systems"
 kind: standard
 status: active
 ---
