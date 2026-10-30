@@ -88,6 +88,18 @@ Test("interactive profile picker includes all independently selectable profiles"
         "document-identifiers-and-statuses", "http-contracts", "object-storage", "ui-direct-dto-forms"
     ]), "An available profile disappeared from interactive selection");
 });
+Test("wizard omits backend/frontend dependencies when both are skipped", () =>
+{
+    var choices = Catalog(
+        new DocsCli.Profile("dotnet", ".NET", "available", [], [], "backend"),
+        new DocsCli.Profile("blazor", "Blazor", "available", ["dotnet"], [], "frontend"),
+        new DocsCli.Profile("bunit", "bUnit", "available", ["blazor"], [], "testing"),
+        new DocsCli.Profile("http-contracts", "HTTP", "available", [], [], "web"),
+        new DocsCli.Profile("object-storage", "Storage", "available", [], [], "storage"));
+    var candidates = DocsCli.RemainingContextualProfiles(choices, ["dotnet", "blazor"], "none", "none");
+    Expect(candidates.SequenceEqual(["http-contracts", "object-storage"]),
+        "An unrelated backend/frontend was selected from the independent options step");
+});
 Test("skills resolve precisely", () =>
 {
     var catalog = new DocsCli.SkillCatalog([new("review", "Review", "skills/review/SKILL.md", ".agents/skills/review/SKILL.md")]);

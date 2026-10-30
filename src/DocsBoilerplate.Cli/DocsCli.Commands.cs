@@ -15,15 +15,34 @@ static partial class DocsCli
             .ToArray();
     }
 
+    internal static string[] RemainingContextualProfiles(Catalog catalog, IEnumerable<string> offered, string backend, string frontend)
+    {
+        var infrastructureCategories = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "infra-logs", "infra-metrics", "infra-traces", "infra-deploy",
+            "infra-devops", "infra-orchestration"
+        };
+        return RemainingInteractiveProfiles(catalog, offered)
+            .Where(id => !infrastructureCategories.Contains(catalog.Profiles.Single(p => p.Id == id).Category))
+            .Where(id =>
+            {
+                var dependencies = ResolveProfiles([id], catalog);
+                return (frontend != "none" || !dependencies.Contains("blazor"))
+                    && (backend != "none" || frontend != "none" || !dependencies.Contains("dotnet"));
+            })
+            .ToArray();
+    }
+
     private static string[] PromptProfiles(Catalog catalog)
     {
         var selected = new HashSet<string>(StringComparer.Ordinal);
         var offered = new HashSet<string>(StringComparer.Ordinal);
         string Label(string id) => id == "none" ? "Skip (none)" : catalog.Profiles.Single(p => p.Id == id).Name;
 
-        string ChooseOne(string title, string category)
+        string ChooseOne(string title, string category, bool backendAvailable = true)
         {
-            var choices = catalog.Profiles.Where(p => p.Status == "available" && p.Category == category)
+            var choices = catalog.Profiles.Where(p => p.Status == "available" && p.Category == category
+                && (backendAvailable || p.Id != "infra-devops-backend-repo"))
                 .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
             offered.UnionWith(choices);
             if (choices.Length == 0) return "none";
@@ -70,14 +89,7 @@ static partial class DocsCli
 
         // Keep independent standards selectable without quietly adding them.
         // Infrastructure choices come at the end, even for frontend-only projects.
-        var infra = new HashSet<string>(StringComparer.Ordinal)
-        {
-            "infra-logs", "infra-metrics", "infra-traces", "infra-deploy",
-            "infra-devops", "infra-orchestration"
-        };
-        var remaining = RemainingInteractiveProfiles(catalog, offered)
-            .Where(id => !infra.Contains(catalog.Profiles.Single(p => p.Id == id).Category))
-            .ToArray();
+        var remaining = RemainingContextualProfiles(catalog, offered, backend, frontend);
         if (remaining.Length > 0)
             selected.UnionWith(AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
                 .Title("Other optional standards (independent selection):")
@@ -95,7 +107,7 @@ static partial class DocsCli
                 ("infra-devops", "DevOps definitions location:")
             })
             {
-                var chosen = ChooseOne(title, category);
+                var chosen = ChooseOne(title, category, backendAvailable: backend != "none");
                 if (chosen != "none") selected.Add(chosen);
             }
             if (selected.Contains("dotnet") || frontend == "blazor" || backend == "dotnet")
