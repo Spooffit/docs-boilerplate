@@ -185,11 +185,11 @@ run validate --output "$temp/headless"
 [[ -f "$temp/headless/llms.txt" ]]
 
 # Optional HTTP and persistence profiles must compose without implicit extra libraries.
-run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles aspnet-mvc,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
+run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles dotnet,aspnet-core,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
 run validate --output "$temp/web"
 [[ -f "$temp/web/docs/standards/aspnet/http-api.md" ]]
 [[ -f "$temp/web/docs/standards/aspnet/errors-and-validation.md" ]]
-[[ -f "$temp/web/docs/standards/aspnet/mvc-controllers.md" ]]
+[[ -f "$temp/web/docs/standards/aspnet/http-api.md" ]]
 [[ -f "$temp/web/docs/standards/dotnet/fluentvalidation.md" ]]
 [[ -f "$temp/web/docs/standards/postgresql/persistence.md" ]]
 [[ -f "$temp/web/docs/templates/postgresql-migration.md" ]]
@@ -200,7 +200,7 @@ run validate --output "$temp/web"
 [[ ! -e "$temp/web/docs/standards/dotnet/dapper.md" ]]
 [[ ! -e "$temp/web/docs/standards/dotnet/testcontainers.md" ]]
 [[ ! -e "$temp/web/docs/standards/dotnet/tunit.md" ]]
-run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles aspnet-mvc,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
+run init --name Web --description 'HTTP and storage' --output "$temp/web" --profiles dotnet,aspnet-core,fluentvalidation,postgresql,cqrs,ef-core --site docsify --non-interactive
 
 # Prior releases synthesized this same path. Verify a fingerprint-owned, unedited
 # directory index upgrades in place to the curated template guide.
@@ -358,7 +358,7 @@ run validate --output "$temp/components"
 [[ -f "$temp/components/docs/standards/dotnet/project-files.md" ]]
 [[ ! -e "$temp/components/docs/standards/blazor/mudblazor.md" ]]
 
-run init --name All --description "Full stack" --output "$temp/full-stack" --profiles aspnet-mvc,ef-core,postgresql,fluentvalidation,cqrs,masstransit-rabbitmq,ardalis-specification,blazor,mudblazor,bunit --site docsify --non-interactive
+run init --name All --description "Full stack" --output "$temp/full-stack" --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs,masstransit-rabbitmq,ardalis-specification,blazor,mudblazor,bunit --site docsify --non-interactive
 run validate --output "$temp/full-stack"
 [[ -f "$temp/full-stack/index.html" ]]
 

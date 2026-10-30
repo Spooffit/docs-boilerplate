@@ -47,12 +47,12 @@ Playwright and Chromium are installed **only in CI**; they never become dependen
 
 ## Optional backend guidance
 
-Use `--profiles aspnet-core` for framework-neutral ASP.NET Core HTTP guidance. Select `aspnet-mvc` only when the application uses MVC controllers. FluentValidation, PostgreSQL and CQRS are independent opt-in profiles; dependencies (such as `aspnet-mvc` requiring `aspnet-core` and `dotnet`) are resolved automatically. A minimal `dotnet` project does not acquire MVC, a database or a command/query bus.
+Use `--profiles dotnet` for C#/.NET backend guidance. `aspnet-core` is a separate optional HTTP API profile; MVC-specific defaults are not selected. FluentValidation, PostgreSQL and CQRS remain independently opt-in. A minimal `dotnet` project does not acquire an MVC layer, database or command/query bus.
 
 Example:
 
 ```sh
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --description "Backend documentation" --output ./scratch/backend --profiles aspnet-mvc,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --description "Backend documentation" --output ./scratch/backend --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
 ```
 
 Additional optional profiles: `masstransit-rabbitmq`, `ardalis-specification`, `bunit`, `http-contracts`, `integration-reliability`, and `object-storage`. These last three are language-neutral and do not imply .NET, an ORM or a particular server. Selecting bUnit requires Blazor, but not MudBlazor. Selecting MassTransit with RabbitMQ does not imply a database or a particular outbox implementation. Each profile installs only its applicable standard.

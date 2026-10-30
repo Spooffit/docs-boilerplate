@@ -82,12 +82,13 @@ def main():
         if "SchemaVersion" in code.read_text(encoding="utf-8"):
             errors.append(f"Generator manifest versioning returned: {code.relative_to(ROOT)}")
     project = (ROOT / "src" / "DocsBoilerplate.Cli" / "DocsBoilerplate.Cli.csproj").read_text(encoding="utf-8")
-    for token in ("PackAsTool", "PackageId", "PackageReadmeFile"):
-        if token in project:
-            errors.append(f"CLI package metadata returned: {token}")
+    for token in ("<PackAsTool>true</PackAsTool>", "<ToolCommandName>docs-boilerplate</ToolCommandName>",
+                  "<PackageId>DocsBoilerplate.Cli</PackageId>", 'CopyToPublishDirectory="PreserveNewest"'):
+        if token not in project:
+            errors.append(f"Installable CLI packaging missing: {token}")
     workflow = (ROOT / ".github" / "workflows" / "docs-generator.yml").read_text(encoding="utf-8")
-    if "dotnet pack" in workflow or "dotnet tool install" in workflow or "dotnet tool update" in workflow:
-        errors.append("CLI package release/install job returned")
+    if "dotnet nuget push" in workflow or "dotnet tool update -g" in workflow:
+        errors.append("Unapproved public package publication job")
 
     docs = set((ROOT / "docs").rglob("*.md"))
     docs.update((ROOT / "catalog").rglob("*.md"))

@@ -59,6 +59,14 @@ Test("transitive dependencies resolve without duplicates", () =>
     var selected = DocsCli.ResolveProfiles(["web", "web"], Catalog(P("base"), P("transport", ["base"]), P("web", ["transport", "base"])));
     Expect(selected.SetEquals(["web", "transport", "base"]), "Missing or duplicate dependency");
 });
+Test("mutually exclusive infrastructure profiles reject conflicting deploy choices", () =>
+{
+    var profiles = Catalog(
+        new DocsCli.Profile("compose", "Compose", "available", [], [], "infra-deploy"),
+        new DocsCli.Profile("kubernetes", "Kubernetes", "available", [], [], "infra-deploy"));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["compose", "kubernetes"], profiles));
+    Expect(DocsCli.ResolveProfiles(["compose"], profiles).SetEquals(["compose"]), "Single deploy choice must remain usable");
+});
 Test("unknown profile rejects", () => Throws<InvalidOperationException>(() =>
     DocsCli.ResolveProfiles(["missing"], Catalog(P("base")))));
 Test("planned profiles cannot be selected", () => Throws<InvalidOperationException>(() =>

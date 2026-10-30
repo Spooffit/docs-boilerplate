@@ -34,6 +34,33 @@ jobs:
       - name: Validate optional HTTP, naming and EventBus documentation examples
         run: python tests/optional_profile_contracts.py
 
+  tool-package:
+    name: Local .NET tool installation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Pack installable tool and bundled Markdown catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release --output "$RUNNER_TEMP/tool-feed"
+          dotnet tool install DocsBoilerplate.Cli --tool-path "$RUNNER_TEMP/tools" --add-source "$RUNNER_TEMP/tool-feed" --version 0.2.0
+          "$RUNNER_TEMP/tools/docs-boilerplate" doctor
+          "$RUNNER_TEMP/tools/docs-boilerplate" init --name PackagedDocs --description "Installed tool smoke" --output "$RUNNER_TEMP/packaged-docs" --profiles dotnet --site none --non-interactive
+          "$RUNNER_TEMP/tools/docs-boilerplate" validate --output "$RUNNER_TEMP/packaged-docs"
+          test -f "$RUNNER_TEMP/packaged-docs/docs/standards/dotnet/testing.md"
+      - name: Upload private installable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-boilerplate-dotnet-tool
+          path: ${{ runner.temp }}/tool-feed/*.nupkg
+          if-no-files-found: error
+
   eventbus-example:
     name: EventBus example (live RabbitMQ)
     runs-on: ubuntu-latest

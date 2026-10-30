@@ -4,11 +4,17 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>docs-boilerplate</ToolCommandName>
+    <PackageId>DocsBoilerplate.Cli</PackageId>
+    <Version>0.2.0</Version>
+    <Description>Offline-capable Markdown-first documentation initialization CLI</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
     <None Include="../../catalog/**"
           Link="catalog/%(RecursiveDir)%(Filename)%(Extension)"
-          CopyToOutputDirectory="PreserveNewest" />
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
