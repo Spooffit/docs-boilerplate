@@ -179,7 +179,11 @@ PY
 done < <(python3 - <<'PY'
 import json
 with open("catalog/profiles.json", encoding="utf-8") as stream:
-    print(*(p["id"] for p in json.load(stream)["profiles"] if p["status"] == "available"), sep="\n")
+    profiles = json.load(stream)["profiles"]
+# A bare transport is invalid: the new wizard must choose a client.
+print(*(p["id"] for p in profiles if p["status"] == "available"
+        and p["category"] != "messaging-transport"
+        and p["id"] != "cqrs-wolverine"), sep="\n")
 PY
 )
 
@@ -192,7 +196,7 @@ python3 - "$temp/plain-docs/docs.config.json" <<'PY'
 import json, sys
 from pathlib import Path
 manifest = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-assert manifest["Profiles"] == [] and len(manifest["Modules"]) == 7 and len(manifest["Skills"]) == 5
+assert set(manifest["Profiles"]) == {"ddd", "ui-accessibility", "ui-direct-dto-forms", "http-contracts"} and len(manifest["Modules"]) == 7 and len(manifest["Skills"]) == 5
 PY
 
 # Owner-approved technology variants are separate opt-in selections.
@@ -217,7 +221,7 @@ PY
 run update --output "$temp/optional-conventions" --apply
 run validate --output "$temp/optional-conventions"
 
-# Document IDs and integration reliability are baseline; DTO forms remain opt-in.
+# Document IDs, DDD, integration reliability and both UI form rules are baseline.
 run init --name FinalConventions --description "Direct DTO forms" --output "$temp/final-conventions" --profiles ui-direct-dto-forms --site none --non-interactive
 run validate --output "$temp/final-conventions"
 [[ -f "$temp/final-conventions/docs/standards/document-identifiers.md" ]]
@@ -229,7 +233,7 @@ python3 - "$temp/final-conventions/docs.config.json" <<'PY'
 import json,sys
 from pathlib import Path
 m=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-assert set(m["Profiles"]) == {"ui-direct-dto-forms", "http-contracts", "ui-accessibility"}
+assert set(m["Profiles"]) == {"ui-direct-dto-forms", "http-contracts", "ui-accessibility", "ddd"}
 assert len(m["Modules"]) == 7 and len(m["Skills"]) == 5
 PY
 run update --output "$temp/final-conventions" --apply
@@ -503,7 +507,7 @@ run init --name Components --description 'UI component tests' --output "$temp/co
 run validate --output "$temp/components"
 [[ -f "$temp/components/docs/standards/blazor/bunit.md" ]]
 [[ -f "$temp/components/docs/standards/blazor/components.md" ]]
-[[ ! -f "$temp/components/docs/standards/ui/forms-and-accessibility.md" ]]
+[[ -f "$temp/components/docs/standards/ui/forms-and-accessibility.md" ]]
 [[ -f "$temp/components/docs/standards/blazor/index.md" ]]
 [[ -f "$temp/components/docs/templates/blazor-frontend-feature.md" ]]
 [[ -f "$temp/components/docs/standards/dotnet/project-files.md" ]]
@@ -526,6 +530,10 @@ for profile in entries:
     if profile["status"] != "available":
         continue
     category = profile["category"]
+    if category in {"messaging-transport", "messaging-client", "messaging-organization",
+                    "cqrs-implementation", "query-pattern", "data-access", "architecture",
+                    "mapper", "rest-client", "openapi-ui"}:
+        continue
     if category.startswith("infra-") or category == "test-framework":
         if category in used_exclusive:
             continue
@@ -550,14 +558,14 @@ grep -q 'consuming applications or deployments currently conform' "$temp/all-pro
 grep -q '^## Code examples and verification evidence$' "$temp/all-profiles/docs/standards/documentation.md"
 grep -q 'standards/document-identifiers.md' "$temp/all-profiles/docs/catalog.md"
 grep -q 'standards/ui/direct-dto-forms.md' "$temp/all-profiles/docs/catalog.md"
-[[ ! -f "$temp/minimal/docs/standards/http/client-contracts.md" ]]
+[[ -f "$temp/minimal/docs/standards/http/client-contracts.md" ]]
 [[ ! -f "$temp/minimal/docs/standards/storage/object-storage.md" ]]
 # Generated boilerplate must not impose the predecessor's audit workflow.
 if grep -q '^## Durable activity history' "$temp/all-profiles/docs/operations/observability.md"; then
     echo "Unexpected activity-history guidance"; exit 1
 fi
 grep -q 'does not install the tool automatically' "$temp/all-profiles/.agents/skills/docs-init/SKILL.md"
-# Domain modeling remains optional, and typed-value validation belongs to selected technical contracts.
+# DDD is baseline; typed-value validation belongs to selected technical contracts.
 grep -q '^## Rules and validation$' "$temp/all-profiles/docs/standards/architecture/ddd.md"
 grep -q '^## Validation at the correct operation boundary$' "$temp/all-profiles/docs/standards/aspnet/errors-and-validation.md"
 grep -q '^## Typed application values and database representation$' "$temp/all-profiles/docs/standards/postgresql/persistence.md"
@@ -569,13 +577,13 @@ grep -q 'Do not invent a draft/publish workflow' "$temp/all-profiles/docs/templa
 grep -q 'Do not invent edit/save/network states for a static view' "$temp/all-profiles/docs/templates/blazor-frontend-feature.md"
 grep -q 'not a mandatory six-step plan' "$temp/all-profiles/docs/templates/postgresql-migration.md"
 grep -q 'Unicode length units' "$temp/all-profiles/docs/templates/postgresql-migration.md"
-[[ ! -e "$temp/minimal/docs/standards/architecture/ddd.md" ]]
+[[ -f "$temp/minimal/docs/standards/architecture/ddd.md" ]]
 # Guard against reintroducing inherited product workflows into opt-in standards.
 if grep -R -E 'The original project placed|For tree or versioned-record UIs' "$temp/all-profiles/docs/standards"; then
     echo "Project-specific workflow leaked into active standards"; exit 1
 fi
 [[ ! -e "$temp/minimal/docs/standards/postgresql/persistence.md" ]]
-[[ ! -e "$temp/minimal/docs/standards/http/contract-verification.md" ]]
+[[ -f "$temp/minimal/docs/standards/http/contract-verification.md" ]]
 grep -q 'generated repository does not contain the CLI' "$temp/all-profiles/.agents/skills/docs-review/SKILL.md"
 [[ -f "$temp/minimal/docs/operations/observability.md" ]]
 [[ -f "$temp/minimal/docs/architecture/security.md" ]]
