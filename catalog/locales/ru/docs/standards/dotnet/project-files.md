@@ -11,7 +11,7 @@ status: active
 
 ## Назначение проекта
 
-Держите файлы проектов минимальными и отражайте реальную целевую платформу, роль сборки и упаковки. Общие `Directory.Build.props`/`Directory.Build.targets` полезны для действительно общих настроек, но не обязательны каждому решению.
+Держите файлы проектов минимальными и отражайте реальную целевую платформу, роль сборки и упаковки. Общие файлы сборки обязательны в соответствии с правилами ниже.
 
 - Организуйте `PropertyGroup`, `ProjectReference` и `PackageReference` согласованно с `.editorconfig` и правилами репозитория.
 - Объявляйте только нужные зависимости. Не копируйте ссылки на пакеты в каждый проект ради внешнего единообразия.
@@ -28,24 +28,70 @@ status: active
 
 Если тестовые проекты наследуют `Directory.Build.props` или специальные test props/targets, проверяйте порядок импортов и ожидаемые метаданные перед переопределениями. Не дублируйте автоматически унаследованные пакеты, целевые платформы или настройки раннера в каждом тестовом проекте.
 
-## Проверяемый пример XML
+## Обязательные общие файлы сборки и идентичность проектов
 
-Пример показывает **только формат**, а не обязательный PackageId, namespace, правило упаковки, количество проектов или слоёв.
+В каждом .NET-репозитории, где применяется этот профиль, **обязательны** корневые `Directory.Build.props`, `Directory.Packages.props` и `global.json`:
+
+- `Directory.Build.props` **обязательно** задаёт `TargetFramework`, `ImplicitUsings` и `Nullable`. В обычных `.csproj` **запрещено** повторять эти свойства. Узкое исключение (другая целевая платформа, несовместимый SDK проекта, специальный test host) разрешено лишь с подтверждённым техническим обоснованием.
+- `Directory.Packages.props` **обязательно** включает Central Package Management через `ManagePackageVersionsCentrally` и хранит версии пакетов. В `PackageReference` отдельных проектов обычно нет `Version`.
+- `global.json` **обязательно** закрепляет выбор .NET SDK и явную политику `rollForward`. Версию подбирайте по реальному установленному SDK.
+- В **каждом** `.csproj` **обязательно явно присутствуют** `PackageId`, `AssemblyName` и `RootNamespace`. Все три значения **одинаковые и точно равны имени самого .csproj без расширения**. Правило действует и для внутренних проектов, не упаковываемых в NuGet. Используйте допустимые для пространства имён имена, например `Example.Service`.
+- `IsPackable`, `OutputType` и необходимые ссылки проектов остаются локальными решениями. Исключения для трёх полей идентичности стандарт не предусматривает.
+
+## Проверяемые примеры XML и JSON
+
+Корневой `Directory.Build.props`:
 
 ```xml
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+</Project>
+```
 
+Корневой `Directory.Packages.props`:
+
+```xml
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Contracts/Contracts.csproj" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
   </ItemGroup>
 </Project>
 ```
 
-Если репозиторий использует двухпробельный отступ XML и один элемент в строке, соблюдайте это соглашение; иначе следуйте принятому стилю команды. Проверяйте относительные пути на целевых платформах, MSBuild-граф и восстановление пакетов.
+Корневой `global.json` (подставьте подтверждённую версию SDK):
+
+```json
+{
+  "sdk": {
+    "version": "10.0.400",
+    "rollForward": "latestFeature"
+  }
+}
+```
+
+`Example.Service.csproj`:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Example.Service</PackageId>
+    <AssemblyName>Example.Service</AssemblyName>
+    <RootNamespace>Example.Service</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+</Project>
+```
+
+**Проверка:** сравните три свойства с именем каждого файла проекта. Убедитесь, что общие файлы существуют, свойства наследуются, центральные версии пакетов разрешаются, `dotnet --info` использует выбранный SDK и `dotnet build` проходит.
 
 ## Формат и инструменты
 
