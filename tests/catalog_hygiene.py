@@ -213,15 +213,48 @@ for profile_id, category in required_profiles.items():
         errors.append(f"Missing or miscategorized wizard choice: {profile_id}")
     elif len(profile["files"]) != 1:
         errors.append(f"Wizard choice must own one documentation file: {profile_id}")
-if not (CATALOG / "docs/standards/dotnet/project-files.md").is_file():
-    errors.append("Mandatory .NET project file standard missing")
-else:
-    standard = (CATALOG / "docs/standards/dotnet/project-files.md").read_text(encoding="utf-8")
+# Validate the actual illustrative XML/JSON, not only mentions of their tags.
+# The user-facing standard requires three shared root files and explicit,
+# filename-matching assembly metadata in each individual project.
+from xml.etree import ElementTree
+
+for locale_root in (CATALOG, CATALOG / "locales/ru"):
+    project_doc = locale_root / "docs/standards/dotnet/project-files.md"
+    if not project_doc.is_file():
+        errors.append(f"Mandatory .NET project file standard missing: {project_doc.relative_to(ROOT)}")
+        continue
+    standard = project_doc.read_text(encoding="utf-8")
     for token in ("Directory.Build.props", "Directory.Packages.props", "global.json",
                   "TargetFramework", "ImplicitUsings", "Nullable",
                   "PackageId", "AssemblyName", "RootNamespace"):
         if token not in standard:
             errors.append(f"Missing mandatory .NET project configuration rule: {token}")
+    xml_blocks = re.findall(r"```xml\n(.*?)\n```", standard, re.S)
+    json_blocks = re.findall(r"```json\n(.*?)\n```", standard, re.S)
+    if len(xml_blocks) != 3 or len(json_blocks) != 1:
+        errors.append(f"Expected 3 XML and 1 JSON examples: {project_doc.relative_to(ROOT)}")
+        continue
+    try:
+        props, versions, project = map(ElementTree.fromstring, xml_blocks)
+        sdk = json.loads(json_blocks[0])["sdk"]
+        shared = {element.tag: (element.text or "").strip()
+                  for element in props.findall("./PropertyGroup/*")}
+        identity = {element.tag: (element.text or "").strip()
+                    for element in project.findall("./PropertyGroup/*")}
+        if not {"TargetFramework", "ImplicitUsings", "Nullable"} <= shared.keys():
+            errors.append(f"Missing shared build properties: {project_doc.relative_to(ROOT)}")
+        if versions.findtext("./PropertyGroup/ManagePackageVersionsCentrally") != "true":
+            errors.append(f"Central Package Management not enabled: {project_doc.relative_to(ROOT)}")
+        if not sdk.get("version") or not sdk.get("rollForward"):
+            errors.append(f"SDK version/rollForward missing: {project_doc.relative_to(ROOT)}")
+        if any(key in identity for key in ("TargetFramework", "ImplicitUsings", "Nullable")):
+            errors.append(f"Inherited build property repeated in csproj: {project_doc.relative_to(ROOT)}")
+        if {identity.get(key) for key in ("PackageId", "AssemblyName", "RootNamespace")} != {"Example.Service"}:
+            errors.append(f"Example project identity differs from Example.Service.csproj: {project_doc.relative_to(ROOT)}")
+        if any(ref.get("Version") for ref in project.findall(".//PackageReference")):
+            errors.append(f"Project reference bypasses central package versions: {project_doc.relative_to(ROOT)}")
+    except (ElementTree.ParseError, ValueError, KeyError, TypeError) as exc:
+        errors.append(f"Invalid .NET project-file XML/JSON example: {project_doc.relative_to(ROOT)}: {exc}")
 
 # Exclude the inherited application-specific client-library and code-generation
 # content from *active* documentation. The .NET SDK used to build the docs CLI
