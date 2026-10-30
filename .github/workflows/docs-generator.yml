@@ -7,6 +7,13 @@ on:
   workflow_dispatch:
   workflow_call:
 
+
+# Rapid catalog/translation commits must not burn runner minutes on superseded
+# versions. The latest commit still receives the complete validation matrix.
+concurrency:
+  group: docs-generator-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   generator:
     runs-on: ubuntu-latest
