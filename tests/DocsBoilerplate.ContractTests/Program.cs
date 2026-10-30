@@ -67,6 +67,19 @@ Test("mutually exclusive infrastructure profiles reject conflicting deploy choic
     Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["compose", "kubernetes"], profiles));
     Expect(DocsCli.ResolveProfiles(["compose"], profiles).SetEquals(["compose"]), "Single deploy choice must remain usable");
 });
+Test("unit test frameworks and S3 clients are mutually exclusive", () =>
+{
+    var catalog = Catalog(
+        new DocsCli.Profile("tunit", "TUnit", "available", [], [], "test-framework"),
+        new DocsCli.Profile("xunit", "xUnit", "available", [], [], "test-framework"),
+        new DocsCli.Profile("s3", "S3", "available", [], [], "infra-storage"),
+        new DocsCli.Profile("minio", "MinIO client", "available", ["s3"], [], "infra-s3-client"),
+        new DocsCli.Profile("aws", "AWS client", "available", ["s3"], [], "infra-s3-client"));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["tunit", "xunit"], catalog));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["minio", "aws"], catalog));
+    Expect(DocsCli.ResolveProfiles(["minio"], catalog).SetEquals(["minio", "s3"]),
+        "Single MinIO S3 client did not resolve storage dependency");
+});
 Test("unknown profile rejects", () => Throws<InvalidOperationException>(() =>
     DocsCli.ResolveProfiles(["missing"], Catalog(P("base")))));
 Test("planned profiles cannot be selected", () => Throws<InvalidOperationException>(() =>
@@ -80,13 +93,11 @@ Test("an unselected profile is not added", () =>
 });
 Test("interactive profile picker includes all independently selectable profiles", () =>
 {
-    var catalog = Catalog(P("dotnet"), P("http-contracts"), P("object-storage"),
-        P("document-identifiers-and-statuses"), P("ui-direct-dto-forms"),
+    var catalog = Catalog(P("dotnet"), P("http-contracts"), P("ui-direct-dto-forms"),
         P("go", status: "planned"));
     var extras = DocsCli.RemainingInteractiveProfiles(catalog, ["dotnet"]);
-    Expect(extras.SequenceEqual([
-        "document-identifiers-and-statuses", "http-contracts", "object-storage", "ui-direct-dto-forms"
-    ]), "An available profile disappeared from interactive selection");
+    Expect(extras.SequenceEqual(["http-contracts", "ui-direct-dto-forms"]),
+        "Independently selectable profiles disappeared from the catalog");
 });
 Test("wizard omits backend/frontend dependencies when both are skipped", () =>
 {
@@ -95,9 +106,9 @@ Test("wizard omits backend/frontend dependencies when both are skipped", () =>
         new DocsCli.Profile("blazor", "Blazor", "available", ["dotnet"], [], "frontend"),
         new DocsCli.Profile("bunit", "bUnit", "available", ["blazor"], [], "testing"),
         new DocsCli.Profile("http-contracts", "HTTP", "available", [], [], "web"),
-        new DocsCli.Profile("object-storage", "Storage", "available", [], [], "storage"));
+        new DocsCli.Profile("object-storage", "Storage", "available", [], [], "infra-storage-policy"));
     var candidates = DocsCli.RemainingContextualProfiles(choices, ["dotnet", "blazor"], "none", "none");
-    Expect(candidates.SequenceEqual(["http-contracts", "object-storage"]),
+    Expect(candidates.SequenceEqual(["http-contracts"]),
         "An unrelated backend/frontend was selected from the independent options step");
 });
 Test("skills resolve precisely", () =>
@@ -346,7 +357,10 @@ Test("metadata is added once and remains valid", () =>
     var input = "# Rules\n\nApplies to .NET.";
     var first = DocumentMetadata.Prepare("docs/standards/rules.md", input);
     Expect(DocumentMetadata.IsValid(first, false), "Generated frontmatter invalid");
+    Expect(DocumentMetadata.DocumentId(first) is not null, "Stable document ID missing");
     Expect(first == DocumentMetadata.Prepare("docs/standards/rules.md", first), "Metadata was inserted twice");
+    Expect(DocumentMetadata.DocumentId(DocumentMetadata.Prepare("docs/project/new.md", "# New")) != DocumentMetadata.DocumentId(first),
+        "Two different documents received the same stable ID");
     Expect(first.Contains("kind: standard", StringComparison.Ordinal), "Wrong metadata kind");
 });
 Test("root README is readable on GitHub without leaking frontmatter", () =>

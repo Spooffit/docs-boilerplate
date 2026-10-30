@@ -122,20 +122,30 @@ for entry in profiles:
     if entry["id"] not in approved_optional and set(entry["requires"]) & approved_optional.keys():
         errors.append(f"Base profile unexpectedly requires optional convention: {entry['id']}")
 
-# ADR 0007: preserve the last two explicitly selectable, independent conventions.
-last_block_profiles = {
-    "document-identifiers-and-statuses": ([], "docs/standards/documentation/identifiers-and-statuses.md"),
-    "ui-direct-dto-forms": (["http-contracts", "ui-accessibility"], "docs/standards/ui/direct-dto-forms.md"),
-}
-for profile_id, (required, path) in last_block_profiles.items():
-    selected = by_id.get(profile_id)
-    if selected is None or selected["status"] != "available":
-        errors.append(f"Missing final approved optional profile: {profile_id}")
-    elif selected["requires"] != required or selected["files"] != [path]:
-        errors.append(f"Final optional profile changed dependencies/content: {profile_id}")
-for entry in profiles:
-    if entry["id"] not in last_block_profiles and set(entry["requires"]) & last_block_profiles.keys():
-        errors.append(f"Unselected final convention leaked into a base profile: {entry['id']}")
+# Document IDs and reliable integration are baseline; only UI DTO binding remains opt-in.
+if "document-identifiers-and-statuses" in by_id or "integration-reliability" in by_id:
+    errors.append("Old optional IDs/integration profiles returned")
+if not (CATALOG / "base/docs/standards/document-identifiers.md").is_file():
+    errors.append("Missing baseline document identifier standard")
+for item in ("reliable-synchronization.md", "versioned-transfers.md"):
+    if not (CATALOG / "base/docs/standards/integrations" / item).is_file():
+        errors.append(f"Missing baseline integration standard: {item}")
+dto = by_id.get("ui-direct-dto-forms")
+if not dto or dto["requires"] != ["http-contracts", "ui-accessibility"]:
+    errors.append("Independent UI DTO forms profile missing or dependencies changed")
+xunit = by_id.get("xunit")
+if not xunit or xunit["status"] != "available" or xunit["category"] != "test-framework":
+    errors.append("xUnit test framework missing")
+for id in ("tunit", "xunit"):
+    if by_id.get(id, {}).get("category") != "test-framework":
+        errors.append(f"Test framework must be single-select: {id}")
+if by_id.get("bunit", {}).get("category") != "blazor-testing":
+    errors.append("bUnit must appear in Blazor component testing choices")
+if by_id.get("infra-storage-s3", {}).get("category") != "infra-storage":
+    errors.append("S3 infrastructure storage choice is missing")
+for id in ("infra-s3-client-minio", "infra-s3-client-aws"):
+    if by_id.get(id, {}).get("category") != "infra-s3-client":
+        errors.append(f"S3 client must appear in a single-choice group: {id}")
 
 # Exclude the inherited application-specific client-library and code-generation
 # content from *active* documentation. The .NET SDK used to build the docs CLI
