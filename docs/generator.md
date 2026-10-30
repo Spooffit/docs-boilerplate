@@ -23,6 +23,8 @@ The [v1.0.1 GitHub Release](https://github.com/Spooffit/docs-boilerplate/release
 
 The tagged release process and NuGet.org Trusted Publishing policy are documented in [the release guide](releases.md).
 
+After **Destination directory**, choose documentation language: `en` or `ru`. In automation use `--language en|ru`; omitted means English. The generator persists the choice in `docs.config.json` and reuses it on update and bootstrap cleanup. Russian source translations are kept in `catalog/locales/ru/` and are not yet complete; initialization rejects missing translations instead of mixing languages. Source paths and generated paths do not change with language.
+
 The wizard uses **Backend → Frontend → Infrastructure (last, optional)**. Each technology has dedicated labeled blocks. Multi-select checkboxes are used for compatible libraries/conventions; single-choice selectors are used for backend/frontend, **TUnit versus xUnit** in Tests, infrastructure categories, and **MinIO .NET SDK versus AWS SDK for .NET** for S3. bUnit appears as an ordinary checkbox in **Blazor component testing**. Noninteractive `--profiles` rejects conflicting framework, SDK or infrastructure choices. A selected profile is guidance, not proof of implementation. The selected options are summarized instead of listing every output file.
 
 The publication pipeline is active but **does not publish on every commit**. Versions are released only from explicit version tags after passing the full test suite. From a source checkout you can still run `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed`.
