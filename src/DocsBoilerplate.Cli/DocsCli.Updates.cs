@@ -64,11 +64,11 @@ static partial class DocsCli
         var moduleIds = ResolveModules(oldConfig.Modules, modules);
         if (oldConfig.Site is not ("none" or "docsify"))
             throw new IOException($"Unsupported site: {oldConfig.Site}");
-        if (string.IsNullOrWhiteSpace(oldConfig.Name) || string.IsNullOrWhiteSpace(oldConfig.Description))
+        if (string.IsNullOrWhiteSpace(oldConfig.Name))
             throw new IOException("Missing project identity in configuration.");
 
         var expected = await RenderAsync(catalog, profiles, skills, modules,
-            oldConfig.Name, oldConfig.Description, output, profileIds, skillIds, moduleIds, oldConfig.Site, oldConfig.Language ?? "en");
+            oldConfig.Name, oldConfig.Name, output, profileIds, skillIds, moduleIds, oldConfig.Site, oldConfig.Language ?? "en");
         var oldPaths = new HashSet<string>(oldConfig.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
         var retired = oldPaths.Except(expected.Keys, StringComparer.OrdinalIgnoreCase)
             .Order(StringComparer.Ordinal).ToArray();
@@ -82,7 +82,7 @@ static partial class DocsCli
         var retained = uniquePriorRetired.Union(retired, StringComparer.OrdinalIgnoreCase)
             .Except(expected.Keys, StringComparer.OrdinalIgnoreCase)
             .Order(StringComparer.Ordinal).ToArray();
-        var newConfig = BuildConfig(oldConfig.Name, oldConfig.Description,
+        var newConfig = BuildConfig(oldConfig.Name, oldConfig.Name,
             profileIds, skillIds, moduleIds, oldConfig.Site, expected, retained, oldConfig.Language ?? "en");
         var newConfigContent = JsonSerializer.Serialize(newConfig, Json) + Environment.NewLine;
         var writes = new List<PlannedWrite>();
