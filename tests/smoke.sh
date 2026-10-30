@@ -572,7 +572,7 @@ for profile in entries:
                     "cqrs-implementation", "query-pattern", "data-access", "architecture",
                     "mapper", "rest-client", "openapi-ui"}:
         continue
-    if category.startswith("infra-") or category == "test-framework":
+    if category.startswith("infra-") or category in {"test-framework", "postgres-pooler"}:
         if category in used_exclusive:
             continue
         used_exclusive.add(category)
