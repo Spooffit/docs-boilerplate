@@ -53,10 +53,12 @@ INFRA_PROFILES = {
     "infra-tracing-jaeger", "infra-deploy-compose", "infra-deploy-kubernetes",
     "infra-devops-backend-repo", "infra-devops-gitops-repo", "infra-orchestration-aspire",
     "infra-storage-s3", "infra-s3-client-minio", "infra-s3-client-aws", "object-storage",
+    "infra-collector-alloy", "infra-metrics-mimir",
 }
 
 INFRA_PLACEHOLDER_PROFILES = INFRA_PROFILES - {
     "infra-storage-s3", "infra-s3-client-minio", "infra-s3-client-aws", "object-storage",
+    "infra-collector-alloy", "infra-metrics-mimir",
 }
 
 general_dir = CATALOG / "base/docs/templates"
@@ -126,7 +128,7 @@ for entry in profiles:
     if entry["id"] not in approved_optional and set(entry["requires"]) & approved_optional.keys():
         errors.append(f"Base profile unexpectedly requires optional convention: {entry['id']}")
 
-# Document IDs and reliable integration are baseline; only UI DTO binding remains opt-in.
+# Document IDs, DDD, reliable integration, accessibility and UI DTO binding are baseline.
 if "document-identifiers-and-statuses" in by_id or "integration-reliability" in by_id:
     errors.append("Old optional IDs/integration profiles returned")
 if not (CATALOG / "base/docs/standards/document-identifiers.md").is_file():
@@ -136,7 +138,7 @@ for item in ("reliable-synchronization.md", "versioned-transfers.md"):
         errors.append(f"Missing baseline integration standard: {item}")
 dto = by_id.get("ui-direct-dto-forms")
 if not dto or dto["requires"] != ["http-contracts", "ui-accessibility"]:
-    errors.append("Independent UI DTO forms profile missing or dependencies changed")
+    errors.append("Baseline UI DTO forms profile missing or dependencies changed")
 xunit = by_id.get("xunit")
 if not xunit or xunit["status"] != "available" or xunit["category"] != "test-framework":
     errors.append("xUnit test framework missing")
