@@ -80,6 +80,54 @@ Test("unit test frameworks and S3 clients are mutually exclusive", () =>
     Expect(DocsCli.ResolveProfiles(["minio"], catalog).SetEquals(["minio", "s3"]),
         "Single MinIO S3 client did not resolve storage dependency");
 });
+Test("broker and client selection are independent but complete", () =>
+{
+    var data = Catalog(
+        new DocsCli.Profile("dotnet", ".NET", "available", [], [], "backend"),
+        new DocsCli.Profile("messaging-rabbitmq", "RabbitMQ", "available", [], [], "messaging-transport"),
+        new DocsCli.Profile("messaging-kafka", "Kafka", "available", [], [], "messaging-transport"),
+        new DocsCli.Profile("masstransit", "MassTransit", "available", ["dotnet"], [], "messaging-client"),
+        new DocsCli.Profile("wolverine-rabbitmq", "Wolverine RabbitMQ", "available",
+            ["dotnet", "messaging-rabbitmq"], [], "messaging-client"),
+        new DocsCli.Profile("messaging-organization-inline", "Inline", "available",
+            ["dotnet"], [], "messaging-organization"));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["messaging-rabbitmq"], data));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["masstransit"], data));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["masstransit", "messaging-rabbitmq", "messaging-kafka"], data));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["messaging-organization-inline"], data));
+    Expect(DocsCli.ResolveProfiles(["masstransit", "messaging-rabbitmq"], data)
+        .SetEquals(["dotnet", "masstransit", "messaging-rabbitmq"]), "Independent broker and client did not resolve");
+    Expect(DocsCli.ResolveProfiles(["wolverine-rabbitmq", "messaging-organization-inline"], data)
+        .Contains("messaging-rabbitmq"), "Wolverine dependency did not select broker");
+});
+Test("Dapper and specification patterns cannot be combined", () =>
+{
+    var data = Catalog(
+        new DocsCli.Profile("dotnet", ".NET", "available", [], [], "backend"),
+        new DocsCli.Profile("dapper", "Dapper", "available", ["dotnet"], [], "data-access"),
+        new DocsCli.Profile("ef-core", "EF Core", "available", ["dotnet"], [], "data-access"),
+        new DocsCli.Profile("specification-manual", "Specification", "available",
+            ["ef-core"], [], "query-pattern"));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["dapper", "specification-manual"], data));
+    Expect(DocsCli.ResolveProfiles(["specification-manual"], data)
+        .SetEquals(["dotnet", "ef-core", "specification-manual"]), "Specification must use EF Core");
+});
+Test("PostgreSQL poolers and architecture options are exclusive", () =>
+{
+    var data = Catalog(
+        new DocsCli.Profile("postgresql", "PostgreSQL", "available", [], [], "database"),
+        new DocsCli.Profile("postgres-pooler-pgbouncer", "PgBouncer", "available",
+            ["postgresql"], [], "postgres-pooler"),
+        new DocsCli.Profile("postgres-pooler-odyssey", "Odyssey", "available",
+            ["postgresql"], [], "postgres-pooler"),
+        new DocsCli.Profile("microservices", "Microservices", "available", [], [], "architecture"),
+        new DocsCli.Profile("architecture-hybrid", "Hybrid", "available", [], [], "architecture"));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(
+        ["postgres-pooler-pgbouncer", "postgres-pooler-odyssey"], data));
+    Throws<InvalidOperationException>(() => DocsCli.ResolveProfiles(["architecture-hybrid", "microservices"], data));
+    Expect(DocsCli.ResolveProfiles(["postgres-pooler-pgbouncer"], data)
+        .SetEquals(["postgresql", "postgres-pooler-pgbouncer"]), "Pooler must require PostgreSQL");
+});
 Test("unknown profile rejects", () => Throws<InvalidOperationException>(() =>
     DocsCli.ResolveProfiles(["missing"], Catalog(P("base")))));
 Test("planned profiles cannot be selected", () => Throws<InvalidOperationException>(() =>
@@ -142,7 +190,7 @@ Test("root llms.txt only references installed documents", () =>
         ["docs/index.md"] = "# Home",
         ["docs/standards/dotnet/index.md"] = "# .NET",
     };
-    var text = DocsCli.BuildLlmsIndex("Sample", "Summary", content);
+    var text = DocsCli.BuildLlmsIndex("Sample", content);
     Expect(text.Contains("docs/standards/dotnet/index.md", StringComparison.Ordinal), "Missing installed standard");
     Expect(!text.Contains("docs/templates/index.md", StringComparison.Ordinal), "Invented optional section");
     Expect(!text.Contains("docs/project/overview.md", StringComparison.Ordinal), "Invented absent file");
@@ -162,7 +210,7 @@ Test("llms.txt lists installed project areas without leaking absent modules", ()
         ["docs/standards/http/index.md"] = "# HTTP",
         ["docs/templates/index.md"] = "# Templates"
     };
-    var generated = DocsCli.BuildLlmsIndex("Sample", "Summary", docs);
+    var generated = DocsCli.BuildLlmsIndex("Sample", docs);
     Expect(generated.Contains("## Project areas", StringComparison.Ordinal), "Missing project area section");
     foreach (var path in new[] { "docs/architecture/api.md", "docs/project/requirements.md", "docs/testing/strategy.md" })
         Expect(generated.Contains($"]({path})", StringComparison.Ordinal), $"Missing installed module: {path}");
@@ -171,10 +219,10 @@ Test("llms.txt lists installed project areas without leaking absent modules", ()
     Expect(!generated.Contains("docs/architecture/security.md", StringComparison.Ordinal), "Unselected security module leaked");
     Expect(!generated.Contains("docs/operations/runbook.md", StringComparison.Ordinal), "Unselected operations module leaked");
     Expect(generated.Split("](docs/catalog.md)", StringSplitOptions.None).Length == 2, "Duplicate catalog link");
-    var replay = DocsCli.BuildLlmsIndex("Sample", "Summary", docs);
+    var replay = DocsCli.BuildLlmsIndex("Sample", docs);
     Expect(generated == replay, "Navigation order is not deterministic");
 
-    var minimal = DocsCli.BuildLlmsIndex("Sample", "Summary",
+    var minimal = DocsCli.BuildLlmsIndex("Sample",
         new Dictionary<string, string> { ["AGENTS.md"] = "# Agent", ["docs/index.md"] = "# Home" });
     Expect(!minimal.Contains("## Project areas", StringComparison.Ordinal), "Empty optional section was generated");
     Expect(!minimal.Contains("docs/project/requirements.md", StringComparison.Ordinal), "Invented optional requirements");
@@ -191,7 +239,7 @@ Test("Russian agent index and selected-profile catalog keep canonical paths", ()
         ["docs/standards/dotnet/testing.md"] = "# Тестирование .NET",
         ["docs/standards/dotnet/index.md"] = "# .NET"
     };
-    var llms = DocsCli.BuildLlmsIndex("Русский проект", "Описание", files, "ru");
+    var llms = DocsCli.BuildLlmsIndex("Русский проект", files, "ru");
     Expect(llms.Contains("## Основное", StringComparison.Ordinal), "Russian llms entry heading was not rendered");
     Expect(llms.Contains("## Справочник", StringComparison.Ordinal), "Russian llms reference heading was not rendered");
     Expect(llms.Contains("](docs/project/overview.md)", StringComparison.Ordinal),
