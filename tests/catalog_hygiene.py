@@ -52,6 +52,7 @@ INFRA_PROFILES = {
     "infra-logging-loki", "infra-metrics-prometheus", "infra-tracing-tempo",
     "infra-tracing-jaeger", "infra-deploy-compose", "infra-deploy-kubernetes",
     "infra-devops-backend-repo", "infra-devops-gitops-repo", "infra-orchestration-aspire",
+    "infra-storage-s3", "infra-s3-client-minio", "infra-s3-client-aws", "object-storage",
 }
 
 general_dir = CATALOG / "base/docs/templates"
