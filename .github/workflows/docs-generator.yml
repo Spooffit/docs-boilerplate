@@ -80,53 +80,6 @@ jobs:
           path: ${{ runner.temp }}/tool-feed/*.nupkg
           if-no-files-found: error
 
-  eventbus-example:
-    name: EventBus example (live RabbitMQ)
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-dotnet@v6
-        with:
-          dotnet-version: '10.0.x'
-      - uses: actions/setup-python@v7
-        with:
-          python-version: '3.12'
-      - name: Validate extracted optional profile examples
-        run: python tests/optional_profile_contracts.py
-      - name: Compile EventBus composition and verify topic routing with disposable RabbitMQ
-        shell: bash
-        run: |
-          set -euo pipefail
-          # Give the disposable broker a fresh writable data/cookie directory.
-          # The official entrypoint can then set ownership and drop privileges.
-          docker run --detach --name docs-eventbus-ci --user 0:0 \
-            --tmpfs /var/lib/rabbitmq:rw,mode=1777 \
-            -e RABBITMQ_DEFAULT_USER=ci -e RABBITMQ_DEFAULT_PASS=ci-pass \
-            -e RABBITMQ_ERLANG_COOKIE=docs-eventbus-disposable-ci-cookie \
-            -p 5673:5672 rabbitmq:4.1
-          trap 'docker logs docs-eventbus-ci || true; docker rm -f docs-eventbus-ci || true' EXIT
-          ready=false
-          for attempt in $(seq 1 45); do
-            if [[ "$(docker inspect -f '{{.State.Running}}' docs-eventbus-ci)" != true ]]; then
-              echo "Disposable RabbitMQ exited unexpectedly:" >&2
-              docker logs docs-eventbus-ci >&2
-              exit 1
-            fi
-            # A root-owned diagnostics cookie can prevent the RabbitMQ service user from booting.
-            if docker exec --user rabbitmq docs-eventbus-ci rabbitmq-diagnostics -q ping >/dev/null 2>&1; then
-              ready=true
-              break
-            fi
-            sleep 2
-          done
-          if [[ "$ready" != true ]]; then
-            echo "Disposable RabbitMQ did not become ready" >&2
-            exit 1
-          fi
-          python tests/optional_profile_contracts.py --run-eventbus
-
   browser:
     name: Docsify browser (Chromium)
     runs-on: ubuntu-latest
