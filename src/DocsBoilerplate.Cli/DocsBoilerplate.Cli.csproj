@@ -9,9 +9,15 @@
     <PackageId>DocsBoilerplate.Cli</PackageId>
     <Version>0.2.0</Version>
     <Description>Offline-capable Markdown-first documentation initialization CLI</Description>
+    <Authors>Spooffit</Authors>
+    <RepositoryUrl>https://github.com/Spooffit/docs-boilerplate</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Spooffit/docs-boilerplate</PackageProjectUrl>
+    <PackageTags>dotnet-tool;documentation;markdown;docs-as-code;docsify</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
+    <None Include="../../docs/package-readme.md" Pack="true" PackagePath="README.md" />
     <None Include="../../catalog/**"
           Link="catalog/%(RecursiveDir)%(Filename)%(Extension)"
           CopyToOutputDirectory="PreserveNewest"

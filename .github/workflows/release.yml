@@ -1,0 +1,157 @@
+name: Release .NET tool
+
+# Never publish on a push to main. Release only when a maintainer pushes an
+# explicit version tag that points to a commit already included in main.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-boilerplate-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify tagged source and package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
+      prerelease: ${{ steps.tag.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check exact SemVer tag and main ancestry
+        id: tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          if [[ ! "$tag" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-([0-9A-Za-z-]+)(\.[0-9A-Za-z-]+)*)?$ ]]; then
+            echo "::error::Release tags must be vMAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH-prerelease"
+            exit 1
+          fi
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::Release tag must reference a commit already reachable from main"
+            exit 1
+          fi
+          version="${tag#v}"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [[ "$version" == *-* ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Test CLI contracts and full catalog smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet build src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release
+          dotnet run --configuration Release --project tests/DocsBoilerplate.ContractTests/DocsBoilerplate.ContractTests.csproj
+          bash -n tests/smoke.sh
+          bash tests/smoke.sh
+          python tests/catalog_hygiene.py
+          python tests/repository_hygiene.py
+          python tests/release_contracts.py
+          python tests/optional_profile_contracts.py
+      - name: Pack version from verified tag
+        env:
+          PACKAGE_VERSION: ${{ steps.tag.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release \
+            -p:Version="$PACKAGE_VERSION" --output dist
+          test -f "dist/DocsBoilerplate.Cli.$PACKAGE_VERSION.nupkg"
+          unzip -p "dist/DocsBoilerplate.Cli.$PACKAGE_VERSION.nupkg" '*.nuspec' |
+            grep -F "<version>$PACKAGE_VERSION</version>"
+      - name: Install and exercise the actual release package
+        env:
+          PACKAGE_VERSION: ${{ steps.tag.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet tool install DocsBoilerplate.Cli --tool-path "$RUNNER_TEMP/release-tool" \
+            --add-source "$PWD/dist" --version "$PACKAGE_VERSION"
+          tool="$RUNNER_TEMP/release-tool/docs-boilerplate"
+          "$tool" doctor
+          "$tool" init --name ReleaseSmoke --description "Release package verification" \
+            --output "$RUNNER_TEMP/release-project" --profiles dotnet --site none --non-interactive
+          "$tool" validate --output "$RUNNER_TEMP/release-project"
+          test -f "$RUNNER_TEMP/release-project/.agents/bootstrap/questionnaire.md"
+          "$tool" bootstrap-complete --output "$RUNNER_TEMP/release-project" --apply
+          "$tool" validate --output "$RUNNER_TEMP/release-project"
+          test ! -f "$RUNNER_TEMP/release-project/bootstrap.md"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-nuget-package
+          path: dist/*.nupkg
+          if-no-files-found: error
+
+  publish:
+    name: Publish NuGet.org then GitHub Release
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-nuget-package
+          path: dist
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Require configured NuGet.org publishing identity
+        env:
+          NUGET_USER: ${{ vars.NUGET_USER }}
+        shell: bash
+        run: |
+          if [[ -z "$NUGET_USER" ]]; then
+            echo "::error::Configure GitHub Actions repository variable NUGET_USER and a matching NuGet.org Trusted Publishing policy for release.yml"
+            exit 1
+          fi
+      - name: Exchange GitHub OIDC token for short-lived NuGet API key
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Publish verified package to nuget.org
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+          PACKAGE_VERSION: ${{ needs.verify.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet nuget push "dist/DocsBoilerplate.Cli.$PACKAGE_VERSION.nupkg" \
+            --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY"
+      - name: Create GitHub Release from the existing tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PACKAGE_VERSION: ${{ needs.verify.outputs.version }}
+          IS_PRERELEASE: ${{ needs.verify.outputs.prerelease }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          options=(--verify-tag --generate-notes --title "Docs Boilerplate ${GITHUB_REF_NAME}")
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            options+=(--prerelease)
+          fi
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/DocsBoilerplate.Cli.$PACKAGE_VERSION.nupkg" "${options[@]}"

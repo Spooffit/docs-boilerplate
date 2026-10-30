@@ -68,8 +68,9 @@ def main():
         if (ROOT / "tests" / f).exists():
             errors.append(f"Obsolete migration-only test returned: tests/{f}")
 
-    # The template generator intentionally has no schema registry, format
-    # versioning or standalone CLI distribution/release machinery.
+    # The generated Markdown catalog intentionally has no schema registry or
+    # legacy application release/version lifecycle. The installable CLI has
+    # a separate, explicitly approved tag-driven package release workflow.
     for path in FORBIDDEN_GENERATOR_FORMAT_FILES:
         if (ROOT / path).exists():
             errors.append(f"Generator-only format or distribution artifact returned: {path}")
@@ -88,7 +89,7 @@ def main():
             errors.append(f"Installable CLI packaging missing: {token}")
     workflow = (ROOT / ".github" / "workflows" / "docs-generator.yml").read_text(encoding="utf-8")
     if "dotnet nuget push" in workflow or "dotnet tool update -g" in workflow:
-        errors.append("Unapproved public package publication job")
+        errors.append("Package publishing must stay in the isolated tagged release workflow")
 
     docs = set((ROOT / "docs").rglob("*.md"))
     docs.update((ROOT / "catalog").rglob("*.md"))
