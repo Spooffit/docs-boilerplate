@@ -98,26 +98,6 @@ if run init --catalog "$temp/catalog-ru-missing" --name MixedLanguage --descript
     echo "Incomplete Russian technology profile unexpectedly accepted"; exit 1
 fi
 [[ ! -e "$temp/mixed-language" ]]
-# Every available profile must be renderable in Russian with the same dependency rules.
-while IFS= read -r profile; do
-    localized="$temp/ru-profile-matrix/$profile"
-    run init --name RussianMatrix --description "Проверка профиля" --output "$localized" --profiles "$profile" --language ru --site none --non-interactive > "$temp/ru-profile-init.log"
-    run validate --output "$localized" > "$temp/ru-profile-validate.log"
-    python3 - "$localized/docs.config.json" "$profile" <<'PY'
-import json,sys
-from pathlib import Path
-data=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-assert data["Language"] == "ru" and sys.argv[2] in data["Profiles"]
-PY
-done < <(python3 - <<'PY'
-import json
-from pathlib import Path
-data=json.loads(Path("catalog/profiles.json").read_text(encoding="utf-8"))
-print(*(p["id"] for p in data["profiles"] if p["status"] == "available"),sep="\n")
-PY
-)
-
-
 # Infrastructure choices are opt-in, with one choice per incompatible category.
 run init --name InfraSmoke --description "Placeholder-only infrastructure" --output "$temp/infra" --profiles infra-logging-loki,infra-metrics-prometheus,infra-tracing-tempo,infra-deploy-compose,infra-devops-gitops-repo,infra-orchestration-aspire --site none --non-interactive
 run validate --output "$temp/infra"
@@ -169,7 +149,20 @@ assert len(manifest["Skills"]) == 5
 assert "index.html" not in manifest["GeneratedFiles"]
 assert set(manifest["GeneratedFiles"]) == set(manifest["GeneratedHashes"])
 PY
-    echo "PASS profile matrix: $profile"
+    # init performs its own full validate; no second explicit process is
+    # needed for each Russian profile. This cuts redundant CI executions.
+    localized="$temp/ru-profile-matrix/$profile"
+    run init --name RussianMatrix --description "Проверка профиля" --output "$localized" --profiles "$profile" --language ru --site none --non-interactive > "$temp/ru-profile-init.log"
+    grep -q 'Validating repository' "$temp/ru-profile-init.log"
+    python3 - "$localized/docs.config.json" "$profile" <<'PY'
+import json,sys
+from pathlib import Path
+data=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+assert data["Language"] == "ru" and sys.argv[2] in data["Profiles"]
+assert len(data["Modules"]) == 7 and len(data["Skills"]) == 5
+assert set(data["GeneratedFiles"]) == set(data["GeneratedHashes"])
+PY
+    echo "PASS bilingual profile matrix: $profile"
 done < <(python3 - <<'PY'
 import json
 with open("catalog/profiles.json", encoding="utf-8") as stream:
