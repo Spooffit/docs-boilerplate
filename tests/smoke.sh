@@ -77,10 +77,32 @@ run validate --output "$temp/ru-blazor"
 run init --name RussianS3 --description "Русская инфраструктура" --output "$temp/ru-s3" --profiles infra-storage-s3 --language ru --site none --non-interactive
 grep -q 'S3-совместимое объектное хранилище' "$temp/ru-s3/docs/standards/infrastructure/storage-s3.md"
 run validate --output "$temp/ru-s3"
-if run init --name MixedLanguage --description Test --output "$temp/mixed-language" --profiles ef-core --language ru --non-interactive; then
+# A missing translation must reject init rather than silently fallback to English.
+cp -a catalog "$temp/catalog-ru-missing"
+rm "$temp/catalog-ru-missing/locales/ru/docs/standards/dotnet/xunit.md"
+if run init --catalog "$temp/catalog-ru-missing" --name MixedLanguage --description Test --output "$temp/mixed-language" --profiles xunit --language ru --non-interactive; then
     echo "Incomplete Russian technology profile unexpectedly accepted"; exit 1
 fi
 [[ ! -e "$temp/mixed-language" ]]
+# Every available profile must be renderable in Russian with the same dependency rules.
+while IFS= read -r profile; do
+    localized="$temp/ru-profile-matrix/$profile"
+    run init --name RussianMatrix --description "Проверка профиля" --output "$localized" --profiles "$profile" --language ru --site none --non-interactive > "$temp/ru-profile-init.log"
+    run validate --output "$localized" > "$temp/ru-profile-validate.log"
+    python3 - "$localized/docs.config.json" "$profile" <<'PY'
+import json,sys
+from pathlib import Path
+data=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+assert data["Language"] == "ru" and sys.argv[2] in data["Profiles"]
+PY
+done < <(python3 - <<'PY'
+import json
+from pathlib import Path
+data=json.loads(Path("catalog/profiles.json").read_text(encoding="utf-8"))
+print(*(p["id"] for p in data["profiles"] if p["status"] == "available"),sep="\n")
+PY
+)
+
 
 # Infrastructure choices are opt-in, with one choice per incompatible category.
 run init --name InfraSmoke --description "Placeholder-only infrastructure" --output "$temp/infra" --profiles infra-logging-loki,infra-metrics-prometheus,infra-tracing-tempo,infra-deploy-compose,infra-devops-gitops-repo,infra-orchestration-aspire --site none --non-interactive
