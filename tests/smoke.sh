@@ -297,7 +297,7 @@ PY
 [[ ! -f "$temp/minimal/docs/standards/dotnet/masstransit.md" ]]
 [[ ! -f "$temp/minimal/docs/standards/http/etag-concurrency.md" ]]
 [[ -f "$temp/minimal/docs/standards/document-identifiers.md" ]]
-[[ ! -f "$temp/minimal/docs/standards/ui/direct-dto-forms.md" ]]
+[[ -f "$temp/minimal/docs/standards/ui/direct-dto-forms.md" ]]
 [[ -f "$temp/minimal/docs/project/overview.md" ]]
 [[ -f "$temp/minimal/docs/architecture/overview.md" ]]
 grep -q '^status: draft$' "$temp/minimal/docs/project/overview.md"
@@ -342,7 +342,7 @@ grep -q 'docs/templates/index.md' "$temp/minimal/llms.txt"
 [[ -f "$temp/minimal/.agents/skills/docs-review/SKILL.md" ]]
 [[ -f "$temp/minimal/.agents/skills/docs-init/SKILL.md" ]]
 [[ ! -e "$temp/minimal/docs/templates/blazor-frontend-feature.md" ]]
-[[ ! -e "$temp/minimal/docs/standards/ui" ]]
+[[ -f "$temp/minimal/docs/standards/ui/forms-and-accessibility.md" ]]
 if grep -q "blazor/components.md" "$temp/minimal/docs/catalog.md"; then echo "Unselected standard leaked into catalog"; exit 1; fi
 [[ -f "$temp/minimal/index.html" ]]
 run init --name Headless --output "$temp/headless" --profiles dotnet --site none --non-interactive
