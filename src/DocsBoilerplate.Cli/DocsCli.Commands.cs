@@ -66,7 +66,7 @@ static partial class DocsCli
             var choices = catalog.Profiles
                 .Where(p => p.Status == "available" && categories.Contains(p.Category, StringComparer.Ordinal))
                 .Where(p => p.Id is not ("ddd" or "ui-accessibility" or "ui-direct-dto-forms"
-                    or "http-contracts" or "masstransit-rabbitmq" or "masstransit-eventbus-composition"))
+                    or "http-contracts"))
                 .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
             if (choices.Length == 0) return;
             Header(title);
@@ -86,6 +86,8 @@ static partial class DocsCli
                 AddOne("OpenAPI documentation UI", "openapi-ui");
             AddMany("Validation", "validation");
             AddOne("Database", "database");
+            if (selected.Contains("postgresql"))
+                AddOne("PostgreSQL connection pooler", "postgres-pooler");
             var dataAccess = ChooseOne("Data access", "data-access");
             if (dataAccess != "none")
             {
@@ -102,9 +104,7 @@ static partial class DocsCli
                 selected.Add(transport);
                 AddOne("Messaging client", "messaging-client", allowNone: false,
                     p => p.Requires.Contains(transport, StringComparer.Ordinal));
-                if (selected.Contains("masstransit-rabbitmq"))
-                    AddOne("Messaging organization", "messaging-organization",
-                        filter: p => p.Requires.Contains("masstransit-rabbitmq", StringComparer.Ordinal));
+                AddOne("Messaging organization", "messaging-organization");
             }
 
             AddOne("Architecture", "architecture");
