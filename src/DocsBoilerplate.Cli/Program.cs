@@ -64,7 +64,7 @@ static partial class DocsCli
                     return 0;
                 default:
                     AnsiConsole.WriteLine("Commands: init, update, recover, bootstrap-complete, list, validate, doctor");
-                    AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--modules glossary,testing] [--site docsify|none] [--dry-run] [--non-interactive] [--catalog PATH]");
+                    AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--modules glossary,testing] [--site docsify|none] [--language en|ru] [--dry-run] [--non-interactive] [--catalog PATH]");
                     AnsiConsole.WriteLine("validate: --output PATH [--catalog PATH]");
                     AnsiConsole.WriteLine("update: --output PATH [--apply] [--catalog PATH] (previews by default)");
                     AnsiConsole.WriteLine("recover: --output PATH [--catalog PATH] (inspect and recover an interrupted update)");
