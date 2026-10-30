@@ -16,14 +16,14 @@ static partial class DocsCli
         if (byId.ContainsKey("ui-accessibility")) Resolve("ui-accessibility");
         if (byId.ContainsKey("ui-direct-dto-forms") && byId.ContainsKey("ui-accessibility"))
             Resolve("ui-direct-dto-forms");
-        // Old manifests with CQRS but no implementation remain compatible.
+        // Choose a deterministic CQRS default for automated profiles.
         if (result.Contains("cqrs") && byId.ContainsKey("cqrs-manual")
             && !result.Any(id => byId[id].Category == "cqrs-implementation"))
             Resolve("cqrs-manual");
         foreach (var category in new[] {
             "test-framework", "data-access", "query-pattern", "architecture", "mapper",
             "messaging-transport", "messaging-client", "messaging-organization",
-            "cqrs-implementation", "rest-client", "openapi-ui",
+            "cqrs-implementation", "rest-client", "openapi-ui", "postgres-pooler",
             "infra-logs", "infra-metrics", "infra-metrics-backend", "infra-collector",
             "infra-traces", "infra-deploy", "infra-devops", "infra-orchestration",
             "infra-storage", "infra-s3-client" })
@@ -39,6 +39,11 @@ static partial class DocsCli
         var clients = result.Where(id => byId[id].Category == "messaging-client").ToArray();
         if (transports.Length != clients.Length)
             throw new InvalidOperationException("Select one messaging client for the chosen broker, or select neither.");
+        if (result.Any(id => byId[id].Category == "messaging-organization")
+            && clients.Length != 1)
+            throw new InvalidOperationException("Messaging organization requires an existing message bus client.");
+        if (result.Contains("masstransit") && transports.Length != 1)
+            throw new InvalidOperationException("MassTransit requires a selected broker.");
         if (result.Contains("cqrs-wolverine") &&
             !result.Any(id => id.StartsWith("wolverine-", StringComparison.Ordinal)
                 && byId[id].Category == "messaging-client"))
@@ -126,7 +131,7 @@ static partial class DocsCli
             "backend", "frontend", "data-access", "ui", "architecture", "modeling", "testing",
             "web", "validation", "database", "application-pattern", "messaging", "integration", "query-pattern", "frontend-practice", "test-framework", "blazor-testing", "infra-storage-policy",
             "infra-logs", "infra-metrics", "infra-metrics-backend", "infra-collector", "infra-traces", "infra-deploy", "infra-devops", "infra-orchestration", "infra-storage", "infra-s3-client",
-            "messaging-transport", "messaging-client", "messaging-organization", "cqrs-implementation", "mapper", "rest-client", "openapi-ui"
+            "messaging-transport", "messaging-client", "messaging-organization", "cqrs-implementation", "mapper", "rest-client", "openapi-ui", "postgres-pooler"
         };
         foreach (var profile in data.Profiles)
         {
