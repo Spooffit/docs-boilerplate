@@ -175,6 +175,47 @@ done
 [[ ! -e "$temp/modern-stack/docs/standards/dotnet/masstransit-rabbitmq.md" ]]
 [[ ! -e "$temp/modern-stack/docs/standards/dotnet/eventbus-composition.md" ]]
 
+# Cross-profile integration matrix: verify resolved content, not just accepted flags.
+# Run in both locales to detect conditional guidance and translation drift.
+for locale in en ru; do
+    for case_id in rabbit-wolverine kafka-masstransit ef-specs postgres-pooler; do
+        case "$case_id" in
+          rabbit-wolverine)
+            selected="messaging-rabbitmq,wolverine-rabbitmq,messaging-organization-inline"
+            expected="docs/standards/messaging/rabbitmq.md docs/standards/dotnet/wolverine-rabbitmq.md docs/standards/messaging/organization-inline.md"
+            forbidden="docs/standards/messaging/kafka.md docs/standards/dotnet/wolverine-kafka.md docs/standards/dotnet/masstransit.md docs/standards/messaging/organization-separate.md" ;;
+          kafka-masstransit)
+            selected="messaging-kafka,masstransit,messaging-organization-separate"
+            expected="docs/standards/messaging/kafka.md docs/standards/dotnet/masstransit.md docs/standards/messaging/organization-separate.md"
+            forbidden="docs/standards/messaging/rabbitmq.md docs/standards/dotnet/wolverine-kafka.md docs/standards/messaging/organization-inline.md" ;;
+          ef-specs)
+            selected="ef-core,specification-manual"
+            expected="docs/standards/dotnet/ef-core.md docs/standards/dotnet/specification-manual.md"
+            forbidden="docs/standards/dotnet/dapper.md docs/standards/dotnet/ardalis-specification.md" ;;
+          postgres-pooler)
+            selected="postgresql,postgres-pooler-pgbouncer"
+            expected="docs/standards/postgresql/persistence.md docs/standards/postgresql/pgbouncer.md"
+            forbidden="docs/standards/postgresql/odyssey.md" ;;
+        esac
+        dest="$temp/composition-$locale-$case_id"
+        run init --name CompositionAudit --output "$dest" --profiles "$selected" --language "$locale" --site none --non-interactive
+        run validate --output "$dest"
+        for item in $expected; do [[ -f "$dest/$item" ]] || { echo "Missing selected standard: $locale/$case_id/$item"; exit 1; }; done
+        for item in $forbidden; do [[ ! -e "$dest/$item" ]] || { echo "Unselected standard leaked: $locale/$case_id/$item"; exit 1; }; done
+    done
+done
+
+# Additional mutually exclusive choices must fail even in noninteractive mode.
+if run init --name MixedDataAccess --output "$temp/mixed-data-access" --profiles ef-core,dapper --non-interactive; then
+    echo "EF Core and Dapper data-access alternatives accepted together"; exit 1
+fi
+if run init --name MixedSpecifications --output "$temp/mixed-specs" --profiles ardalis-specification,specification-manual --non-interactive; then
+    echo "Both EF Core specification implementations accepted together"; exit 1
+fi
+if run init --name MixedTransports --output "$temp/mixed-transports" --profiles messaging-rabbitmq,messaging-kafka,masstransit --non-interactive; then
+    echo "Exclusive messaging transport alternatives accepted together"; exit 1
+fi
+
 # End-to-end audit: every available profile must generate and validate in
 # isolation with exactly its declared transitive dependencies, no selected
 # project modules or agent skills and no browser shell.
