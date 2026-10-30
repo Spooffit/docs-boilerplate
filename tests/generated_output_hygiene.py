@@ -99,7 +99,12 @@ def check(root: Path) -> list[str]:
             if f'<html lang="{language}">' not in html:
                 errors.append(f"{root}: Docsify HTML lang does not match manifest language {language!r}")
             search_label = "Поиск по документации" if language == "ru" else "Search documentation"
-            if search_label not in html:
+            search_token = re.search(r'placeholder:\s*("(?:\\.|[^"\\])*")', html)
+            try:
+                decoded_search = json.loads(search_token.group(1)) if search_token else None
+            except ValueError:
+                decoded_search = None
+            if decoded_search != search_label:
                 errors.append(f"{root}: Docsify search placeholder is not localized for {language!r}")
     elif site == "none":
         if "index.html" in actual:
