@@ -128,7 +128,11 @@ status: draft
     $ruViewer = Get-Content (Join-Path $ru 'index.html') -Raw -Encoding utf8
     if ($ruViewer -notmatch '<html lang="ru">') { throw 'Russian Docsify HTML language is incorrect' }
     if ($ruViewer -notmatch '<title>RussianDocs</title>') { throw 'Docsify HTML title did not use the project name' }
-    if ($ruViewer -notmatch 'Поиск по документации') { throw 'Docsify search is not localized' }
+    $searchToken = [regex]::Match($ruViewer, 'placeholder:\s*("(?:\\.|[^"\\])*")')
+    if (-not $searchToken.Success) { throw 'Docsify search JSON string is missing' }
+    if ((ConvertFrom-Json -InputObject $searchToken.Groups[1].Value) -ne 'Поиск по документации') {
+        throw 'Docsify search is not localized'
+    }
     if ($ruViewer -notmatch 'Загрузка документации') { throw 'Docsify loading text is not localized' }
     Invoke-Docs update --output $ru --apply
     Invoke-Docs bootstrap-complete --output $ru --apply
