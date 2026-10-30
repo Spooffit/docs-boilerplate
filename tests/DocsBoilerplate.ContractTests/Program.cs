@@ -100,6 +100,24 @@ Test("broker and client selection are independent but complete", () =>
     Expect(DocsCli.ResolveProfiles(["wolverine-rabbitmq", "messaging-organization-inline"], data)
         .Contains("messaging-rabbitmq"), "Wolverine dependency did not select broker");
 });
+Test("wizard offers MassTransit with either broker without mixing transport clients", () =>
+{
+    var masstransit = new DocsCli.Profile("masstransit", "MassTransit", "available",
+        ["dotnet"], [], "messaging-client");
+    var rabbitWolverine = new DocsCli.Profile("wolverine-rabbitmq", "Wolverine RabbitMQ",
+        "available", ["dotnet", "messaging-rabbitmq"], [], "messaging-client");
+    var kafkaManual = new DocsCli.Profile("messaging-manual-kafka", "Manual Kafka",
+        "available", ["dotnet", "messaging-kafka"], [], "messaging-client");
+    Expect(DocsCli.SupportsMessagingTransport(masstransit, "messaging-rabbitmq") &&
+           DocsCli.SupportsMessagingTransport(masstransit, "messaging-kafka"),
+        "MassTransit must be offered for both supported brokers");
+    Expect(DocsCli.SupportsMessagingTransport(rabbitWolverine, "messaging-rabbitmq") &&
+           !DocsCli.SupportsMessagingTransport(rabbitWolverine, "messaging-kafka"),
+        "Wolverine RabbitMQ must not leak into Kafka choices");
+    Expect(DocsCli.SupportsMessagingTransport(kafkaManual, "messaging-kafka") &&
+           !DocsCli.SupportsMessagingTransport(kafkaManual, "messaging-rabbitmq"),
+        "Custom Kafka client must not leak into RabbitMQ choices");
+});
 Test("Dapper and specification patterns cannot be combined", () =>
 {
     var data = Catalog(
