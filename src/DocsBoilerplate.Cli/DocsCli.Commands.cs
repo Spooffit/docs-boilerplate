@@ -170,13 +170,14 @@ static partial class DocsCli
                     .UseConverter(value => value == "ru" ? "Русский" : "English")
                     .AddChoices("en", "ru"))));
         UpdateRecovery.AssertNoPending(output);
+        var localizedAvailable = await LocalizedCatalogAsync(catalog, available, language);
         var selection = args.TryGetValue("profiles", out var listed)
             ? string.Equals(listed, "none", StringComparison.OrdinalIgnoreCase)
                 ? []
                 : listed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             : unattended || Console.IsInputRedirected
                 ? throw new InvalidOperationException("--profiles is required for non-interactive initialization.")
-                : PromptProfiles(available);
+                : PromptProfiles(localizedAvailable);
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description))
             throw new InvalidOperationException("Project name and description must be nonempty.");
         if (name.Contains("{{", StringComparison.Ordinal) || description.Contains("{{", StringComparison.Ordinal))
@@ -225,7 +226,7 @@ static partial class DocsCli
         AnsiConsole.MarkupLine($"[bold]Selected configuration for {Markup.Escape(name)}[/]");
         var requestedProfiles = new HashSet<string>(selection, StringComparer.Ordinal);
         var selectedProfiles = ids.Where(requestedProfiles.Contains)
-            .Select(id => available.Profiles.Single(p => p.Id == id)).ToArray();
+            .Select(id => localizedAvailable.Profiles.Single(p => p.Id == id)).ToArray();
         foreach (var group in selectedProfiles.GroupBy(p => p.Category)
             .OrderBy(g => g.Key, StringComparer.Ordinal))
         {
@@ -236,7 +237,7 @@ static partial class DocsCli
         if (selectedProfiles.Length == 0)
             AnsiConsole.MarkupLine("  No optional technology profiles");
         var dependencies = ids.Where(id => !requestedProfiles.Contains(id))
-            .Select(id => available.Profiles.Single(p => p.Id == id).Name)
+            .Select(id => localizedAvailable.Profiles.Single(p => p.Id == id).Name)
             .Order(StringComparer.Ordinal).ToArray();
         if (dependencies.Length > 0)
             AnsiConsole.MarkupLine($"[blue]Included dependencies:[/] {Markup.Escape(string.Join(", ", dependencies))}");
