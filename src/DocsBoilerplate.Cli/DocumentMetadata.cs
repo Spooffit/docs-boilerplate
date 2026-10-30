@@ -52,6 +52,7 @@ internal static class DocumentMetadata
     {
         if (!path.StartsWith("docs/", StringComparison.Ordinal))
             return content;
+        content = content.Replace("\r\n", "\n", StringComparison.Ordinal);
         if (DocumentId(content) is not null)
             return content;
         var frontmatterEnd = content.IndexOf("\n---\n", 4, StringComparison.Ordinal);

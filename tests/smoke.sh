@@ -122,7 +122,7 @@ assert set(manifest["Profiles"]) == {
  "dotnet", "test-naming-convention", "http-contracts", "http-etag-concurrency",
  "masstransit-rabbitmq", "masstransit-eventbus-composition"
 }, manifest["Profiles"]
-assert len(manifest["Modules"]) == 7 and manifest["Skills"] == []
+assert len(manifest["Modules"]) == 7 and len(manifest["Skills"]) == 5
 PY
 [[ -f "$temp/optional-conventions/docs/standards/dotnet/test-naming-convention.md" ]]
 [[ -f "$temp/optional-conventions/docs/standards/http/etag-concurrency.md" ]]
@@ -928,6 +928,7 @@ fi
 cp -a "$temp/minimal" "$temp/nav-authored"
 cat > "$temp/nav-authored/docs/project/release-notes.md" <<'MD'
 ---
+id: smoke-authored-1
 title: "Release notes"
 description: "Example author-owned document"
 kind: project
@@ -977,6 +978,7 @@ cp -a "$temp/nav-authored" "$temp/nav-nested"
 mkdir -p "$temp/nav-nested/docs/project/guides"
 cat > "$temp/nav-nested/docs/project/guides/index.md" <<'MD'
 ---
+id: smoke-authored-2
 title: "Guides"
 description: "Index of author-owned guides"
 kind: index
@@ -989,6 +991,7 @@ status: draft
 MD
 cat > "$temp/nav-nested/docs/project/guides/review-guide.md" <<'MD'
 ---
+id: smoke-authored-3
 title: "Review guide"
 description: "An author-owned navigation test page"
 kind: project
@@ -1042,6 +1045,7 @@ cmp "$temp/nav-nested-index-before.md" "$temp/nav-nested/docs/project/guides/ind
 cp -a "$temp/catalog-navigation-update" "$temp/catalog-navigation-conflict"
 cat > "$temp/catalog-navigation-conflict/docs/standards/dotnet/extra-reference.md" <<'MD'
 ---
+id: smoke-authored-4
 title: "Extra reference"
 description: "A new optional technical reference"
 kind: standard
