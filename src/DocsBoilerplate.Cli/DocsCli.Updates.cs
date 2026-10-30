@@ -68,7 +68,7 @@ static partial class DocsCli
             throw new IOException("Missing project identity in configuration.");
 
         var expected = await RenderAsync(catalog, profiles, skills, modules,
-            oldConfig.Name, oldConfig.Name, output, profileIds, skillIds, moduleIds, oldConfig.Site, oldConfig.Language ?? "en");
+            oldConfig.Name, output, profileIds, skillIds, moduleIds, oldConfig.Site, oldConfig.Language ?? "en");
         var oldPaths = new HashSet<string>(oldConfig.GeneratedFiles, StringComparer.OrdinalIgnoreCase);
         var retired = oldPaths.Except(expected.Keys, StringComparer.OrdinalIgnoreCase)
             .Order(StringComparer.Ordinal).ToArray();
@@ -82,7 +82,7 @@ static partial class DocsCli
         var retained = uniquePriorRetired.Union(retired, StringComparer.OrdinalIgnoreCase)
             .Except(expected.Keys, StringComparer.OrdinalIgnoreCase)
             .Order(StringComparer.Ordinal).ToArray();
-        var newConfig = BuildConfig(oldConfig.Name, oldConfig.Name,
+        var newConfig = BuildConfig(oldConfig.Name,
             profileIds, skillIds, moduleIds, oldConfig.Site, expected, retained, oldConfig.Language ?? "en");
         var newConfigContent = JsonSerializer.Serialize(newConfig, Json) + Environment.NewLine;
         var writes = new List<PlannedWrite>();
