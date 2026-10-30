@@ -13,7 +13,7 @@ Identify actual external systems, direction of data flow, owner and contract loc
 
 ## Contracts and boundaries
 
-Link the actual published schemas, protocols and integration owners. An integration document does not itself select a message broker, synchronization mechanism or `integration-reliability` technology profile. Include reliability guidance only when the project has explicitly selected it and the relevant failure modes exist.
+Link the actual published schemas, protocols and integration owners. An integration document does not itself select a message broker or synchronization mechanism. Baseline integration-reliability guidance is included in all generated repositories; apply particular recovery mechanisms only when the relevant failure modes exist.
 
 ## Delivery guarantees
 
