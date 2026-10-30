@@ -23,7 +23,7 @@ try {
     Invoke-Docs list
 
     $target = Join-Path $root 'generated'
-    Invoke-Docs init --name WindowsSmoke --description 'Windows documentation check' --output $target --profiles "dotnet,blazor,mudblazor" --site docsify --non-interactive
+    Invoke-Docs init --name WindowsSmoke --output $target --profiles "dotnet,blazor,mudblazor" --site docsify --non-interactive
     Invoke-Docs validate --output $target
     if (-not (Test-Path (Join-Path $target 'bootstrap.md'))) { throw 'Missing temporary stage-two introduction' }
     if (-not (Test-Path (Join-Path $target '.agents/skills/project-intake/SKILL.md'))) { throw 'Missing temporary stage-two skill' }
@@ -93,7 +93,7 @@ status: draft
     }
 
     $variants = Join-Path $root 'optional-conventions'
-    Invoke-Docs init --name OptionalConventions --description 'Optional standards' --output $variants --profiles 'test-naming-convention,http-etag-concurrency' --site none --non-interactive
+    Invoke-Docs init --name OptionalConventions --output $variants --profiles 'test-naming-convention,http-etag-concurrency' --site none --non-interactive
     Invoke-Docs validate --output $variants
     foreach ($file in @('docs/standards/dotnet/test-naming-convention.md', 'docs/standards/http/etag-concurrency.md')) {
         if (-not (Test-Path (Join-Path $variants $file))) { throw "Missing opt-in profile content: $file" }
@@ -101,7 +101,7 @@ status: draft
     if (Test-Path (Join-Path $variants 'docs/standards/dotnet/ef-core.md')) { throw 'Unselected data access profile leaked' }
 
     $final = Join-Path $root 'final-optional'
-    Invoke-Docs init --name FinalConventions --description 'Selected documentation and UI rules' --output $final --profiles 'ui-direct-dto-forms' --site none --non-interactive
+    Invoke-Docs init --name FinalConventions --output $final --profiles 'ui-direct-dto-forms' --site none --non-interactive
     Invoke-Docs validate --output $final
     foreach ($file in @('docs/standards/document-identifiers.md', 'docs/standards/integrations/reliable-synchronization.md', 'docs/standards/ui/direct-dto-forms.md', 'docs/standards/http/client-contracts.md')) {
         if (-not (Test-Path (Join-Path $final $file))) { throw "Missing final opt-in profile: $file" }
@@ -109,7 +109,7 @@ status: draft
     if (Test-Path (Join-Path $final 'docs/standards/blazor')) { throw 'Unselected Blazor profile leaked' }
 
     $plain = Join-Path $root 'plain-docs'
-    Invoke-Docs init --name PlainDocs --description 'No selected stack' --output $plain --profiles none --site none --non-interactive
+    Invoke-Docs init --name PlainDocs --output $plain --profiles none --site none --non-interactive
     Invoke-Docs validate --output $plain
     if (Test-Path (Join-Path $plain 'docs/standards/dotnet')) { throw 'No-stack mode installed .NET guidance' }
     $plainManifest = Get-Content (Join-Path $plain 'docs.config.json') -Raw | ConvertFrom-Json
@@ -118,7 +118,7 @@ status: draft
     if (-not (Test-Path (Join-Path $plain 'docs/standards/integrations/reliable-synchronization.md'))) { throw 'Baseline integration missing' }
 
     $ru = Join-Path $root 'russian-baseline'
-    Invoke-Docs init --name RussianDocs --description 'Проверка документации' --output $ru --profiles none --language ru --site docsify --non-interactive
+    Invoke-Docs init --name RussianDocs --output $ru --profiles none --language ru --site docsify --non-interactive
     Invoke-Docs validate --output $ru
     $ruManifest = Get-Content (Join-Path $ru 'docs.config.json') -Raw -Encoding utf8 | ConvertFrom-Json
     if ($ruManifest.Language -ne 'ru') { throw 'Russian language is not persisted' }
@@ -142,20 +142,20 @@ status: draft
     }
 
     $headless = Join-Path $root 'headless'
-    Invoke-Docs init --name Headless --description 'Markdown only' --output $headless --profiles dotnet --site none --non-interactive
+    Invoke-Docs init --name Headless --output $headless --profiles dotnet --site none --non-interactive
     Invoke-Docs validate --output $headless
     if (Test-Path (Join-Path $headless 'index.html')) { throw 'Headless generation included viewer' }
 
     $xunit = Join-Path $root 'xunit'
-    Invoke-Docs init --name XUnit --description 'xUnit on Windows' --output $xunit --profiles 'xunit,testcontainers' --non-interactive
+    Invoke-Docs init --name XUnit --output $xunit --profiles 'xunit,testcontainers' --non-interactive
     if (-not (Test-Path (Join-Path $xunit 'docs/standards/dotnet/xunit.md'))) { throw 'Missing xUnit standard' }
-    Assert-Fail init --name BothFrameworks --description 'Invalid selection' --output (Join-Path $root 'both-tests') --profiles 'tunit,xunit' --non-interactive
+    Assert-Fail init --name BothFrameworks --output (Join-Path $root 'both-tests') --profiles 'tunit,xunit' --non-interactive
     $s3 = Join-Path $root 'minio'
-    Invoke-Docs init --name S3 --description 'MinIO SDK' --output $s3 --profiles 'infra-s3-client-minio' --non-interactive
+    Invoke-Docs init --name S3 --output $s3 --profiles 'infra-s3-client-minio' --non-interactive
     if (-not (Test-Path (Join-Path $s3 'docs/standards/infrastructure/s3-client-minio.md'))) { throw 'Missing MinIO SDK profile' }
 
-    Assert-Fail init --name Invalid --description 'Invalid' --output (Join-Path $root 'invalid') --profiles dotnet --site retired-site --non-interactive
-    Assert-Fail init --name Unsafe --description 'Unsafe' --output (Join-Path $root 'unsafe') --profiles dotnet --unknown-flag --non-interactive
+    Assert-Fail init --name Invalid --output (Join-Path $root 'invalid') --profiles dotnet --site retired-site --non-interactive
+    Assert-Fail init --name Unsafe --output (Join-Path $root 'unsafe') --profiles dotnet --unknown-flag --non-interactive
     Write-Host 'Windows smoke tests passed.'
 }
 finally {
