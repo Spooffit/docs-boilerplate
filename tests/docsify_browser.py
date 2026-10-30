@@ -40,6 +40,8 @@ def assert_heading(page, title: str) -> None:
 
 def exercise(page, base_url: str, local_failures: list[str]) -> None:
     page.goto(base_url, wait_until="domcontentloaded")
+    assert page.evaluate("document.documentElement.lang") == "en", "Incorrect English Docsify language"
+    assert page.title() == "BrowserDocs", "Docsify title does not match the generated project name"
     assert_heading(page, "BrowserDocs")
     assert "docs/index.md" in page.evaluate(
         "() => performance.getEntriesByType('resource').map(x => x.name).join('\\n')"
