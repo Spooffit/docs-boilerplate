@@ -110,11 +110,10 @@ if "Do not turn every task" not in milestone_doc or "Do not invent Demo/MVP/Prod
 for unwanted in ("demo", "demos", "example-project", "examples", "samples"):
     if (ROOT / unwanted).exists() or (CATALOG / unwanted).exists():
         errors.append(f"Unapproved demonstration project directory: {unwanted}")
-# ADR 0006: three optional variants, no accidental default/profile coupling.
+# Independent optional conventions remain separate from baseline guidance.
 approved_optional = {
     "test-naming-convention": (["dotnet"], "docs/standards/dotnet/test-naming-convention.md"),
     "http-etag-concurrency": (["http-contracts"], "docs/standards/http/etag-concurrency.md"),
-    "masstransit-eventbus-composition": (["masstransit-rabbitmq"], "docs/standards/dotnet/eventbus-composition.md"),
 }
 by_id = {p["id"]: p for p in profiles}
 for profile_id, (dependencies, target) in approved_optional.items():
