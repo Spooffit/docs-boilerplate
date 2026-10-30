@@ -48,6 +48,11 @@ OPTIONAL_TEMPLATES = {
     "postgresql-migration.md",
 }
 PLANNED_PROFILES = {"go", "angular", "react", "blazorise", "custom-ui"}
+INFRA_PROFILES = {
+    "infra-logging-loki", "infra-metrics-prometheus", "infra-tracing-tempo",
+    "infra-tracing-jaeger", "infra-deploy-compose", "infra-deploy-kubernetes",
+    "infra-devops-backend-repo", "infra-devops-gitops-repo", "infra-orchestration-aspire",
+}
 
 general_dir = CATALOG / "base/docs/templates"
 actual_general = {p.name for p in general_dir.glob("*.md")} - {"index.md"}
@@ -62,6 +67,17 @@ with (CATALOG / "profiles.json").open(encoding="utf-8") as stream:
     catalog_data = json.load(stream)
 profiles = catalog_data["profiles"]
 planned = {p["id"] for p in profiles if p["status"] == "planned"}
+infra = {p["id"] for p in profiles if p["category"].startswith("infra-")}
+if infra != INFRA_PROFILES:
+    errors.append(f"Required temporary infrastructure choices changed: {sorted(infra)}")
+for p in profiles:
+    if p["id"] in INFRA_PROFILES:
+        for path in p["files"]:
+            source = CATALOG / path
+            if not source.is_file() or "Placeholder only" not in source.read_text(encoding="utf-8"):
+                errors.append(f"Infrastructure placeholder is missing/not labeled: {path}")
+if (CATALOG / "docs/standards/aspnet/mvc-controllers.md").exists() or any(p["id"] == "aspnet-mvc" for p in profiles):
+    errors.append("Removed MVC-only profile or standard reappeared")
 if planned != PLANNED_PROFILES:
     errors.append(f"Approved visible planned profiles changed: {sorted(planned)}")
 for profile in profiles:

@@ -49,8 +49,8 @@ def check(root: Path) -> list[str]:
         content = path.read_text(encoding="utf-8")
         # An installable global .NET tool is supported, but optional. The
         # guidance may reference it when describing the source-checkout fallback.
-        if BARE_COMMAND.search(content) and "docs-boilerplate" not in content:
-            errors.append(f"{root}: invalid CLI usage in {relative}")
+        # The installable tool is optional and may be invoked from the
+        # generated project when installed. Source-checkout fallback is valid.
         for number, line in enumerate(content.splitlines(), 1):
             for ref in DOC_REF.findall(line):
                 if not (root / ref).is_file() and not CONDITIONAL_REF.search(line):

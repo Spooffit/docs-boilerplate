@@ -7,6 +7,23 @@ status: active
 
 # Generator CLI
 
+## Install and run without cloning
+
+Each CI run packages a private `DocsBoilerplate.Cli` .NET tool (`docs-boilerplate` command), including the reusable catalog, and uploads `docs-boilerplate-dotnet-tool` as a GitHub Actions artifact. Download that ZIP from an authorized workflow run and extract the `.nupkg` to a directory, then:
+
+```powershell
+dotnet tool install --global DocsBoilerplate.Cli --version 0.2.0 --add-source C:\\Tools\\docs-boilerplate-feed
+docs-boilerplate doctor
+docs-boilerplate list
+docs-boilerplate init
+```
+
+The prompt sequence is **Backend → Backend options → Frontend → Frontend options → Infrastructure (last and optional)**. Logging, metrics, traces, deployment and DevOps repository location each have an independent single-choice prompt including `none`. A .NET-oriented orchestration prompt offers Aspire only when .NET has been chosen. Other portable policies remain independently selectable; the wizard never treats selected guidance as proof of an implementation. Noninteractive usage accepts the same profile IDs through `--profiles` and rejects conflicting infrastructure options (e.g. both Compose and Kubernetes).
+
+The tool is installable from a local package feed or authenticated CI artifact, **not yet published to nuget.org**. If you have its source checkout instead, run `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed` to build the package.
+
+## Initialize from a source checkout
+
 Requires .NET 10 SDK. Repository-root usage:
 
 ```sh
@@ -89,9 +106,15 @@ After initialization, examine real project sources and fill these pages with tra
 
 Create Feature, Module, Question, ADR or Milestone documents only when needed. Run `validate` after changes: a successful structural check is not proof that product decisions or source claims are correct.
 
+## Stage two: agent-assisted project discovery
+
+Every newly initialized project contains four **temporary** files: `bootstrap.md`, `.agents/bootstrap/questionnaire.md`, `.agents/bootstrap/finish-checklist.md` and `.agents/skills/project-intake/SKILL.md`. These are intentionally not counted as permanent selected skills or generator-owned files. The questionnaire asks about product goals, existing and related repositories, integrations, actually planned milestones and initial terminology; follow-ups depend on owner answers, and nothing is assumed implemented.
+
+Ask the AI agent to read `bootstrap.md`, conduct the interview in short rounds, update project and architecture overviews, create a glossary only when useful, and request explicit owner approval. The agent then previews `docs-boilerplate bootstrap-complete --output <project-root>`, and, only on approval, executes `docs-boilerplate bootstrap-complete --output <project-root> --apply`. The command refuses to delete an intake file that the owner modified; it never deletes permanent documents. The generated repository remains valid after cleanup and later template updates do not recreate temporary files.
+
 ## Updating a generated repository
 
-Run these commands from the **boilerplate source checkout** where `src/DocsBoilerplate.Cli` exists. The generated documentation repository does not contain the CLI or its source checkout. Point `--output` at the generated repository. No CLI installation or publication is required.
+With a global tool installed, run `docs-boilerplate update --output <project-root>` to preview and `docs-boilerplate update --output <project-root> --apply` to write accepted changes. The following `dotnet run` alternatives are for a **boilerplate source checkout**; a generated project does not contain that source. Point `--output` at the generated repository.
 
 New repositories record SHA-256 fingerprints for all generated files in `docs.config.json`. These fingerprints describe **original template bytes**, not the user's subsequent edits. Update re-renders the selected profiles, skills, modules and site option against a newer catalog.
 

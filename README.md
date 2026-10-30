@@ -6,7 +6,51 @@ This is the **boilerplate itself**, not a working application's business specifi
 
 Start with [`llms.txt`](llms.txt), [agent instructions](AGENTS.md), the [documentation index](docs/index.md), the [generator guide](docs/generator.md), and the [authoring standard](catalog/base/docs/standards/documentation.md).
 
-## Quick start
+## Install the CLI as a .NET tool
+
+The private GitHub Actions workflow now builds a `DocsBoilerplate.Cli` .NET tool package and saves its `.nupkg` as the `docs-boilerplate-dotnet-tool` workflow artifact. Download and extract that artifact into a local folder (for example `C:\\Tools\\docs-boilerplate-feed`), then install it once:
+
+```powershell
+dotnet tool install --global DocsBoilerplate.Cli --version 0.2.0 --add-source "C:\\Tools\\docs-boilerplate-feed"
+docs-boilerplate doctor
+docs-boilerplate list
+```
+
+Alternatively, build a local feed from a source checkout:
+
+```powershell
+dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed
+dotnet tool install --global DocsBoilerplate.Cli --version 0.2.0 --add-source ./artifacts/tool-feed
+```
+
+The tool package embeds the Markdown catalog. **You do not need to clone the source repository to run the installed command.** No public NuGet package has been published by this workflow. Do not confuse the private downloadable artifact with an existing nuget.org listing.
+
+## Create a project
+
+```powershell
+docs-boilerplate init
+```
+
+Spectre.Console prompts for project name, description and destination, then a **three-stage wizard**: optional backend and its libraries, optional frontend and its libraries, and optional infrastructure (logs, metrics, traces, deployment and DevOps ownership). Infrastructure is always the last stage; Aspire orchestration is offered when .NET is selected. All selections may be skipped.
+
+For automation, pass explicit profiles:
+
+```powershell
+docs-boilerplate init --name MyProject --description "Project documentation" --output ./MyProject.Docs --profiles dotnet,aspnet-core,infra-logging-loki,infra-deploy-compose --site docsify --non-interactive
+docs-boilerplate validate --output ./MyProject.Docs
+```
+
+**Stage two:** open the generated project with an AI coding agent and ask it to follow `bootstrap.md`. The temporary questionnaire and `project-intake` skill guide conditional questions about product purpose, adjacent projects, integrations, milestones and glossary. After your explicit approval:
+
+```powershell
+docs-boilerplate bootstrap-complete --output ./MyProject.Docs
+docs-boilerplate bootstrap-complete --output ./MyProject.Docs --apply
+docs-boilerplate validate --output ./MyProject.Docs
+```
+
+Only the four unchanged temporary intake files are deleted. The user-authored documentation, selected standards and persistent skills remain.
+
+## Source checkout / development
 
 Requires .NET SDK 10:
 
@@ -18,7 +62,7 @@ dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/demo
 ```
 
-These commands run **from the boilerplate checkout**, not from the generated project. The generated repository contains the selected Markdown and optional Docsify viewer, but not the generator sources or an installed CLI.
+The `dotnet run` commands above are only for source-checkout development. An installed `docs-boilerplate` tool can be called from any directory. The generated project does not contain source code for the CLI.
 
 Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh` after changing generator behavior. The cross-platform test workflow is [`.github/workflows/docs-generator.yml`](.github/workflows/docs-generator.yml).
 

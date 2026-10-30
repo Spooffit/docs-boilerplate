@@ -9,9 +9,10 @@ status: active
 
 ## Implemented
 
-- A .NET 10 / Spectre.Console CLI with interactive and non-interactive `init`, `list`, `doctor`, `validate` and fingerprint-based `update` commands.
-- A minimal Markdown-first base catalog with composable available/planned technology profiles, optional project-document modules and optional agent skills.
+- A packaged, installable .NET 10 tool (`docs-boilerplate`) using Spectre.Console with a three-stage backend/frontend/infrastructure wizard and separate optional installation choices.
+- A minimal Markdown-first base catalog with composable available/planned technology profiles, optional project-document modules and optional agent skills. Nine infrastructure choices are initially **draft placeholders**, not technical standards or operational configurations.
 - Explicit dependency resolution, catalog path checks and refusal of conflicting user edits. Preview/dry-run is read-only; `update --apply` uses recorded SHA-256 generator-owned file fingerprints and preserves user-authored changes. Update preflight rejects case-only collisions with existing files and parent directories before writing.
+- A temporary second-stage intake questionnaire and Agent Skill removed by an explicit, guarded `bootstrap-complete --apply` after owner approval.
 - Generated `README.md`, `AGENTS.md`, `llms.txt`, navigable `docs/` and `docs.config.json` manifest. Generated output includes only selected profiles and optional modules.
 - Optional Docsify browser shell using a single `index.html`. Markdown remains source of truth and no static-site build tree is created.
 - A CLI validator for ordinary relative Markdown links and common heading fragments, frontmatter, directory indexes, **catalog coverage for every project Markdown page, local index coverage for authored pages and parent-index coverage for newly authored directories**, managed paths and unresolved required placeholders.
@@ -23,7 +24,7 @@ The owner-approved minimal document and example scope is recorded in [ADR 0005](
 
 ## Catalog coverage and remaining work
 
-The currently usable catalog has **27 available technology/architecture profiles** and **five planned but non-selectable profiles**: `go`, `angular`, `react`, `blazorise` and `custom-ui`. The existing writing-aid library contains seven general-purpose document templates (feature, technical feature, module, question, ADR, standard and milestone) plus three optional technology-specific variants (.NET backend feature, Blazor frontend feature and PostgreSQL migration). All now emphasize minimal authoring, omission of unused sections, and evidence-grounded identifiers and dates rather than suggesting one inherited project workflow. These represent the **current implemented catalog**, not completion of every possible standard or template.
+The currently usable catalog has **35 available technology/architecture profiles** and **five planned but non-selectable profiles**: `go`, `angular`, `react`, `blazorise` and `custom-ui`. The existing writing-aid library contains seven general-purpose document templates (feature, technical feature, module, question, ADR, standard and milestone) plus three optional technology-specific variants (.NET backend feature, Blazor frontend feature and PostgreSQL migration). All now emphasize minimal authoring, omission of unused sections, and evidence-grounded identifiers and dates rather than suggesting one inherited project workflow. These represent the **current implemented catalog**, not completion of every possible standard or template.
 
 Every available profile maps to real catalog documents and participates in generation and validation tests. The Linux smoke suite also generates and validates **each available profile individually** in headless mode and rejects any selectable profile that depends on a planned profile before generation. Optional project modules and agent skills are separate choices: installing a skill does not add its subject's module, and a module does not implicitly select a technology profile. Further technology standards are not silently declared complete: planned profiles need actual content and coverage before promotion. All three owner-review blocks are resolved ([ADR 0005](decisions/0005-approved-template-scope.md), [ADR 0006](decisions/0006-optional-technology-conventions.md), [ADR 0007](decisions/0007-final-editorial-policies.md)). Five opt-in convention profiles cover test names, HTTP ETag/If-Match, MassTransit EventBus composition, document identifiers/approvals and direct use of API request DTOs in UI forms. Base technology profiles never implicitly enable these specialized variants. The former project's specialized client-library and source-model tooling are outside the template's scope; the boilerplate does not ship an application, source-code generator or library distribution pipeline. Existing HTTP and value-compatibility rules remain applicable only to selected contracts.
 
@@ -35,6 +36,7 @@ Every available profile maps to real catalog documents and participates in gener
 - Docsify needs a local/static HTTP server and currently loads JavaScript and CSS from a CDN. Chromium smoke verifies selected navigation scenarios but not CDN uptime, all browsers, full accessibility, visual regression or real hosting integration.
 - Focused .NET tests and broad CLI smoke do not replace a dedicated framework-level testing suite, property-based tests or deeper reliability testing.
 - Planned technology profiles are discoverable but cannot be generated until they have supported standards and tests.
+- The .NET tool is currently packaged as a private CI artifact or a locally built NuGet package; automatic public registry publication and a stable update channel are not enabled.
 
 ## Readiness boundary
 

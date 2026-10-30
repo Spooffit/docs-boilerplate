@@ -10,6 +10,47 @@ run() { dotnet run --no-build --configuration Release --project "$project" -- "$
 run doctor
 run list
 
+# Stage two is ephemeral, owner-approved and never part of the permanent manifest.
+run init --name IntakeSmoke --description "Two-stage documentation" --output "$temp/intake" --profiles none --site none --non-interactive
+run validate --output "$temp/intake"
+[[ -f "$temp/intake/bootstrap.md" ]]
+[[ -f "$temp/intake/.agents/bootstrap/questionnaire.md" ]]
+[[ -f "$temp/intake/.agents/bootstrap/finish-checklist.md" ]]
+[[ -f "$temp/intake/.agents/skills/project-intake/SKILL.md" ]]
+python3 - "$temp/intake/docs.config.json" <<'PY'
+import json,sys
+data=json.load(open(sys.argv[1],encoding="utf-8"))
+assert "bootstrap.md" not in data["GeneratedFiles"]
+assert data["Skills"] == []
+PY
+run bootstrap-complete --output "$temp/intake"
+[[ -f "$temp/intake/bootstrap.md" ]]
+printf '\nHuman note\n' >> "$temp/intake/.agents/bootstrap/questionnaire.md"
+if run bootstrap-complete --output "$temp/intake" --apply; then
+  echo "Modified temporary intake file was deleted"; exit 1
+fi
+[[ -f "$temp/intake/bootstrap.md" ]]
+sed -i '$d' "$temp/intake/.agents/bootstrap/questionnaire.md"
+sed -i '$d' "$temp/intake/.agents/bootstrap/questionnaire.md"
+run bootstrap-complete --output "$temp/intake" --apply
+[[ ! -e "$temp/intake/bootstrap.md" ]]
+[[ ! -e "$temp/intake/.agents/skills/project-intake/SKILL.md" ]]
+run validate --output "$temp/intake"
+run update --output "$temp/intake" --apply
+run validate --output "$temp/intake"
+[[ ! -e "$temp/intake/bootstrap.md" ]]
+
+# Infrastructure choices are opt-in, with one choice per incompatible category.
+run init --name InfraSmoke --description "Placeholder-only infrastructure" --output "$temp/infra" --profiles infra-logging-loki,infra-metrics-prometheus,infra-tracing-tempo,infra-deploy-compose,infra-devops-gitops-repo,infra-orchestration-aspire --site none --non-interactive
+run validate --output "$temp/infra"
+grep -q 'Placeholder only' "$temp/infra/docs/standards/infrastructure/deploy-compose.md"
+[[ -f "$temp/infra/docs/standards/infrastructure/orchestration-aspire.md" ]]
+[[ ! -e "$temp/infra/docs/standards/infrastructure/deploy-kubernetes.md" ]]
+if run init --name InvalidInfra --description "Conflicting deployment" --output "$temp/invalid-infra" --profiles infra-deploy-compose,infra-deploy-kubernetes --site none --non-interactive; then
+  echo "Conflicting infrastructure targets were accepted"; exit 1
+fi
+
+
 # A selectable profile must not depend on a planned profile. Doctor must
 # reject that catalog even before any project generation is attempted.
 cp -a catalog "$temp/catalog-planned-dependency"
