@@ -29,7 +29,9 @@ New releases are created **only by version tags** (for example `v1.0.2`), not by
 docs-boilerplate init
 ```
 
-Spectre.Console prompts for project name, description and destination, then a **three-stage wizard**: backend, frontend and optional infrastructure. Options are grouped into labeled blocks. Compatible tools use checkboxes; exclusive choices use a single-choice selector: **TUnit or xUnit**, storage type, **MinIO or AWS S3 client**, logs, metrics, traces and deployment. bUnit is a normal Blazor component-testing checkbox. At the end, the CLI shows the selected configuration instead of a file plan and **runs validation automatically after generation**.
+Spectre.Console prompts for project name, description, destination and documentation language (`en` or `ru`), then a **three-stage wizard**: backend, frontend and optional infrastructure. Options are grouped into labeled blocks. Compatible tools use checkboxes; exclusive choices use a single-choice selector: **TUnit or xUnit**, storage type, **MinIO or AWS S3 client**, logs, metrics, traces and deployment. bUnit is a normal Blazor component-testing checkbox. At the end, the CLI shows the selected configuration instead of a file plan and **runs validation automatically after generation**.
+
+For automation, pass explicit profiles and optionally `--language en` (default). The localization source tree lives at `catalog/locales/<language>/` with the same relative Markdown paths as `catalog/`. Russian localization is under development: `--language ru` fails on any missing translation rather than silently delivering mixed-language agent instructions.
 
 For automation, pass explicit profiles:
 
