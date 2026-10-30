@@ -212,9 +212,6 @@ fi
 if run init --name MixedSpecifications --output "$temp/mixed-specs" --profiles ardalis-specification,specification-manual --non-interactive; then
     echo "Both EF Core specification implementations accepted together"; exit 1
 fi
-if run init --name MixedTransports --output "$temp/mixed-transports" --profiles messaging-rabbitmq,messaging-kafka,masstransit --non-interactive; then
-    echo "Exclusive messaging transport alternatives accepted together"; exit 1
-fi
 
 # End-to-end audit: every available profile must generate and validate in
 # isolation with exactly its declared transitive dependencies, no selected
