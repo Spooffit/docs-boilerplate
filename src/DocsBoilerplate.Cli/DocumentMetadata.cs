@@ -54,7 +54,8 @@ internal static class DocumentMetadata
             return content;
         if (DocumentId(content) is not null)
             return content;
-        if (Regex.IsMatch(content, @"(?m)^id\s*:"))
+        var frontmatterEnd = content.IndexOf("\n---\n", 4, StringComparison.Ordinal);
+        if (frontmatterEnd > 0 && Regex.IsMatch(content[4..frontmatterEnd], @"(?m)^id\s*:"))
             throw new InvalidOperationException($"Invalid document id in {path}");
         if (!content.StartsWith("---\n", StringComparison.Ordinal))
             throw new InvalidOperationException($"Missing frontmatter for document ID: {path}");
