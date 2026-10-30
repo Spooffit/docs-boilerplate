@@ -32,7 +32,7 @@ internal static class DocumentMetadata
             return content;
         }
         if (IsValid(content, filename == "SKILL.md"))
-            return content;
+            return EnsureDocumentId(path, content);
         if (content.StartsWith("---\n", StringComparison.Ordinal))
             throw new InvalidOperationException($"Malformed Markdown frontmatter: {path}");
         if (filename == "SKILL.md")
@@ -44,7 +44,33 @@ internal static class DocumentMetadata
             : filename == "index.md" ? "index"
             : path.Contains("/project/", StringComparison.Ordinal) ? "project" : "guide";
         var status = kind == "template" ? "template" : kind == "project" ? "draft" : "active";
-        return Frontmatter(title, $"Documentation: {title}", kind, status) + content;
+        return EnsureDocumentId(path, Frontmatter(title, $"Documentation: {title}", kind, status) + content);
+    }
+
+    // A new document gets a stable deterministic identifier. Preserve it on moves.
+    private static string EnsureDocumentId(string path, string content)
+    {
+        if (!path.StartsWith("docs/", StringComparison.Ordinal))
+            return content;
+        if (DocumentId(content) is not null)
+            return content;
+        if (Regex.IsMatch(content, @"(?m)^id\s*:"))
+            throw new InvalidOperationException($"Invalid document id in {path}");
+        if (!content.StartsWith("---\n", StringComparison.Ordinal))
+            throw new InvalidOperationException($"Missing frontmatter for document ID: {path}");
+        var bytes = System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(path));
+        var id = "doc-" + Convert.ToHexString(bytes.AsSpan(0, 8)).ToLowerInvariant();
+        return content.Insert(4, "id: " + id + "\n");
+    }
+
+    public static string? DocumentId(string content)
+    {
+        var normalized = content.Replace("\r\n", "\n", StringComparison.Ordinal);
+        if (!normalized.StartsWith("---\n", StringComparison.Ordinal)) return null;
+        var end = normalized.IndexOf("\n---\n", 4, StringComparison.Ordinal);
+        if (end < 0) return null;
+        var matches = Regex.Matches(normalized[4..end], @"(?m)^id:\s*(?<id>[A-Za-z][A-Za-z0-9._-]{2,127})\s*$");
+        return matches.Count == 1 ? matches[0].Groups["id"].Value : null;
     }
 
     public static string Frontmatter(string title, string description, string kind, string status)

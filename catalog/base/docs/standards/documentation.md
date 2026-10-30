@@ -15,7 +15,7 @@ status: active
 - Read the root `llms.txt` as a curated entry point and `AGENTS.md` for instructions. Neither replaces the referenced source documents or explicit project decisions. `docs/catalog.md` is the complete project-doc discovery map, including pages authored after initialization. `llms.txt` remains intentionally short and should link to the catalog; it need not repeat every new document. Initial generated indexes list installed documents, not pending or unselected technologies; navigation is not confirmation of requirements.
 - Every directory under `docs/` containing Markdown documents must have `index.md` summarizing its purpose and linking to its contents. Keep links relative to the containing document. When adding a new Markdown page, link it from its immediate directory's `index.md` and from `docs/catalog.md`. Link each newly authored nested directory's `index.md` from its parent directory index as well. When moving/renaming pages or directories, repair affected indexes, catalog entries and inbound links. The generator creates initial indexes; it does **not** overwrite author edits to fix navigation.
 - Documentation files use lowercase **kebab-case** (e.g. `api-versioning.md`) and `index.md` for directory overviews. Established tool-specific entrypoints `README.md`, `AGENTS.md`, `SKILL.md` and `CONTRIBUTING.md` are explicit well-known exceptions; do not rename them.
-- Do not invent a mandatory identifier scheme for features, ADRs or business requirements. Use existing project IDs where adopted; otherwise use descriptive kebab-case filenames. The optional document-identifier and approval policy is installed only if its profile is selected.
+- **Every Markdown document under `docs/` has a stable `id` in YAML frontmatter by default.** The generator assigns a deterministic unique identifier on creation; keep that ID when renaming or moving the document, and choose a unique identifier for manually authored pages. An ID is a reference key, not a project requirement number, chronological sequence or approval record. Use descriptive kebab-case filenames independently of the ID. Never fabricate approvals or approval statuses. See [stable document identifiers](document-identifiers.md).
 
 ## Frontmatter
 
@@ -23,6 +23,7 @@ Every regular Markdown page under `docs/` starts with a single YAML frontmatter 
 
 ```yaml
 ---
+id: doc-0123456789abcdef
 title: "Example title"
 description: "Short, factual summary"
 kind: standard
@@ -34,12 +35,13 @@ Fields are required and have these meanings:
 
 | Field | Meaning |
 | --- | --- |
+| `id` | Stable unique document identifier, preserved across file moves and renames |
 | `title` | Human-readable document name, consistent with the H1 |
 | `description` | Short, factual orientation for search and AI agents |
 | `kind` | `index`, `standard`, `template`, `project`, `guide`, `reference`, `adr` or `audit` |
 | `status` | `active`, `draft`, `template` or `superseded` |
 
-Do not add invented owner names, review dates, adoption status or unsupported technology version constraints. If ownership or dates become required, adopt a documented schema change and only record real values. Keep metadata concise.
+Document ID uniqueness is checked by the CLI; the example ID above is illustrative. Do not add invented owner names, review dates, adoption status or unsupported technology version constraints. If ownership or dates become required, adopt a documented schema change and only record real values. Keep metadata concise.
 
 `SKILL.md` is a **special case**: preserve its agent-skill specification's `name` and `description` frontmatter fields, which are not replaced by `title`/`kind`/`status`. Newly generated project and architecture overviews are intentionally `draft` until verified. Passing generator validation proves structure, not factual or owner approval.
 

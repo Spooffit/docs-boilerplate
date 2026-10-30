@@ -77,11 +77,20 @@ static partial class DocsCli
         foreach (var directory in DirectoryNames(allMarkdown.Select(x => Path.GetRelativePath(output, x).Replace('\\', '/'))))
             if (!File.Exists(SafePath(output, $"{directory}/index.md")))
                 errors.Add($"Missing directory index: {directory}/index.md");
+        var seenDocumentIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var file in allMarkdown)
         {
             var text = await File.ReadAllTextAsync(file);
             var relativeName = Path.GetRelativePath(output, file).Replace('\\', '/');
             var basename = Path.GetFileName(relativeName);
+            if (relativeName.StartsWith("docs/", StringComparison.Ordinal))
+            {
+                var documentId = DocumentMetadata.DocumentId(text);
+                if (documentId is null)
+                    errors.Add($"Missing or invalid stable document id: {relativeName}");
+                else if (!seenDocumentIds.TryAdd(documentId, relativeName))
+                    errors.Add($"Duplicate document id '{documentId}': {seenDocumentIds[documentId]} and {relativeName}");
+            }
             if (basename is not ("README.md" or "AGENTS.md" or "SKILL.md" or "CONTRIBUTING.md")
                 && !System.Text.RegularExpressions.Regex.IsMatch(basename, "^[a-z0-9]+(?:-[a-z0-9]+)*\\.md$"))
                 errors.Add($"Markdown filename must be kebab-case: {relativeName}");
