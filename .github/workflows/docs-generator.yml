@@ -28,6 +28,8 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
+      - name: Check localized catalog overlays
+        run: python tests/localization_contracts.py
       - name: Check generated-content source hygiene
         run: python tests/catalog_hygiene.py
       - name: Check template repository scope and references
