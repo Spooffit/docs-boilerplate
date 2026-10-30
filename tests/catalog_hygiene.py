@@ -243,9 +243,20 @@ for document in (CATALOG / "base").rglob("*.md"):
     for pattern in legacy_client_patterns:
         if pattern.search(contents):
             errors.append(f"Prior-project client/code-generation policy in {document.relative_to(ROOT)}: {pattern.pattern}")
+# Compiler source generation is an intrinsic feature of selected Mapperly and
+# martinothamar/Mediator integrations, not the former project's custom
+# source-model pipeline. Preserve the legacy block for every other document
+# and every other forbidden topic.
+source_generator_standards = {
+    "docs/standards/dotnet/mapper-mapperly.md",
+    "docs/standards/dotnet/cqrs-mediator.md",
+}
 for document in (CATALOG / "docs").rglob("*.md"):
     contents = document.read_text(encoding="utf-8")
+    relative = document.relative_to(CATALOG).as_posix()
     for pattern in legacy_client_patterns:
+        if pattern.pattern == r"\bsource[- ]generat(?:ion|or|ors|ed|ing)\b" and relative in source_generator_standards:
+            continue
         if pattern.search(contents):
             errors.append(f"Prior-project client/code-generation policy in {document.relative_to(ROOT)}: {pattern.pattern}")
 
