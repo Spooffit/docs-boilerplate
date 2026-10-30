@@ -29,7 +29,7 @@ New releases are created **only by version tags** (for example `v1.0.2`), not by
 docs-boilerplate init
 ```
 
-Spectre.Console prompts for project name, description and destination, then a **three-stage wizard**: optional backend and its libraries, optional frontend and its libraries, and optional infrastructure (logs, metrics, traces, deployment and DevOps ownership). Infrastructure is always the last stage; Aspire orchestration is offered when .NET is selected. All selections may be skipped.
+Spectre.Console prompts for project name, description and destination, then a **three-stage wizard**: backend, frontend and optional infrastructure. Options are grouped into labeled blocks. Compatible tools use checkboxes; exclusive choices use a single-choice selector: **TUnit or xUnit**, storage type, **MinIO or AWS S3 client**, logs, metrics, traces and deployment. bUnit is a normal Blazor component-testing checkbox. At the end, the CLI shows the selected configuration instead of a file plan and **runs validation automatically after generation**.
 
 For automation, pass explicit profiles:
 
@@ -72,7 +72,7 @@ To initialize only the shared Markdown documentation without any technology stan
 
 - Creates a minimal repository with `README.md`, `AGENTS.md`, `llms.txt`, `docs/`, a generated-file ownership manifest and an optional Docsify viewer.
 - Selects composable, technology-scoped standards and templates rather than shipping one fixed stack. Available profiles include .NET, ASP.NET Core, PostgreSQL, Blazor, test frameworks, CQRS, messaging, HTTP contracts and other opt-in guidance.
-- Offers optional project-document scaffolds and agent skills without imposing them on minimal projects.
+- Installs all documentation modules and persistent agent skills by default, together with baseline integration reliability and stable document identifiers. Project-specific claims stay draft until verified.
 - Supports dry-run, validation and preview-first updates with SHA-256 fingerprints, while protecting user-edited content.
 - Maintains navigable Markdown and a concise `llms.txt` for agents; Docsify is an optional human reading layer.
 
@@ -82,7 +82,7 @@ The CLI is a generator, not an implementation or a business requirement registry
 
 Technology conventions such as test-method naming, HTTP ETag/If-Match concurrency and three-project MassTransit EventBus composition are independently **opt-in** profiles. Their examples and verification do not add a demonstration application to the generated repository. See [ADR 0006](docs/decisions/0006-optional-technology-conventions.md).
 
-The final owner decisions are recorded in [ADR 0007](docs/decisions/0007-final-editorial-policies.md). Document identifiers and approval workflows, and direct API request DTO form binding, are both **independently opt-in**. The documentation catalog does not prescribe client-library development or source-model generation; incomplete code examples must be labeled illustrative and claims of executable examples require real test evidence.
+The original editorial choices are recorded in [ADR 0007](docs/decisions/0007-final-editorial-policies.md); the latest defaults supersede its optional document-ID/approval choice. **Stable document IDs are mandatory, approval statuses are not**, while direct API request DTO form binding remains opt-in. The documentation catalog does not prescribe client-library development or source-model generation; incomplete code examples must be labeled illustrative and claims of executable examples require real test evidence.
 
 See [implementation status](docs/implementation-status.md), [approved template scope](docs/decisions/0005-approved-template-scope.md), [architectural decisions](docs/decisions/index.md), [completed owner decision review](docs/decisions/owner-decision-backlog.md) and [contributing rules](CONTRIBUTING.md).
 

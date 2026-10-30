@@ -23,7 +23,7 @@ The [v1.0.1 GitHub Release](https://github.com/Spooffit/docs-boilerplate/release
 
 The tagged release process and NuGet.org Trusted Publishing policy are documented in [the release guide](releases.md).
 
-The prompt sequence is **Backend → Backend options → Frontend → Frontend options → Infrastructure (last and optional)**. Logging, metrics, traces, deployment and DevOps repository location each have an independent single-choice prompt including `none`. A .NET-oriented orchestration prompt offers Aspire only when .NET has been chosen. Other portable policies remain independently selectable; the wizard never treats selected guidance as proof of an implementation. Noninteractive usage accepts the same profile IDs through `--profiles` and rejects conflicting infrastructure options (e.g. both Compose and Kubernetes).
+The wizard uses **Backend → Frontend → Infrastructure (last, optional)**. Each technology has dedicated labeled blocks. Multi-select checkboxes are used for compatible libraries/conventions; single-choice selectors are used for backend/frontend, **TUnit versus xUnit** in Tests, infrastructure categories, and **MinIO .NET SDK versus AWS SDK for .NET** for S3. bUnit appears as an ordinary checkbox in **Blazor component testing**. Noninteractive `--profiles` rejects conflicting framework, SDK or infrastructure choices. A selected profile is guidance, not proof of implementation. The selected options are summarized instead of listing every output file.
 
 The publication pipeline is active but **does not publish on every commit**. Versions are released only from explicit version tags after passing the full test suite. From a source checkout you can still run `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed`.
 
@@ -39,11 +39,11 @@ dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --descriptio
 dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/example
 ```
 
-`--profiles` accepts comma-separated available profile IDs; dependencies are resolved automatically. Use **`--profiles none`** for a genuinely stack-neutral repository with only the base Markdown documentation and no selected technology profiles. `--modules` and `--skills` are independently optional. Use `list` for supported values and planned profiles. Omit flags for interactive prompts. The TUI first asks for backend and frontend, then only asks about data access, UI libraries and testing tools when relevant; architecture and modeling are independent. Unsupported profiles remain visible through `list` but cannot be selected. The final **additional optional profiles** prompt includes available independent policies (such as document identifiers, storage, HTTP consumption and UI conventions) not already offered in the earlier technology prompts. Dependencies are resolved automatically, even when a category was not part of the chosen backend.
+`--profiles` accepts comma-separated available IDs; dependencies resolve automatically. Use **`--profiles none`** to skip optional technology standards, not to remove the default project documentation. **All permanent agent skills, documentation modules, stable document IDs and reliable integration standards are included by default**, also in noninteractive mode. The legacy `--skills` and `--modules` flags remain available as explicit scripted subset overrides, but are never shown as interactive selection screens. Optional independent standards are shown by category rather than in one mixed list. Use `list` for available and planned technologies.
 
 ## Safety
 
-`--dry-run` prints the file plan without writing. Initialization refuses changed generated files and does not overwrite user-created documents. An identical re-run succeeds even if the repository also contains unrelated user-authored files. The generated `docs.config.json` records exact selection and file ownership. `validate` checks selection consistency, missing owned files, unresolved template tokens, ordinary relative Markdown links, common heading fragments and generated `llms.txt` targets. It supports `#local-heading` and `file.md#heading` with fenced-code exclusion and duplicate heading suffixes. It does **not** implement every Markdown/Docsify anchor variant or a real browser-rendering check.
+`--dry-run` displays the selected configuration without writing. Initialization refuses changed generated files and does not overwrite user-created documents. An identical re-run succeeds even if the repository also contains unrelated user-authored files; both successful generation and an identical re-run automatically execute `validate`. The generated `docs.config.json` records exact selection and file ownership. `validate` checks selection consistency, missing owned files, unresolved template tokens, ordinary relative Markdown links, common heading fragments and generated `llms.txt` targets. It supports `#local-heading` and `file.md#heading` with fenced-code exclusion and duplicate heading suffixes. It does **not** implement every Markdown/Docsify anchor variant or a real browser-rendering check.
 
 Updates with fingerprint-based conflict detection are supported (see below). Automatic three-way merges and arbitrary site-engine migrations are intentionally not supported.
 
@@ -77,7 +77,7 @@ Example:
 dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --description "Backend documentation" --output ./scratch/backend --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
 ```
 
-Additional optional profiles: `masstransit-rabbitmq`, `ardalis-specification`, `bunit`, `http-contracts`, `integration-reliability`, and `object-storage`. These last three are language-neutral and do not imply .NET, an ORM or a particular server. Selecting bUnit requires Blazor, but not MudBlazor. Selecting MassTransit with RabbitMQ does not imply a database or a particular outbox implementation. Each profile installs only its applicable standard.
+Additional optional profiles include `masstransit-rabbitmq`, `ardalis-specification`, `bunit`, and `http-contracts`. **Reliable integration/synchronization guidance is always installed**, independent of the selected stack. Infrastructure offers S3-compatible object storage; selecting `infra-s3-client-minio` or `infra-s3-client-aws` adds a single .NET S3 client and the common object-storage safety rules. The S3 documents are explicitly draft placeholders, not ready-to-deploy configurations. Selecting bUnit requires Blazor but not MudBlazor. The Tests block offers mutually exclusive `tunit` and `xunit` selections; supporting tools like Testcontainers remain independent.
 
 ## Cross-platform HTTP and migration guidance
 
@@ -107,7 +107,7 @@ Navigation checks are read-only. Intentionally preserved `RetiredFiles` listed b
 
 Fresh repositories include `docs/project/overview.md` and `docs/architecture/overview.md`, both deliberately marked `draft`. These existing documents help an agent distinguish verified requirements, observed code, accepted target architecture and open decisions. They are not a completed system design.
 
-After initialization, examine real project sources and fill these pages with traceable claims. Leave unknown facts as **Not yet verified** and keep the draft status until accepted. Technology-profile selection installs writing guidance, not evidence of implementation. The optional `docs-init` skill provides the same first-pass process.
+After initialization, examine real project sources and fill these pages with traceable claims. Leave unknown facts as **Not yet verified** and keep the draft status until accepted. Technology-profile selection installs writing guidance, not evidence of implementation. The default `docs-init` skill provides the same first-pass process.
 
 Create Feature, Module, Question, ADR or Milestone documents only when needed. Run `validate` after changes: a successful structural check is not proof that product decisions or source claims are correct.
 
