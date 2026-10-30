@@ -31,6 +31,8 @@ docs-boilerplate init
 
 Spectre.Console prompts for project name, description and destination, then a **three-stage wizard**: backend, frontend and optional infrastructure. Options are grouped into labeled blocks. Compatible tools use checkboxes; exclusive choices use a single-choice selector: **TUnit or xUnit**, storage type, **MinIO or AWS S3 client**, logs, metrics, traces and deployment. bUnit is a normal Blazor component-testing checkbox. At the end, the CLI shows the selected configuration instead of a file plan and **runs validation automatically after generation**.
 
+The wizard asks for **Documentation language / Язык документации** immediately after the destination directory. Choose `en` (English, default in scripts) or `ru` (Russian). Every generated Markdown file, persistent agent skill and temporary stage-two instruction uses the selected language. The choice is recorded as `Language` in `docs.config.json` and retained by `update`. Technical filenames, frontmatter keys, commands and code samples remain stable across languages. The English source catalog lives under `catalog/`; its Russian counterparts live under `catalog/locales/ru/`. Missing translations cause initialization to fail **before** writing files, with no silent English fallback.
+
 For automation, pass explicit profiles:
 
 ```powershell
