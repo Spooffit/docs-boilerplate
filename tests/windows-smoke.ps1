@@ -117,6 +117,18 @@ status: draft
     if (@($plainManifest.Modules).Count -ne 7 -or @($plainManifest.Skills).Count -ne 5) { throw 'Default documentation modules or skills missing' }
     if (-not (Test-Path (Join-Path $plain 'docs/standards/integrations/reliable-synchronization.md'))) { throw 'Baseline integration missing' }
 
+    $ru = Join-Path $root 'russian-baseline'
+    Invoke-Docs init --name RussianDocs --description 'Проверка документации' --output $ru --profiles none --language ru --site docsify --non-interactive
+    Invoke-Docs validate --output $ru
+    $ruManifest = Get-Content (Join-Path $ru 'docs.config.json') -Raw -Encoding utf8 | ConvertFrom-Json
+    if ($ruManifest.Language -ne 'ru') { throw 'Russian language is not persisted' }
+    if ((Get-Content (Join-Path $ru 'AGENTS.md') -Raw -Encoding utf8) -notmatch 'Инструкции ИИ-агентам') {
+        throw 'Russian agent instructions were not installed'
+    }
+    Invoke-Docs update --output $ru --apply
+    Invoke-Docs bootstrap-complete --output $ru --apply
+    Invoke-Docs validate --output $ru
+
     $headless = Join-Path $root 'headless'
     Invoke-Docs init --name Headless --description 'Markdown only' --output $headless --profiles dotnet --site none --non-interactive
     Invoke-Docs validate --output $headless
