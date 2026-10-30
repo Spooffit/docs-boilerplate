@@ -36,8 +36,19 @@ static partial class DocsCli
                 Add(file.Destination, await ReadLocalizedAsync(catalog, file.Source, language));
         }
         if (site == "docsify")
-            Add("index.html", (await File.ReadAllTextAsync(SafePath(catalog, "sites/docsify.html")))
-                .Replace("{{PROJECT_NAME_JSON}}", JsonSerializer.Serialize(name), StringComparison.Ordinal));
+        {
+            // Docsify is a single browser-side shell, not a generated site tree.
+            // Escape text for HTML separately from the JS/JSON-encoded values.
+            var html = (await File.ReadAllTextAsync(SafePath(catalog, "sites/docsify.html")))
+                .Replace("{{DOCUMENT_LANGUAGE}}", language, StringComparison.Ordinal)
+                .Replace("{{PROJECT_NAME_HTML}}", System.Net.WebUtility.HtmlEncode(name), StringComparison.Ordinal)
+                .Replace("{{PROJECT_DESCRIPTION_HTML}}", System.Net.WebUtility.HtmlEncode(description), StringComparison.Ordinal)
+                .Replace("{{SITE_LOADING_HTML}}", language == "ru" ? "Загрузка документации..." : "Loading documentation...", StringComparison.Ordinal)
+                .Replace("{{SITE_SEARCH_PLACEHOLDER_JSON}}",
+                    JsonSerializer.Serialize(language == "ru" ? "Поиск по документации" : "Search documentation"), StringComparison.Ordinal)
+                .Replace("{{PROJECT_NAME_JSON}}", JsonSerializer.Serialize(name), StringComparison.Ordinal);
+            Add("index.html", html);
+        }
         // Every documentation directory has a human- and agent-readable index.
         AddDirectoryIndexes(expected, language);
         Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available, language));
