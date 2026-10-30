@@ -7,7 +7,7 @@ status: active
 
 # .NET testing standard
 
-**Applicability:** software projects using .NET. This is a technology baseline, not a requirement to install every named testing tool. Project-specific suites and release gates belong in the project testing strategy at `docs/testing/strategy.md` **if that optional module was selected**; otherwise record them in the project's architecture/README as needed.
+**Applicability:** software projects using .NET. This is a technology baseline, not a requirement to install every named testing tool. Project-specific suites and verification gates belong in the default project testing strategy scaffold at `docs/testing/strategy.md` when evidenced. Its presence does not imply tests, releases, or any mandatory CI gate already exist.
 
 ## 1. Definitions and boundaries
 
