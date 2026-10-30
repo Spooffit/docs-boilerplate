@@ -213,5 +213,6 @@ static partial class DocsCli
         string Name, string Description, string[] Profiles, string[] Skills, string[] Modules,
         string Site, string[] GeneratedFiles, Dictionary<string, string>? GeneratedHashes = null,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        string[]? RetiredFiles = null);
+        string[]? RetiredFiles = null,
+        string? Language = null);
 }
