@@ -405,9 +405,27 @@ run init --name All --description "Full stack" --output "$temp/full-stack" --pro
 run validate --output "$temp/full-stack"
 [[ -f "$temp/full-stack/index.html" ]]
 
-# Exercise every available (not planned) profile/module/agent skill together.
+# Exercise representative available profiles/modules/skills together. The profile
+# matrix above covers every profile individually, including alternative choices
+# which must not coexist (Tempo/Jaeger, Compose/Kubernetes, etc.).
 # Audit the *rendered output*, not only catalog Markdown sources.
-all_profiles="$(python3 -c 'import json; print(",".join(p["id"] for p in json.load(open("catalog/profiles.json", encoding="utf-8"))["profiles"] if p["status"] == "available"))')"
+all_profiles="$(python3 - <<'PY'
+import json
+with open("catalog/profiles.json", encoding="utf-8") as source:
+    entries = json.load(source)["profiles"]
+chosen, used_exclusive = [], set()
+for profile in entries:
+    if profile["status"] != "available":
+        continue
+    category = profile["category"]
+    if category.startswith("infra-"):
+        if category in used_exclusive:
+            continue
+        used_exclusive.add(category)
+    chosen.append(profile["id"])
+print(",".join(chosen))
+PY
+)"
 all_modules="$(python3 -c 'import json; print(",".join(p["id"] for p in json.load(open("catalog/modules.json", encoding="utf-8"))["modules"]))')"
 all_skills="$(python3 -c 'import json; print(",".join(p["id"] for p in json.load(open("catalog/skills.json", encoding="utf-8"))["skills"]))')"
 run init --name PortableCanary --description 'Generated artifact scope audit' --output "$temp/all-profiles" --profiles "$all_profiles" --modules "$all_modules" --skills "$all_skills" --site docsify --non-interactive
