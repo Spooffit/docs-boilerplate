@@ -15,8 +15,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  complete-ci:
+    name: Verify Linux, Windows, Chromium, EventBus and packaged tool
+    uses: ./.github/workflows/docs-generator.yml
+    permissions:
+      contents: read
+
   verify:
     name: Verify tagged source and package
+    needs: complete-ci
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -55,18 +62,8 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - name: Test CLI contracts and full catalog smoke
-        shell: bash
-        run: |
-          set -euo pipefail
-          dotnet build src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release
-          dotnet run --configuration Release --project tests/DocsBoilerplate.ContractTests/DocsBoilerplate.ContractTests.csproj
-          bash -n tests/smoke.sh
-          bash tests/smoke.sh
-          python tests/catalog_hygiene.py
-          python tests/repository_hygiene.py
-          python tests/release_contracts.py
-          python tests/optional_profile_contracts.py
+      - name: Verify release package metadata and publish boundaries
+        run: python tests/release_contracts.py
       - name: Pack version from verified tag
         env:
           PACKAGE_VERSION: ${{ steps.tag.outputs.version }}

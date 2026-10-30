@@ -14,7 +14,7 @@ status: active
 - `main` remains the integration branch and can be developed on directly. Feature branches and pull requests are optional, recommended for larger changes.
 - Every push to `main` runs the regular [generator CI](../.github/workflows/docs-generator.yml), including build, smoke tests, browser checks and a local .NET tool installation.
 - **No push to `main` publishes a package.** A release is intentionally initiated by pushing a SemVer tag such as `v0.2.0`.
-- The separate [release workflow](../.github/workflows/release.yml) checks that the tag points to a commit reachable from `main`, validates the full Linux suite, installs the exact tagged package and only then publishes it to NuGet and creates a GitHub Release.
+- The separate [release workflow](../.github/workflows/release.yml) calls the **full existing CI as a reusable workflow** (Linux, Windows, Chromium, EventBus and package installation), checks that the tag points to a commit reachable from `main`, installs the exact tagged package and only then publishes it to NuGet and creates a GitHub Release.
 - The release package version is derived from the tag using `-p:Version`. The default `<Version>` in the .NET project is for local/ordinary CI packaging; it does not restrict later release tags. NuGet versions are immutable: use a new version for any correction, never overwrite a published package.
 
 ## One-time NuGet.org configuration
@@ -44,8 +44,8 @@ Use `v0.2.1` for a later patch, `v0.3.0` for new features and `v1.0.0` when you 
 
 A tag starts **one** workflow that:
 
-1. Validates tag syntax and confirms its commit is in `main`.
-2. Runs Linux build, CLI contract tests, the full generation smoke suite and catalog/release hygiene.
+1. Executes the complete regular CI suite on the **tagged commit**, including Windows and Chromium; if any job fails, publication is blocked.
+2. Validates tag syntax and confirms its commit is in `main`, then checks release-specific package policy.
 3. Builds `DocsBoilerplate.Cli.<version>.nupkg` from the verified tag and installs/tests that exact package.
 4. Exchanges GitHub OIDC credentials for a one-hour NuGet.org publishing key and publishes the verified package.
 5. Creates the GitHub Release with automatically generated notes and attaches the same `.nupkg` **only after successful NuGet publication**.

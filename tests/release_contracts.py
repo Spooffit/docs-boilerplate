@@ -28,7 +28,8 @@ workflow = (root / ".github/workflows/release.yml").read_text(encoding="utf-8")
 for must in (
     "tags:", "'v*'", "git merge-base --is-ancestor HEAD origin/main",
     "dotnet pack", '-p:Version="$PACKAGE_VERSION"', "dotnet tool install",
-    "bash tests/smoke.sh", "NuGet/login@v1", "id-token: write",
+    "uses: ./.github/workflows/docs-generator.yml", "needs: complete-ci",
+    "NuGet/login@v1", "id-token: write",
     "vars.NUGET_USER", "dotnet nuget push", "api.nuget.org/v3/index.json",
     "gh release create", "--verify-tag", "needs: verify",
     "contents: write", "cancel-in-progress: false"
@@ -45,6 +46,8 @@ if "dotnet nuget push" in ci or "NuGet/login@v1" in ci:
     errors.append("Regular CI must not publish packages")
 if "python tests/release_contracts.py" not in ci:
     errors.append("Regular CI does not validate the release workflow")
+if "workflow_call:" not in ci:
+    errors.append("Release must reuse the complete cross-platform CI workflow")
 
 for error in errors:
     print("ERROR:", error)
