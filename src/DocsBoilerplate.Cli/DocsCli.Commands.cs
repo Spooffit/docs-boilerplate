@@ -34,117 +34,123 @@ static partial class DocsCli
             .ToArray();
     }
 
+    // A deterministic decision flow is easier to validate than a mutable
+    // state-machine dependency. Every step adds at most one compatible choice,
+    // and ResolveProfiles applies the same guards to noninteractive calls.
     private static string[] PromptProfiles(Catalog catalog)
     {
         var selected = new HashSet<string>(StringComparer.Ordinal);
-        var offered = new HashSet<string>(StringComparer.Ordinal);
         string Label(string id) => id == "none" ? "None / skip" : catalog.Profiles.Single(p => p.Id == id).Name;
         void Header(string title) => AnsiConsole.MarkupLine($"[bold blue]{Markup.Escape(title)}[/]");
-
-        // SelectionPrompt is a single-choice selector (radio semantics).
-        string ChooseOne(string title, string category, bool backendAvailable = true)
+        string ChooseOne(string title, string category, bool allowNone = true,
+            Func<Profile, bool>? filter = null)
         {
-            var choices = catalog.Profiles.Where(p => p.Status == "available" && p.Category == category
-                && (backendAvailable || p.Id != "infra-devops-backend-repo"))
+            var choices = catalog.Profiles
+                .Where(p => p.Status == "available" && p.Category == category && (filter?.Invoke(p) ?? true))
                 .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
-            offered.UnionWith(choices);
             if (choices.Length == 0) return "none";
-            Header(title + " (choose one)");
-            return AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("Select an option:").PageSize(12).UseConverter(Label).AddChoices(new[] { "none" }.Concat(choices)));
+            Header(title);
+            var prompt = new SelectionPrompt<string>()
+                .Title("Choose one option:").PageSize(12).UseConverter(Label);
+            prompt.AddChoices(allowNone ? new[] { "none" }.Concat(choices) : choices);
+            return AnsiConsole.Prompt(prompt);
         }
-
-        // MultiSelectionPrompt shows checkboxes, suitable only for compatible choices.
-        void ChooseMany(string title, params string[] categories)
+        void AddOne(string title, string category, bool allowNone = true,
+            Func<Profile, bool>? filter = null)
         {
-            var choices = catalog.Profiles.Where(p => p.Status == "available"
-                && categories.Contains(p.Category, StringComparer.Ordinal))
+            var choice = ChooseOne(title, category, allowNone, filter);
+            if (choice != "none") selected.Add(choice);
+        }
+        void AddMany(string title, params string[] categories)
+        {
+            var choices = catalog.Profiles
+                .Where(p => p.Status == "available" && categories.Contains(p.Category, StringComparer.Ordinal))
+                .Where(p => p.Id is not ("ddd" or "ui-accessibility" or "ui-direct-dto-forms"
+                    or "http-contracts" or "masstransit-rabbitmq" or "masstransit-eventbus-composition"))
                 .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
-            offered.UnionWith(choices);
             if (choices.Length == 0) return;
-            Header(title + " (select any)");
+            Header(title);
             var picks = AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
                 .Title("Use Space to toggle and Enter to continue:")
                 .PageSize(12).NotRequired().UseConverter(Label).AddChoices(choices));
             selected.UnionWith(picks);
         }
 
-        void AddSingle(string title, string category, bool backendAvailable = true)
-        {
-            var choice = ChooseOne(title, category, backendAvailable);
-            if (choice != "none") selected.Add(choice);
-        }
-
-        AnsiConsole.MarkupLine("[bold]Step 1/3: Backend[/]");
+        Header("Step 1/3: Backend");
         var backend = ChooseOne("Backend technology", "backend");
         if (backend != "none")
         {
             selected.Add(backend);
-            ChooseMany("HTTP and API", "web");
-            ChooseMany("Validation", "validation");
-            ChooseMany("Database", "database");
-            ChooseMany("Data access", "data-access", "query-pattern");
-            ChooseMany("Messaging", "messaging");
-            ChooseMany("Architecture", "architecture", "modeling", "application-pattern");
-            AddSingle("Tests", "test-framework");
-            ChooseMany("Testing tools and conventions", "testing");
+            AddMany("HTTP and API", "web");
+            if (selected.Contains("aspnet-core"))
+                AddOne("OpenAPI documentation UI", "openapi-ui");
+            AddMany("Validation", "validation");
+            AddOne("Database", "database");
+            var dataAccess = ChooseOne("Data access", "data-access");
+            if (dataAccess != "none")
+            {
+                selected.Add(dataAccess);
+                if (dataAccess != "dapper" && AnsiConsole.Confirm("Use query specifications?", defaultValue: false))
+                    AddOne("Specification implementation", "query-pattern", allowNone: false);
+            }
+
+            // Transport -> client -> composition. No unrelated combinations
+            // can be displayed and no client can be selected without a broker.
+            if (AnsiConsole.Confirm("Use a message bus?", defaultValue: false))
+            {
+                var transport = ChooseOne("Message broker", "messaging-transport", allowNone: false);
+                selected.Add(transport);
+                AddOne("Messaging client", "messaging-client", allowNone: false,
+                    p => p.Requires.Contains(transport, StringComparer.Ordinal));
+                if (selected.Contains("masstransit-rabbitmq"))
+                    AddOne("Messaging organization", "messaging-organization",
+                        filter: p => p.Requires.Contains("masstransit-rabbitmq", StringComparer.Ordinal));
+            }
+
+            AddOne("Architecture", "architecture");
+            if (AnsiConsole.Confirm("Use CQRS?", defaultValue: false))
+            {
+                selected.Add("cqrs");
+                var wolverine = selected.Contains("wolverine-rabbitmq") || selected.Contains("wolverine-kafka");
+                AddOne("CQRS implementation", "cqrs-implementation", allowNone: false,
+                    p => p.Id != "cqrs-wolverine" || wolverine);
+            }
+            AddOne("Object mapping", "mapper", allowNone: false);
+            AddOne("Tests", "test-framework");
+            AddMany("Testing tools and conventions", "testing");
         }
 
-        AnsiConsole.MarkupLine("[bold]Step 2/3: Frontend[/]");
+        Header("Step 2/3: Frontend");
         var frontend = ChooseOne("Frontend technology", "frontend");
         if (frontend != "none")
         {
             selected.Add(frontend);
-            ChooseMany("UI component libraries", "ui");
-            ChooseMany("UI conventions", "frontend-practice");
+            AddMany("UI component libraries", "ui");
+            AddOne("REST API client", "rest-client", allowNone: false,
+                p => p.Requires.Contains(frontend, StringComparer.Ordinal));
             if (backend == "none")
-                AddSingle("Tests", "test-framework");
+                AddOne("Tests", "test-framework");
             if (frontend == "blazor")
-                ChooseMany("Blazor component testing", "blazor-testing");
+                AddMany("Blazor component testing", "blazor-testing");
         }
 
-        // Other independent profiles also have named blocks rather than one
-        // unstructured checklist of unrelated technologies and policies.
-        var remaining = RemainingContextualProfiles(catalog, offered, backend, frontend);
-        foreach (var category in remaining
-            .Select(id => catalog.Profiles.Single(p => p.Id == id).Category)
-            .Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal))
-        {
-            var ids = remaining.Where(id => catalog.Profiles.Single(p => p.Id == id).Category == category).ToArray();
-            var title = category switch
-            {
-                "web" => "HTTP and API contracts",
-                "database" => "Database",
-                "architecture" => "Architecture",
-                "modeling" => "Domain modeling",
-                "application-pattern" => "Application patterns",
-                "messaging" => "Messaging",
-                "integration" => "Integrations",
-                "testing" => "Testing tools",
-                "frontend-practice" => "UI conventions",
-                _ => category.Replace('-', ' ')
-            };
-            Header(title + " (select any)");
-            selected.UnionWith(AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
-                .Title("Use Space to toggle and Enter to continue:")
-                .PageSize(12).NotRequired().UseConverter(Label).AddChoices(ids)));
-        }
-
-        AnsiConsole.MarkupLine("[bold]Step 3/3: Infrastructure[/]");
+        Header("Step 3/3: Infrastructure");
         if (AnsiConsole.Confirm("Configure infrastructure documentation?", defaultValue: false))
         {
-            AddSingle("Object storage", "infra-storage");
+            AddOne("Object storage", "infra-storage");
             if (selected.Contains("infra-storage-s3") && (backend != "none" || frontend == "blazor"))
-                AddSingle("S3 client", "infra-s3-client");
-            AddSingle("Logging", "infra-logs");
-            AddSingle("Metrics", "infra-metrics");
-            AddSingle("Tracing", "infra-traces");
-            AddSingle("Deployment", "infra-deploy");
-            AddSingle("DevOps configuration location", "infra-devops", backendAvailable: backend != "none");
+                AddOne("S3 client", "infra-s3-client");
+            AddOne("Logging", "infra-logs");
+            AddOne("Telemetry collector", "infra-collector");
+            AddOne("Metrics collection", "infra-metrics");
+            AddOne("Metrics backend", "infra-metrics-backend");
+            AddOne("Tracing", "infra-traces");
+            AddOne("Deployment", "infra-deploy");
+            AddOne("DevOps configuration location", "infra-devops",
+                filter: p => backend != "none" || p.Id != "infra-devops-backend-repo");
             if (selected.Contains("dotnet") || frontend == "blazor" || backend == "dotnet")
-                AddSingle("Application orchestration", "infra-orchestration");
+                AddOne("Application orchestration", "infra-orchestration");
         }
-
         return selected.Order(StringComparer.Ordinal).ToArray();
     }
 
@@ -160,7 +166,7 @@ static partial class DocsCli
             return AnsiConsole.Ask<string>(prompt);
         }
         var name = Ask("name", "Project name:");
-        var description = Ask("description", "Short project description:");
+        var description = args.GetValueOrDefault("description") ?? name; // Legacy flag remains accepted for existing automation.
         var output = Path.GetFullPath(Ask("output", "Destination directory:"));
         var language = args.GetValueOrDefault("language") ?? (unattended || Console.IsInputRedirected
             ? "en"
@@ -176,7 +182,7 @@ static partial class DocsCli
                 ? throw new InvalidOperationException("--profiles is required for non-interactive initialization.")
                 : PromptProfiles(available);
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description))
-            throw new InvalidOperationException("Project name and description must be nonempty.");
+            throw new InvalidOperationException("Project name must be nonempty.");
         if (name.Contains("{{", StringComparison.Ordinal) || description.Contains("{{", StringComparison.Ordinal))
             throw new InvalidOperationException("Template placeholder markers are not permitted in input.");
         var ids = ResolveProfiles(selection, available);
