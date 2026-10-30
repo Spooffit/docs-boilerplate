@@ -39,9 +39,9 @@ static partial class DocsCli
             Add("index.html", (await File.ReadAllTextAsync(SafePath(catalog, "sites/docsify.html")))
                 .Replace("{{PROJECT_NAME_JSON}}", JsonSerializer.Serialize(name), StringComparison.Ordinal));
         // Every documentation directory has a human- and agent-readable index.
-        AddDirectoryIndexes(expected);
-        Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available));
-        Add("llms.txt", BuildLlmsIndex(name, description, expected));
+        AddDirectoryIndexes(expected, language);
+        Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available, language));
+        Add("llms.txt", BuildLlmsIndex(name, description, expected, language));
         return expected;
         void Add(string path, string value)
         {
@@ -92,7 +92,7 @@ static partial class DocsCli
             .Order(StringComparer.Ordinal)
             .ToArray();
 
-    private static void AddDirectoryIndexes(Dictionary<string, string> files)
+    private static void AddDirectoryIndexes(Dictionary<string, string> files, string language = "en")
     {
         foreach (var directory in DirectoryNames(files.Keys))
         {
@@ -107,10 +107,10 @@ static partial class DocsCli
 
             var title = directory.Split('/').Last().Replace('-', ' ');
             var sb = new StringBuilder();
-            sb.Append(DocumentMetadata.Frontmatter($"Directory: {title}", "Index of documents and subdirectories", "index", "active"));
+            sb.Append(DocumentMetadata.Frontmatter(language == "ru" ? $"Каталог: {title}" : $"Directory: {title}", language == "ru" ? "Указатель документов и подразделов" : "Index of documents and subdirectories", "index", "active"));
             sb.AppendLine($"# {title}");
             sb.AppendLine();
-            sb.AppendLine("Documents in this directory:");
+            sb.AppendLine(language == "ru" ? "Документы в этом каталоге:" : "Documents in this directory:");
             sb.AppendLine();
             foreach (var sub in subfolders)
                 sb.AppendLine($"- [{sub.Split('/').Last()}]({sub.Split('/').Last()}/index.md)");
@@ -126,17 +126,17 @@ static partial class DocsCli
         return heading is null ? Path.GetFileNameWithoutExtension(path) : heading[2..].Trim();
     }
 
-    internal static string BuildLlmsIndex(string projectName, string summary, Dictionary<string, string> files)
+    internal static string BuildLlmsIndex(string projectName, string summary, Dictionary<string, string> files, string language = "en")
     {
         var sb = new StringBuilder();
         sb.AppendLine("# " + projectName.Replace('\n', ' ').Replace('\r', ' '));
         sb.AppendLine();
         sb.AppendLine("> " + summary.Replace('\n', ' ').Replace('\r', ' '));
         sb.AppendLine();
-        sb.AppendLine("Navigation only: read AGENTS.md for instructions and the relevant Markdown source before claiming a project decision or implemented behavior.");
-        sb.AppendLine("The project selection in docs.config.json identifies installed profiles, not approved product requirements.");
+        sb.AppendLine(language == "ru" ? "Навигационный указатель: прочитайте AGENTS.md и соответствующий Markdown-файл, прежде чем утверждать, что решение согласовано или функция реализована." : "Navigation only: read AGENTS.md for instructions and the relevant Markdown source before claiming a project decision or implemented behavior.");
+        sb.AppendLine(language == "ru" ? "Выбранные профили в docs.config.json отражают набор документации, а не утверждённые требования продукта." : "The project selection in docs.config.json identifies installed profiles, not approved product requirements.");
         sb.AppendLine();
-        sb.AppendLine("## Essential");
+        sb.AppendLine(language == "ru" ? "## Основное" : "## Essential");
         sb.AppendLine();
         foreach (var path in new[] { "AGENTS.md", "docs/index.md", "docs/catalog.md", "docs/project/overview.md", "docs/architecture/overview.md" })
             if (files.ContainsKey(path))
@@ -157,36 +157,36 @@ static partial class DocsCli
             .Order(StringComparer.Ordinal).ToArray();
         if (projectDocs.Length > 0)
         {
-            sb.AppendLine("## Project areas");
+            sb.AppendLine(language == "ru" ? "## Разделы проекта" : "## Project areas");
             sb.AppendLine();
             foreach (var path in projectDocs)
                 sb.AppendLine($"- [{TitleFromMarkdown(files[path], path)}]({path})");
             sb.AppendLine();
         }
-        sb.AppendLine("## Reference");
+        sb.AppendLine(language == "ru" ? "## Справочник" : "## Reference");
         sb.AppendLine();
         foreach (var path in files.Keys.Where(path => path.StartsWith("docs/standards/", StringComparison.Ordinal)
                 && path.EndsWith("/index.md", StringComparison.Ordinal)).Order(StringComparer.Ordinal))
             sb.AppendLine($"- [{path["docs/".Length..]}]({path})");
         if (files.ContainsKey("docs/templates/index.md"))
-            sb.AppendLine("- [Authoring templates](docs/templates/index.md)");
+            sb.AppendLine(language == "ru" ? "- [Шаблоны документов](docs/templates/index.md)" : "- [Authoring templates](docs/templates/index.md)");
         return sb.ToString();
     }
 
-    internal static string BuildDocumentCatalog(Dictionary<string, string> files, IEnumerable<string> selected, Catalog profiles)
+    internal static string BuildDocumentCatalog(Dictionary<string, string> files, IEnumerable<string> selected, Catalog profiles, string language = "en")
     {
         var sb = new StringBuilder();
-        sb.AppendLine("# Documentation catalog");
+        sb.AppendLine(language == "ru" ? "# Каталог документации" : "# Documentation catalog");
         sb.AppendLine();
-        sb.AppendLine("This index is generated from the selected profiles and modules. It lists the documents actually installed during initialization; project owners may extend it after initialization.");
+        sb.AppendLine(language == "ru" ? "Этот указатель создан на основе выбранных профилей и модулей. Здесь перечислены установленные документы; владелец проекта может расширить список." : "This index is generated from the selected profiles and modules. It lists the documents actually installed during initialization; project owners may extend it after initialization.");
         sb.AppendLine();
-        sb.AppendLine("## Selected profiles");
+        sb.AppendLine(language == "ru" ? "## Выбранные профили" : "## Selected profiles");
         sb.AppendLine();
         var byId = profiles.Profiles.ToDictionary(p => p.Id, StringComparer.Ordinal);
         foreach (var id in selected.Order(StringComparer.Ordinal))
             sb.AppendLine($"- **{byId[id].Name}** (`{id}`)");
         sb.AppendLine();
-        sb.AppendLine("## Available documents");
+        sb.AppendLine(language == "ru" ? "## Доступные документы" : "## Available documents");
         sb.AppendLine();
         foreach (var path in files.Keys.Where(p => p.StartsWith("docs/", StringComparison.Ordinal)
                 && p.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
