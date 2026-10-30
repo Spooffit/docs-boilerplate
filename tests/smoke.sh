@@ -182,7 +182,7 @@ grep -q '^## Current system as observed$' "$temp/minimal/docs/architecture/overv
 grep -q '^## Accepted target architecture$' "$temp/minimal/docs/architecture/overview.md"
 [[ -f "$temp/minimal/docs/catalog.md" ]]
 [[ -f "$temp/minimal/llms.txt" ]]
-grep -q '^## Project areas
+grep -q '^## Project areas$' "$temp/minimal/llms.txt"
 grep -q 'docs/architecture/overview.md' "$temp/minimal/llms.txt"
 [[ -f "$temp/minimal/docs/standards/index.md" ]]
 [[ -f "$temp/minimal/docs/standards/dotnet/index.md" ]]
