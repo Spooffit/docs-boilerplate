@@ -19,61 +19,90 @@ static partial class DocsCli
     {
         var selected = new HashSet<string>(StringComparer.Ordinal);
         var offered = new HashSet<string>(StringComparer.Ordinal);
-        var frontendChoice = "none";
 
-        string PickOne(string title, string category)
+        string ChooseOne(string title, string category)
         {
-            var choices = catalog.Profiles.Where(x => x.Category == category && x.Status == "available")
-                .Select(x => x.Id).Order(StringComparer.Ordinal).ToArray();
+            var choices = catalog.Profiles.Where(p => p.Status == "available" && p.Category == category)
+                .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
             offered.UnionWith(choices);
-            return AnsiConsole.Prompt(new SelectionPrompt<string>().Title(title)
-                .AddChoices(new[] { "none" }.Concat(choices)));
+            if (choices.Length == 0) return "none";
+            return AnsiConsole.Prompt(new SelectionPrompt<string>()
+                .Title(title).PageSize(12).AddChoices(new[] { "none" }.Concat(choices)));
         }
 
-        void PickMany(string title, string category)
+        void ChooseMany(string title, params string[] categories)
         {
-            var choices = catalog.Profiles.Where(x => x.Category == category && x.Status == "available"
-                && !(x.Id == "bunit" && frontendChoice != "blazor"))
-                .Select(x => x.Id).Order(StringComparer.Ordinal).ToArray();
-            if (choices.Length == 0) return;
+            var choices = catalog.Profiles.Where(p => p.Status == "available"
+                && categories.Contains(p.Category, StringComparer.Ordinal)
+                && p.Id != "bunit")
+                .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
             offered.UnionWith(choices);
-            var picks = AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title(title).AddChoices(choices));
+            if (choices.Length == 0) return;
+            var picks = AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
+                .Title(title).PageSize(12).NotRequired().AddChoices(choices));
             selected.UnionWith(picks);
         }
 
-        var backend = PickOne("Backend technology:", "backend");
-        if (backend != "none") selected.Add(backend);
-        var frontend = PickOne("Frontend technology:", "frontend");
-        frontendChoice = frontend;
-        if (frontend != "none") selected.Add(frontend);
-
-        if (backend == "dotnet" || frontend == "blazor")
-            PickMany("Data access technologies (optional):", "data-access");
-        if (backend == "dotnet")
+        AnsiConsole.MarkupLine("[bold]Step 1/3: Backend[/] (optional)");
+        var backend = ChooseOne("Backend technology:", "backend");
+        if (backend != "none")
         {
-            PickMany("HTTP API frameworks (optional):", "web");
-            PickMany("Validation libraries (optional):", "validation");
-            PickMany("Databases (optional):", "database");
-            PickMany("Message transports / frameworks (optional):", "messaging");
-            PickMany("Query composition libraries (optional):", "query-pattern");
+            selected.Add(backend);
+            ChooseMany("Backend libraries and options:", "web", "validation", "database",
+                "data-access", "messaging", "query-pattern", "architecture",
+                "modeling", "application-pattern", "testing");
         }
-        if (frontend == "blazor")
-            PickMany("Blazor UI libraries (optional):", "ui");
-        PickMany("Architecture styles (optional):", "architecture");
-        PickMany("Domain modeling approaches (optional):", "modeling");
-        PickMany("Application patterns (optional):", "application-pattern");
-        if (backend == "dotnet" || frontend == "blazor")
-            PickMany("Testing libraries (optional):", "testing");
 
-        // Profiles in independent categories (e.g. documentation policy, storage,
-        // integration, HTTP consumption and UI practices) must remain discoverable
-        // in interactive mode too. Dependencies are resolved after selection.
-        var remaining = RemainingInteractiveProfiles(catalog, offered);
+        AnsiConsole.MarkupLine("[bold]Step 2/3: Frontend[/] (optional)");
+        var frontend = ChooseOne("Frontend technology:", "frontend");
+        if (frontend != "none")
+        {
+            selected.Add(frontend);
+            ChooseMany("Frontend libraries and options:", "ui", "frontend-practice");
+            if (frontend == "blazor")
+            {
+                offered.Add("bunit");
+                if (AnsiConsole.Confirm("Include bUnit component testing guidance?", false))
+                    selected.Add("bunit");
+            }
+        }
+
+        // Keep independent standards selectable without quietly adding them.
+        // Infrastructure choices come at the end, even for frontend-only projects.
+        var infra = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "infra-logs", "infra-metrics", "infra-traces", "infra-deploy",
+            "infra-devops", "infra-orchestration"
+        };
+        var remaining = RemainingInteractiveProfiles(catalog, offered)
+            .Where(id => !infra.Contains(catalog.Profiles.Single(p => p.Id == id).Category))
+            .ToArray();
         if (remaining.Length > 0)
-            selected.UnionWith(AnsiConsole.Prompt(
-                new MultiSelectionPrompt<string>()
-                    .Title("Additional optional profiles (dependencies resolved automatically):")
-                    .AddChoices(remaining)));
+            selected.UnionWith(AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
+                .Title("Other optional standards (independent selection):")
+                .PageSize(15).NotRequired().AddChoices(remaining)));
+
+        AnsiConsole.MarkupLine("[bold]Step 3/3: Infrastructure[/] (optional)");
+        if (AnsiConsole.Confirm("Configure infrastructure documentation?", defaultValue: false))
+        {
+            foreach (var (category, title) in new[]
+            {
+                ("infra-logs", "Logging technology:"),
+                ("infra-metrics", "Metrics technology:"),
+                ("infra-traces", "Tracing technology:"),
+                ("infra-deploy", "Deployment approach:"),
+                ("infra-devops", "DevOps definitions location:")
+            })
+            {
+                var chosen = ChooseOne(title, category);
+                if (chosen != "none") selected.Add(chosen);
+            }
+            if (selected.Contains("dotnet") || frontend == "blazor" || backend == "dotnet")
+            {
+                var chosen = ChooseOne("Application orchestration:", "infra-orchestration");
+                if (chosen != "none") selected.Add(chosen);
+            }
+        }
 
         return selected.Order(StringComparer.Ordinal).ToArray();
     }
