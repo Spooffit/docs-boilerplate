@@ -11,6 +11,35 @@ run() { dotnet run --no-build --configuration Release --project "$project" -- "$
 run doctor
 run list
 
+# Both languages use stable output paths and IDs.
+run init --name RussianDocs --description "Документация тестового проекта" --output "$temp/russian" --profiles xunit,blazor,bunit,infra-s3-client-minio --language ru --site docsify --non-interactive
+grep -q "Инструкции ИИ-агентам" "$temp/russian/AGENTS.md"
+grep -q "Каталог документации" "$temp/russian/docs/catalog.md"
+grep -q "Стабильные идентификаторы" "$temp/russian/docs/standards/document-identifiers.md"
+grep -q "Основное" "$temp/russian/llms.txt"
+grep -q "lang=\"ru\"" "$temp/russian/index.html"
+grep -q "Поиск по документации" "$temp/russian/index.html"
+grep -q "Компонентное тестирование Blazor" "$temp/russian/docs/standards/blazor/bunit.md"
+grep -q "MinIO .NET SDK" "$temp/russian/docs/standards/infrastructure/s3-client-minio.md"
+python3 - "$temp/russian/docs.config.json" <<'PY'
+import json,sys
+with open(sys.argv[1],encoding="utf-8") as fh:
+    config=json.load(fh)
+assert config["Language"]=="ru"
+assert "xunit" in config["Profiles"] and "bunit" in config["Profiles"]
+PY
+run validate --output "$temp/russian"
+run update --output "$temp/russian" --apply
+run validate --output "$temp/russian"
+run bootstrap-complete --output "$temp/russian" --apply
+[[ ! -e "$temp/russian/bootstrap.md" ]]
+run validate --output "$temp/russian"
+if run init --name InvalidLanguage --description Invalid --output "$temp/invalid-language" --profiles none --language de --non-interactive; then
+    echo "Unknown locale was accepted"; exit 1
+fi
+[[ ! -e "$temp/invalid-language/docs.config.json" ]]
+
+
 # Stage two is ephemeral, owner-approved and never part of the permanent manifest.
 run init --name IntakeSmoke --description "Two-stage documentation" --output "$temp/intake" --profiles none --site none --non-interactive
 run validate --output "$temp/intake"

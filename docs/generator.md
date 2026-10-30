@@ -27,6 +27,18 @@ The wizard uses **Backend → Frontend → Infrastructure (last, optional)**. Ea
 
 The publication pipeline is active but **does not publish on every commit**. Versions are released only from explicit version tags after passing the full test suite. From a source checkout you can still run `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed`.
 
+## Language and translation catalog
+
+The `init` wizard prompts for the documentation language directly after the destination folder. Supported values are `en` and `ru`. Noninteractive scripts default to `en` for backward compatibility; supply `--language ru` to generate Russian documentation and agent instructions.
+
+```sh
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Документация" --output ./scratch/ru --profiles dotnet,xunit --language ru --site docsify --non-interactive
+```
+
+English sources remain under `catalog/base/`, `catalog/docs/`, `catalog/modules/`, `catalog/skills/` and `catalog/bootstrap/`. Russian files mirror these source-relative paths under `catalog/locales/ru/`, while output paths, stable document IDs, Markdown links and code identifiers are language-independent. Russian profile labels are stored in `catalog/locales/ru/profiles.json`.
+
+A missing translation is a blocking error before files are written, not an English fallback. Generated indexes, `llms.txt`, Docsify title/search UI, persistent skills and temporary project-intake instructions follow the selected language. The `Language` property in `docs.config.json` persists through `update` and governs safe `bootstrap-complete` cleanup. Older manifests without this field are read as English. Run `python tests/localization_contracts.py` after changing the catalog.
+
 ## Initialize from a source checkout
 
 Requires .NET 10 SDK. Repository-root usage:

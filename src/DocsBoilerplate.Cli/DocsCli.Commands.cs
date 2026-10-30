@@ -34,11 +34,12 @@ static partial class DocsCli
             .ToArray();
     }
 
-    private static string[] PromptProfiles(Catalog catalog)
+    private static string[] PromptProfiles(Catalog catalog, string language)
     {
         var selected = new HashSet<string>(StringComparer.Ordinal);
         var offered = new HashSet<string>(StringComparer.Ordinal);
-        string Label(string id) => id == "none" ? "None / skip" : catalog.Profiles.Single(p => p.Id == id).Name;
+        string T(string en, string ru) => language == "ru" ? ru : en;
+        string Label(string id) => id == "none" ? T("None / skip", "Не выбирать") : catalog.Profiles.Single(p => p.Id == id).Name;
         void Header(string title) => AnsiConsole.MarkupLine($"[bold blue]{Markup.Escape(title)}[/]");
 
         // SelectionPrompt is a single-choice selector (radio semantics).
@@ -49,9 +50,9 @@ static partial class DocsCli
                 .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
             offered.UnionWith(choices);
             if (choices.Length == 0) return "none";
-            Header(title + " (choose one)");
+            Header(title + T(" (choose one)", " (один вариант)"));
             return AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("Select an option:").PageSize(12).UseConverter(Label).AddChoices(new[] { "none" }.Concat(choices)));
+                .Title(T("Select an option:", "Выберите вариант:")).PageSize(12).UseConverter(Label).AddChoices(new[] { "none" }.Concat(choices)));
         }
 
         // MultiSelectionPrompt shows checkboxes, suitable only for compatible choices.
@@ -62,9 +63,9 @@ static partial class DocsCli
                 .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
             offered.UnionWith(choices);
             if (choices.Length == 0) return;
-            Header(title + " (select any)");
+            Header(title + T(" (select any)", " (множественный выбор)"));
             var picks = AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
-                .Title("Use Space to toggle and Enter to continue:")
+                .Title(T("Use Space to toggle and Enter to continue:", "Пробел: выбрать или снять; Enter: продолжить:"))
                 .PageSize(12).NotRequired().UseConverter(Label).AddChoices(choices));
             selected.UnionWith(picks);
         }
@@ -75,32 +76,32 @@ static partial class DocsCli
             if (choice != "none") selected.Add(choice);
         }
 
-        AnsiConsole.MarkupLine("[bold]Step 1/3: Backend[/]");
-        var backend = ChooseOne("Backend technology", "backend");
+        AnsiConsole.MarkupLine($"[bold]{T("Step 1/3: Backend", "Шаг 1/3: Backend")}[/]");
+        var backend = ChooseOne(T("Backend technology", "Технология backend"), "backend");
         if (backend != "none")
         {
             selected.Add(backend);
-            ChooseMany("HTTP and API", "web");
-            ChooseMany("Validation", "validation");
-            ChooseMany("Database", "database");
-            ChooseMany("Data access", "data-access", "query-pattern");
-            ChooseMany("Messaging", "messaging");
-            ChooseMany("Architecture", "architecture", "modeling", "application-pattern");
-            AddSingle("Tests", "test-framework");
-            ChooseMany("Testing tools and conventions", "testing");
+            ChooseMany(T("HTTP and API", "HTTP и API"), "web");
+            ChooseMany(T("Validation", "Валидация"), "validation");
+            ChooseMany(T("Database", "База данных"), "database");
+            ChooseMany(T("Data access", "Доступ к данным"), "data-access", "query-pattern");
+            ChooseMany(T("Messaging", "Обмен сообщениями"), "messaging");
+            ChooseMany(T("Architecture", "Архитектура"), "architecture", "modeling", "application-pattern");
+            AddSingle(T("Tests", "Тесты"), "test-framework");
+            ChooseMany(T("Testing tools and conventions", "Инструменты и правила тестирования"), "testing");
         }
 
-        AnsiConsole.MarkupLine("[bold]Step 2/3: Frontend[/]");
-        var frontend = ChooseOne("Frontend technology", "frontend");
+        AnsiConsole.MarkupLine($"[bold]{T("Step 2/3: Frontend", "Шаг 2/3: Frontend")}[/]");
+        var frontend = ChooseOne(T("Frontend technology", "Технология frontend"), "frontend");
         if (frontend != "none")
         {
             selected.Add(frontend);
-            ChooseMany("UI component libraries", "ui");
-            ChooseMany("UI conventions", "frontend-practice");
+            ChooseMany(T("UI component libraries", "Библиотеки UI-компонентов"), "ui");
+            ChooseMany(T("UI conventions", "Правила UI"), "frontend-practice");
             if (backend == "none")
-                AddSingle("Tests", "test-framework");
+                AddSingle(T("Tests", "Тесты"), "test-framework");
             if (frontend == "blazor")
-                ChooseMany("Blazor component testing", "blazor-testing");
+                ChooseMany(T("Blazor component testing", "Компонентное тестирование Blazor"), "blazor-testing");
         }
 
         // Other independent profiles also have named blocks rather than one
@@ -124,25 +125,25 @@ static partial class DocsCli
                 "frontend-practice" => "UI conventions",
                 _ => category.Replace('-', ' ')
             };
-            Header(title + " (select any)");
+            Header(title + T(" (select any)", " (множественный выбор)"));
             selected.UnionWith(AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
                 .Title("Use Space to toggle and Enter to continue:")
                 .PageSize(12).NotRequired().UseConverter(Label).AddChoices(ids)));
         }
 
-        AnsiConsole.MarkupLine("[bold]Step 3/3: Infrastructure[/]");
-        if (AnsiConsole.Confirm("Configure infrastructure documentation?", defaultValue: false))
+        AnsiConsole.MarkupLine($"[bold]{T("Step 3/3: Infrastructure", "Шаг 3/3: Инфраструктура")}[/]");
+        if (AnsiConsole.Confirm(T("Configure infrastructure documentation?", "Настроить документацию инфраструктуры?"), defaultValue: false))
         {
-            AddSingle("Object storage", "infra-storage");
+            AddSingle(T("Object storage", "Объектное хранилище"), "infra-storage");
             if (selected.Contains("infra-storage-s3") && (backend != "none" || frontend == "blazor"))
-                AddSingle("S3 client", "infra-s3-client");
-            AddSingle("Logging", "infra-logs");
-            AddSingle("Metrics", "infra-metrics");
-            AddSingle("Tracing", "infra-traces");
-            AddSingle("Deployment", "infra-deploy");
-            AddSingle("DevOps configuration location", "infra-devops", backendAvailable: backend != "none");
+                AddSingle(T("S3 client", "Клиент S3"), "infra-s3-client");
+            AddSingle(T("Logging", "Журналы"), "infra-logs");
+            AddSingle(T("Metrics", "Метрики"), "infra-metrics");
+            AddSingle(T("Tracing", "Трассировка"), "infra-traces");
+            AddSingle(T("Deployment", "Развёртывание"), "infra-deploy");
+            AddSingle(T("DevOps configuration location", "Расположение DevOps-конфигурации"), "infra-devops", backendAvailable: backend != "none");
             if (selected.Contains("dotnet") || frontend == "blazor" || backend == "dotnet")
-                AddSingle("Application orchestration", "infra-orchestration");
+                AddSingle(T("Application orchestration", "Оркестрация приложения"), "infra-orchestration");
         }
 
         return selected.Order(StringComparer.Ordinal).ToArray();
@@ -162,14 +163,23 @@ static partial class DocsCli
         var name = Ask("name", "Project name:");
         var description = Ask("description", "Short project description:");
         var output = Path.GetFullPath(Ask("output", "Destination directory:"));
+        // The language is the next wizard question after the destination.
+        var language = ValidateLanguage(args.GetValueOrDefault("language") ??
+            (unattended || Console.IsInputRedirected ? "en" :
+                AnsiConsole.Prompt(new SelectionPrompt<string>()
+                    .Title("Documentation language / Язык документации:")
+                    .UseConverter(value => value == "ru" ? "Русский" : "English")
+                    .AddChoices("en", "ru"))));
+        string Display(string en, string ru) => language == "ru" ? ru : en;
         UpdateRecovery.AssertNoPending(output);
+        var localizedAvailable = await LocalizedCatalogAsync(catalog, available, language);
         var selection = args.TryGetValue("profiles", out var listed)
             ? string.Equals(listed, "none", StringComparison.OrdinalIgnoreCase)
                 ? []
                 : listed.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             : unattended || Console.IsInputRedirected
                 ? throw new InvalidOperationException("--profiles is required for non-interactive initialization.")
-                : PromptProfiles(available);
+                : PromptProfiles(localizedAvailable, language);
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description))
             throw new InvalidOperationException("Project name and description must be nonempty.");
         if (name.Contains("{{", StringComparison.Ordinal) || description.Contains("{{", StringComparison.Ordinal))
@@ -188,18 +198,18 @@ static partial class DocsCli
         var moduleIds = ResolveModules(requestedModules, moduleCatalog);
         var site = args.GetValueOrDefault("site") ?? (unattended || Console.IsInputRedirected
             ? "docsify"
-            : AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Documentation site:")
+            : AnsiConsole.Prompt(new SelectionPrompt<string>().Title(Display("Documentation site:", "Сайт документации:"))
                 .AddChoices("docsify", "none")));
         if (site is not ("none" or "docsify"))
             throw new InvalidOperationException($"Unknown documentation site: {site}");
         var expected = await RenderAsync(catalog, available, skillCatalog, moduleCatalog,
-            name, description, output, ids, skillIds, moduleIds, site);
+            name, description, output, ids, skillIds, moduleIds, site, language);
         // Stage-two intake documents are deliberately unowned temporary files.
         // Generate them alongside the manifest, but never include them in
         // GeneratedFiles/GeneratedHashes so agent-approved cleanup stays valid.
-        var config = BuildConfig(name, description, ids, skillIds, moduleIds, site, expected);
+        var config = BuildConfig(name, description, ids, skillIds, moduleIds, site, expected, language: language);
         expected.Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
-        foreach (var (path, content) in await LoadBootstrapAsync(catalog))
+        foreach (var (path, content) in await LoadBootstrapAsync(catalog, language))
             if (!expected.TryAdd(path, content))
                 throw new InvalidOperationException($"Temporary bootstrap path conflicts with generated output: {path}");
         SafeFiles.AssertNoLinks(output);
@@ -210,35 +220,49 @@ static partial class DocsCli
         {
             if (await IsIdenticalAsync(output, expected))
             {
-                AnsiConsole.MarkupLine("[green]No changes.[/] Existing repository matches this configuration.");
+                AnsiConsole.MarkupLine(Display("[green]No changes.[/] Existing repository matches this configuration.", "[green]Без изменений.[/] Репозиторий уже соответствует выбранной конфигурации."));
                 return await ValidateAsync(output, catalog, available, skillCatalog, moduleCatalog);
             }
             throw new IOException($"Output directory is not empty: {output}. Refusing to overwrite any files.");
         }
-        AnsiConsole.MarkupLine($"[bold]Selected configuration for {Markup.Escape(name)}[/]");
+        AnsiConsole.MarkupLine($"[bold]{Display("Selected configuration for", "Выбранная конфигурация для")} {Markup.Escape(name)}[/]");
         var requestedProfiles = new HashSet<string>(selection, StringComparer.Ordinal);
         var selectedProfiles = ids.Where(requestedProfiles.Contains)
-            .Select(id => available.Profiles.Single(p => p.Id == id)).ToArray();
+            .Select(id => localizedAvailable.Profiles.Single(p => p.Id == id)).ToArray();
         foreach (var group in selectedProfiles.GroupBy(p => p.Category)
             .OrderBy(g => g.Key, StringComparer.Ordinal))
         {
-            AnsiConsole.MarkupLine($"[blue]{Markup.Escape(group.Key)}[/]");
+            AnsiConsole.MarkupLine($"[blue]{Markup.Escape(language == "ru" ? group.Key switch
+            {
+                "test-framework" => "Тестовый фреймворк",
+                "blazor-testing" => "Тестирование Blazor",
+                "infra-s3-client" => "Клиент S3",
+                "infra-storage" => "Объектное хранилище",
+                "backend" => "Backend",
+                "frontend" => "Frontend",
+                "architecture" => "Архитектура",
+                "database" => "База данных",
+                "testing" => "Тестирование",
+                "messaging" => "Обмен сообщениями",
+                _ => group.Key
+            } : group.Key)}[/]");
             foreach (var profile in group.OrderBy(p => p.Name, StringComparer.Ordinal))
                 AnsiConsole.MarkupLine($"  [green]✓[/] {Markup.Escape(profile.Name)}");
         }
         if (selectedProfiles.Length == 0)
-            AnsiConsole.MarkupLine("  No optional technology profiles");
+            AnsiConsole.MarkupLine(Display("  No optional technology profiles", "  Не выбраны дополнительные технологические профили"));
         var dependencies = ids.Where(id => !requestedProfiles.Contains(id))
-            .Select(id => available.Profiles.Single(p => p.Id == id).Name)
+            .Select(id => localizedAvailable.Profiles.Single(p => p.Id == id).Name)
             .Order(StringComparer.Ordinal).ToArray();
         if (dependencies.Length > 0)
-            AnsiConsole.MarkupLine($"[blue]Included dependencies:[/] {Markup.Escape(string.Join(", ", dependencies))}");
-        AnsiConsole.MarkupLine($"[blue]Documentation:[/] {skillIds.Count} agent skills and {moduleIds.Count} modules (included)");
-        AnsiConsole.MarkupLine($"[blue]Site:[/] {Markup.Escape(site)}");
-        AnsiConsole.MarkupLine($"[blue]Destination:[/] {Markup.Escape(output)}");
+            AnsiConsole.MarkupLine($"[blue]{Display("Included dependencies:", "Добавленные зависимости:")}[/] {Markup.Escape(string.Join(", ", dependencies))}");
+        AnsiConsole.MarkupLine($"[blue]{Display("Documentation:", "Документация:")}[/] {skillIds.Count} {Display("agent skills and", "навыков агента и")} {moduleIds.Count} {Display("modules (included)", "модулей (включены по умолчанию)")}");
+        AnsiConsole.MarkupLine($"[blue]{Display("Site:", "Сайт:")}[/] {Markup.Escape(site)}");
+        AnsiConsole.MarkupLine($"[blue]{Display("Language:", "Язык:")}[/] {language}");
+        AnsiConsole.MarkupLine($"[blue]{Display("Destination:", "Папка назначения:")}[/] {Markup.Escape(output)}");
         if (args.ContainsKey("dry-run"))
             return 0;
-        if (!unattended && !Console.IsInputRedirected && !AnsiConsole.Confirm("Generate documentation with these options?", defaultValue: false))
+        if (!unattended && !Console.IsInputRedirected && !AnsiConsole.Confirm(Display("Generate documentation with these options?", "Создать документацию с выбранными настройками?"), defaultValue: false))
             return 2;
         var created = new List<string>();
         try
@@ -259,7 +283,7 @@ static partial class DocsCli
                 if (File.Exists(path)) File.Delete(path);
             throw;
         }
-        AnsiConsole.MarkupLine("[green]Generated.[/] Validating repository...");
+        AnsiConsole.MarkupLine(Display("[green]Generated.[/] Validating repository...", "[green]Создано.[/] Выполняется проверка репозитория..."));
         return await ValidateAsync(output, catalog, available, skillCatalog, moduleCatalog);
 
     }
@@ -268,7 +292,7 @@ static partial class DocsCli
     {
         string[] allowed = command switch
         {
-            "init" => ["catalog", "name", "description", "output", "profiles", "skills", "modules", "site", "dry-run", "non-interactive"],
+            "init" => ["catalog", "name", "description", "output", "language", "profiles", "skills", "modules", "site", "dry-run", "non-interactive"],
             "validate" => ["catalog", "output"],
             "update" => ["catalog", "output", "apply"],
             "bootstrap-complete" => ["catalog", "output", "apply"],
