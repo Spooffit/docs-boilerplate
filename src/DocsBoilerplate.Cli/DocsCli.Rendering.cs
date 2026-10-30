@@ -8,13 +8,13 @@ static partial class DocsCli
     private static async Task<Dictionary<string, string>> RenderAsync(
         string catalog, Catalog available, SkillCatalog skillCatalog, ModuleCatalog moduleCatalog,
         string name, string description, string output, HashSet<string> ids,
-        HashSet<string> skillIds, HashSet<string> moduleIds, string site)
+        HashSet<string> skillIds, HashSet<string> moduleIds, string site, string language = "en")
     {
         var expected = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var full in SafeFiles.Enumerate(Path.Combine(catalog, "base")))
         {
             var relative = Path.GetRelativePath(Path.Combine(catalog, "base"), full).Replace('\\', '/');
-            Add(relative, (await File.ReadAllTextAsync(full))
+            Add(relative, (await ReadLocalizedAsync(catalog, Path.GetRelativePath(catalog, full).Replace('\\', '/'), language))
                 .Replace("{{PROJECT_NAME}}", name, StringComparison.Ordinal)
                 .Replace("{{PROJECT_DESCRIPTION}}", description, StringComparison.Ordinal));
         }
@@ -22,18 +22,18 @@ static partial class DocsCli
         {
             var profile = available.Profiles.Single(x => x.Id == id);
             foreach (var path in profile.Files)
-                Add(path, await File.ReadAllTextAsync(SafePath(catalog, path)));
+                Add(path, await ReadLocalizedAsync(catalog, path, language));
         }
         foreach (var id in skillIds)
         {
             var skill = skillCatalog.Skills.Single(x => x.Id == id);
-            Add(skill.Destination, await File.ReadAllTextAsync(SafePath(catalog, skill.Source)));
+            Add(skill.Destination, await ReadLocalizedAsync(catalog, skill.Source, language));
         }
         foreach (var id in moduleIds)
         {
             var module = moduleCatalog.Modules.Single(x => x.Id == id);
             foreach (var file in module.Files)
-                Add(file.Destination, await File.ReadAllTextAsync(SafePath(catalog, file.Source)));
+                Add(file.Destination, await ReadLocalizedAsync(catalog, file.Source, language));
         }
         if (site == "docsify")
             Add("index.html", (await File.ReadAllTextAsync(SafePath(catalog, "sites/docsify.html")))
@@ -55,7 +55,7 @@ static partial class DocsCli
     private static ProjectConfig BuildConfig(
         string name, string description, IEnumerable<string> ids, IEnumerable<string> skills,
         IEnumerable<string> modules, string site, Dictionary<string, string> content,
-        IEnumerable<string>? retiredPaths = null)
+        IEnumerable<string>? retiredPaths = null, string language = "en")
     {
         var hashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var (path, value) in content.OrderBy(x => x.Key, StringComparer.Ordinal))
@@ -65,7 +65,7 @@ static partial class DocsCli
             ids.Order(StringComparer.Ordinal).ToArray(), skills.Order(StringComparer.Ordinal).ToArray(),
             modules.Order(StringComparer.Ordinal).ToArray(), site,
             content.Keys.Order(StringComparer.Ordinal).ToArray(), hashes,
-            retired is { Length: > 0 } ? retired : null);
+            retired is { Length: > 0 } ? retired : null, language);
     }
 
     internal static string Hash(string content) =>
