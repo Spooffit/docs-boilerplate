@@ -209,19 +209,6 @@
       "category": "application-pattern"
     },
     {
-      "id": "masstransit-rabbitmq",
-      "name": "MassTransit + RabbitMQ",
-      "status": "available",
-      "requires": [
-        "dotnet",
-        "messaging-rabbitmq"
-      ],
-      "files": [
-        "docs/standards/dotnet/masstransit-rabbitmq.md"
-      ],
-      "category": "messaging-client"
-    },
-    {
       "id": "ardalis-specification",
       "name": "Ardalis.Specification",
       "status": "available",
@@ -349,18 +336,6 @@
         "docs/standards/http/etag-concurrency.md"
       ],
       "category": "web"
-    },
-    {
-      "id": "masstransit-eventbus-composition",
-      "name": "MassTransit RabbitMQ three-project EventBus composition",
-      "status": "available",
-      "requires": [
-        "masstransit-rabbitmq"
-      ],
-      "files": [
-        "docs/standards/dotnet/eventbus-composition.md"
-      ],
-      "category": "messaging-organization"
     },
     {
       "id": "ui-direct-dto-forms",
@@ -498,19 +473,6 @@
         "docs/standards/messaging/kafka.md"
       ],
       "category": "messaging-transport"
-    },
-    {
-      "id": "masstransit-kafka",
-      "name": "MassTransit (Kafka rider)",
-      "status": "available",
-      "requires": [
-        "dotnet",
-        "messaging-kafka"
-      ],
-      "files": [
-        "docs/standards/dotnet/masstransit-kafka.md"
-      ],
-      "category": "messaging-client"
     },
     {
       "id": "wolverine-rabbitmq",
@@ -754,6 +716,76 @@
         "docs/standards/infrastructure/metrics-mimir.md"
       ],
       "category": "infra-metrics-backend"
+    },
+    {
+      "id": "masstransit",
+      "name": "MassTransit",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/masstransit.md"
+      ],
+      "category": "messaging-client"
+    },
+    {
+      "id": "messaging-organization-inline",
+      "name": "Application-owned message endpoints",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/messaging/organization-inline.md"
+      ],
+      "category": "messaging-organization"
+    },
+    {
+      "id": "messaging-organization-separate",
+      "name": "Separate contracts and transport adapters",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/messaging/organization-separate.md"
+      ],
+      "category": "messaging-organization"
+    },
+    {
+      "id": "architecture-hybrid",
+      "name": "Monolith + microservices",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/architecture/hybrid.md"
+      ],
+      "category": "architecture"
+    },
+    {
+      "id": "postgres-pooler-pgbouncer",
+      "name": "PgBouncer (preferred)",
+      "status": "available",
+      "requires": [
+        "postgresql"
+      ],
+      "files": [
+        "docs/standards/postgresql/pgbouncer.md"
+      ],
+      "category": "postgres-pooler"
+    },
+    {
+      "id": "postgres-pooler-odyssey",
+      "name": "Odyssey",
+      "status": "available",
+      "requires": [
+        "postgresql"
+      ],
+      "files": [
+        "docs/standards/postgresql/odyssey.md"
+      ],
+      "category": "postgres-pooler"
     }
   ]
 }
