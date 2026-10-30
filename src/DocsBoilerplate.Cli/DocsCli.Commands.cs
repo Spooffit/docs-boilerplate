@@ -166,7 +166,6 @@ static partial class DocsCli
             return AnsiConsole.Ask<string>(prompt);
         }
         var name = Ask("name", "Project name:");
-        var description = name; // Project description is no longer requested or persisted.
         var output = Path.GetFullPath(Ask("output", "Destination directory:"));
         var language = args.GetValueOrDefault("language") ?? (unattended || Console.IsInputRedirected
             ? "en"
@@ -204,11 +203,11 @@ static partial class DocsCli
         if (site is not ("none" or "docsify"))
             throw new InvalidOperationException($"Unknown documentation site: {site}");
         var expected = await RenderAsync(catalog, available, skillCatalog, moduleCatalog,
-            name, description, output, ids, skillIds, moduleIds, site, language);
+            name, output, ids, skillIds, moduleIds, site, language);
         // Stage-two intake documents are deliberately unowned temporary files.
         // Generate them alongside the manifest, but never include them in
         // GeneratedFiles/GeneratedHashes so agent-approved cleanup stays valid.
-        var config = BuildConfig(name, description, ids, skillIds, moduleIds, site, expected, language: language);
+        var config = BuildConfig(name, ids, skillIds, moduleIds, site, expected, language: language);
         expected.Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
         foreach (var (path, content) in await LoadBootstrapAsync(catalog, language))
             if (!expected.TryAdd(path, content))
@@ -280,7 +279,7 @@ static partial class DocsCli
     {
         string[] allowed = command switch
         {
-            "init" => ["catalog", "name", "description", "output", "profiles", "skills", "modules", "site", "language", "dry-run", "non-interactive"],
+            "init" => ["catalog", "name", "output", "profiles", "skills", "modules", "site", "language", "dry-run", "non-interactive"],
             "validate" => ["catalog", "output"],
             "update" => ["catalog", "output", "apply"],
             "bootstrap-complete" => ["catalog", "output", "apply"],
