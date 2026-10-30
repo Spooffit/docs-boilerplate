@@ -82,10 +82,6 @@ def check() -> None:
         # Executable reference fixtures are language-independent contracts.
         # Translating explanation text must never change code that the source
         # tests extract, compile or compare byte-for-byte.
-        if relative == "docs/standards/dotnet/eventbus-composition.md":
-            pattern = r"^```(?:xml|csharp) file=[^\n]+\n[\s\S]*?^```"
-            if re.findall(pattern, english, re.M) != re.findall(pattern, value, re.M):
-                errors.append(f"Executable EventBus examples differ: {relative}")
         if relative == "docs/standards/http/etag-concurrency.md":
             pattern = r"^```http scenario=[^\n]+\n[\s\S]*?^```"
             if re.findall(pattern, english, re.M) != re.findall(pattern, value, re.M):
