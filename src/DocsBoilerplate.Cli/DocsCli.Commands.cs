@@ -19,6 +19,7 @@ static partial class DocsCli
     {
         var selected = new HashSet<string>(StringComparer.Ordinal);
         var offered = new HashSet<string>(StringComparer.Ordinal);
+        string Label(string id) => id == "none" ? "Skip (none)" : catalog.Profiles.Single(p => p.Id == id).Name;
 
         string ChooseOne(string title, string category)
         {
@@ -27,7 +28,7 @@ static partial class DocsCli
             offered.UnionWith(choices);
             if (choices.Length == 0) return "none";
             return AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title(title).PageSize(12).AddChoices(new[] { "none" }.Concat(choices)));
+                .Title(title).PageSize(12).UseConverter(Label).AddChoices(new[] { "none" }.Concat(choices)));
         }
 
         void ChooseMany(string title, params string[] categories)
@@ -39,7 +40,7 @@ static partial class DocsCli
             offered.UnionWith(choices);
             if (choices.Length == 0) return;
             var picks = AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
-                .Title(title).PageSize(12).NotRequired().AddChoices(choices));
+                .Title(title).PageSize(12).NotRequired().UseConverter(Label).AddChoices(choices));
             selected.UnionWith(picks);
         }
 
@@ -80,7 +81,7 @@ static partial class DocsCli
         if (remaining.Length > 0)
             selected.UnionWith(AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
                 .Title("Other optional standards (independent selection):")
-                .PageSize(15).NotRequired().AddChoices(remaining)));
+                .PageSize(15).NotRequired().UseConverter(Label).AddChoices(remaining)));
 
         AnsiConsole.MarkupLine("[bold]Step 3/3: Infrastructure[/] (optional)");
         if (AnsiConsole.Confirm("Configure infrastructure documentation?", defaultValue: false))

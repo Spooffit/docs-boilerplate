@@ -215,7 +215,9 @@ grep -q 'docs/templates/index.md' "$temp/minimal/llms.txt"
 [[ ! -e "$temp/minimal/docs/standards/stateful-workflows.md" ]]
 [[ -f "$temp/minimal/docs/standards/specification-traceability.md" ]]
 [[ ! -e "$temp/minimal/docs/testing/strategy.md" ]]
-[[ ! -e "$temp/minimal/.agents" ]]
+[[ -f "$temp/minimal/.agents/skills/project-intake/SKILL.md" ]]
+[[ ! -e "$temp/minimal/.agents/skills/docs-review" ]]
+[[ ! -e "$temp/minimal/.agents/skills/docs-init" ]]
 [[ ! -e "$temp/minimal/docs/templates/blazor-frontend-feature.md" ]]
 [[ ! -e "$temp/minimal/docs/standards/ui" ]]
 if grep -q "blazor/components.md" "$temp/minimal/docs/catalog.md"; then echo "Unselected standard leaked into catalog"; exit 1; fi
@@ -428,7 +430,7 @@ grep -q 'standards/ui/direct-dto-forms.md' "$temp/all-profiles/docs/catalog.md"
 if grep -q '^## Durable activity history' "$temp/all-profiles/docs/operations/observability.md"; then
     echo "Unexpected activity-history guidance"; exit 1
 fi
-grep -q 'does not contain an installed CLI' "$temp/all-profiles/.agents/skills/docs-init/SKILL.md"
+grep -q 'does not install the tool automatically' "$temp/all-profiles/.agents/skills/docs-init/SKILL.md"
 # Domain modeling remains optional, and typed-value validation belongs to selected technical contracts.
 grep -q '^## Rules and validation$' "$temp/all-profiles/docs/standards/architecture/ddd.md"
 grep -q '^## Validation at the correct operation boundary$' "$temp/all-profiles/docs/standards/aspnet/errors-and-validation.md"
