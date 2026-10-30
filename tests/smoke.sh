@@ -261,7 +261,9 @@ run validate --output "$temp/http-consumer"
 [[ -f "$temp/http-consumer/docs/architecture/api.md" ]]
 grep -q '^## Project areas$' "$temp/http-consumer/llms.txt"
 grep -q 'docs/architecture/api.md' "$temp/http-consumer/llms.txt"
-grep -q 'docs/testing/strategy.md' "$temp/http-consumer/llms.txt"
+if grep -q 'docs/testing/strategy.md' "$temp/http-consumer/llms.txt"; then
+    echo "Explicit --modules api subset unexpectedly included testing"; exit 1
+fi
 [[ ! -e "$temp/http-consumer/docs/standards/dotnet" ]]
 [[ ! -e "$temp/http-consumer/docs/standards/aspnet" ]]
 [[ ! -e "$temp/http-consumer/docs/standards/postgresql" ]]
