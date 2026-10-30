@@ -32,6 +32,12 @@ def check(root: Path) -> list[str]:
     except (OSError, ValueError, KeyError, TypeError) as exc:
         errors.append(f"{root}: cannot read selected skills: {exc}")
     installed = {path.parent.name for path in (root / ".agents" / "skills").glob("*/SKILL.md")}
+    # The intake skill is present only during stage two, not selected as a
+    # persistent skill and not tracked in the generator ownership manifest.
+    if (root / "bootstrap.md").is_file():
+        if "project-intake" not in installed:
+            errors.append(f"{root}: missing temporary project-intake skill")
+        installed.discard("project-intake")
     if installed != selected:
         errors.append(f"{root}: installed skills {sorted(installed)} differ from selection {sorted(selected)}")
     targets = GUIDANCE + sorted((root / ".agents" / "skills").glob("*/SKILL.md"))

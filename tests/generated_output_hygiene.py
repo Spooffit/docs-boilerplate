@@ -16,6 +16,12 @@ OLD_SOURCE_ROOTS = {
 }
 UNWANTED_ASSET_EXTENSIONS = {".js", ".css", ".map", ".mjs", ".cjs", ".ts", ".tsx"}
 MAINTAINER_ONLY_PREFIXES = ("docs/audit/", "docs/legacy/")
+EPHEMERAL_INTAKE = {
+    "bootstrap.md",
+    ".agents/bootstrap/questionnaire.md",
+    ".agents/bootstrap/finish-checklist.md",
+    ".agents/skills/project-intake/SKILL.md",
+}
 
 
 def check(root: Path) -> list[str]:
@@ -48,8 +54,12 @@ def check(root: Path) -> list[str]:
     expected = owned | {"docs.config.json"}
     for path in sorted(expected - actual):
         errors.append(f"{root}: missing owned file {path}")
-    for path in sorted(actual - expected):
+    for path in sorted(actual - expected - EPHEMERAL_INTAKE):
         errors.append(f"{root}: unexpected file in fresh output {path}")
+    # A fresh init must ship the temporary intake pack; once it is complete,
+    # these files may be removed independently of the manifest.
+    for path in sorted(EPHEMERAL_INTAKE - actual):
+        errors.append(f"{root}: missing fresh stage-two intake file {path}")
 
     for path in sorted(actual):
         rel = Path(path)

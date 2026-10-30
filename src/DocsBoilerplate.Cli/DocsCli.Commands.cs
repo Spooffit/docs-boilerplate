@@ -156,8 +156,14 @@ static partial class DocsCli
             throw new InvalidOperationException($"Unknown documentation site: {site}");
         var expected = await RenderAsync(catalog, available, skillCatalog, moduleCatalog,
             name, description, output, ids, skillIds, moduleIds, site);
+        // Stage-two intake documents are deliberately unowned temporary files.
+        // Generate them alongside the manifest, but never include them in
+        // GeneratedFiles/GeneratedHashes so agent-approved cleanup stays valid.
         var config = BuildConfig(name, description, ids, skillIds, moduleIds, site, expected);
         expected.Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
+        foreach (var (path, content) in await LoadBootstrapAsync(catalog))
+            if (!expected.TryAdd(path, content))
+                throw new InvalidOperationException($"Temporary bootstrap path conflicts with generated output: {path}");
         SafeFiles.AssertNoLinks(output);
         if (Directory.Exists(output))
             _ = SafeFiles.Enumerate(output).ToArray(); // Refuse links anywhere in an existing destination.
@@ -209,6 +215,7 @@ static partial class DocsCli
             "init" => ["catalog", "name", "description", "output", "profiles", "skills", "modules", "site", "dry-run", "non-interactive"],
             "validate" => ["catalog", "output"],
             "update" => ["catalog", "output", "apply"],
+            "bootstrap-complete" => ["catalog", "output", "apply"],
             "recover" => ["catalog", "output"],
             "list" or "doctor" or "help" => ["catalog"],
             _ => []

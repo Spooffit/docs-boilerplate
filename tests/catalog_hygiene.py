@@ -8,7 +8,7 @@ CATALOG = ROOT / "catalog"
 ALLOWED_SPECIAL = {"README.md", "AGENTS.md", "SKILL.md", "CONTRIBUTING.md"}
 NON_TEMPLATE_MARKER = re.compile(r"\bUNREUSABLE_PROJECT_CONTENT\b")
 DOC_FILENAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*\.md$")
-PROTECTED_TREES = ("base", "docs", "modules", "skills")
+PROTECTED_TREES = ("base", "docs", "modules", "skills", "bootstrap")
 errors = []
 checked = 0
 

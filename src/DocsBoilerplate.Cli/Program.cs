@@ -49,6 +49,8 @@ static partial class DocsCli
                     return await ValidateAsync(Path.GetFullPath(flags.GetValueOrDefault("output") ?? "."), catalog, profiles, skills, modules);
                 case "update":
                     return await UpdateAsync(flags, catalog, profiles, skills, modules);
+                case "bootstrap-complete":
+                    return await CompleteBootstrapAsync(flags, catalog);
                 case "recover":
                     var output = Path.GetFullPath(flags.GetValueOrDefault("output") ?? ".");
                     var outcome = await UpdateRecovery.RecoverAsync(output);
@@ -61,11 +63,12 @@ static partial class DocsCli
                     AnsiConsole.WriteLine($"Catalog: {catalog}");
                     return 0;
                 default:
-                    AnsiConsole.WriteLine("Commands: init, update, recover, list, validate, doctor");
+                    AnsiConsole.WriteLine("Commands: init, update, recover, bootstrap-complete, list, validate, doctor");
                     AnsiConsole.WriteLine("init: --name NAME --description TEXT --output PATH --profiles dotnet,ef-core,blazor,mudblazor [--skills docs-review,docs-maintain] [--modules glossary,testing] [--site docsify|none] [--dry-run] [--non-interactive] [--catalog PATH]");
                     AnsiConsole.WriteLine("validate: --output PATH [--catalog PATH]");
                     AnsiConsole.WriteLine("update: --output PATH [--apply] [--catalog PATH] (previews by default)");
                     AnsiConsole.WriteLine("recover: --output PATH [--catalog PATH] (inspect and recover an interrupted update)");
+                    AnsiConsole.WriteLine("bootstrap-complete: --output PATH [--apply] (preview/delete temporary stage-two intake files)");
                     return command == "help" ? 0 : 2;
             }
         }
