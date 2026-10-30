@@ -45,7 +45,7 @@ static partial class DocsCli
                 .Replace("{{DOCSIFY_TITLE}}", language == "ru" ? "Документация" : "Documentation", StringComparison.Ordinal));
         // Every documentation directory has a human- and agent-readable index.
         AddDirectoryIndexes(expected, language);
-        Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, available, language));
+        Add("docs/catalog.md", BuildDocumentCatalog(expected, ids, await LocalizedCatalogAsync(catalog, available, language), language));
         Add("llms.txt", BuildLlmsIndex(name, description, expected, language));
         return expected;
         void Add(string path, string value)
@@ -110,7 +110,7 @@ static partial class DocsCli
                 .Where(path => path.StartsWith(directory + "/", StringComparison.Ordinal)
                     && !path[(directory.Length + 1)..].Contains('/')).ToArray();
 
-            var title = directory.Split('/').Last().Replace('-', ' ');
+            var title = FolderTitle(directory.Split('/').Last(), language);
             var sb = new StringBuilder();
             sb.Append(DocumentMetadata.Frontmatter(language == "ru" ? $"Раздел: {title}" : $"Directory: {title}", language == "ru" ? "Указатель документов и подразделов" : "Index of documents and subdirectories", "index", "active"));
             sb.AppendLine($"# {title}");
@@ -118,11 +118,32 @@ static partial class DocsCli
             sb.AppendLine(language == "ru" ? "Документы этого раздела:" : "Documents in this directory:");
             sb.AppendLine();
             foreach (var sub in subfolders)
-                sb.AppendLine($"- [{sub.Split('/').Last()}]({sub.Split('/').Last()}/index.md)");
+                sb.AppendLine($"- [{FolderTitle(sub.Split('/').Last(), language)}]({sub.Split('/').Last()}/index.md)");
             foreach (var path in immediateFiles)
                 sb.AppendLine($"- [{TitleFromMarkdown(files[path], path)}]({Path.GetFileName(path)})");
             files.Add(indexPath, DocumentMetadata.Prepare(indexPath, sb.ToString()));
         }
+    }
+
+    private static string FolderTitle(string slug, string language)
+    {
+        if (language != "ru") return slug.Replace('-', ' ');
+        return slug switch
+        {
+            "standards" => "Стандарты",
+            "templates" => "Шаблоны",
+            "project" => "Проект",
+            "architecture" => "Архитектура",
+            "testing" => "Тестирование",
+            "operations" => "Эксплуатация",
+            "infrastructure" => "Инфраструктура",
+            "integrations" => "Интеграции",
+            "storage" => "Хранение",
+            "ui" => "Интерфейс",
+            "aspnet" => "ASP.NET Core",
+            "dotnet" => ".NET",
+            _ => slug
+        };
     }
 
     private static string TitleFromMarkdown(string text, string path)
@@ -172,7 +193,7 @@ static partial class DocsCli
         sb.AppendLine();
         foreach (var path in files.Keys.Where(path => path.StartsWith("docs/standards/", StringComparison.Ordinal)
                 && path.EndsWith("/index.md", StringComparison.Ordinal)).Order(StringComparer.Ordinal))
-            sb.AppendLine($"- [{path["docs/".Length..]}]({path})");
+            sb.AppendLine($"- [{TitleFromMarkdown(files[path], path)}]({path})");
         if (files.ContainsKey("docs/templates/index.md"))
             sb.AppendLine(language == "ru" ? "- [Шаблоны документов](docs/templates/index.md)" : "- [Authoring templates](docs/templates/index.md)");
         return sb.ToString();
