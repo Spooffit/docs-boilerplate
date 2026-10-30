@@ -146,8 +146,14 @@ grep -q "Available profile 'tunit' cannot depend on planned profile 'go'" "$temp
 # isolation with exactly its declared transitive dependencies, no selected
 # project modules or agent skills and no browser shell.
 while IFS= read -r profile; do
+    selected="$profile"
+    case "$profile" in
+      masstransit) selected="messaging-rabbitmq,masstransit" ;;
+      messaging-organization-*) selected="messaging-rabbitmq,masstransit,$profile" ;;
+      cqrs-wolverine) selected="wolverine-rabbitmq,cqrs-wolverine" ;;
+    esac
     output="$temp/profile-matrix/$profile"
-    run init --name ProfileAudit --description "Independent profile audit" --output "$output" --profiles "$profile" --site none --non-interactive > "$temp/profile-matrix-init.log"
+    run init --name ProfileAudit --description "Independent profile audit" --output "$output" --profiles "$selected" --site none --non-interactive > "$temp/profile-matrix-init.log"
     run validate --output "$output" > "$temp/profile-matrix-validate.log"
     python3 - "$output/docs.config.json" "$profile" <<'PY'
 import json
@@ -165,7 +171,7 @@ PY
     # init performs its own full validate; no second explicit process is
     # needed for each Russian profile. This cuts redundant CI executions.
     localized="$temp/ru-profile-matrix/$profile"
-    run init --name RussianMatrix --description "Проверка профиля" --output "$localized" --profiles "$profile" --language ru --site none --non-interactive > "$temp/ru-profile-init.log"
+    run init --name RussianMatrix --description "Проверка профиля" --output "$localized" --profiles "$selected" --language ru --site none --non-interactive > "$temp/ru-profile-init.log"
     grep -q 'Validating repository' "$temp/ru-profile-init.log"
     python3 - "$localized/docs.config.json" "$profile" <<'PY'
 import json,sys
@@ -182,8 +188,7 @@ with open("catalog/profiles.json", encoding="utf-8") as stream:
     profiles = json.load(stream)["profiles"]
 # A bare transport is invalid: the new wizard must choose a client.
 print(*(p["id"] for p in profiles if p["status"] == "available"
-        and p["category"] != "messaging-transport"
-        and p["id"] != "cqrs-wolverine"), sep="\n")
+        and p["category"] != "messaging-transport"), sep="\n")
 PY
 )
 
@@ -200,7 +205,7 @@ assert set(manifest["Profiles"]) == {"ddd", "ui-accessibility", "ui-direct-dto-f
 PY
 
 # Owner-approved technology variants are separate opt-in selections.
-run init --name OptionalConventions --description 'Optional engineering rules' --output "$temp/optional-conventions" --profiles test-naming-convention,http-etag-concurrency,masstransit-eventbus-composition --site none --non-interactive
+run init --name OptionalConventions --description 'Optional engineering rules' --output "$temp/optional-conventions" --profiles test-naming-convention,http-etag-concurrency --site none --non-interactive
 run validate --output "$temp/optional-conventions"
 python3 - "$temp/optional-conventions/docs.config.json" <<'PY'
 import json,sys
@@ -214,7 +219,7 @@ assert len(manifest["Modules"]) == 7 and len(manifest["Skills"]) == 5
 PY
 [[ -f "$temp/optional-conventions/docs/standards/dotnet/test-naming-convention.md" ]]
 [[ -f "$temp/optional-conventions/docs/standards/http/etag-concurrency.md" ]]
-[[ -f "$temp/optional-conventions/docs/standards/dotnet/eventbus-composition.md" ]]
+[[ ! -e "$temp/optional-conventions/docs/standards/dotnet/eventbus-composition.md" ]]
 [[ ! -f "$temp/optional-conventions/docs/standards/dotnet/ef-core.md" ]]
 [[ ! -f "$temp/optional-conventions/docs/standards/architecture/cqrs.md" ]]
 [[ ! -f "$temp/optional-conventions/docs/standards/aspnet/mvc-controllers.md" ]]
@@ -256,7 +261,7 @@ assert all(len(value)==64 for value in config["GeneratedHashes"].values())
 PY
 # First-use project overviews must be draft and evidence-oriented.
 [[ ! -f "$temp/minimal/docs/standards/dotnet/test-naming-convention.md" ]]
-[[ ! -f "$temp/minimal/docs/standards/dotnet/eventbus-composition.md" ]]
+[[ ! -f "$temp/minimal/docs/standards/dotnet/masstransit.md" ]]
 [[ ! -f "$temp/minimal/docs/standards/http/etag-concurrency.md" ]]
 [[ -f "$temp/minimal/docs/standards/document-identifiers.md" ]]
 [[ ! -f "$temp/minimal/docs/standards/ui/direct-dto-forms.md" ]]
@@ -459,9 +464,9 @@ fi
 python3 tests/agent_guidance_contracts.py "$temp/mixed-guidance"
 
 # Messaging and query specifications stay opt-in and do not imply a particular database.
-run init --name Integration --description 'Message handling' --output "$temp/integration" --profiles masstransit-rabbitmq,ardalis-specification --non-interactive
+run init --name Integration --description 'Message handling' --output "$temp/integration" --profiles messaging-rabbitmq,masstransit,ardalis-specification --non-interactive
 run validate --output "$temp/integration"
-[[ -f "$temp/integration/docs/standards/dotnet/masstransit-rabbitmq.md" ]]
+[[ -f "$temp/integration/docs/standards/dotnet/masstransit.md" ]]
 [[ -f "$temp/integration/docs/standards/dotnet/ardalis-specification.md" ]]
 [[ -f "$temp/integration/docs/standards/dotnet/conventions.md" ]]
 [[ ! -e "$temp/integration/docs/standards/dotnet/ef-core.md" ]]
@@ -498,7 +503,7 @@ run validate --output "$temp/aspire"
 [[ -f "$temp/aspire/docs/standards/dotnet/aspire-testing.md" ]]
 [[ ! -f "$temp/aspire/docs/standards/dotnet/tunit.md" ]]
 [[ ! -f "$temp/aspire/docs/standards/dotnet/testcontainers.md" ]]
-[[ ! -f "$temp/aspire/docs/standards/dotnet/masstransit-rabbitmq.md" ]]
+[[ ! -f "$temp/aspire/docs/standards/dotnet/masstransit.md" ]]
 run update --output "$temp/aspire" --apply
 run validate --output "$temp/aspire"
 
@@ -513,7 +518,7 @@ run validate --output "$temp/components"
 [[ -f "$temp/components/docs/standards/dotnet/project-files.md" ]]
 [[ ! -e "$temp/components/docs/standards/blazor/mudblazor.md" ]]
 
-run init --name All --description "Full stack" --output "$temp/full-stack" --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs,masstransit-rabbitmq,ardalis-specification,blazor,mudblazor,bunit --site docsify --non-interactive
+run init --name All --description "Full stack" --output "$temp/full-stack" --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs,messaging-rabbitmq,masstransit,ardalis-specification,blazor,mudblazor,bunit --site docsify --non-interactive
 run validate --output "$temp/full-stack"
 [[ -f "$temp/full-stack/index.html" ]]
 
