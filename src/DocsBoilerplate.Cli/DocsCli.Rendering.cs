@@ -105,6 +105,32 @@ static partial class DocsCli
 
     private static void AddDirectoryIndexes(Dictionary<string, string> files, string language = "en")
     {
+        string DisplayName(string directory)
+        {
+            var name = directory.Split('/').Last().Replace('-', ' ');
+            if (language != "ru") return name;
+            return name switch
+            {
+                "architecture" => "Архитектура",
+                "project" => "Проект",
+                "standards" => "Стандарты",
+                "templates" => "Шаблоны",
+                "integrations" => "Интеграции",
+                "testing" => "Тестирование",
+                "operations" => "Эксплуатация",
+                "infrastructure" => "Инфраструктура",
+                "storage" => "Хранение",
+                "security" => "Безопасность",
+                "http" => "HTTP",
+                "ui" => "Интерфейс",
+                "dotnet" => ".NET",
+                "aspnet" => "ASP.NET Core",
+                "blazor" => "Blazor",
+                "postgresql" => "PostgreSQL",
+                _ => name
+            };
+        }
+
         foreach (var directory in DirectoryNames(files.Keys))
         {
             var indexPath = directory + "/index.md";
@@ -116,24 +142,7 @@ static partial class DocsCli
                 .Where(path => path.StartsWith(directory + "/", StringComparison.Ordinal)
                     && !path[(directory.Length + 1)..].Contains('/')).ToArray();
 
-            var title = directory.Split('/').Last().Replace('-', ' ');
-            if (language == "ru")
-                title = title switch
-                {
-                    "architecture" => "Архитектура",
-                    "project" => "Проект",
-                    "standards" => "Стандарты",
-                    "templates" => "Шаблоны",
-                    "integrations" => "Интеграции",
-                    "testing" => "Тестирование",
-                    "operations" => "Эксплуатация",
-                    "infrastructure" => "Инфраструктура",
-                    "storage" => "Хранение",
-                    "security" => "Безопасность",
-                    "http" => "HTTP",
-                    "ui" => "Интерфейс",
-                    _ => title
-                };
+            var title = DisplayName(directory);
             var sb = new StringBuilder();
             sb.Append(DocumentMetadata.Frontmatter(language == "ru" ? $"Каталог: {title}" : $"Directory: {title}", language == "ru" ? "Указатель документов и подразделов" : "Index of documents and subdirectories", "index", "active"));
             sb.AppendLine($"# {title}");
@@ -141,7 +150,7 @@ static partial class DocsCli
             sb.AppendLine(language == "ru" ? "Документы в этом каталоге:" : "Documents in this directory:");
             sb.AppendLine();
             foreach (var sub in subfolders)
-                sb.AppendLine($"- [{sub.Split('/').Last()}]({sub.Split('/').Last()}/index.md)");
+                sb.AppendLine($"- [{DisplayName(sub)}]({sub.Split('/').Last()}/index.md)");
             foreach (var path in immediateFiles)
                 sb.AppendLine($"- [{TitleFromMarkdown(files[path], path)}]({Path.GetFileName(path)})");
             files.Add(indexPath, DocumentMetadata.Prepare(indexPath, sb.ToString()));
