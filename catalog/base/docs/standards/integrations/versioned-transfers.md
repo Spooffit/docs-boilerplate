@@ -1,6 +1,6 @@
 ---
 title: "Resumable data transfers and integrity"
-description: "Optional guidance for bounded streaming, integrity checks and recoverable transfers"
+description: "Baseline guidance for bounded streaming, integrity checks and recoverable transfers"
 kind: standard
 status: active
 ---
