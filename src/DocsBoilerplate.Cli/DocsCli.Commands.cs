@@ -170,6 +170,7 @@ static partial class DocsCli
                     .Title("Documentation language / Язык документации:")
                     .UseConverter(value => value == "ru" ? "Русский" : "English")
                     .AddChoices("en", "ru"))));
+        string Display(string en, string ru) => language == "ru" ? ru : en;
         UpdateRecovery.AssertNoPending(output);
         var localizedAvailable = await LocalizedCatalogAsync(catalog, available, language);
         var selection = args.TryGetValue("profiles", out var listed)
@@ -197,7 +198,7 @@ static partial class DocsCli
         var moduleIds = ResolveModules(requestedModules, moduleCatalog);
         var site = args.GetValueOrDefault("site") ?? (unattended || Console.IsInputRedirected
             ? "docsify"
-            : AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Documentation site:")
+            : AnsiConsole.Prompt(new SelectionPrompt<string>().Title(Display("Documentation site:", "Сайт документации:"))
                 .AddChoices("docsify", "none")));
         if (site is not ("none" or "docsify"))
             throw new InvalidOperationException($"Unknown documentation site: {site}");
@@ -219,36 +220,49 @@ static partial class DocsCli
         {
             if (await IsIdenticalAsync(output, expected))
             {
-                AnsiConsole.MarkupLine("[green]No changes.[/] Existing repository matches this configuration.");
+                AnsiConsole.MarkupLine(Display("[green]No changes.[/] Existing repository matches this configuration.", "[green]Без изменений.[/] Репозиторий уже соответствует выбранной конфигурации."));
                 return await ValidateAsync(output, catalog, available, skillCatalog, moduleCatalog);
             }
             throw new IOException($"Output directory is not empty: {output}. Refusing to overwrite any files.");
         }
-        AnsiConsole.MarkupLine($"[bold]Selected configuration for {Markup.Escape(name)}[/]");
+        AnsiConsole.MarkupLine($"[bold]{Display("Selected configuration for", "Выбранная конфигурация для")} {Markup.Escape(name)}[/]");
         var requestedProfiles = new HashSet<string>(selection, StringComparer.Ordinal);
         var selectedProfiles = ids.Where(requestedProfiles.Contains)
             .Select(id => localizedAvailable.Profiles.Single(p => p.Id == id)).ToArray();
         foreach (var group in selectedProfiles.GroupBy(p => p.Category)
             .OrderBy(g => g.Key, StringComparer.Ordinal))
         {
-            AnsiConsole.MarkupLine($"[blue]{Markup.Escape(group.Key)}[/]");
+            AnsiConsole.MarkupLine($"[blue]{Markup.Escape(language == "ru" ? group.Key switch
+            {
+                "test-framework" => "Тестовый фреймворк",
+                "blazor-testing" => "Тестирование Blazor",
+                "infra-s3-client" => "Клиент S3",
+                "infra-storage" => "Объектное хранилище",
+                "backend" => "Backend",
+                "frontend" => "Frontend",
+                "architecture" => "Архитектура",
+                "database" => "База данных",
+                "testing" => "Тестирование",
+                "messaging" => "Обмен сообщениями",
+                _ => group.Key
+            } : group.Key)}[/]");
             foreach (var profile in group.OrderBy(p => p.Name, StringComparer.Ordinal))
                 AnsiConsole.MarkupLine($"  [green]✓[/] {Markup.Escape(profile.Name)}");
         }
         if (selectedProfiles.Length == 0)
-            AnsiConsole.MarkupLine("  No optional technology profiles");
+            AnsiConsole.MarkupLine(Display("  No optional technology profiles", "  Не выбраны дополнительные технологические профили"));
         var dependencies = ids.Where(id => !requestedProfiles.Contains(id))
             .Select(id => localizedAvailable.Profiles.Single(p => p.Id == id).Name)
             .Order(StringComparer.Ordinal).ToArray();
         if (dependencies.Length > 0)
-            AnsiConsole.MarkupLine($"[blue]Included dependencies:[/] {Markup.Escape(string.Join(", ", dependencies))}");
-        AnsiConsole.MarkupLine($"[blue]Documentation:[/] {skillIds.Count} agent skills and {moduleIds.Count} modules (included)");
-        AnsiConsole.MarkupLine($"[blue]Site:[/] {Markup.Escape(site)}");
-        AnsiConsole.MarkupLine($"[blue]Language:[/] {language}");
-        AnsiConsole.MarkupLine($"[blue]Destination:[/] {Markup.Escape(output)}");
+            AnsiConsole.MarkupLine($"[blue]{Display("Included dependencies:", "Добавленные зависимости:")}[/] {Markup.Escape(string.Join(", ", dependencies))}");
+        AnsiConsole.MarkupLine($"[blue]{Display("Documentation:", "Документация:")}[/] {skillIds.Count} {Display("agent skills and", "навыков агента и")} {moduleIds.Count} {Display("modules (included)", "модулей (включены по умолчанию)")}");
+        AnsiConsole.MarkupLine($"[blue]{Display("Site:", "Сайт:")}[/] {Markup.Escape(site)}");
+        AnsiConsole.MarkupLine($"[blue]{Display("Language:", "Язык:")}[/] {language}");
+        AnsiConsole.MarkupLine($"[blue]{Display("Destination:", "Папка назначения:")}[/] {Markup.Escape(output)}");
         if (args.ContainsKey("dry-run"))
             return 0;
-        if (!unattended && !Console.IsInputRedirected && !AnsiConsole.Confirm("Generate documentation with these options?", defaultValue: false))
+        if (!unattended && !Console.IsInputRedirected && !AnsiConsole.Confirm(Display("Generate documentation with these options?", "Создать документацию с выбранными настройками?"), defaultValue: false))
             return 2;
         var created = new List<string>();
         try
@@ -269,7 +283,7 @@ static partial class DocsCli
                 if (File.Exists(path)) File.Delete(path);
             throw;
         }
-        AnsiConsole.MarkupLine("[green]Generated.[/] Validating repository...");
+        AnsiConsole.MarkupLine(Display("[green]Generated.[/] Validating repository...", "[green]Создано.[/] Выполняется проверка репозитория..."));
         return await ValidateAsync(output, catalog, available, skillCatalog, moduleCatalog);
 
     }
