@@ -72,7 +72,7 @@ static partial class DocsCli
         foreach (var (path, value) in content.OrderBy(x => x.Key, StringComparer.Ordinal))
             hashes.Add(path, Hash(value));
         var retired = retiredPaths?.Order(StringComparer.Ordinal).ToArray();
-        return new ProjectConfig(name, description,
+        return new ProjectConfig(name, null,
             ids.Order(StringComparer.Ordinal).ToArray(), skills.Order(StringComparer.Ordinal).ToArray(),
             modules.Order(StringComparer.Ordinal).ToArray(), site,
             content.Keys.Order(StringComparer.Ordinal).ToArray(), hashes,
