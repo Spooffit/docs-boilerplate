@@ -213,19 +213,20 @@
       "name": "MassTransit + RabbitMQ",
       "status": "available",
       "requires": [
-        "dotnet"
+        "dotnet",
+        "messaging-rabbitmq"
       ],
       "files": [
         "docs/standards/dotnet/masstransit-rabbitmq.md"
       ],
-      "category": "messaging"
+      "category": "messaging-client"
     },
     {
       "id": "ardalis-specification",
       "name": "Ardalis.Specification",
       "status": "available",
       "requires": [
-        "dotnet"
+        "ef-core"
       ],
       "files": [
         "docs/standards/dotnet/ardalis-specification.md"
@@ -359,7 +360,7 @@
       "files": [
         "docs/standards/dotnet/eventbus-composition.md"
       ],
-      "category": "messaging"
+      "category": "messaging-organization"
     },
     {
       "id": "ui-direct-dto-forms",
@@ -465,6 +466,294 @@
         "docs/standards/infrastructure/orchestration-aspire.md"
       ],
       "category": "infra-orchestration"
+    },
+    {
+      "id": "specification-manual",
+      "name": "Custom specifications (EF Core)",
+      "status": "available",
+      "requires": [
+        "ef-core"
+      ],
+      "files": [
+        "docs/standards/dotnet/specification-manual.md"
+      ],
+      "category": "query-pattern"
+    },
+    {
+      "id": "messaging-rabbitmq",
+      "name": "RabbitMQ broker",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/messaging/rabbitmq.md"
+      ],
+      "category": "messaging-transport"
+    },
+    {
+      "id": "messaging-kafka",
+      "name": "Apache Kafka broker",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/messaging/kafka.md"
+      ],
+      "category": "messaging-transport"
+    },
+    {
+      "id": "masstransit-kafka",
+      "name": "MassTransit (Kafka rider)",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "messaging-kafka"
+      ],
+      "files": [
+        "docs/standards/dotnet/masstransit-kafka.md"
+      ],
+      "category": "messaging-client"
+    },
+    {
+      "id": "wolverine-rabbitmq",
+      "name": "Wolverine + RabbitMQ",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "messaging-rabbitmq"
+      ],
+      "files": [
+        "docs/standards/dotnet/wolverine-rabbitmq.md"
+      ],
+      "category": "messaging-client"
+    },
+    {
+      "id": "wolverine-kafka",
+      "name": "Wolverine + Kafka",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "messaging-kafka"
+      ],
+      "files": [
+        "docs/standards/dotnet/wolverine-kafka.md"
+      ],
+      "category": "messaging-client"
+    },
+    {
+      "id": "messaging-manual-rabbitmq",
+      "name": "Custom RabbitMQ client",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "messaging-rabbitmq"
+      ],
+      "files": [
+        "docs/standards/dotnet/manual-rabbitmq.md"
+      ],
+      "category": "messaging-client"
+    },
+    {
+      "id": "messaging-manual-kafka",
+      "name": "Custom Kafka client",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "messaging-kafka"
+      ],
+      "files": [
+        "docs/standards/dotnet/manual-kafka.md"
+      ],
+      "category": "messaging-client"
+    },
+    {
+      "id": "microservices",
+      "name": "Microservices",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/architecture/microservices.md"
+      ],
+      "category": "architecture"
+    },
+    {
+      "id": "cqrs-manual",
+      "name": "Manual handlers / Minimal APIs",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "cqrs"
+      ],
+      "files": [
+        "docs/standards/dotnet/cqrs-manual.md"
+      ],
+      "category": "cqrs-implementation"
+    },
+    {
+      "id": "cqrs-wolverine",
+      "name": "Wolverine CQRS handlers",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "cqrs"
+      ],
+      "files": [
+        "docs/standards/dotnet/cqrs-wolverine.md"
+      ],
+      "category": "cqrs-implementation"
+    },
+    {
+      "id": "cqrs-mediatr",
+      "name": "MediatR",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "cqrs"
+      ],
+      "files": [
+        "docs/standards/dotnet/cqrs-mediatr.md"
+      ],
+      "category": "cqrs-implementation"
+    },
+    {
+      "id": "cqrs-mediator",
+      "name": "martinothamar/Mediator",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "cqrs"
+      ],
+      "files": [
+        "docs/standards/dotnet/cqrs-mediator.md"
+      ],
+      "category": "cqrs-implementation"
+    },
+    {
+      "id": "cqrs-requestum",
+      "name": "Requestum",
+      "status": "available",
+      "requires": [
+        "dotnet",
+        "cqrs"
+      ],
+      "files": [
+        "docs/standards/dotnet/cqrs-requestum.md"
+      ],
+      "category": "cqrs-implementation"
+    },
+    {
+      "id": "mapper-automapper",
+      "name": "AutoMapper",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/mapper-automapper.md"
+      ],
+      "category": "mapper"
+    },
+    {
+      "id": "mapper-mapster",
+      "name": "Mapster",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/mapper-mapster.md"
+      ],
+      "category": "mapper"
+    },
+    {
+      "id": "mapper-mapperly",
+      "name": "Riok.Mapperly",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/mapper-mapperly.md"
+      ],
+      "category": "mapper"
+    },
+    {
+      "id": "mapper-manual",
+      "name": "Manual mapping / extension methods",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/mapper-manual.md"
+      ],
+      "category": "mapper"
+    },
+    {
+      "id": "rest-client-manual",
+      "name": "Manually written REST clients",
+      "status": "available",
+      "requires": [
+        "blazor"
+      ],
+      "files": [
+        "docs/standards/http/client-manual.md"
+      ],
+      "category": "rest-client"
+    },
+    {
+      "id": "rest-client-nswag",
+      "name": "NSwag generated REST clients",
+      "status": "available",
+      "requires": [
+        "blazor"
+      ],
+      "files": [
+        "docs/standards/http/client-nswag.md"
+      ],
+      "category": "rest-client"
+    },
+    {
+      "id": "openapi-swagger-ui",
+      "name": "Swagger UI",
+      "status": "available",
+      "requires": [
+        "aspnet-core"
+      ],
+      "files": [
+        "docs/standards/aspnet/swagger-ui.md"
+      ],
+      "category": "openapi-ui"
+    },
+    {
+      "id": "openapi-scalar",
+      "name": "Scalar API Reference",
+      "status": "available",
+      "requires": [
+        "aspnet-core"
+      ],
+      "files": [
+        "docs/standards/aspnet/scalar.md"
+      ],
+      "category": "openapi-ui"
+    },
+    {
+      "id": "infra-collector-alloy",
+      "name": "Grafana Alloy telemetry collector",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/infrastructure/collector-alloy.md"
+      ],
+      "category": "infra-collector"
+    },
+    {
+      "id": "infra-metrics-mimir",
+      "name": "Grafana Mimir metrics backend",
+      "status": "available",
+      "requires": [],
+      "files": [
+        "docs/standards/infrastructure/metrics-mimir.md"
+      ],
+      "category": "infra-metrics-backend"
     }
   ]
 }
