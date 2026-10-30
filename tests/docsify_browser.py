@@ -186,6 +186,12 @@ def main() -> int:
         thread = Thread(target=server.serve_forever, daemon=True)
         thread.start()
         base_url = f"http://127.0.0.1:{server.server_port}/"
+        russian_handler = functools.partial(Handler, directory=str(russian_output))
+        russian_server = ThreadingHTTPServer(("127.0.0.1", 0), russian_handler)
+        russian_thread = Thread(target=russian_server.serve_forever, daemon=True)
+        russian_thread.start()
+        russian_base_url = f"http://127.0.0.1:{russian_server.server_port}/"
+        russian_failures: list[str] = []
         failures: list[str] = []
         diagnostics: list[str] = []
         try:
@@ -208,14 +214,25 @@ def main() -> int:
                     ) if urlsplit(response.url).hostname == "127.0.0.1"
                     and response.status >= 400 else None,
                 )
+                russian_page = None
                 try:
                     exercise(page, base_url, failures)
+                    russian_page = context.new_page()
+                    russian_page.on("pageerror", lambda error: diagnostics.append("Russian JS: " + str(error)))
+                    russian_page.on(
+                        "response",
+                        lambda response: russian_failures.append(
+                            f"{response.status} {response.url}"
+                        ) if urlsplit(response.url).hostname == "127.0.0.1"
+                        and response.status >= 400 else None,
+                    )
+                    exercise_russian(russian_page, russian_base_url, russian_failures)
                     assert not any("JS:" in item for item in diagnostics), (
                         "Uncaught browser JavaScript errors:\\n" + "\\n".join(diagnostics)
                     )
-                    print("Docsify Chromium browser: homepage, navigation, refresh, nested routes, anchors and optional modules passed.")
+                    print("Docsify Chromium browser: English navigation and Russian homepage, search and document routes passed.")
                 except Exception:
-                    page.screenshot(path=str(ARTIFACTS / "docsify-failure.png"), full_page=True)
+                    (russian_page or page).screenshot(path=str(ARTIFACTS / "docsify-failure.png"), full_page=True)
                     (ARTIFACTS / "browser-errors.txt").write_text(
                         "\\n".join(diagnostics + failures) + "\\n", encoding="utf-8"
                     )
@@ -224,6 +241,9 @@ def main() -> int:
                     context.tracing.stop(path=str(ARTIFACTS / "docsify-trace.zip"))
                     browser.close()
         finally:
+            russian_server.shutdown()
+            russian_thread.join(timeout=5)
+            russian_server.server_close()
             server.shutdown()
             thread.join(timeout=5)
             server.server_close()
