@@ -40,8 +40,8 @@ def linked_document_paths(markdown: str) -> list[str]:
     This is a source-parity guard, not a substitute for generated Markdown
     navigation validation. Ignore code-fence examples and remote URLs.
     """
-    prose = re.sub(r"^```[^\\n]*\\n[\\s\\S]*?^```", "", markdown, flags=re.M)
-    targets = re.findall(r"\\]\\(([^)\\s]+)", prose)
+    prose = re.sub(r"(?ms)^```[^\n]*\n.*?^```", "", markdown)
+    targets = re.findall(r"\]\(([^)\s]+)", prose)
     return sorted(path for target in targets
                   if (path := target.split("#", 1)[0]) and "://" not in path)
 
