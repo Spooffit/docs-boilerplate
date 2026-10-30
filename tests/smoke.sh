@@ -496,13 +496,13 @@ if grep -q 'testing/strategy.md' "$temp/mixed-guidance/docs/catalog.md"; then
 fi
 python3 tests/agent_guidance_contracts.py "$temp/mixed-guidance"
 
-# Messaging and query specifications stay opt-in and do not imply a particular database.
+# Messaging and specifications stay opt-in. Ardalis.Specification requires EF Core, but not PostgreSQL.
 run init --name Integration --output "$temp/integration" --profiles messaging-rabbitmq,masstransit,ardalis-specification --non-interactive
 run validate --output "$temp/integration"
 [[ -f "$temp/integration/docs/standards/dotnet/masstransit.md" ]]
 [[ -f "$temp/integration/docs/standards/dotnet/ardalis-specification.md" ]]
 [[ -f "$temp/integration/docs/standards/dotnet/conventions.md" ]]
-[[ ! -e "$temp/integration/docs/standards/dotnet/ef-core.md" ]]
+[[ -f "$temp/integration/docs/standards/dotnet/ef-core.md" ]]
 [[ ! -e "$temp/integration/docs/standards/postgresql" ]]
 
 # Language-neutral reliable synchronization does not bring in an ORM, .NET, or broker.
