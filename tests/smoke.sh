@@ -52,10 +52,23 @@ grep -q 'Стратегия тестирования' "$temp/ru-baseline/docs/te
 grep -q 'Каталог документации' "$temp/ru-baseline/docs/catalog.md"
 grep -q 'Навигационный указатель' "$temp/ru-baseline/llms.txt"
 grep -Fq '<html lang="ru">' "$temp/ru-baseline/index.html"
-grep -Fq '<title>РусскийПроект</title>' "$temp/ru-baseline/index.html"
-grep -Fq 'Поиск по документации' "$temp/ru-baseline/index.html"
 grep -Fq 'Загрузка документации...' "$temp/ru-baseline/index.html"
-grep -Fq 'content="Тест документации"' "$temp/ru-baseline/index.html"
+# System.Text.Json may escape Cyrillic as \\uXXXX and HtmlEncode may emit
+# numeric entities. Inspect decoded values, not literal HTML source bytes.
+python3 - "$temp/ru-baseline/index.html" <<'PY'
+from html import unescape
+import json
+from pathlib import Path
+import re
+import sys
+html = Path(sys.argv[1]).read_text(encoding="utf-8")
+title = re.search(r"<title>(.*?)</title>", html, re.S)
+description = re.search(r'<meta name="description" content="([^"]*)"', html)
+search = re.search(r'placeholder:\\s*("(?:\\\\.|[^"\\\\])*")', html)
+assert title and unescape(title.group(1)) == "РусскийПроект"
+assert description and unescape(description.group(1)) == "Тест документации"
+assert search and json.loads(search.group(1)) == "Поиск по документации"
+PY
 python3 - "$temp/ru-baseline/docs.config.json" <<'PY'
 import json,sys
 from pathlib import Path
