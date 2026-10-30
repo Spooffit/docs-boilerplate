@@ -19,7 +19,7 @@ status: active
 
 ## NuGet.org Trusted Publishing configuration
 
-The first public release, `v1.0.1`, was successfully published using this account-scoped configuration. Preserve it for future versions:
+Releases `v1.0.1` and `v1.1.0` were successfully published using this account-scoped configuration. Preserve it for future versions:
 
 1. Sign in to [nuget.org](https://www.nuget.org/) as the account that owns `docs-boilerplate`. Do not attempt to reuse the package ID for a different publisher.
 2. In the account's **Trusted Publishing** settings, retain the GitHub Actions policy with **Repository Owner** `Spooffit` (the GitHub login, not a display name), **Repository** `docs-boilerplate`, **Workflow File** `release.yml`, and no Environment. Set **Glob Patterns and Packages** to `docs-boilerplate`. The initial package creation required the **Push new packages and package versions** scope; subsequent publishing may use the narrower scope **Push only new package versions**.
@@ -36,11 +36,11 @@ After a successful regular CI run on the desired `main` commit, create a **new, 
 ```powershell
 git checkout main
 git pull --ff-only
-git tag -a v1.0.2 -m "Release v1.0.2"
-git push origin v1.0.2
+git tag -a v1.1.1 -m "Release v1.1.1"
+git push origin v1.1.1
 ```
 
-The `v1.0.0` tag remains as an unpublished attempt using the old package ID; **do not move or reuse it**. The first published release under `docs-boilerplate` is [v1.0.1](https://github.com/Spooffit/docs-boilerplate/releases/tag/v1.0.1). The next patch can use `v1.0.2`, or `v1.1.0` for new features. Supported tags follow `vMAJOR.MINOR.PATCH` with an optional prerelease suffix (such as `v0.3.0-rc.1`); prereleases are marked as such in GitHub Releases.
+The `v1.0.0` tag remains as an unpublished attempt using the old package ID; **do not move or reuse it**. The first published release under `docs-boilerplate` was [v1.0.1](https://github.com/Spooffit/docs-boilerplate/releases/tag/v1.0.1). The current release is [v1.1.0](https://github.com/Spooffit/docs-boilerplate/releases/tag/v1.1.0), which adds bilingual English/Russian Markdown generation and the expanded technology profile catalog. The next patch version can use `v1.1.1` (or a later unused version). Supported tags follow `vMAJOR.MINOR.PATCH` with an optional prerelease suffix (such as `v0.3.0-rc.1`); prereleases are marked as such in GitHub Releases.
 
 A tag starts **one** workflow that:
 
