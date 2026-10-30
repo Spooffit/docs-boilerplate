@@ -213,7 +213,7 @@ from pathlib import Path
 manifest=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
 assert set(manifest["Profiles"]) == {
  "dotnet", "test-naming-convention", "http-contracts", "http-etag-concurrency",
- "masstransit-rabbitmq", "masstransit-eventbus-composition"
+ "ddd", "ui-accessibility", "ui-direct-dto-forms"
 }, manifest["Profiles"]
 assert len(manifest["Modules"]) == 7 and len(manifest["Skills"]) == 5
 PY
