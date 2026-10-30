@@ -125,9 +125,17 @@ status: draft
     if ((Get-Content (Join-Path $ru 'AGENTS.md') -Raw -Encoding utf8) -notmatch 'Инструкции ИИ-агентам') {
         throw 'Russian agent instructions were not installed'
     }
+    $ruViewer = Get-Content (Join-Path $ru 'index.html') -Raw -Encoding utf8
+    if ($ruViewer -notmatch '<html lang="ru">') { throw 'Russian Docsify HTML language is incorrect' }
+    if ($ruViewer -notmatch '<title>RussianDocs</title>') { throw 'Docsify HTML title did not use the project name' }
+    if ($ruViewer -notmatch 'Поиск по документации') { throw 'Docsify search is not localized' }
+    if ($ruViewer -notmatch 'Загрузка документации') { throw 'Docsify loading text is not localized' }
     Invoke-Docs update --output $ru --apply
     Invoke-Docs bootstrap-complete --output $ru --apply
     Invoke-Docs validate --output $ru
+    if ((Get-Content (Join-Path $ru 'index.html') -Raw -Encoding utf8) -notmatch '<html lang="ru">') {
+        throw 'Russian Docsify language changed during update or cleanup'
+    }
 
     $headless = Join-Path $root 'headless'
     Invoke-Docs init --name Headless --description 'Markdown only' --output $headless --profiles dotnet --site none --non-interactive
