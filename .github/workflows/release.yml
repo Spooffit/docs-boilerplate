@@ -27,7 +27,6 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          persist-credentials: false
       - name: Check exact SemVer tag and main ancestry
         id: tag
         shell: bash

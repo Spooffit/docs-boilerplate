@@ -9,18 +9,27 @@ status: active
 
 ## Install and run without cloning
 
-Each CI run packages a private `DocsBoilerplate.Cli` .NET tool (`docs-boilerplate` command), including the reusable catalog, and uploads `docs-boilerplate-dotnet-tool` as a GitHub Actions artifact. Download that ZIP from an authorized workflow run and extract the `.nupkg` to a directory, then:
+Once published, the installable CLI is available from nuget.org:
 
 ```powershell
-dotnet tool install --global DocsBoilerplate.Cli --version 0.2.0 --add-source C:\\Tools\\docs-boilerplate-feed
+dotnet tool install --global DocsBoilerplate.Cli
 docs-boilerplate doctor
 docs-boilerplate list
 docs-boilerplate init
+dotnet tool update --global DocsBoilerplate.Cli
 ```
+
+**Before first publication**, download the private `docs-boilerplate-dotnet-tool` GitHub Actions artifact, extract its `.nupkg` into `C:\\Tools\\docs-boilerplate-feed`, and install:
+
+```powershell
+dotnet tool install --global DocsBoilerplate.Cli --version 0.2.0 --add-source C:\\Tools\\docs-boilerplate-feed
+```
+
+The tagged release workflow and the initial NuGet.org Trusted Publishing setup are documented in [the release guide](releases.md).
 
 The prompt sequence is **Backend → Backend options → Frontend → Frontend options → Infrastructure (last and optional)**. Logging, metrics, traces, deployment and DevOps repository location each have an independent single-choice prompt including `none`. A .NET-oriented orchestration prompt offers Aspire only when .NET has been chosen. Other portable policies remain independently selectable; the wizard never treats selected guidance as proof of an implementation. Noninteractive usage accepts the same profile IDs through `--profiles` and rejects conflicting infrastructure options (e.g. both Compose and Kubernetes).
 
-The tool is installable from a local package feed or authenticated CI artifact, **not yet published to nuget.org**. If you have its source checkout instead, run `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed` to build the package.
+The publication pipeline is ready, but it **does not publish on every commit**. NuGet.org availability depends on completing the one-time publisher identity setup and pushing a release tag. From a source checkout you can still run `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed`.
 
 ## Initialize from a source checkout
 

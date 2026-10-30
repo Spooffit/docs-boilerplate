@@ -17,7 +17,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
-    <None Include="../../docs/package-readme.md" Pack="true" PackagePath="README.md" />
+    <None Include="../../packaging/README.md" Pack="true" PackagePath="README.md" />
     <None Include="../../catalog/**"
           Link="catalog/%(RecursiveDir)%(Filename)%(Extension)"
           CopyToOutputDirectory="PreserveNewest"

@@ -8,22 +8,26 @@ Start with [`llms.txt`](llms.txt), [agent instructions](AGENTS.md), the [documen
 
 ## Install the CLI as a .NET tool
 
-The private GitHub Actions workflow now builds a `DocsBoilerplate.Cli` .NET tool package and saves its `.nupkg` as the `docs-boilerplate-dotnet-tool` workflow artifact. Download and extract that artifact into a local folder (for example `C:\\Tools\\docs-boilerplate-feed`), then install it once:
+Once the **first release has been published to nuget.org**, install or update the tool directly, without cloning this repository:
+
+```powershell
+dotnet tool install --global DocsBoilerplate.Cli
+docs-boilerplate doctor
+docs-boilerplate list
+dotnet tool update --global DocsBoilerplate.Cli
+```
+
+The release workflow is configured, but **the first public NuGet publication still requires a Trusted Publishing policy and an explicit version tag**. Do not assume that an unlisted package is already available on nuget.org.
+
+Until then, GitHub Actions builds an installable `.nupkg` as the private `docs-boilerplate-dotnet-tool` artifact. Download and extract it into a local feed, then install:
 
 ```powershell
 dotnet tool install --global DocsBoilerplate.Cli --version 0.2.0 --add-source "C:\\Tools\\docs-boilerplate-feed"
-docs-boilerplate doctor
-docs-boilerplate list
 ```
 
-Alternatively, build a local feed from a source checkout:
+You can also build the package from source with `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed`. The installed tool bundles its Markdown catalog.
 
-```powershell
-dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed
-dotnet tool install --global DocsBoilerplate.Cli --version 0.2.0 --add-source ./artifacts/tool-feed
-```
-
-The tool package embeds the Markdown catalog. **You do not need to clone the source repository to run the installed command.** No public NuGet package has been published by this workflow. Do not confuse the private downloadable artifact with an existing nuget.org listing.
+Releases are created **only by version tags** (`v0.2.0`, `v0.2.1`, etc.), not by ordinary pushes to `main`. See [the release and NuGet setup guide](docs/releases.md).
 
 ## Create a project
 
@@ -73,7 +77,7 @@ To initialize only the shared Markdown documentation without any technology stan
 ## What the generator does
 
 - Creates a minimal repository with `README.md`, `AGENTS.md`, `llms.txt`, `docs/`, a generated-file ownership manifest and an optional Docsify viewer.
-- Selects composable, technology-scoped standards and templates rather than shipping one fixed stack. Available profiles include .NET, ASP.NET Core, MVC, PostgreSQL, Blazor, test frameworks, CQRS, messaging, HTTP contracts and other opt-in guidance.
+- Selects composable, technology-scoped standards and templates rather than shipping one fixed stack. Available profiles include .NET, ASP.NET Core, PostgreSQL, Blazor, test frameworks, CQRS, messaging, HTTP contracts and other opt-in guidance.
 - Offers optional project-document scaffolds and agent skills without imposing them on minimal projects.
 - Supports dry-run, validation and preview-first updates with SHA-256 fingerprints, while protecting user-edited content.
 - Maintains navigable Markdown and a concise `llms.txt` for agents; Docsify is an optional human reading layer.

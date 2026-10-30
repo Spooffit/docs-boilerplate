@@ -21,7 +21,7 @@ for name, expected in [
         errors.append(f"Unexpected .NET tool package field {name}: {prop(name)!r}")
 if not re.fullmatch(r"\d+\.\d+\.\d+", prop("Version") or ""):
     errors.append("Default tool version must be a valid numeric SemVer prefix")
-if not (root / "docs/package-readme.md").is_file():
+if not (root / "packaging/README.md").is_file():
     errors.append("NuGet package README is missing")
 
 workflow = (root / ".github/workflows/release.yml").read_text(encoding="utf-8")
