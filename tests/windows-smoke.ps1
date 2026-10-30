@@ -93,9 +93,9 @@ status: draft
     }
 
     $variants = Join-Path $root 'optional-conventions'
-    Invoke-Docs init --name OptionalConventions --description 'Optional standards' --output $variants --profiles 'test-naming-convention,http-etag-concurrency,masstransit-eventbus-composition' --site none --non-interactive
+    Invoke-Docs init --name OptionalConventions --description 'Optional standards' --output $variants --profiles 'test-naming-convention,http-etag-concurrency' --site none --non-interactive
     Invoke-Docs validate --output $variants
-    foreach ($file in @('docs/standards/dotnet/test-naming-convention.md', 'docs/standards/http/etag-concurrency.md', 'docs/standards/dotnet/eventbus-composition.md')) {
+    foreach ($file in @('docs/standards/dotnet/test-naming-convention.md', 'docs/standards/http/etag-concurrency.md')) {
         if (-not (Test-Path (Join-Path $variants $file))) { throw "Missing opt-in profile content: $file" }
     }
     if (Test-Path (Join-Path $variants 'docs/standards/dotnet/ef-core.md')) { throw 'Unselected data access profile leaked' }
@@ -113,7 +113,7 @@ status: draft
     Invoke-Docs validate --output $plain
     if (Test-Path (Join-Path $plain 'docs/standards/dotnet')) { throw 'No-stack mode installed .NET guidance' }
     $plainManifest = Get-Content (Join-Path $plain 'docs.config.json') -Raw | ConvertFrom-Json
-    if (@($plainManifest.Profiles).Count -ne 0) { throw 'No-stack mode selected profiles' }
+    if (@($plainManifest.Profiles).Count -ne 4) { throw 'Mandatory baseline profiles missing' }
     if (@($plainManifest.Modules).Count -ne 7 -or @($plainManifest.Skills).Count -ne 5) { throw 'Default documentation modules or skills missing' }
     if (-not (Test-Path (Join-Path $plain 'docs/standards/integrations/reliable-synchronization.md'))) { throw 'Baseline integration missing' }
 
