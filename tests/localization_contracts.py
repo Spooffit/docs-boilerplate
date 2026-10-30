@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Audit localized source overlays without altering canonical output paths.
 
-Coverage is reported until translations are complete. Invalid locale files,
+Full translation coverage is required. Invalid locale files,
 metadata changes and damaged project placeholders are test failures. The CLI
 itself rejects missing translations when a localized project is requested.
 """
@@ -65,9 +65,8 @@ def check() -> None:
                     errors.append(f"Non-localizable frontmatter changed: {relative} / {key}")
         if value == english:
             errors.append(f"Untranslated source copied verbatim: {relative}")
-    mandatory = {name for name in sources if name.startswith(("base/", "bootstrap/", "modules/", "skills/"))}
-    for missing in sorted(mandatory - translated):
-        errors.append(f"Missing mandatory Russian translation: {missing}")
+    for missing in sorted(sources.keys() - translated):
+        errors.append(f"Missing Russian translation: {missing}")
     print(f"Russian translations: {len(translated & sources.keys())}/{len(sources)} Markdown source files")
     print(f"Pending translations: {len(sources.keys() - translated)}")
 
