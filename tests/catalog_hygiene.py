@@ -164,6 +164,65 @@ for profile_id, (category, dependencies, path) in s3_profile_contracts.items():
     elif (entry["category"], entry["requires"], entry["files"]) != (category, dependencies, [path]):
         errors.append(f"S3 profile grouping, dependencies or source changed: {profile_id}")
 
+# Current wizard architecture and removed legacy profiles are contractual.
+retired_messaging = {
+    "masstransit-rabbitmq", "masstransit-kafka", "masstransit-eventbus-composition",
+}
+for profile_id in retired_messaging:
+    if profile_id in by_id:
+        errors.append(f"Retired messaging profile is still selectable: {profile_id}")
+for name in ("masstransit-rabbitmq.md", "masstransit-kafka.md", "eventbus-composition.md"):
+    if (CATALOG / "docs/standards/dotnet" / name).exists():
+        errors.append(f"Retired messaging document remains: {name}")
+required_profiles = {
+    "messaging-rabbitmq": "messaging-transport",
+    "messaging-kafka": "messaging-transport",
+    "masstransit": "messaging-client",
+    "wolverine-rabbitmq": "messaging-client",
+    "wolverine-kafka": "messaging-client",
+    "messaging-manual-rabbitmq": "messaging-client",
+    "messaging-manual-kafka": "messaging-client",
+    "messaging-organization-inline": "messaging-organization",
+    "messaging-organization-separate": "messaging-organization",
+    "modular-monolith": "architecture",
+    "microservices": "architecture",
+    "architecture-hybrid": "architecture",
+    "postgres-pooler-pgbouncer": "postgres-pooler",
+    "postgres-pooler-odyssey": "postgres-pooler",
+    "specification-manual": "query-pattern",
+    "ardalis-specification": "query-pattern",
+    "cqrs-manual": "cqrs-implementation",
+    "cqrs-wolverine": "cqrs-implementation",
+    "cqrs-mediatr": "cqrs-implementation",
+    "cqrs-mediator": "cqrs-implementation",
+    "cqrs-requestum": "cqrs-implementation",
+    "mapper-automapper": "mapper",
+    "mapper-mapster": "mapper",
+    "mapper-mapperly": "mapper",
+    "mapper-manual": "mapper",
+    "rest-client-manual": "rest-client",
+    "rest-client-nswag": "rest-client",
+    "openapi-swagger-ui": "openapi-ui",
+    "openapi-scalar": "openapi-ui",
+    "infra-collector-alloy": "infra-collector",
+    "infra-metrics-mimir": "infra-metrics-backend",
+}
+for profile_id, category in required_profiles.items():
+    profile = by_id.get(profile_id)
+    if not profile or profile["status"] != "available" or profile["category"] != category:
+        errors.append(f"Missing or miscategorized wizard choice: {profile_id}")
+    elif len(profile["files"]) != 1:
+        errors.append(f"Wizard choice must own one documentation file: {profile_id}")
+if not (CATALOG / "docs/standards/dotnet/project-files.md").is_file():
+    errors.append("Mandatory .NET project file standard missing")
+else:
+    standard = (CATALOG / "docs/standards/dotnet/project-files.md").read_text(encoding="utf-8")
+    for token in ("Directory.Build.props", "Directory.Packages.props", "global.json",
+                  "TargetFramework", "ImplicitUsings", "Nullable",
+                  "PackageId", "AssemblyName", "RootNamespace"):
+        if token not in standard:
+            errors.append(f"Missing mandatory .NET project configuration rule: {token}")
+
 # Exclude the inherited application-specific client-library and code-generation
 # content from *active* documentation. The .NET SDK used to build the docs CLI
 # is a separate compiler tool and is intentionally not excluded.
