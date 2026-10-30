@@ -43,7 +43,7 @@ jobs:
         run: python tests/repository_hygiene.py
       - name: Verify release workflow and NuGet package policy
         run: python tests/release_contracts.py
-      - name: Validate optional HTTP, naming and EventBus documentation examples
+      - name: Validate optional HTTP ETag and test naming examples
         run: python tests/optional_profile_contracts.py
 
   tool-package:
