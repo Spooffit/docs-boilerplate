@@ -71,6 +71,9 @@ fi
 run init --name RussianXunit --description "Русские тесты" --output "$temp/ru-xunit" --profiles xunit --language ru --site none --non-interactive
 grep -q 'Тестирование .NET с xUnit.net' "$temp/ru-xunit/docs/standards/dotnet/xunit.md"
 run validate --output "$temp/ru-xunit"
+run init --name RussianBlazor --description "Тесты компонентов" --output "$temp/ru-blazor" --profiles bunit --language ru --site none --non-interactive
+grep -q 'Компонентное тестирование с bUnit' "$temp/ru-blazor/docs/standards/blazor/bunit.md"
+run validate --output "$temp/ru-blazor"
 run init --name RussianS3 --description "Русская инфраструктура" --output "$temp/ru-s3" --profiles infra-storage-s3 --language ru --site none --non-interactive
 grep -q 'S3-совместимое объектное хранилище' "$temp/ru-s3/docs/standards/infrastructure/storage-s3.md"
 run validate --output "$temp/ru-s3"
