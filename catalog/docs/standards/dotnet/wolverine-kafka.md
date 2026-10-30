@@ -16,3 +16,10 @@ Use the `WolverineFx.Kafka` transport with the installed Wolverine version. Defi
 ## Evidence
 
 Record actual installed versions and authoritative contracts. Keep unsettled decisions open. Validate with a real integration test where external behavior matters; do not claim generated documentation proves the application works.
+
+## Reliability contract
+
+- Define partition keys, consumer groups and offset handling explicitly; ordering is limited to a partition and broker offset commits are not atomic with arbitrary database changes.
+- Verify the installed Wolverine Kafka transport's actual retry, persistence, failure and replay capabilities. Do not import RabbitMQ acknowledgement or dead-letter assumptions.
+- Define idempotency for replayed or duplicated records, bounded handler concurrency and shutdown behavior.
+- Test group rebalance, failed handlers, restart, lag recovery and schema evolution on a representative Kafka cluster.
