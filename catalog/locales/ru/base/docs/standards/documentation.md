@@ -40,3 +40,15 @@ status: active
 ## Проверка перед завершением
 
 Проверьте frontmatter, ID, относительные ссылки, ссылки из индексов и каталога, статус фактов и области применимости. При наличии генератора запустите `docs-boilerplate validate --output <repository-root>`; валидатор проверяет структурную корректность, но не фактическую истинность требований или работу продукта.
+
+## Пример корректных метаданных
+
+```yaml
+---
+id: doc-0123456789abcdef
+title: "Example title"
+description: "Short, factual summary"
+kind: standard
+status: active
+---
+```
