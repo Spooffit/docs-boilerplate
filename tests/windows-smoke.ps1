@@ -25,6 +25,8 @@ try {
     $target = Join-Path $root 'generated'
     Invoke-Docs init --name WindowsSmoke --description 'Windows documentation check' --output $target --profiles "dotnet,blazor,mudblazor" --site docsify --non-interactive
     Invoke-Docs validate --output $target
+    if (-not (Test-Path (Join-Path $target 'bootstrap.md'))) { throw 'Missing temporary stage-two introduction' }
+    if (-not (Test-Path (Join-Path $target '.agents/skills/project-intake/SKILL.md'))) { throw 'Missing temporary stage-two skill' }
     if ((Get-Content (Join-Path $target 'README.md') -TotalCount 1) -ne '# WindowsSmoke') {
         throw 'Root README begins with YAML metadata or a missing project heading'
     }
@@ -35,6 +37,13 @@ try {
     if ($agentInstructions -notmatch 'dotnet run --project src/DocsBoilerplate.Cli -- recover') { throw 'Recovery instruction does not use generator source checkout' }
     if ($agentInstructions -match '(?<![\w./-])docs-boilerplate\s+(?:init|update|validate|recover|list|doctor)\b') { throw 'Agent instructions require an unavailable installed CLI' }
     if ($agentInstructions -notmatch 'status: active') { throw 'Agent instructions do not distinguish metadata from evidence' }
+
+    Invoke-Docs bootstrap-complete --output $target
+    if (-not (Test-Path (Join-Path $target 'bootstrap.md'))) { throw 'Cleanup preview unexpectedly removed intake file' }
+    Invoke-Docs bootstrap-complete --output $target --apply
+    Invoke-Docs validate --output $target
+    if (Test-Path (Join-Path $target 'bootstrap.md')) { throw 'Stage-two cleanup did not remove intake file' }
+    if (Test-Path (Join-Path $target '.agents/skills/project-intake/SKILL.md')) { throw 'Stage-two cleanup did not remove temporary skill' }
 
     Invoke-Docs update --output $target
     Invoke-Docs update --output $target --apply

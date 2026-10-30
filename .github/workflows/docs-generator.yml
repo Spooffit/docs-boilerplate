@@ -54,6 +54,13 @@ jobs:
           "$RUNNER_TEMP/tools/docs-boilerplate" init --name PackagedDocs --description "Installed tool smoke" --output "$RUNNER_TEMP/packaged-docs" --profiles dotnet --site none --non-interactive
           "$RUNNER_TEMP/tools/docs-boilerplate" validate --output "$RUNNER_TEMP/packaged-docs"
           test -f "$RUNNER_TEMP/packaged-docs/docs/standards/dotnet/testing.md"
+          test -f "$RUNNER_TEMP/packaged-docs/bootstrap.md"
+          test -f "$RUNNER_TEMP/packaged-docs/.agents/skills/project-intake/SKILL.md"
+          "$RUNNER_TEMP/tools/docs-boilerplate" bootstrap-complete --output "$RUNNER_TEMP/packaged-docs"
+          test -f "$RUNNER_TEMP/packaged-docs/bootstrap.md"
+          "$RUNNER_TEMP/tools/docs-boilerplate" bootstrap-complete --output "$RUNNER_TEMP/packaged-docs" --apply
+          "$RUNNER_TEMP/tools/docs-boilerplate" validate --output "$RUNNER_TEMP/packaged-docs"
+          test ! -e "$RUNNER_TEMP/packaged-docs/bootstrap.md"
       - name: Upload private installable package
         uses: actions/upload-artifact@v4
         with:

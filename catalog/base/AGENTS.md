@@ -44,3 +44,9 @@ Use the optional `docs-init` skill when installed. Do not create feature/module/
 - Code snippets with omitted imports, placeholders, or pseudocode are illustrative and must be labeled accordingly. Do not claim an example works without a verified build or executed test in the relevant environment.
 - Do not invent project-specific document IDs, approval authorities or document workflow states. Apply the optional identifiers/approval standard only if the project selected that profile.
 - Do not introduce a second UI state model automatically. The optional direct API DTO form convention applies only if selected and the DTO is appropriate for safe editing.
+
+## Two-stage initialization (temporary intake)
+
+If `bootstrap.md` exists, stage one generated the technology documentation but **project discovery is not complete**. Follow that temporary file and the `project-intake` skill under `.agents/skills/project-intake/`: ask the owner about project purpose, adjacent projects, existing code, integrations, environments, milestones and terminology, following the conditional question guide. Update canonical project documents, never invent facts, and ask for explicit confirmation before stage-two cleanup.
+
+When the owner approves the completed intake, and the installable tool is available, run `docs-boilerplate bootstrap-complete --output <repository-root>` to preview and `docs-boilerplate bootstrap-complete --output <repository-root> --apply` to remove only unchanged temporary intake documents and the temporary skill. The `validate` command must continue working afterwards. If `bootstrap.md` no longer exists, do not restart intake or assume it is unfinished. Normal project standards and independently selected skills are permanent.
