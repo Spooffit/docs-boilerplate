@@ -116,7 +116,7 @@ static partial class DocsCli
                 sb.AppendLine($"- [{sub.Split('/').Last()}]({sub.Split('/').Last()}/index.md)");
             foreach (var path in immediateFiles)
                 sb.AppendLine($"- [{TitleFromMarkdown(files[path], path)}]({Path.GetFileName(path)})");
-            files.Add(indexPath, sb.ToString());
+            files.Add(indexPath, DocumentMetadata.Prepare(indexPath, sb.ToString()));
         }
     }
 
