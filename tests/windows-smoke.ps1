@@ -59,6 +59,7 @@ try {
     New-Item -ItemType Directory -Path $guides | Out-Null
     Set-Content -Encoding utf8 -LiteralPath (Join-Path $guides 'index.md') -Value @'
 ---
+id: win-guides-index
 title: "Guides"
 description: "Windows navigation test directory"
 kind: index
@@ -71,6 +72,7 @@ status: draft
 '@
     Set-Content -Encoding utf8 -LiteralPath (Join-Path $guides 'guide.md') -Value @'
 ---
+id: win-guides-guide
 title: "Guide"
 description: "Windows navigation test page"
 kind: project
@@ -99,9 +101,9 @@ status: draft
     if (Test-Path (Join-Path $variants 'docs/standards/dotnet/ef-core.md')) { throw 'Unselected data access profile leaked' }
 
     $final = Join-Path $root 'final-optional'
-    Invoke-Docs init --name FinalConventions --description 'Selected documentation and UI rules' --output $final --profiles 'document-identifiers-and-statuses,ui-direct-dto-forms' --site none --non-interactive
+    Invoke-Docs init --name FinalConventions --description 'Selected documentation and UI rules' --output $final --profiles 'ui-direct-dto-forms' --site none --non-interactive
     Invoke-Docs validate --output $final
-    foreach ($file in @('docs/standards/documentation/identifiers-and-statuses.md', 'docs/standards/ui/direct-dto-forms.md', 'docs/standards/http/client-contracts.md')) {
+    foreach ($file in @('docs/standards/document-identifiers.md', 'docs/standards/integrations/reliable-synchronization.md', 'docs/standards/ui/direct-dto-forms.md', 'docs/standards/http/client-contracts.md')) {
         if (-not (Test-Path (Join-Path $final $file))) { throw "Missing final opt-in profile: $file" }
     }
     if (Test-Path (Join-Path $final 'docs/standards/blazor')) { throw 'Unselected Blazor profile leaked' }
@@ -112,11 +114,21 @@ status: draft
     if (Test-Path (Join-Path $plain 'docs/standards/dotnet')) { throw 'No-stack mode installed .NET guidance' }
     $plainManifest = Get-Content (Join-Path $plain 'docs.config.json') -Raw | ConvertFrom-Json
     if (@($plainManifest.Profiles).Count -ne 0) { throw 'No-stack mode selected profiles' }
+    if (@($plainManifest.Modules).Count -ne 7 -or @($plainManifest.Skills).Count -ne 5) { throw 'Default documentation modules or skills missing' }
+    if (-not (Test-Path (Join-Path $plain 'docs/standards/integrations/reliable-synchronization.md'))) { throw 'Baseline integration missing' }
 
     $headless = Join-Path $root 'headless'
     Invoke-Docs init --name Headless --description 'Markdown only' --output $headless --profiles dotnet --site none --non-interactive
     Invoke-Docs validate --output $headless
     if (Test-Path (Join-Path $headless 'index.html')) { throw 'Headless generation included viewer' }
+
+    $xunit = Join-Path $root 'xunit'
+    Invoke-Docs init --name XUnit --description 'xUnit on Windows' --output $xunit --profiles 'xunit,testcontainers' --non-interactive
+    if (-not (Test-Path (Join-Path $xunit 'docs/standards/dotnet/xunit.md'))) { throw 'Missing xUnit standard' }
+    Assert-Fail init --name BothFrameworks --description 'Invalid selection' --output (Join-Path $root 'both-tests') --profiles 'tunit,xunit' --non-interactive
+    $s3 = Join-Path $root 'minio'
+    Invoke-Docs init --name S3 --description 'MinIO SDK' --output $s3 --profiles 'infra-s3-client-minio' --non-interactive
+    if (-not (Test-Path (Join-Path $s3 'docs/standards/infrastructure/s3-client-minio.md'))) { throw 'Missing MinIO SDK profile' }
 
     Assert-Fail init --name Invalid --description 'Invalid' --output (Join-Path $root 'invalid') --profiles dotnet --site retired-site --non-interactive
     Assert-Fail init --name Unsafe --description 'Unsafe' --output (Join-Path $root 'unsafe') --profiles dotnet --unknown-flag --non-interactive

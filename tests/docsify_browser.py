@@ -131,12 +131,12 @@ def main() -> int:
         notes = output / "docs/project/notes"
         notes.mkdir()
         (notes / "index.md").write_text(
-            '---\ntitle: "Project notes"\ndescription: "Authored notes index"\n'
+            '---\nid: browser-project-notes\ntitle: "Project notes"\ndescription: "Authored notes index"\n'
             'kind: index\nstatus: draft\n---\n\n# Project notes\n\n'
             '- [Review guide](review-guide.md#review-scope)\n', encoding="utf-8"
         )
         (notes / "review-guide.md").write_text(
-            '---\ntitle: "Review guide"\ndescription: "Authored browser navigation page"\n'
+            '---\nid: browser-review-guide\ntitle: "Review guide"\ndescription: "Authored browser navigation page"\n'
             'kind: project\nstatus: draft\n---\n\n# Review guide\n\n'
             '## Review scope\n\nAn author-owned document.\n', encoding="utf-8"
         )
