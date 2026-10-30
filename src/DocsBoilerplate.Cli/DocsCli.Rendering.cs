@@ -106,6 +106,23 @@ static partial class DocsCli
                     && !path[(directory.Length + 1)..].Contains('/')).ToArray();
 
             var title = directory.Split('/').Last().Replace('-', ' ');
+            if (language == "ru")
+                title = title switch
+                {
+                    "architecture" => "Архитектура",
+                    "project" => "Проект",
+                    "standards" => "Стандарты",
+                    "templates" => "Шаблоны",
+                    "integrations" => "Интеграции",
+                    "testing" => "Тестирование",
+                    "operations" => "Эксплуатация",
+                    "infrastructure" => "Инфраструктура",
+                    "storage" => "Хранение",
+                    "security" => "Безопасность",
+                    "http" => "HTTP",
+                    "ui" => "Интерфейс",
+                    _ => title
+                };
             var sb = new StringBuilder();
             sb.Append(DocumentMetadata.Frontmatter(language == "ru" ? $"Каталог: {title}" : $"Directory: {title}", language == "ru" ? "Указатель документов и подразделов" : "Index of documents and subdirectories", "index", "active"));
             sb.AppendLine($"# {title}");
@@ -184,7 +201,16 @@ static partial class DocsCli
         sb.AppendLine();
         var byId = profiles.Profiles.ToDictionary(p => p.Id, StringComparer.Ordinal);
         foreach (var id in selected.Order(StringComparer.Ordinal))
-            sb.AppendLine($"- **{byId[id].Name}** (`{id}`)");
+        {
+            var name = byId[id].Name;
+            if (language == "ru")
+            {
+                var source = byId[id].Files.FirstOrDefault(files.ContainsKey);
+                if (source is not null)
+                    name = TitleFromMarkdown(files[source], source);
+            }
+            sb.AppendLine($"- **{name}** (`{id}`)");
+        }
         sb.AppendLine();
         sb.AppendLine(language == "ru" ? "## Доступные документы" : "## Available documents");
         sb.AppendLine();
