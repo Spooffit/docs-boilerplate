@@ -165,7 +165,7 @@ static partial class DocsCli
         var language = args.GetValueOrDefault("language") ?? (unattended || Console.IsInputRedirected
             ? "en"
             : AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Documentation language:")
-                .AddChoices("en", "ru"));
+                .AddChoices("en", "ru")));
         AssertLanguage(language);
         UpdateRecovery.AssertNoPending(output);
         var selection = args.TryGetValue("profiles", out var listed)
