@@ -11,6 +11,12 @@ static partial class DocsCli
         var result = new HashSet<string>(StringComparer.Ordinal);
         var visiting = new HashSet<string>(StringComparer.Ordinal);
         foreach (var id in selected) Resolve(id);
+        foreach (var category in new[] { "infra-logs", "infra-metrics", "infra-traces", "infra-deploy", "infra-devops", "infra-orchestration" })
+        {
+            var choices = catalog.Profiles.Where(profile => result.Contains(profile.Id) && profile.Category == category).ToArray();
+            if (choices.Length > 1)
+                throw new InvalidOperationException($"Select at most one {category}: {string.Join(", ", choices.Select(p => p.Id))}");
+        }
         return result;
         void Resolve(string id)
         {
@@ -92,7 +98,8 @@ static partial class DocsCli
         var categories = new HashSet<string>(StringComparer.Ordinal)
         {
             "backend", "frontend", "data-access", "ui", "architecture", "modeling", "testing",
-            "web", "validation", "database", "application-pattern", "messaging", "integration", "storage", "query-pattern", "frontend-practice", "documentation"
+            "web", "validation", "database", "application-pattern", "messaging", "integration", "storage", "query-pattern", "frontend-practice", "documentation",
+            "infra-logs", "infra-metrics", "infra-traces", "infra-deploy", "infra-devops", "infra-orchestration"
         };
         foreach (var profile in data.Profiles)
         {
