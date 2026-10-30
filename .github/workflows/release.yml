@@ -92,7 +92,7 @@ jobs:
             --add-source "$PWD/dist" --version "$PACKAGE_VERSION"
           tool="$RUNNER_TEMP/release-tool/docs-boilerplate"
           "$tool" doctor
-          "$tool" init --name ReleaseSmoke --description "Release package verification" \
+          "$tool" init --name ReleaseSmoke \
             --output "$RUNNER_TEMP/release-project" --profiles dotnet --site none --non-interactive
           "$tool" validate --output "$RUNNER_TEMP/release-project"
           test -f "$RUNNER_TEMP/release-project/.agents/bootstrap/questionnaire.md"
