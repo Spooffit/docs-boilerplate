@@ -65,6 +65,17 @@ def check() -> None:
                     errors.append(f"Non-localizable frontmatter changed: {relative} / {key}")
         if value == english:
             errors.append(f"Untranslated source copied verbatim: {relative}")
+        # Executable reference fixtures are language-independent contracts.
+        # Translating explanation text must never change code that the source
+        # tests extract, compile or compare byte-for-byte.
+        if relative == "docs/standards/dotnet/eventbus-composition.md":
+            pattern = r"^\x60{3}(?:xml|csharp) file=[^\\n]+\\n[\\s\\S]*?^\x60{3}"
+            if re.findall(pattern, english, re.M) != re.findall(pattern, value, re.M):
+                errors.append(f"Executable EventBus examples differ: {relative}")
+        if relative == "docs/standards/http/etag-concurrency.md":
+            pattern = r"^\x60{3}http scenario=[^\\n]+\\n[\\s\\S]*?^\x60{3}"
+            if re.findall(pattern, english, re.M) != re.findall(pattern, value, re.M):
+                errors.append(f"HTTP ETag scenarios differ: {relative}")
     for missing in sorted(sources.keys() - translated):
         errors.append(f"Missing Russian translation: {missing}")
     print(f"Russian translations: {len(translated & sources.keys())}/{len(sources)} Markdown source files")
