@@ -23,7 +23,19 @@
       "files": [
         "docs/standards/dotnet/tunit.md"
       ],
-      "category": "testing"
+      "category": "test-framework"
+    },
+    {
+      "id": "xunit",
+      "name": "xUnit.net",
+      "status": "available",
+      "requires": [
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/dotnet/xunit.md"
+      ],
+      "category": "test-framework"
     },
     {
       "id": "testcontainers",
@@ -66,8 +78,7 @@
       "name": "Blazor",
       "status": "available",
       "requires": [
-        "dotnet",
-        "ui-accessibility"
+        "dotnet"
       ],
       "files": [
         "docs/standards/blazor/components.md",
@@ -231,7 +242,7 @@
       "files": [
         "docs/standards/blazor/bunit.md"
       ],
-      "category": "testing"
+      "category": "blazor-testing"
     },
     {
       "id": "ui-accessibility",
@@ -244,17 +255,6 @@
       "category": "frontend-practice"
     },
     {
-      "id": "integration-reliability",
-      "name": "Reliable integration and resumable synchronization",
-      "status": "available",
-      "requires": [],
-      "files": [
-        "docs/standards/integrations/reliable-synchronization.md",
-        "docs/standards/integrations/versioned-transfers.md"
-      ],
-      "category": "integration"
-    },
-    {
       "id": "object-storage",
       "name": "Object storage and safe binary delivery",
       "status": "available",
@@ -262,7 +262,45 @@
       "files": [
         "docs/standards/storage/object-storage.md"
       ],
-      "category": "storage"
+      "category": "infra-storage-policy"
+    },
+    {
+      "id": "infra-storage-s3",
+      "name": "S3-compatible object storage",
+      "status": "available",
+      "requires": [
+        "object-storage"
+      ],
+      "files": [
+        "docs/standards/infrastructure/storage-s3.md"
+      ],
+      "category": "infra-storage"
+    },
+    {
+      "id": "infra-s3-client-minio",
+      "name": "MinIO .NET SDK (S3 client)",
+      "status": "available",
+      "requires": [
+        "infra-storage-s3",
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/infrastructure/s3-client-minio.md"
+      ],
+      "category": "infra-s3-client"
+    },
+    {
+      "id": "infra-s3-client-aws",
+      "name": "AWS SDK for .NET (S3 client)",
+      "status": "available",
+      "requires": [
+        "infra-storage-s3",
+        "dotnet"
+      ],
+      "files": [
+        "docs/standards/infrastructure/s3-client-aws.md"
+      ],
+      "category": "infra-s3-client"
     },
     {
       "id": "http-contracts",
@@ -322,16 +360,6 @@
         "docs/standards/dotnet/eventbus-composition.md"
       ],
       "category": "messaging"
-    },
-    {
-      "id": "document-identifiers-and-statuses",
-      "name": "Document identifiers and approval statuses",
-      "status": "available",
-      "requires": [],
-      "files": [
-        "docs/standards/documentation/identifiers-and-statuses.md"
-      ],
-      "category": "documentation"
     },
     {
       "id": "ui-direct-dto-forms",
