@@ -51,6 +51,11 @@ grep -q 'Условный опросник' "$temp/ru-baseline/.agents/bootstrap
 grep -q 'Стратегия тестирования' "$temp/ru-baseline/docs/testing/strategy.md"
 grep -q 'Каталог документации' "$temp/ru-baseline/docs/catalog.md"
 grep -q 'Навигационный указатель' "$temp/ru-baseline/llms.txt"
+grep -Fq '<html lang="ru">' "$temp/ru-baseline/index.html"
+grep -Fq '<title>РусскийПроект</title>' "$temp/ru-baseline/index.html"
+grep -Fq 'Поиск по документации' "$temp/ru-baseline/index.html"
+grep -Fq 'Загрузка документации...' "$temp/ru-baseline/index.html"
+grep -Fq 'content="Тест документации"' "$temp/ru-baseline/index.html"
 python3 - "$temp/ru-baseline/docs.config.json" <<'PY'
 import json,sys
 from pathlib import Path
@@ -62,9 +67,16 @@ PY
 run validate --output "$temp/ru-baseline"
 run update --output "$temp/ru-baseline" --apply
 run validate --output "$temp/ru-baseline"
+grep -Fq '<html lang="ru">' "$temp/ru-baseline/index.html"
 run bootstrap-complete --output "$temp/ru-baseline" --apply
 run validate --output "$temp/ru-baseline"
 [[ ! -f "$temp/ru-baseline/bootstrap.md" ]]
+grep -Fq '<html lang="ru">' "$temp/ru-baseline/index.html"
+# User input must be escaped in the HTML shell, never interpreted as markup.
+run init --name 'Docs <Safe> & Co' --description 'Description "A&B" <x>' --output "$temp/ru-html-safe" --profiles none --language ru --site docsify --non-interactive
+grep -Fq '<title>Docs &lt;Safe&gt; &amp; Co</title>' "$temp/ru-html-safe/index.html"
+grep -Fq 'content="Description &quot;A&amp;B&quot; &lt;x&gt;"' "$temp/ru-html-safe/index.html"
+run validate --output "$temp/ru-html-safe"
 if run init --name BadLocale --description Test --output "$temp/bad-locale" --profiles none --language de --non-interactive; then
     echo "Unknown documentation locale accepted"; exit 1
 fi
