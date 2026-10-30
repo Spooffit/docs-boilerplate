@@ -105,6 +105,21 @@ def exercise(page, base_url: str, local_failures: list[str]) -> None:
     assert not local_failures, "Missing/failed local Markdown requests:\\n" + "\\n".join(local_failures)
 
 
+def exercise_russian(page, base_url: str, local_failures: list[str]) -> None:
+    page.goto(base_url, wait_until="domcontentloaded")
+    assert page.evaluate("document.documentElement.lang") == "ru", "Russian Docsify language is incorrect"
+    assert page.title() == "РусскийБраузер", "Russian project title is missing"
+    assert_heading(page, "РусскийБраузер")
+    assert page.evaluate("window.$docsify.search.placeholder") == "Поиск по документации", (
+        "Docsify search configuration is still English"
+    )
+    page.goto(base_url + "#/catalog", wait_until="domcontentloaded")
+    assert_heading(page, "Каталог документации")
+    page.locator("#main").get_by_role("link", name="Стратегия тестирования", exact=True).first.click()
+    assert_heading(page, "Стратегия тестирования")
+    assert not local_failures, "Failed localized Markdown requests:\\n" + "\\n".join(local_failures)
+
+
 def main() -> int:
     ARTIFACTS.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="docsify-real-browser-") as td:
@@ -122,6 +137,18 @@ def main() -> int:
             ["dotnet", "run", "--no-build", "--configuration", "Release",
              "--project", str(ROOT / "src/DocsBoilerplate.Cli"), "--",
              "validate", "--output", str(output)],
+            cwd=ROOT, check=True,
+        )
+
+        russian_output = Path(td) / "generated-ru"
+        subprocess.run(
+            [
+                "dotnet", "run", "--no-build", "--configuration", "Release",
+                "--project", str(ROOT / "src/DocsBoilerplate.Cli"), "--", "init",
+                "--name", "РусскийБраузер", "--description", "Проверка русской документации",
+                "--output", str(russian_output), "--profiles", "none",
+                "--language", "ru", "--site", "docsify", "--non-interactive",
+            ],
             cwd=ROOT, check=True,
         )
 
