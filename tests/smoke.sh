@@ -145,6 +145,36 @@ if run doctor --catalog "$temp/catalog-planned-dependency" > "$temp/planned-depe
 fi
 grep -q "Available profile 'tunit' cannot depend on planned profile 'go'" "$temp/planned-dependency.log"
 
+# Conditional wizard choices must be enforced identically in scripted mode.
+run init --name Pooler --output "$temp/pooler" --profiles postgres-pooler-pgbouncer --language ru --site none --non-interactive
+[[ -f "$temp/pooler/docs/standards/postgresql/pgbouncer.md" ]]
+grep -q 'Пулинг соединений PgBouncer' "$temp/pooler/docs/standards/postgresql/pgbouncer.md"
+if run init --name BothPoolers --output "$temp/both-poolers" --profiles postgres-pooler-pgbouncer,postgres-pooler-odyssey --non-interactive; then
+    echo "Conflicting PostgreSQL poolers accepted"; exit 1
+fi
+if run init --name InvalidSpecs --output "$temp/dapper-spec" --profiles dapper,specification-manual --non-interactive; then
+    echo "Dapper and specifications were combined"; exit 1
+fi
+if run init --name InvalidBus --output "$temp/no-bus-client" --profiles messaging-rabbitmq --non-interactive; then
+    echo "Broker without client accepted"; exit 1
+fi
+if run init --name InvalidBus --output "$temp/no-bus-transport" --profiles masstransit --non-interactive; then
+    echo "Messaging client without broker accepted"; exit 1
+fi
+if run init --name InvalidWolverine --output "$temp/no-wolverine" --profiles cqrs-wolverine --non-interactive; then
+    echo "CQRS Wolverine without an existing Wolverine client accepted"; exit 1
+fi
+if run init --name HybridConflict --output "$temp/hybrid-conflict" --profiles architecture-hybrid,microservices --non-interactive; then
+    echo "Multiple architecture variants accepted"; exit 1
+fi
+run init --name ModernStack --output "$temp/modern-stack" --profiles messaging-kafka,masstransit,architecture-hybrid,cqrs,cqrs-mediatr,mapper-mapster,aspnet-core,openapi-scalar,postgres-pooler-odyssey,rest-client-nswag --language ru --site none --non-interactive
+run validate --output "$temp/modern-stack"
+for file in docs/standards/architecture/hybrid.md docs/standards/postgresql/odyssey.md docs/standards/aspnet/scalar.md docs/standards/http/client-nswag.md docs/standards/dotnet/masstransit.md; do
+    [[ -f "$temp/modern-stack/$file" ]]
+done
+[[ ! -e "$temp/modern-stack/docs/standards/dotnet/masstransit-rabbitmq.md" ]]
+[[ ! -e "$temp/modern-stack/docs/standards/dotnet/eventbus-composition.md" ]]
+
 # End-to-end audit: every available profile must generate and validate in
 # isolation with exactly its declared transitive dependencies, no selected
 # project modules or agent skills and no browser shell.
