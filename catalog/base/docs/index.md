@@ -11,7 +11,7 @@ status: active
 
 Welcome to the documentation. Read the [project overview](project/overview.md), [architecture overview](architecture/overview.md), and [selected engineering standards](standards/index.md).
 
-Use the [generated documentation catalog](catalog.md) to find **installed** standards and optional project areas; use the [template selection guide](templates/index.md) only when a new document is actually needed. Do not infer requirements from a blank template.
+Use the [generated documentation catalog](catalog.md) to find **installed** standards and default project-area scaffolds; use the [template selection guide](templates/index.md) only when a new document is actually needed. Do not infer requirements from a blank template.
 
 The authoritative project instructions start at the root [AGENTS.md](../AGENTS.md) and [llms.txt](../llms.txt).
 

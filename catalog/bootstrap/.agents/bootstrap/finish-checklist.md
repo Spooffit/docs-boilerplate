@@ -13,8 +13,8 @@ status: draft
 - [ ] Related services and integrations are confirmed or labeled planned/unverified.
 - [ ] Infrastructure selections are not misrepresented as implemented deployments.
 - [ ] Actual milestones are recorded if supplied; none are fabricated.
-- [ ] Useful terminology was added if available; otherwise no empty glossary was fabricated.
-- [ ] New files have frontmatter and correct relative links, folder indexes and catalog entries.
+- [ ] Verified terminology was added to the default glossary when available; no fictitious terms were fabricated just to fill a scaffold.
+- [ ] New files have a unique stable frontmatter `id`, correct relative links, folder indexes and catalog entries; existing IDs were preserved on edits or moves.
 - [ ] Open questions and their decision owners (if known) are visible.
 - [ ] The user reviewed the stage-two summary and explicitly approved completion.
 

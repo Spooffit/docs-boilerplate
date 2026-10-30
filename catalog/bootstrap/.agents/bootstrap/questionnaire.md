@@ -60,8 +60,8 @@ status: draft
 - Which project-specific terms need definitions so developers and agents use the same vocabulary?
 - What choices remain unresolved and who can approve them?
 
-**If milestones exist:** record goals and verifiable acceptance for each; never impose a default stage taxonomy. **If terms are known:** populate a glossary; otherwise defer it. **If decisions are pending:** write open questions without fabricating answers.
+**If milestones exist:** record goals and verifiable acceptance for each; never impose a default stage taxonomy. **If terms are known:** populate the already-created glossary; otherwise leave its draft scaffold as-is. All documentation modules exist by default and do not imply that their subjects exist in the product. **If decisions are pending:** write open questions without fabricating answers.
 
 ## Writing and confirmation
 
-Populate `docs/project/overview.md` and `docs/architecture/overview.md` from verified context. Only create additional project documents when information and ownership warrant them. Update navigation for new pages, summarize uncertainties, and ask whether the owner accepts the initial documentation as the stage-two baseline.
+Populate `docs/project/overview.md` and `docs/architecture/overview.md` from verified context. Only create additional project documents when information and ownership warrant them. Every new `docs/` document needs a stable unique `id` in frontmatter; preserve IDs on renames. Update navigation for new pages, summarize uncertainties, and ask whether the owner accepts the initial documentation as the stage-two baseline.
