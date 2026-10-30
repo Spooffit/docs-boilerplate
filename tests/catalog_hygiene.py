@@ -55,6 +55,10 @@ INFRA_PROFILES = {
     "infra-storage-s3", "infra-s3-client-minio", "infra-s3-client-aws", "object-storage",
 }
 
+INFRA_PLACEHOLDER_PROFILES = INFRA_PROFILES - {
+    "infra-storage-s3", "infra-s3-client-minio", "infra-s3-client-aws", "object-storage",
+}
+
 general_dir = CATALOG / "base/docs/templates"
 actual_general = {p.name for p in general_dir.glob("*.md")} - {"index.md"}
 if actual_general != GENERAL_TEMPLATES:
@@ -72,7 +76,7 @@ infra = {p["id"] for p in profiles if p["category"].startswith("infra-")}
 if infra != INFRA_PROFILES:
     errors.append(f"Required temporary infrastructure choices changed: {sorted(infra)}")
 for p in profiles:
-    if p["id"] in INFRA_PROFILES:
+    if p["id"] in INFRA_PLACEHOLDER_PROFILES:
         for path in p["files"]:
             source = CATALOG / path
             if not source.is_file() or "Placeholder only" not in source.read_text(encoding="utf-8"):
@@ -144,9 +148,20 @@ if by_id.get("bunit", {}).get("category") != "blazor-testing":
     errors.append("bUnit must appear in Blazor component testing choices")
 if by_id.get("infra-storage-s3", {}).get("category") != "infra-storage":
     errors.append("S3 infrastructure storage choice is missing")
-for id in ("infra-s3-client-minio", "infra-s3-client-aws"):
-    if by_id.get(id, {}).get("category") != "infra-s3-client":
-        errors.append(f"S3 client must appear in a single-choice group: {id}")
+# S3 is infrastructure; client selection is exclusive, while general binary
+# safety is pulled in transitively and is never a separate wizard question.
+s3_profile_contracts = {
+    "object-storage": ("infra-storage-policy", [], "docs/standards/storage/object-storage.md"),
+    "infra-storage-s3": ("infra-storage", ["object-storage"], "docs/standards/infrastructure/storage-s3.md"),
+    "infra-s3-client-minio": ("infra-s3-client", ["infra-storage-s3", "dotnet"], "docs/standards/infrastructure/s3-client-minio.md"),
+    "infra-s3-client-aws": ("infra-s3-client", ["infra-storage-s3", "dotnet"], "docs/standards/infrastructure/s3-client-aws.md"),
+}
+for profile_id, (category, dependencies, path) in s3_profile_contracts.items():
+    entry = by_id.get(profile_id)
+    if not entry or entry["status"] != "available":
+        errors.append(f"Missing available S3 profile: {profile_id}")
+    elif (entry["category"], entry["requires"], entry["files"]) != (category, dependencies, [path]):
+        errors.append(f"S3 profile grouping, dependencies or source changed: {profile_id}")
 
 # Exclude the inherited application-specific client-library and code-generation
 # content from *active* documentation. The .NET SDK used to build the docs CLI
