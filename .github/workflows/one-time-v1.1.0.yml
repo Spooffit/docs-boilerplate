@@ -36,7 +36,7 @@ jobs:
             echo "Release $tag already exists; refusing duplicate publication"
             exit 0
           fi
-          current=$(gh api "repos/$GH_REPO/git/ref/tags/$tag" --jq '.object.sha' 2>/dev/null || true)
+          current=$(gh api "repos/$GH_REPO/git/refs/tags" --jq ".[] | select(.ref == \"refs/tags/$tag\") | .object.sha")
           if [[ -n "$current" ]]; then
             echo "::error::Tag $tag already exists; refusing to move it or dispatch a duplicate release"
             exit 1
