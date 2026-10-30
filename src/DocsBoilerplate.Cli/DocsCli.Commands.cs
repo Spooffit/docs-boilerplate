@@ -34,6 +34,13 @@ static partial class DocsCli
             .ToArray();
     }
 
+    // MassTransit uses either RabbitMQ transport or Kafka Rider; the other
+    // client choices are transport-specific catalog profiles.
+    internal static bool SupportsMessagingTransport(Profile profile, string transport) =>
+        profile.Category == "messaging-client" &&
+        (profile.Id == "masstransit" ||
+         profile.Requires.Contains(transport, StringComparer.Ordinal));
+
     // A deterministic decision flow is easier to validate than a mutable
     // state-machine dependency. Every step adds at most one compatible choice,
     // and ResolveProfiles applies the same guards to noninteractive calls.
@@ -103,7 +110,7 @@ static partial class DocsCli
                 var transport = ChooseOne("Message broker", "messaging-transport", allowNone: false);
                 selected.Add(transport);
                 AddOne("Messaging client", "messaging-client", allowNone: false,
-                    p => p.Requires.Contains(transport, StringComparer.Ordinal));
+                    p => SupportsMessagingTransport(p, transport));
                 AddOne("Messaging organization", "messaging-organization");
             }
 
