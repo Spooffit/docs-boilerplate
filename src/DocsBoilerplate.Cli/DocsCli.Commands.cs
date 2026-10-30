@@ -20,10 +20,11 @@ static partial class DocsCli
         var infrastructureCategories = new HashSet<string>(StringComparer.Ordinal)
         {
             "infra-logs", "infra-metrics", "infra-traces", "infra-deploy",
-            "infra-devops", "infra-orchestration"
+            "infra-devops", "infra-orchestration", "infra-storage", "infra-s3-client"
         };
         return RemainingInteractiveProfiles(catalog, offered)
             .Where(id => !infrastructureCategories.Contains(catalog.Profiles.Single(p => p.Id == id).Category))
+            .Where(id => catalog.Profiles.Single(p => p.Id == id).Category is not ("test-framework" or "blazor-testing" or "infra-storage-policy"))
             .Where(id =>
             {
                 var dependencies = ResolveProfiles([id], catalog);
@@ -37,8 +38,10 @@ static partial class DocsCli
     {
         var selected = new HashSet<string>(StringComparer.Ordinal);
         var offered = new HashSet<string>(StringComparer.Ordinal);
-        string Label(string id) => id == "none" ? "Skip (none)" : catalog.Profiles.Single(p => p.Id == id).Name;
+        string Label(string id) => id == "none" ? "None / skip" : catalog.Profiles.Single(p => p.Id == id).Name;
+        void Header(string title) => AnsiConsole.MarkupLine($"[bold blue]{Markup.Escape(title)}[/]");
 
+        // SelectionPrompt is a single-choice selector (radio semantics).
         string ChooseOne(string title, string category, bool backendAvailable = true)
         {
             var choices = catalog.Profiles.Where(p => p.Status == "available" && p.Category == category
@@ -46,75 +49,100 @@ static partial class DocsCli
                 .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
             offered.UnionWith(choices);
             if (choices.Length == 0) return "none";
+            Header(title + " (choose one)");
             return AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title(title).PageSize(12).UseConverter(Label).AddChoices(new[] { "none" }.Concat(choices)));
+                .Title("Select an option:").PageSize(12).UseConverter(Label).AddChoices(new[] { "none" }.Concat(choices)));
         }
 
+        // MultiSelectionPrompt shows checkboxes, suitable only for compatible choices.
         void ChooseMany(string title, params string[] categories)
         {
             var choices = catalog.Profiles.Where(p => p.Status == "available"
-                && categories.Contains(p.Category, StringComparer.Ordinal)
-                && p.Id != "bunit")
+                && categories.Contains(p.Category, StringComparer.Ordinal))
                 .Select(p => p.Id).Order(StringComparer.Ordinal).ToArray();
             offered.UnionWith(choices);
             if (choices.Length == 0) return;
+            Header(title + " (select any)");
             var picks = AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
-                .Title(title).PageSize(12).NotRequired().UseConverter(Label).AddChoices(choices));
+                .Title("Use Space to toggle and Enter to continue:")
+                .PageSize(12).NotRequired().UseConverter(Label).AddChoices(choices));
             selected.UnionWith(picks);
         }
 
-        AnsiConsole.MarkupLine("[bold]Step 1/3: Backend[/] (optional)");
-        var backend = ChooseOne("Backend technology:", "backend");
+        void AddSingle(string title, string category, bool backendAvailable = true)
+        {
+            var choice = ChooseOne(title, category, backendAvailable);
+            if (choice != "none") selected.Add(choice);
+        }
+
+        AnsiConsole.MarkupLine("[bold]Step 1/3: Backend[/]");
+        var backend = ChooseOne("Backend technology", "backend");
         if (backend != "none")
         {
             selected.Add(backend);
-            ChooseMany("Backend libraries and options:", "web", "validation", "database",
-                "data-access", "messaging", "query-pattern", "architecture",
-                "modeling", "application-pattern", "testing");
+            ChooseMany("HTTP and API", "web");
+            ChooseMany("Validation", "validation");
+            ChooseMany("Database", "database");
+            ChooseMany("Data access", "data-access", "query-pattern");
+            ChooseMany("Messaging", "messaging");
+            ChooseMany("Architecture", "architecture", "modeling", "application-pattern");
+            AddSingle("Tests", "test-framework");
+            ChooseMany("Testing tools and conventions", "testing");
         }
 
-        AnsiConsole.MarkupLine("[bold]Step 2/3: Frontend[/] (optional)");
-        var frontend = ChooseOne("Frontend technology:", "frontend");
+        AnsiConsole.MarkupLine("[bold]Step 2/3: Frontend[/]");
+        var frontend = ChooseOne("Frontend technology", "frontend");
         if (frontend != "none")
         {
             selected.Add(frontend);
-            ChooseMany("Frontend libraries and options:", "ui", "frontend-practice");
+            ChooseMany("UI component libraries", "ui");
+            ChooseMany("UI conventions", "frontend-practice");
+            if (backend == "none")
+                AddSingle("Tests", "test-framework");
             if (frontend == "blazor")
-            {
-                offered.Add("bunit");
-                if (AnsiConsole.Confirm("Include bUnit component testing guidance?", false))
-                    selected.Add("bunit");
-            }
+                ChooseMany("Blazor component testing", "blazor-testing");
         }
 
-        // Keep independent standards selectable without quietly adding them.
-        // Infrastructure choices come at the end, even for frontend-only projects.
+        // Other independent profiles also have named blocks rather than one
+        // unstructured checklist of unrelated technologies and policies.
         var remaining = RemainingContextualProfiles(catalog, offered, backend, frontend);
-        if (remaining.Length > 0)
+        foreach (var category in remaining
+            .Select(id => catalog.Profiles.Single(p => p.Id == id).Category)
+            .Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal))
+        {
+            var ids = remaining.Where(id => catalog.Profiles.Single(p => p.Id == id).Category == category).ToArray();
+            var title = category switch
+            {
+                "web" => "HTTP and API contracts",
+                "database" => "Database",
+                "architecture" => "Architecture",
+                "modeling" => "Domain modeling",
+                "application-pattern" => "Application patterns",
+                "messaging" => "Messaging",
+                "integration" => "Integrations",
+                "testing" => "Testing tools",
+                "frontend-practice" => "UI conventions",
+                _ => category.Replace('-', ' ')
+            };
+            Header(title + " (select any)");
             selected.UnionWith(AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
-                .Title("Other optional standards (independent selection):")
-                .PageSize(15).NotRequired().UseConverter(Label).AddChoices(remaining)));
+                .Title("Use Space to toggle and Enter to continue:")
+                .PageSize(12).NotRequired().UseConverter(Label).AddChoices(ids)));
+        }
 
-        AnsiConsole.MarkupLine("[bold]Step 3/3: Infrastructure[/] (optional)");
+        AnsiConsole.MarkupLine("[bold]Step 3/3: Infrastructure[/]");
         if (AnsiConsole.Confirm("Configure infrastructure documentation?", defaultValue: false))
         {
-            foreach (var (category, title) in new[]
-            {
-                ("infra-logs", "Logging technology:"),
-                ("infra-metrics", "Metrics technology:"),
-                ("infra-traces", "Tracing technology:"),
-                ("infra-deploy", "Deployment approach:"),
-                ("infra-devops", "DevOps definitions location:")
-            })
-            {
-                var chosen = ChooseOne(title, category, backendAvailable: backend != "none");
-                if (chosen != "none") selected.Add(chosen);
-            }
+            AddSingle("Object storage", "infra-storage");
+            if (selected.Contains("infra-storage-s3") && (backend != "none" || frontend == "blazor"))
+                AddSingle("S3 client", "infra-s3-client");
+            AddSingle("Logging", "infra-logs");
+            AddSingle("Metrics", "infra-metrics");
+            AddSingle("Tracing", "infra-traces");
+            AddSingle("Deployment", "infra-deploy");
+            AddSingle("DevOps configuration location", "infra-devops", backendAvailable: backend != "none");
             if (selected.Contains("dotnet") || frontend == "blazor" || backend == "dotnet")
-            {
-                var chosen = ChooseOne("Application orchestration:", "infra-orchestration");
-                if (chosen != "none") selected.Add(chosen);
-            }
+                AddSingle("Application orchestration", "infra-orchestration");
         }
 
         return selected.Order(StringComparer.Ordinal).ToArray();
@@ -147,19 +175,16 @@ static partial class DocsCli
         if (name.Contains("{{", StringComparison.Ordinal) || description.Contains("{{", StringComparison.Ordinal))
             throw new InvalidOperationException("Template placeholder markers are not permitted in input.");
         var ids = ResolveProfiles(selection, available);
+        // Default to every persistent skill, with explicit overrides for scripts.
         var requestedSkills = args.TryGetValue("skills", out var requested)
             ? requested.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-            : unattended || Console.IsInputRedirected
-                ? Array.Empty<string>()
-                : AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title("Optional agent skills:")
-                    .AddChoices(skillCatalog.Skills.Select(x => x.Id))).ToArray();
+            : skillCatalog.Skills.Select(x => x.Id).ToArray();
         var skillIds = ResolveSkills(requestedSkills, skillCatalog);
+        // Default to all documentation scaffolds; the agent only fills what
+        // the project owner has evidenced and confirmed.
         var requestedModules = args.TryGetValue("modules", out var requestedModuleNames)
             ? requestedModuleNames.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-            : unattended || Console.IsInputRedirected
-                ? Array.Empty<string>()
-                : AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title("Additional documentation modules:")
-                    .AddChoices(moduleCatalog.Modules.Select(x => x.Id))).ToArray();
+            : moduleCatalog.Modules.Select(x => x.Id).ToArray();
         var moduleIds = ResolveModules(requestedModules, moduleCatalog);
         var site = args.GetValueOrDefault("site") ?? (unattended || Console.IsInputRedirected
             ? "docsify"
@@ -186,13 +211,22 @@ static partial class DocsCli
             if (await IsIdenticalAsync(output, expected))
             {
                 AnsiConsole.MarkupLine("[green]No changes.[/] Existing repository matches this configuration.");
-                return 0;
+                return await ValidateAsync(output, catalog, available, skillCatalog, moduleCatalog);
             }
             throw new IOException($"Output directory is not empty: {output}. Refusing to overwrite any files.");
         }
-        AnsiConsole.MarkupLine($"[blue]Plan:[/] {expected.Count} files for {Markup.Escape(name)}");
-        foreach (var path in expected.Keys.Order(StringComparer.Ordinal))
-            AnsiConsole.WriteLine($"  + {path}");
+        AnsiConsole.MarkupLine($"[bold]Selected configuration for {Markup.Escape(name)}[/]");
+        foreach (var group in ids.Select(id => available.Profiles.Single(p => p.Id == id))
+            .GroupBy(p => p.Category).OrderBy(g => g.Key, StringComparer.Ordinal))
+        {
+            AnsiConsole.MarkupLine($"[blue]{Markup.Escape(group.Key)}[/]");
+            foreach (var profile in group.OrderBy(p => p.Name, StringComparer.Ordinal))
+                AnsiConsole.MarkupLine($"  [green]✓[/] {Markup.Escape(profile.Name)}");
+        }
+        if (ids.Count == 0) AnsiConsole.MarkupLine("  No optional technology profiles");
+        AnsiConsole.MarkupLine($"[blue]Documentation:[/] {skillIds.Count} agent skills and {moduleIds.Count} modules (included)");
+        AnsiConsole.MarkupLine($"[blue]Site:[/] {Markup.Escape(site)}");
+        AnsiConsole.MarkupLine($"[blue]Destination:[/] {Markup.Escape(output)}");
         if (args.ContainsKey("dry-run"))
             return 0;
         if (!unattended && !Console.IsInputRedirected && !AnsiConsole.Confirm("Create these files?", defaultValue: false))
@@ -216,8 +250,8 @@ static partial class DocsCli
                 if (File.Exists(path)) File.Delete(path);
             throw;
         }
-        AnsiConsole.MarkupLine("[green]Generated.[/] Run validate to check the result.");
-        return 0;
+        AnsiConsole.MarkupLine("[green]Generated.[/] Validating repository...");
+        return await ValidateAsync(output, catalog, available, skillCatalog, moduleCatalog);
 
     }
 
