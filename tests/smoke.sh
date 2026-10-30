@@ -41,6 +41,38 @@ run update --output "$temp/intake" --apply
 run validate --output "$temp/intake"
 [[ ! -e "$temp/intake/bootstrap.md" ]]
 
+# Russian baseline is a complete localized source overlay: no implicit
+# English fallback, with stable canonical output paths and automatic validate.
+run init --name РусскийПроект --description "Тест документации" --output "$temp/ru-baseline" --profiles none --language ru --site docsify --non-interactive > "$temp/ru-baseline-init.log"
+grep -q 'Validating repository' "$temp/ru-baseline-init.log"
+grep -q 'Документация проекта' "$temp/ru-baseline/docs/index.md"
+grep -q 'Инструкции ИИ-агентам' "$temp/ru-baseline/AGENTS.md"
+grep -q 'Условный опросник' "$temp/ru-baseline/.agents/bootstrap/questionnaire.md"
+grep -q 'Стратегия тестирования' "$temp/ru-baseline/docs/testing/strategy.md"
+grep -q 'Каталог документации' "$temp/ru-baseline/docs/catalog.md"
+grep -q 'Навигационный указатель' "$temp/ru-baseline/llms.txt"
+python3 - "$temp/ru-baseline/docs.config.json" <<'PY'
+import json,sys
+from pathlib import Path
+manifest=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+assert manifest["Language"] == "ru"
+assert len(manifest["Skills"]) == 5 and len(manifest["Modules"]) == 7
+assert all(not f.startswith("locales/") for f in manifest["GeneratedFiles"])
+PY
+run validate --output "$temp/ru-baseline"
+run update --output "$temp/ru-baseline" --apply
+run validate --output "$temp/ru-baseline"
+run bootstrap-complete --output "$temp/ru-baseline" --apply
+run validate --output "$temp/ru-baseline"
+[[ ! -f "$temp/ru-baseline/bootstrap.md" ]]
+if run init --name BadLocale --description Test --output "$temp/bad-locale" --profiles none --language de --non-interactive; then
+    echo "Unknown documentation locale accepted"; exit 1
+fi
+if run init --name MixedLanguage --description Test --output "$temp/mixed-language" --profiles xunit --language ru --non-interactive; then
+    echo "Incomplete Russian technology profile unexpectedly accepted"; exit 1
+fi
+[[ ! -e "$temp/mixed-language" ]]
+
 # Infrastructure choices are opt-in, with one choice per incompatible category.
 run init --name InfraSmoke --description "Placeholder-only infrastructure" --output "$temp/infra" --profiles infra-logging-loki,infra-metrics-prometheus,infra-tracing-tempo,infra-deploy-compose,infra-devops-gitops-repo,infra-orchestration-aspire --site none --non-interactive
 run validate --output "$temp/infra"
