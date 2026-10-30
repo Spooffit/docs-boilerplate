@@ -16,3 +16,10 @@ Use Wolverine's RabbitMQ transport package and documented host registration. Def
 ## Evidence
 
 Record actual installed versions and authoritative contracts. Keep unsettled decisions open. Validate with a real integration test where external behavior matters; do not claim generated documentation proves the application works.
+
+## Reliability contract
+
+- Document whether messages use durable endpoints and persistence or in-memory processing. Broker delivery, handler completion and database commit are distinct outcomes.
+- Configure retries with finite limits and an observable failure destination; test poison messages without endless requeue.
+- Verify transactional outbox/inbox configuration against the selected database and Wolverine version instead of assuming broker acknowledgement makes writes atomic.
+- Test publisher interruption, consumer restart, duplicate delivery, topology changes and bounded concurrency with real RabbitMQ.
