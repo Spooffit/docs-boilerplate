@@ -23,7 +23,7 @@ Keep each project file minimal and express its real target framework, output and
 
 Keep each `ProjectReference`/`PackageReference` necessary, non-duplicated and valid. If the solution has adopted separate modules or bounded contexts, reference the **approved public contracts/ports** for cross-boundary collaboration instead of another module's private `DbContext`, persistence implementation or unpublished application internals. A shared library is appropriate for genuinely reusable technical primitives, not for unowned business logic.
 
-If the project uses a split EventBus integration (e.g. an independently selected MassTransit/RabbitMQ profile), keep contracts independent of the transport adapter; let the implementation depend on contracts and a composition root select both. **Do not add an EventBus project hierarchy to projects that have not selected this architecture.**
+When the messaging organization explicitly separates contracts and adapters, keep serialized contracts independent of the chosen RabbitMQ/Kafka transport and MassTransit/Wolverine/manual client. The composition root wires the selected adapter. **Do not mandate a fixed number of messaging projects or a legacy EventBus folder hierarchy.**
 
 If test projects inherit shared `Directory.Build.props` or dedicated test props/targets, verify import order and the expected metadata before overriding settings. Do not blindly duplicate inherited package references, runtime targets or test-platform declarations in every test project.
 
