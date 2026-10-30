@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   complete-ci:
-    name: Verify Linux, Windows, Chromium, EventBus and packaged tool
+    name: Verify Linux, Windows, Chromium and packaged tool
     uses: ./.github/workflows/docs-generator.yml
     permissions:
       contents: read
