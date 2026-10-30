@@ -38,8 +38,10 @@ for must in (
         errors.append(f"Release workflow missing safety or publication check: {must}")
 if re.search(r"(?m)^\s{2}branches:\s*\[main\]", workflow):
     errors.append("Release workflow cannot publish on main branch pushes")
-if "workflow_dispatch:" in workflow:
-    errors.append("Release workflow must not allow manual publication without a version tag")
+if "workflow_dispatch:" in workflow and (
+    'GITHUB_REF_TYPE' not in workflow or 'refs/tags/$tag' not in workflow
+):
+    errors.append("Release workflow dispatch must reject all non-tag refs")
 
 ci = (root / ".github/workflows/docs-generator.yml").read_text(encoding="utf-8")
 if "dotnet nuget push" in ci or "NuGet/login@v1" in ci:

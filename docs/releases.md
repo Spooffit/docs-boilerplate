@@ -13,8 +13,8 @@ status: active
 
 - `main` remains the integration branch and can be developed on directly. Feature branches and pull requests are optional, recommended for larger changes.
 - Every push to `main` runs the regular [generator CI](../.github/workflows/docs-generator.yml), including build, smoke tests, browser checks and a local .NET tool installation.
-- **No push to `main` publishes a package.** A release is intentionally initiated by pushing a SemVer tag such as `v0.2.0`.
-- The separate [release workflow](../.github/workflows/release.yml) calls the **full existing CI as a reusable workflow** (Linux, Windows, Chromium, EventBus and package installation), checks that the tag points to a commit reachable from `main`, installs the exact tagged package and only then publishes it to NuGet and creates a GitHub Release.
+- **No ordinary push to `main` publishes a package.** A release is intentionally initiated by pushing a SemVer tag such as `v1.0.0`. A one-time, commit-message-guarded automation is available only to bootstrap the very first release when no tag-write integration is connected.
+- The separate [release workflow](../.github/workflows/release.yml) calls the **full existing CI as a reusable workflow** (Linux, Windows, Chromium, EventBus and package installation), checks that the tag points to a commit reachable from `main`, installs the exact tagged package and only then publishes it to NuGet and creates a GitHub Release. A manual `workflow_dispatch` is also allowed **only when the selected ref is a real valid release tag**; it cannot release directly from a branch.
 - The release package version is derived from the tag using `-p:Version`. The default `<Version>` in the .NET project is for local/ordinary CI packaging; it does not restrict later release tags. NuGet versions are immutable: use a new version for any correction, never overwrite a published package.
 
 ## One-time NuGet.org configuration

@@ -1,0 +1,52 @@
+name: Bootstrap initial v1.0.0 release
+
+# This workflow exists only to create the owner's first requested tag from
+# the connected GitHub integration, which cannot create refs/tags directly.
+# Remove it after the release is started. No general branch push may publish.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  create-first-tag:
+    name: Create v1.0.0 tag and dispatch tagged release
+    if: ${{ github.event.head_commit.message == 'chore(release): bootstrap v1.0.0' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - name: Ensure the release tag does not already exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh api "repos/$GH_REPO/git/ref/tags/v1.0.0" >/dev/null 2>&1; then
+            echo "::error::v1.0.0 already exists; refusing to rewrite an existing tag"
+            exit 1
+          fi
+      - name: Create first release tag on this precise main commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api --method POST "repos/$GH_REPO/git/refs" \
+            -f ref='refs/tags/v1.0.0' -f sha="$GITHUB_SHA"
+      - name: Dispatch release workflow at the tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # GITHUB_TOKEN-generated tag events cannot trigger push workflows.
+          # workflow_dispatch always triggers a separate, properly gated run.
+          gh workflow run release.yml --repo "$GH_REPO" --ref v1.0.0
+          echo "Triggered tagged release for v1.0.0 ($GITHUB_SHA)"

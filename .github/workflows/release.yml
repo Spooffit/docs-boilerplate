@@ -6,6 +6,11 @@ on:
   push:
     tags:
       - 'v*'
+  # The one-time v1.0.0 bootstrap dispatches this workflow after creating the
+  # tag with GITHUB_TOKEN. Github deliberately suppresses tag-push workflows
+  # triggered by that token, but workflow_dispatch is supported.
+  # The verify job below rejects branch refs and malformed version tags.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -40,6 +45,10 @@ jobs:
         run: |
           set -euo pipefail
           tag="${GITHUB_REF_NAME}"
+          if [[ "${GITHUB_REF_TYPE}" != "tag" || "${GITHUB_REF}" != "refs/tags/$tag" ]]; then
+            echo "::error::Publication requires a real Git tag, never a branch or default dispatch ref"
+            exit 1
+          fi
           if [[ ! "$tag" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-([0-9A-Za-z-]+)(\.[0-9A-Za-z-]+)*)?$ ]]; then
             echo "::error::Release tags must be vMAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH-prerelease"
             exit 1
