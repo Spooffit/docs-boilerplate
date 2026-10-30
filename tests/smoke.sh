@@ -64,7 +64,7 @@ import sys
 html = Path(sys.argv[1]).read_text(encoding="utf-8")
 title = re.search(r"<title>(.*?)</title>", html, re.S)
 description = re.search(r'<meta name="description" content="([^"]*)"', html)
-search = re.search(r'placeholder:\\s*("(?:\\\\.|[^"\\\\])*")', html)
+search = re.search(r'placeholder:\s*("(?:\\.|[^"\\])*")', html)
 assert title and unescape(title.group(1)) == "РусскийПроект"
 assert description and unescape(description.group(1)) == "Тест документации"
 assert search and json.loads(search.group(1)) == "Поиск по документации"
