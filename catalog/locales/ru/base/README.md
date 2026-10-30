@@ -1,6 +1,5 @@
 # {{PROJECT_NAME}}
 
-{{PROJECT_DESCRIPTION}}
 
 Начните с [главной страницы документации](docs/index.md), [каталога документов](docs/catalog.md), [обзора проекта](docs/project/overview.md), [архитектуры](docs/architecture/overview.md) и [инженерных стандартов](docs/standards/index.md).
 
