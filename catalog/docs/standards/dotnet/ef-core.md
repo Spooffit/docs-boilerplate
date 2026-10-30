@@ -64,3 +64,15 @@ Do not rewrite applied migrations or make their historic behavior depend on muta
 Test actual migrations, mappings, SQL translation, provider-specific features, transactions and concurrency against the intended database. An in-memory substitute is useful only for narrower logic checks, not database fidelity.
 
 References: [EF async](https://learn.microsoft.com/en-us/ef/core/miscellaneous/async), [EF concurrency](https://learn.microsoft.com/en-us/ef/core/saving/concurrency), [applying migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying).
+
+
+## Query execution and context boundaries
+
+- Treat query specifications as optional EF Core-specific query organization, never as a requirement for Dapper. If selected, apply filters, projections and ordering before query materialization; authorization remains an independent trusted boundary.
+- Prefer explicit projections for API read models. Inspect the generated SQL, indexes and query plans before selecting split versus single queries for collection relationships; each has performance and consistency trade-offs.
+- When using context pooling or factory-created contexts, verify that per-request tenant or other scoped state cannot leak between reused instances. Context pooling is distinct from database connection pooling.
+- Review provider-specific retry execution strategies and interaction with manually controlled transactions. An ambiguous commit outcome must not lead to silent duplication of writes.
+
+## Provider-backed verification
+
+Exercise uniqueness conflicts, concurrency tokens, transaction rollback, cancellation, migrations and schema compatibility against the actual provider. If a PostgreSQL connection pooler is selected, also test session-dependent features and migrations through the configured routing mode. Document versions and observed outcomes.
