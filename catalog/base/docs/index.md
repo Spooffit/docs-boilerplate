@@ -7,7 +7,6 @@ status: active
 
 # {{PROJECT_NAME}}
 
-{{PROJECT_DESCRIPTION}}
 
 Welcome to the documentation. Read the [project overview](project/overview.md), [architecture overview](architecture/overview.md), and [selected engineering standards](standards/index.md).
 
