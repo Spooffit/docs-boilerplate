@@ -5,6 +5,7 @@ cd "$(dirname "$0")/.."
 project=src/DocsBoilerplate.Cli
 temp="$(mktemp -d)"
 trap 'rm -rf "$temp"' EXIT
+trap 'echo "Smoke failure at line $LINENO: $BASH_COMMAND" >&2' ERR
 run() { dotnet run --no-build --configuration Release --project "$project" -- "$@"; }
 
 run doctor
@@ -493,8 +494,8 @@ fi
 [[ ! -e "$temp/minimal/docs/standards/postgresql/persistence.md" ]]
 [[ ! -e "$temp/minimal/docs/standards/http/contract-verification.md" ]]
 grep -q 'generated repository does not contain the CLI' "$temp/all-profiles/.agents/skills/docs-review/SKILL.md"
-[[ ! -e "$temp/minimal/docs/operations/observability.md" ]]
-[[ ! -e "$temp/minimal/docs/architecture/security.md" ]]
+[[ -f "$temp/minimal/docs/operations/observability.md" ]]
+[[ -f "$temp/minimal/docs/architecture/security.md" ]]
 python3 tests/agent_guidance_contracts.py "$temp/minimal" "$temp/project" "$temp/all-profiles"
 python3 tests/generated_output_hygiene.py "$temp/minimal" "$temp/headless" "$temp/full-stack" "$temp/all-profiles"
 
