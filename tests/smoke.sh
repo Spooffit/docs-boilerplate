@@ -68,7 +68,13 @@ run validate --output "$temp/ru-baseline"
 if run init --name BadLocale --description Test --output "$temp/bad-locale" --profiles none --language de --non-interactive; then
     echo "Unknown documentation locale accepted"; exit 1
 fi
-if run init --name MixedLanguage --description Test --output "$temp/mixed-language" --profiles xunit --language ru --non-interactive; then
+run init --name RussianXunit --description "Русские тесты" --output "$temp/ru-xunit" --profiles xunit --language ru --site none --non-interactive
+grep -q 'Тестирование .NET с xUnit.net' "$temp/ru-xunit/docs/standards/dotnet/xunit.md"
+run validate --output "$temp/ru-xunit"
+run init --name RussianS3 --description "Русская инфраструктура" --output "$temp/ru-s3" --profiles infra-storage-s3 --language ru --site none --non-interactive
+grep -q 'S3-совместимое объектное хранилище' "$temp/ru-s3/docs/standards/infrastructure/storage-s3.md"
+run validate --output "$temp/ru-s3"
+if run init --name MixedLanguage --description Test --output "$temp/mixed-language" --profiles ef-core --language ru --non-interactive; then
     echo "Incomplete Russian technology profile unexpectedly accepted"; exit 1
 fi
 [[ ! -e "$temp/mixed-language" ]]
