@@ -11,6 +11,7 @@ import re
 import sys
 
 NON_TEMPLATE_MARKER = re.compile(r"\bUNREUSABLE_PROJECT_CONTENT\b")
+VIEWER_TOKENS = re.compile(r"\{\{(?:DOCUMENT_LANGUAGE|PROJECT_NAME_HTML|PROJECT_DESCRIPTION_HTML|PROJECT_NAME_JSON|SITE_LOADING_HTML|SITE_SEARCH_PLACEHOLDER_JSON)\}\}")
 OLD_SOURCE_ROOTS = {
     "business", "technical", "milestones", "catalog", "src", "tests", "schemas", "shared",
 }
@@ -35,6 +36,7 @@ def check(root: Path) -> list[str]:
         managed = config["GeneratedFiles"]
         hashes = config["GeneratedHashes"]
         project_name = config["Name"]
+        language = config.get("Language") or "en"
         site = config["Site"]
     except (ValueError, KeyError, TypeError) as exc:
         return [f"{root}: invalid configuration: {exc}"]
@@ -90,6 +92,15 @@ def check(root: Path) -> list[str]:
     if site == "docsify":
         if "index.html" not in owned:
             errors.append(f"{root}: Docsify configured without its index.html shell")
+        elif (root / "index.html").is_file():
+            html = (root / "index.html").read_text(encoding="utf-8")
+            if VIEWER_TOKENS.search(html):
+                errors.append(f"{root}: unresolved Docsify template marker")
+            if f'<html lang="{language}">' not in html:
+                errors.append(f"{root}: Docsify HTML lang does not match manifest language {language!r}")
+            search_label = "Поиск по документации" if language == "ru" else "Search documentation"
+            if search_label not in html:
+                errors.append(f"{root}: Docsify search placeholder is not localized for {language!r}")
     elif site == "none":
         if "index.html" in actual:
             errors.append(f"{root}: HTML viewer leaked into headless output")
