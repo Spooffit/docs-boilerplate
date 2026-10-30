@@ -84,7 +84,7 @@ def main():
             errors.append(f"Generator manifest versioning returned: {code.relative_to(ROOT)}")
     project = (ROOT / "src" / "DocsBoilerplate.Cli" / "DocsBoilerplate.Cli.csproj").read_text(encoding="utf-8")
     for token in ("<PackAsTool>true</PackAsTool>", "<ToolCommandName>docs-boilerplate</ToolCommandName>",
-                  "<PackageId>DocsBoilerplate.Cli</PackageId>", 'CopyToPublishDirectory="PreserveNewest"'):
+                  "<PackageId>docs-boilerplate</PackageId>", 'CopyToPublishDirectory="PreserveNewest"'):
         if token not in project:
             errors.append(f"Installable CLI packaging missing: {token}")
     workflow = (ROOT / ".github" / "workflows" / "docs-generator.yml").read_text(encoding="utf-8")

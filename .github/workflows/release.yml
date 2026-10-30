@@ -6,10 +6,8 @@ on:
   push:
     tags:
       - 'v*'
-  # The one-time v1.0.0 bootstrap dispatches this workflow after creating the
-  # tag with GITHUB_TOKEN. Github deliberately suppresses tag-push workflows
-  # triggered by that token, but workflow_dispatch is supported.
-  # The verify job below rejects branch refs and malformed version tags.
+  # A maintainer may dispatch an existing version tag. Verify rejects branch
+  # refs, malformed tags and tags pointing outside main.
   workflow_dispatch:
 
 permissions:
@@ -81,8 +79,8 @@ jobs:
           set -euo pipefail
           dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release \
             -p:Version="$PACKAGE_VERSION" --output dist
-          test -f "dist/DocsBoilerplate.Cli.$PACKAGE_VERSION.nupkg"
-          unzip -p "dist/DocsBoilerplate.Cli.$PACKAGE_VERSION.nupkg" '*.nuspec' |
+          test -f "dist/docs-boilerplate.$PACKAGE_VERSION.nupkg"
+          unzip -p "dist/docs-boilerplate.$PACKAGE_VERSION.nupkg" '*.nuspec' |
             grep -F "<version>$PACKAGE_VERSION</version>"
       - name: Install and exercise the actual release package
         env:
@@ -90,7 +88,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          dotnet tool install DocsBoilerplate.Cli --tool-path "$RUNNER_TEMP/release-tool" \
+          dotnet tool install docs-boilerplate --tool-path "$RUNNER_TEMP/release-tool" \
             --add-source "$PWD/dist" --version "$PACKAGE_VERSION"
           tool="$RUNNER_TEMP/release-tool/docs-boilerplate"
           "$tool" doctor
@@ -143,7 +141,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          dotnet nuget push "dist/DocsBoilerplate.Cli.$PACKAGE_VERSION.nupkg" \
+          dotnet nuget push "dist/docs-boilerplate.$PACKAGE_VERSION.nupkg" \
             --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY"
       - name: Create GitHub Release from the existing tag
         env:
@@ -159,4 +157,4 @@ jobs:
             options+=(--prerelease)
           fi
           gh release create "$GITHUB_REF_NAME" \
-            "dist/DocsBoilerplate.Cli.$PACKAGE_VERSION.nupkg" "${options[@]}"
+            "dist/docs-boilerplate.$PACKAGE_VERSION.nupkg" "${options[@]}"

@@ -15,12 +15,14 @@ def prop(name):
 
 for name, expected in [
     ("PackAsTool", "true"), ("ToolCommandName", "docs-boilerplate"),
-    ("PackageId", "DocsBoilerplate.Cli"), ("PackageReadmeFile", "README.md")
+    ("PackageId", "docs-boilerplate"), ("PackageReadmeFile", "README.md")
 ]:
     if prop(name) != expected:
         errors.append(f"Unexpected .NET tool package field {name}: {prop(name)!r}")
 if not re.fullmatch(r"\d+\.\d+\.\d+", prop("Version") or ""):
     errors.append("Default tool version must be a valid numeric SemVer prefix")
+if prop("PackageId") != prop("ToolCommandName"):
+    errors.append("NuGet package ID and shell command must match")
 if not (root / "packaging/README.md").is_file():
     errors.append("NuGet package README is missing")
 
@@ -36,6 +38,10 @@ for must in (
 ):
     if must not in workflow:
         errors.append(f"Release workflow missing safety or publication check: {must}")
+if "DocsBoilerplate.Cli.$PACKAGE_VERSION.nupkg" in workflow or "dotnet tool install DocsBoilerplate.Cli" in workflow:
+    errors.append("Legacy NuGet ID leaked into the release workflow")
+if "dist/docs-boilerplate.$PACKAGE_VERSION.nupkg" not in workflow:
+    errors.append("Release workflow does not publish the renamed package")
 if re.search(r"(?m)^\s{2}branches:\s*\[main\]", workflow):
     errors.append("Release workflow cannot publish on main branch pushes")
 if "workflow_dispatch:" in workflow and (

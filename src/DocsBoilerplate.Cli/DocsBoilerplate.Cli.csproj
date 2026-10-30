@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>docs-boilerplate</ToolCommandName>
-    <PackageId>DocsBoilerplate.Cli</PackageId>
-    <Version>0.2.0</Version>
+    <PackageId>docs-boilerplate</PackageId>
+    <Version>1.0.1</Version>
     <Description>Offline-capable Markdown-first documentation initialization CLI</Description>
     <Authors>Spooffit</Authors>
     <RepositoryUrl>https://github.com/Spooffit/docs-boilerplate</RepositoryUrl>

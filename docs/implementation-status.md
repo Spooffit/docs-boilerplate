@@ -36,7 +36,7 @@ Every available profile maps to real catalog documents and participates in gener
 - Docsify needs a local/static HTTP server and currently loads JavaScript and CSS from a CDN. Chromium smoke verifies selected navigation scenarios but not CDN uptime, all browsers, full accessibility, visual regression or real hosting integration.
 - Focused .NET tests and broad CLI smoke do not replace a dedicated framework-level testing suite, property-based tests or deeper reliability testing.
 - Planned technology profiles are discoverable but cannot be generated until they have supported standards and tests.
-- A separate tag-only GitHub Actions workflow supports verified NuGet.org publication using Trusted Publishing (OIDC) and GitHub Releases. **Publishing is not active until a NuGet.org policy and GitHub publisher identity have been configured and a tag has been pushed.** Regular CI never publishes; no public release is claimed without independent confirmation.
+- A tag-only GitHub Actions workflow builds and verifies the public NuGet package `docs-boilerplate` using Trusted Publishing (OIDC) and GitHub Releases. The prior `v1.0.0` attempt used the old package ID and failed at NuGet policy authentication, without publication. The next tag is `v1.0.1` after updating the policy; no public release is claimed without independent confirmation.
 
 ## Readiness boundary
 

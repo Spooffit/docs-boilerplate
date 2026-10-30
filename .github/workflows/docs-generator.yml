@@ -52,7 +52,7 @@ jobs:
         run: |
           set -euo pipefail
           dotnet pack src/DocsBoilerplate.Cli/DocsBoilerplate.Cli.csproj --configuration Release --output "$RUNNER_TEMP/tool-feed"
-          dotnet tool install DocsBoilerplate.Cli --tool-path "$RUNNER_TEMP/tools" --add-source "$RUNNER_TEMP/tool-feed" --version 0.2.0
+          dotnet tool install docs-boilerplate --tool-path "$RUNNER_TEMP/tools" --add-source "$RUNNER_TEMP/tool-feed" --version 1.0.1
           "$RUNNER_TEMP/tools/docs-boilerplate" doctor
           "$RUNNER_TEMP/tools/docs-boilerplate" init --name PackagedDocs --description "Installed tool smoke" --output "$RUNNER_TEMP/packaged-docs" --profiles dotnet --site none --non-interactive
           "$RUNNER_TEMP/tools/docs-boilerplate" validate --output "$RUNNER_TEMP/packaged-docs"

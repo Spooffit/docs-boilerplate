@@ -12,35 +12,35 @@ status: active
 Once published, the installable CLI is available from nuget.org:
 
 ```powershell
-dotnet tool install --global DocsBoilerplate.Cli
+dotnet tool install --global docs-boilerplate
 docs-boilerplate doctor
 docs-boilerplate list
 docs-boilerplate init
-dotnet tool update --global DocsBoilerplate.Cli
+dotnet tool update --global docs-boilerplate
 ```
 
 **Before first publication**, download the private `docs-boilerplate-dotnet-tool` GitHub Actions artifact, extract its `.nupkg` into `C:\\Tools\\docs-boilerplate-feed`, and install:
 
 ```powershell
-dotnet tool install --global DocsBoilerplate.Cli --version 0.2.0 --add-source C:\\Tools\\docs-boilerplate-feed
+dotnet tool install --global docs-boilerplate --version 1.0.1 --add-source C:\\Tools\\docs-boilerplate-feed
 ```
 
 The tagged release workflow and the initial NuGet.org Trusted Publishing setup are documented in [the release guide](releases.md).
 
 The prompt sequence is **Backend → Backend options → Frontend → Frontend options → Infrastructure (last and optional)**. Logging, metrics, traces, deployment and DevOps repository location each have an independent single-choice prompt including `none`. A .NET-oriented orchestration prompt offers Aspire only when .NET has been chosen. Other portable policies remain independently selectable; the wizard never treats selected guidance as proof of an implementation. Noninteractive usage accepts the same profile IDs through `--profiles` and rejects conflicting infrastructure options (e.g. both Compose and Kubernetes).
 
-The publication pipeline is ready, but it **does not publish on every commit**. NuGet.org availability depends on completing the one-time publisher identity setup and pushing a release tag. From a source checkout you can still run `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed`.
+The publication pipeline is ready, but it **does not publish on every commit**. NuGet.org availability depends on completing the one-time publisher identity setup and pushing a release tag. From a source checkout you can still run `dotnet pack src/docs-boilerplate -c Release -o ./artifacts/tool-feed`.
 
 ## Initialize from a source checkout
 
 Requires .NET 10 SDK. Repository-root usage:
 
 ```sh
-dotnet run --project src/DocsBoilerplate.Cli -- list
-dotnet run --project src/DocsBoilerplate.Cli -- doctor
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive --dry-run
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive
-dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/example
+dotnet run --project src/docs-boilerplate -- list
+dotnet run --project src/docs-boilerplate -- doctor
+dotnet run --project src/docs-boilerplate -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive --dry-run
+dotnet run --project src/docs-boilerplate -- init --name Example --description "Example docs" --output ./scratch/example --profiles dotnet,ef-core,blazor,mudblazor --modules testing,operations --skills docs-review,docs-maintain --site docsify --non-interactive
+dotnet run --project src/docs-boilerplate -- validate --output ./scratch/example
 ```
 
 `--profiles` accepts comma-separated available profile IDs; dependencies are resolved automatically. Use **`--profiles none`** for a genuinely stack-neutral repository with only the base Markdown documentation and no selected technology profiles. `--modules` and `--skills` are independently optional. Use `list` for supported values and planned profiles. Omit flags for interactive prompts. The TUI first asks for backend and frontend, then only asks about data access, UI libraries and testing tools when relevant; architecture and modeling are independent. Unsupported profiles remain visible through `list` but cannot be selected. The final **additional optional profiles** prompt includes available independent policies (such as document identifiers, storage, HTTP consumption and UI conventions) not already offered in the earlier technology prompts. Dependencies are resolved automatically, even when a category was not part of the chosen backend.
@@ -78,7 +78,7 @@ Use `--profiles dotnet` for C#/.NET backend guidance. `aspnet-core` is a separat
 Example:
 
 ```sh
-dotnet run --project src/DocsBoilerplate.Cli -- init --name Backend --description "Backend documentation" --output ./scratch/backend --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
+dotnet run --project src/docs-boilerplate -- init --name Backend --description "Backend documentation" --output ./scratch/backend --profiles dotnet,aspnet-core,ef-core,postgresql,fluentvalidation,cqrs --non-interactive --dry-run
 ```
 
 Additional optional profiles: `masstransit-rabbitmq`, `ardalis-specification`, `bunit`, `http-contracts`, `integration-reliability`, and `object-storage`. These last three are language-neutral and do not imply .NET, an ORM or a particular server. Selecting bUnit requires Blazor, but not MudBlazor. Selecting MassTransit with RabbitMQ does not imply a database or a particular outbox implementation. Each profile installs only its applicable standard.
@@ -128,12 +128,12 @@ With a global tool installed, run `docs-boilerplate update --output <project-roo
 New repositories record SHA-256 fingerprints for all generated files in `docs.config.json`. These fingerprints describe **original template bytes**, not the user's subsequent edits. Update re-renders the selected profiles, skills, modules and site option against a newer catalog.
 
 ```sh
-dotnet run --project src/DocsBoilerplate.Cli -- update --output ./my-docs
-dotnet run --project src/DocsBoilerplate.Cli -- update --output ./my-docs --apply
-dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./my-docs
+dotnet run --project src/docs-boilerplate -- update --output ./my-docs
+dotnet run --project src/docs-boilerplate -- update --output ./my-docs --apply
+dotnet run --project src/docs-boilerplate -- validate --output ./my-docs
 
 # Only if an interrupted update is detected:
-dotnet run --project src/DocsBoilerplate.Cli -- recover --output ./my-docs
+dotnet run --project src/docs-boilerplate -- recover --output ./my-docs
 ```
 
 `update` is preview-only by default. `--apply` must be specified to write changes. It will:
@@ -153,8 +153,8 @@ The `.docs-boilerplate-update/` directory exists **only during an active or inte
 When `update` or `validate` detects this directory, it stops rather than trusting a potentially half-updated project. Inspect the working tree, then run:
 
 ```sh
-dotnet run --project src/DocsBoilerplate.Cli -- recover --output ./my-docs
-dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./my-docs
+dotnet run --project src/docs-boilerplate -- recover --output ./my-docs
+dotnet run --project src/docs-boilerplate -- validate --output ./my-docs
 ```
 
 If only some planned changes were written, recovery verifies **all current target hashes and required backups before restoring anything**. It rolls back only content matching the journal's generated hash; unexpected user edits cause a safe refusal and the journal is retained for manual reconciliation. If *all* desired file hashes are present (including the new `docs.config.json`), recovery treats the update as completed and only removes the journal.

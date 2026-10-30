@@ -5,9 +5,9 @@ A documentation-first `.NET 10` global tool using Spectre.Console. Create Markdo
 ## Install or update
 
 ```powershell
-dotnet tool install --global DocsBoilerplate.Cli
+dotnet tool install --global docs-boilerplate
 docs-boilerplate init
-dotnet tool update --global DocsBoilerplate.Cli
+dotnet tool update --global docs-boilerplate
 ```
 
 ## Two-stage project initialization

@@ -13,7 +13,7 @@ status: active
 
 - `main` remains the integration branch and can be developed on directly. Feature branches and pull requests are optional, recommended for larger changes.
 - Every push to `main` runs the regular [generator CI](../.github/workflows/docs-generator.yml), including build, smoke tests, browser checks and a local .NET tool installation.
-- **No ordinary push to `main` publishes a package.** A release is intentionally initiated by pushing a SemVer tag such as `v1.0.0`. A one-time, commit-message-guarded automation is available only to bootstrap the very first release when no tag-write integration is connected.
+- **No ordinary push to `main` publishes a package.** A release is intentionally initiated by pushing a SemVer tag such as `v1.0.1`. The one-time bootstrap used to create `v1.0.0` has been removed.
 - The separate [release workflow](../.github/workflows/release.yml) calls the **full existing CI as a reusable workflow** (Linux, Windows, Chromium, EventBus and package installation), checks that the tag points to a commit reachable from `main`, installs the exact tagged package and only then publishes it to NuGet and creates a GitHub Release. A manual `workflow_dispatch` is also allowed **only when the selected ref is a real valid release tag**; it cannot release directly from a branch.
 - The release package version is derived from the tag using `-p:Version`. The default `<Version>` in the .NET project is for local/ordinary CI packaging; it does not restrict later release tags. NuGet versions are immutable: use a new version for any correction, never overwrite a published package.
 
@@ -21,8 +21,8 @@ status: active
 
 The first public release **cannot be published** until the publisher completes these account-scoped settings:
 
-1. Sign in to [nuget.org](https://www.nuget.org/) as the account that will own `DocsBoilerplate.Cli`. Confirm that the package ID is available or already belongs to that account. If another owner has taken it, choose and update the package ID everywhere **before releasing**.
-2. Go to the account's **Trusted Publishing** settings and create a GitHub Actions policy. Set repository owner `Spooffit`, repository `docs-boilerplate`, workflow filename **`release.yml`** (just the filename), and leave the optional environment empty. Scope it to publication of `DocsBoilerplate.Cli`, including new packages and new versions.
+1. Sign in to [nuget.org](https://www.nuget.org/) as the account that will own `docs-boilerplate`. Confirm that the package ID is available or already belongs to that account. If another owner has taken it, choose and update the package ID everywhere **before releasing**.
+2. Go to the account's **Trusted Publishing** settings and create or edit a GitHub Actions policy. Set the **GitHub login** `Spooffit` as **Repository Owner** (never the display name `Roman Tikhonov`), repository `docs-boilerplate`, workflow filename **`release.yml`** (just the filename), and leave Environment empty. In **Scopes**, select **Push new packages and package versions** for the first publish; the narrower **Push only new package versions** scope cannot create the new package. Set **Glob Patterns and Packages** to the exact new ID `docs-boilerplate`, replacing `DocsBoilerplate.Cli` (case-insensitive matching does not make these two different IDs equivalent).
 3. In the GitHub repository, go to **Settings → Secrets and variables → Actions → Variables**, and add `NUGET_USER` with the **nuget.org username of the account that created the Trusted Publishing policy** (not an email or an assumed GitHub login). For a policy owned by an organization, this may differ from the policy owner. No long-lived NuGet API key needs to be stored. If `NuGet/login@v1` reports HTTP 401 and `No matching trust policy owned by user ...`, check the exact policy creator username and policy owner/repository/workflow before retrying only the failed publishing job.
 4. Ensure repository settings permit workflow `GITHUB_TOKEN` to create a Release via `contents: write`. This job alone receives the write permission; the verification job and the regular CI use `contents: read`.
 5. For a private GitHub repository, an unactivated Trusted Publishing policy may only remain temporarily active. Complete the initial publication promptly after creating it, or reactivate it in nuget.org before the first tag.
@@ -36,17 +36,17 @@ The [official NuGet Trusted Publishing instructions](https://learn.microsoft.com
 ```powershell
 git checkout main
 git pull --ff-only
-git tag -a v0.2.0 -m "Release v0.2.0"
-git push origin v0.2.0
+git tag -a v1.0.1 -m "Release v1.0.1"
+git push origin v1.0.1
 ```
 
-Use `v0.2.1` for a later patch, `v0.3.0` for new features and `v1.0.0` when you deliberately decide the first stable major release is ready. Supported tags follow `vMAJOR.MINOR.PATCH` with an optional prerelease suffix (such as `v0.3.0-rc.1`); prereleases are marked as such in GitHub Releases.
+The `v1.0.0` tag is already present and points to the old `DocsBoilerplate.Cli` package identity; that publish failed during OIDC authorization. **Do not move or reuse this existing tag.** The first release under the renamed NuGet ID should use `v1.0.1` after the policy is corrected. Later patches may use `v1.0.2`, features `v1.1.0`. Supported tags follow `vMAJOR.MINOR.PATCH` with an optional prerelease suffix (such as `v0.3.0-rc.1`); prereleases are marked as such in GitHub Releases.
 
 A tag starts **one** workflow that:
 
 1. Executes the complete regular CI suite on the **tagged commit**, including Windows and Chromium; if any job fails, publication is blocked.
 2. Validates tag syntax and confirms its commit is in `main`, then checks release-specific package policy.
-3. Builds `DocsBoilerplate.Cli.<version>.nupkg` from the verified tag and installs/tests that exact package.
+3. Builds `docs-boilerplate.<version>.nupkg` from the verified tag and installs/tests that exact package.
 4. Exchanges GitHub OIDC credentials for a one-hour NuGet.org publishing key and publishes the verified package.
 5. Creates the GitHub Release with automatically generated notes and attaches the same `.nupkg` **only after successful NuGet publication**.
 
@@ -54,12 +54,12 @@ If any check or the NuGet authentication fails, the workflow does not create a G
 
 ## Using the published tool
 
-Once NuGet indexes the first version, users can run:
+Once NuGet indexes the renamed package, users can run:
 
 ```powershell
-dotnet tool install --global DocsBoilerplate.Cli
+dotnet tool install --global docs-boilerplate
 docs-boilerplate init
-dotnet tool update --global DocsBoilerplate.Cli
+dotnet tool update --global docs-boilerplate
 dotnet tool list --global
 ```
 
