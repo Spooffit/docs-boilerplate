@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{LANGUAGE}}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Markdown-first project documentation">
+  <meta name="description" content="{{DOCSIFY_DESCRIPTION}}">
   <link rel="describedby" href="llms.txt" type="text/plain">
-  <title>Documentation</title>
+  <title>{{DOCSIFY_TITLE}}</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@5/dist/themes/core.min.css">
 </head>
 <body>
-  <div id="app">Loading documentation...</div>
+  <div id="app">{{DOCSIFY_LOADING}}</div>
   <script>
     window.$docsify = {
       name: {{PROJECT_NAME_JSON}},
@@ -20,7 +20,7 @@
       loadSidebar: false,
       maxLevel: 3,
       auto2top: true,
-      search: { paths: "auto", placeholder: "Search documentation" }
+      search: { paths: "auto", placeholder: "{{DOCSIFY_SEARCH}}" }
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@5"></script>

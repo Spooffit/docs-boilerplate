@@ -162,6 +162,13 @@ static partial class DocsCli
         var name = Ask("name", "Project name:");
         var description = Ask("description", "Short project description:");
         var output = Path.GetFullPath(Ask("output", "Destination directory:"));
+        // The language is the next wizard question after the destination.
+        var language = ValidateLanguage(args.GetValueOrDefault("language") ??
+            (unattended || Console.IsInputRedirected ? "en" :
+                AnsiConsole.Prompt(new SelectionPrompt<string>()
+                    .Title("Documentation language / Язык документации:")
+                    .UseConverter(value => value == "ru" ? "Русский" : "English")
+                    .AddChoices("en", "ru"))));
         UpdateRecovery.AssertNoPending(output);
         var selection = args.TryGetValue("profiles", out var listed)
             ? string.Equals(listed, "none", StringComparison.OrdinalIgnoreCase)
@@ -193,13 +200,13 @@ static partial class DocsCli
         if (site is not ("none" or "docsify"))
             throw new InvalidOperationException($"Unknown documentation site: {site}");
         var expected = await RenderAsync(catalog, available, skillCatalog, moduleCatalog,
-            name, description, output, ids, skillIds, moduleIds, site);
+            name, description, output, ids, skillIds, moduleIds, site, language);
         // Stage-two intake documents are deliberately unowned temporary files.
         // Generate them alongside the manifest, but never include them in
         // GeneratedFiles/GeneratedHashes so agent-approved cleanup stays valid.
-        var config = BuildConfig(name, description, ids, skillIds, moduleIds, site, expected);
+        var config = BuildConfig(name, description, ids, skillIds, moduleIds, site, expected, language: language);
         expected.Add(ConfigName, JsonSerializer.Serialize(config, Json) + Environment.NewLine);
-        foreach (var (path, content) in await LoadBootstrapAsync(catalog))
+        foreach (var (path, content) in await LoadBootstrapAsync(catalog, language))
             if (!expected.TryAdd(path, content))
                 throw new InvalidOperationException($"Temporary bootstrap path conflicts with generated output: {path}");
         SafeFiles.AssertNoLinks(output);
@@ -235,6 +242,7 @@ static partial class DocsCli
             AnsiConsole.MarkupLine($"[blue]Included dependencies:[/] {Markup.Escape(string.Join(", ", dependencies))}");
         AnsiConsole.MarkupLine($"[blue]Documentation:[/] {skillIds.Count} agent skills and {moduleIds.Count} modules (included)");
         AnsiConsole.MarkupLine($"[blue]Site:[/] {Markup.Escape(site)}");
+        AnsiConsole.MarkupLine($"[blue]Language:[/] {language}");
         AnsiConsole.MarkupLine($"[blue]Destination:[/] {Markup.Escape(output)}");
         if (args.ContainsKey("dry-run"))
             return 0;
@@ -268,7 +276,7 @@ static partial class DocsCli
     {
         string[] allowed = command switch
         {
-            "init" => ["catalog", "name", "description", "output", "profiles", "skills", "modules", "site", "dry-run", "non-interactive"],
+            "init" => ["catalog", "name", "description", "output", "language", "profiles", "skills", "modules", "site", "dry-run", "non-interactive"],
             "validate" => ["catalog", "output"],
             "update" => ["catalog", "output", "apply"],
             "bootstrap-complete" => ["catalog", "output", "apply"],

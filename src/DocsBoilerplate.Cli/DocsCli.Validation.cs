@@ -27,6 +27,7 @@ static partial class DocsCli
         var moduleIds = ResolveModules(config.Modules, modules);
         if (moduleIds.Count != config.Modules.Length)
             throw new IOException("Duplicate documentation module IDs.");
+        _ = ValidateLanguage(config.Language);
         if (config.Site is not ("none" or "docsify"))
             throw new IOException($"Unknown site configuration: {config.Site}");
         var errors = new List<string>();

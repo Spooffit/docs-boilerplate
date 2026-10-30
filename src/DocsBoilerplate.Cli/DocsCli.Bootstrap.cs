@@ -1,4 +1,5 @@
 using Spectre.Console;
+using System.Text.Json;
 
 static partial class DocsCli
 {
@@ -13,13 +14,13 @@ static partial class DocsCli
         ".agents/skills/project-intake/SKILL.md"
     ];
 
-    private static async Task<Dictionary<string, string>> LoadBootstrapAsync(string catalog)
+    private static async Task<Dictionary<string, string>> LoadBootstrapAsync(string catalog, string language = "en")
     {
         var result = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var path in BootstrapPaths)
         {
             var source = SafePath(catalog, "bootstrap/" + path);
-            result.Add(path, await File.ReadAllTextAsync(source));
+            result.Add(path, await ReadLocalizedSourceAsync(catalog, "bootstrap/" + path, language));
         }
         return result;
     }
@@ -32,7 +33,10 @@ static partial class DocsCli
         if (!File.Exists(SafePath(output, ConfigName)))
             throw new IOException("Not a generated documentation repository (missing docs.config.json).");
 
-        var baseline = await LoadBootstrapAsync(catalog);
+        var config = JsonSerializer.Deserialize<ProjectConfig>(
+            await File.ReadAllTextAsync(SafePath(output, ConfigName)), Json)
+            ?? throw new IOException("Invalid docs.config.json.");
+        var baseline = await LoadBootstrapAsync(catalog, ValidateLanguage(config.Language));
         var found = new List<string>();
         foreach (var (path, expected) in baseline)
         {
