@@ -7,7 +7,6 @@ status: active
 
 # {{PROJECT_NAME}}
 
-{{PROJECT_DESCRIPTION}}
 
 Добро пожаловать в документацию. Начните с [обзора проекта](project/overview.md), [обзора архитектуры](architecture/overview.md) и [выбранных инженерных стандартов](standards/index.md).
 
