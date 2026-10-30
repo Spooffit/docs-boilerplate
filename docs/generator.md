@@ -51,7 +51,7 @@ Updates with fingerprint-based conflict detection are supported (see below). Aut
 
 ## Optional website: Docsify
 
-The default generated repository includes only a root `index.html` using Docsify and the existing Markdown under `docs/`. It adds **no build directory, Node dependencies, Python packages or generated HTML**. Pass `--site none` to omit the viewer.
+The default generated repository includes only a root `index.html` using Docsify and the existing Markdown under `docs/`. It adds **no build directory, Node dependencies, Python packages or generated HTML pages beyond that one shell**. Pass `--site none` to omit the viewer. For `--language ru`, the same shell uses `lang=ru`, Russian loading/search labels, and an HTML-escaped project title and description; the Markdown paths and Docsify routing remain unchanged.
 
 Docsify requests Markdown over HTTP. **Do not rely on double-clicking `index.html` via `file://`**, which commonly fails due to modern browser CORS restrictions. For a local preview, from the generated repository root run:
 
