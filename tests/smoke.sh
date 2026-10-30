@@ -63,10 +63,8 @@ import re
 import sys
 html = Path(sys.argv[1]).read_text(encoding="utf-8")
 title = re.search(r"<title>(.*?)</title>", html, re.S)
-description = re.search(r'<meta name="description" content="([^"]*)"', html)
 search = re.search(r'placeholder:\s*("(?:\\.|[^"\\])*")', html)
 assert title and unescape(title.group(1)) == "РусскийПроект"
-assert description and unescape(description.group(1)) == "Тест документации"
 assert search and json.loads(search.group(1)) == "Поиск по документации"
 PY
 python3 - "$temp/ru-baseline/docs.config.json" <<'PY'
@@ -74,6 +72,7 @@ import json,sys
 from pathlib import Path
 manifest=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
 assert manifest["Language"] == "ru"
+assert "Description" not in manifest
 assert len(manifest["Skills"]) == 5 and len(manifest["Modules"]) == 7
 assert all(not f.startswith("locales/") for f in manifest["GeneratedFiles"])
 PY
@@ -88,8 +87,12 @@ grep -Fq '<html lang="ru">' "$temp/ru-baseline/index.html"
 # User input must be escaped in the HTML shell, never interpreted as markup.
 run init --name 'Docs <Safe> & Co' --output "$temp/ru-html-safe" --profiles none --language ru --site docsify --non-interactive
 grep -Fq '<title>Docs &lt;Safe&gt; &amp; Co</title>' "$temp/ru-html-safe/index.html"
-grep -Fq 'content="Description &quot;A&amp;B&quot; &lt;x&gt;"' "$temp/ru-html-safe/index.html"
+! grep -q 'name="description"' "$temp/ru-html-safe/index.html"
 run validate --output "$temp/ru-html-safe"
+# The removed description flag must not be accepted by the CLI.
+if run init --name BadDescription --description "obsolete" --output "$temp/bad-description" --profiles none --non-interactive; then
+    echo "Removed description option was accepted"; exit 1
+fi
 if run init --name BadLocale --output "$temp/bad-locale" --profiles none --language de --non-interactive; then
     echo "Unknown documentation locale accepted"; exit 1
 fi
