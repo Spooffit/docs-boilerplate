@@ -65,6 +65,9 @@ def check() -> None:
                     errors.append(f"Non-localizable frontmatter changed: {relative} / {key}")
         if value == english:
             errors.append(f"Untranslated source copied verbatim: {relative}")
+    mandatory = {name for name in sources if name.startswith(("base/", "bootstrap/", "modules/", "skills/"))}
+    for missing in sorted(mandatory - translated):
+        errors.append(f"Missing mandatory Russian translation: {missing}")
     print(f"Russian translations: {len(translated & sources.keys())}/{len(sources)} Markdown source files")
     print(f"Pending translations: {len(sources.keys() - translated)}")
 
