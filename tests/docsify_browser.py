@@ -128,7 +128,7 @@ def main() -> int:
             "dotnet", "run", "--configuration", "Release",
             "--project", str(ROOT / "src/DocsBoilerplate.Cli"),
             "--", "init",
-            "--name", "BrowserDocs", "--description", "Browser navigation verification",
+            "--name", "BrowserDocs",
             "--output", str(output), "--profiles", "dotnet,blazor",
             "--modules", "api,testing", "--site", "docsify", "--non-interactive",
         ]
@@ -145,7 +145,7 @@ def main() -> int:
             [
                 "dotnet", "run", "--no-build", "--configuration", "Release",
                 "--project", str(ROOT / "src/DocsBoilerplate.Cli"), "--", "init",
-                "--name", "РусскийБраузер", "--description", "Проверка русской документации",
+                "--name", "РусскийБраузер",
                 "--output", str(russian_output), "--profiles", "none",
                 "--language", "ru", "--site", "docsify", "--non-interactive",
             ],
