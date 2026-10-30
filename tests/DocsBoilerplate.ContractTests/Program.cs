@@ -180,6 +180,39 @@ Test("llms.txt lists installed project areas without leaking absent modules", ()
     Expect(!minimal.Contains("docs/project/requirements.md", StringComparison.Ordinal), "Invented optional requirements");
 });
 
+Test("Russian agent index and selected-profile catalog keep canonical paths", () =>
+{
+    var files = new Dictionary<string, string>
+    {
+        ["AGENTS.md"] = "# Инструкции ИИ-агентам",
+        ["docs/index.md"] = "# Русский проект",
+        ["docs/catalog.md"] = "# Каталог документации",
+        ["docs/project/overview.md"] = "# Обзор проекта",
+        ["docs/standards/dotnet/testing.md"] = "# Тестирование .NET",
+        ["docs/standards/dotnet/index.md"] = "# .NET"
+    };
+    var llms = DocsCli.BuildLlmsIndex("Русский проект", "Описание", files, "ru");
+    Expect(llms.Contains("## Основное", StringComparison.Ordinal), "Russian llms entry heading was not rendered");
+    Expect(llms.Contains("## Справочник", StringComparison.Ordinal), "Russian llms reference heading was not rendered");
+    Expect(llms.Contains("](docs/project/overview.md)", StringComparison.Ordinal),
+        "Russian agent index changed canonical source paths");
+
+    var profiles = new DocsCli.Catalog(
+    [
+        new DocsCli.Profile("dotnet", "English catalog profile label", "available", [],
+            ["docs/standards/dotnet/testing.md"], "backend")
+    ]);
+    var index = DocsCli.BuildDocumentCatalog(files, ["dotnet"], profiles, "ru");
+    Expect(index.Contains("# Каталог документации", StringComparison.Ordinal),
+        "Russian document catalog heading was not rendered");
+    Expect(index.Contains("**Тестирование .NET** (`dotnet`)", StringComparison.Ordinal),
+        "Selected profile label was not derived from the localized document");
+    Expect(index.Contains("](standards/dotnet/testing.md)", StringComparison.Ordinal),
+        "Document catalog must retain language-neutral output paths");
+    Expect(!index.Contains("English catalog profile label", StringComparison.Ordinal),
+        "English source profile name leaked into Russian catalog");
+});
+
 Test("document catalog lists only selected technology", () =>
 {
     var content = new Dictionary<string, string>
