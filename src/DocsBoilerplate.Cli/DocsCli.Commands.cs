@@ -166,7 +166,7 @@ static partial class DocsCli
             return AnsiConsole.Ask<string>(prompt);
         }
         var name = Ask("name", "Project name:");
-        var description = args.GetValueOrDefault("description") ?? name; // Legacy flag remains accepted for existing automation.
+        var description = name; // Project description is no longer requested or persisted.
         var output = Path.GetFullPath(Ask("output", "Destination directory:"));
         var language = args.GetValueOrDefault("language") ?? (unattended || Console.IsInputRedirected
             ? "en"
@@ -181,9 +181,9 @@ static partial class DocsCli
             : unattended || Console.IsInputRedirected
                 ? throw new InvalidOperationException("--profiles is required for non-interactive initialization.")
                 : PromptProfiles(available);
-        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description))
+        if (string.IsNullOrWhiteSpace(name))
             throw new InvalidOperationException("Project name must be nonempty.");
-        if (name.Contains("{{", StringComparison.Ordinal) || description.Contains("{{", StringComparison.Ordinal))
+        if (name.Contains("{{", StringComparison.Ordinal))
             throw new InvalidOperationException("Template placeholder markers are not permitted in input.");
         var ids = ResolveProfiles(selection, available);
         // Default to every persistent skill, with explicit overrides for scripts.
