@@ -8,7 +8,7 @@ Start with [`llms.txt`](llms.txt), [agent instructions](AGENTS.md), the [documen
 
 ## Install the CLI as a .NET tool
 
-Once the **first release has been published to nuget.org**, install or update the tool directly, without cloning this repository:
+Version **1.0.1** has been published to NuGet.org. Install or update the tool directly, without cloning this repository:
 
 ```powershell
 dotnet tool install --global docs-boilerplate
@@ -17,17 +17,11 @@ docs-boilerplate list
 dotnet tool update --global docs-boilerplate
 ```
 
-The previous `v1.0.0` release attempt was verified but could not authenticate to NuGet.org. That tag points to the older package identity and remains unchanged. The next release of the renamed tool is **`v1.0.1`**, once the Trusted Publishing policy has been corrected. Do not assume that the package is already available on nuget.org.
+The verified [v1.0.1 GitHub Release](https://github.com/Spooffit/docs-boilerplate/releases/tag/v1.0.1) contains the same `docs-boilerplate.1.0.1.nupkg` published to NuGet.org. The older `v1.0.0` tag was never published and remains unchanged.
 
-Until then, GitHub Actions builds an installable `.nupkg` as the private `docs-boilerplate-dotnet-tool` artifact. Download and extract it into a local feed, then install:
+For offline/local-feed installations, the normal CI workflow still uploads the `docs-boilerplate-dotnet-tool` package artifact. You can also build locally using `dotnet pack src/DocsBoilerplate.Cli -c Release -o ./artifacts/tool-feed`. The installed tool bundles its Markdown catalog.
 
-```powershell
-dotnet tool install --global docs-boilerplate --version 1.0.1 --add-source "C:\\Tools\\docs-boilerplate-feed"
-```
-
-You can also build the package from source with `dotnet pack src/docs-boilerplate -c Release -o ./artifacts/tool-feed`. The installed tool bundles its Markdown catalog.
-
-Releases are created **only by version tags** (`v1.0.1`, `v1.0.2`, etc.), not by ordinary pushes to `main`. See [the release and NuGet setup guide](docs/releases.md).
+New releases are created **only by version tags** (for example `v1.0.2`), not by ordinary pushes to `main`. See [the release and NuGet setup guide](docs/releases.md).
 
 ## Create a project
 
@@ -59,16 +53,16 @@ Only the four unchanged temporary intake files are deleted. The user-authored do
 Requires .NET SDK 10:
 
 ```sh
-dotnet run --project src/docs-boilerplate -- list
-dotnet run --project src/docs-boilerplate -- doctor
-dotnet run --project src/docs-boilerplate -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive --dry-run
-dotnet run --project src/docs-boilerplate -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive
-dotnet run --project src/docs-boilerplate -- validate --output ./scratch/demo
+dotnet run --project src/DocsBoilerplate.Cli -- list
+dotnet run --project src/DocsBoilerplate.Cli -- doctor
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive --dry-run
+dotnet run --project src/DocsBoilerplate.Cli -- init --name Demo --description "Example documentation" --output ./scratch/demo --profiles dotnet,ef-core --non-interactive
+dotnet run --project src/DocsBoilerplate.Cli -- validate --output ./scratch/demo
 ```
 
 The `dotnet run` commands above are only for source-checkout development. An installed `docs-boilerplate` tool can be called from any directory. The generated project does not contain source code for the CLI.
 
-Run `dotnet build src/docs-boilerplate -c Release` and `bash tests/smoke.sh` after changing generator behavior. The cross-platform test workflow is [`.github/workflows/docs-generator.yml`](.github/workflows/docs-generator.yml).
+Run `dotnet build src/DocsBoilerplate.Cli -c Release` and `bash tests/smoke.sh` after changing generator behavior. The cross-platform test workflow is [`.github/workflows/docs-generator.yml`](.github/workflows/docs-generator.yml).
 
 To browse a generated repository, run `python -m http.server 3000` in its root and open `http://localhost:3000/`. Docsify renders the Markdown dynamically in the browser without a static-site build. Opening its `index.html` directly via `file://` is not a reliable mode.
 
