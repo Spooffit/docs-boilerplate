@@ -202,6 +202,17 @@ for locale in en ru; do
         run validate --output "$dest"
         for item in $expected; do [[ -f "$dest/$item" ]] || { echo "Missing selected standard: $locale/$case_id/$item"; exit 1; }; done
         for item in $forbidden; do [[ ! -e "$dest/$item" ]] || { echo "Unselected standard leaked: $locale/$case_id/$item"; exit 1; }; done
+        # Ensure generated pages contain the updated guidance, not just matching filenames.
+        case "$locale/$case_id" in
+          en/rabbit-wolverine) grep -Fq '## Reliability contract' "$dest/docs/standards/dotnet/wolverine-rabbitmq.md" ;;
+          ru/rabbit-wolverine) grep -Fq '## Контракт надёжности' "$dest/docs/standards/dotnet/wolverine-rabbitmq.md" ;;
+          en/kafka-masstransit) grep -Fq '## Transport-specific composition and guarantees' "$dest/docs/standards/dotnet/masstransit.md" ;;
+          ru/kafka-masstransit) grep -Fq '## Компоновка транспорта и гарантии' "$dest/docs/standards/dotnet/masstransit.md" ;;
+          en/ef-specs) grep -Fq '## Expression composition' "$dest/docs/standards/dotnet/specification-manual.md" ;;
+          ru/ef-specs) grep -Fq '## Композиция выражений' "$dest/docs/standards/dotnet/specification-manual.md" ;;
+          en/postgres-pooler) grep -Fq '## Pooling contract' "$dest/docs/standards/postgresql/pgbouncer.md" ;;
+          ru/postgres-pooler) grep -Fq '## Контракт пулера' "$dest/docs/standards/postgresql/pgbouncer.md" ;;
+        esac
     done
 done
 
