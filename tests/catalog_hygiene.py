@@ -304,6 +304,26 @@ profile_ids = [profile["id"] for profile in profiles]
 if len(profile_ids) != len(set(profile_ids)):
     errors.append("Duplicate profile IDs in catalog/profiles.json")
 all_profile_ids = set(profile_ids)
+profile_by_id = {profile["id"]: profile for profile in profiles}
+visited_profiles = set()
+active_profiles = set()
+
+def check_profile_dependencies(profile_id, trail):
+    if profile_id in active_profiles:
+        errors.append("Cyclic profile dependencies: " + " -> ".join(trail + [profile_id]))
+        return
+    if profile_id in visited_profiles:
+        return
+    active_profiles.add(profile_id)
+    for dependency in profile_by_id[profile_id].get("requires", []):
+        if dependency in profile_by_id:
+            check_profile_dependencies(dependency, trail + [profile_id])
+    active_profiles.remove(profile_id)
+    visited_profiles.add(profile_id)
+
+for profile_id in profile_by_id:
+    check_profile_dependencies(profile_id, [])
+
 for profile in profiles:
     missing_dependencies = set(profile.get("requires", [])) - all_profile_ids
     if missing_dependencies:
