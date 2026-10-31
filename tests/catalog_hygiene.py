@@ -300,7 +300,6 @@ for phrase in ("Code examples and verification evidence", "label it illustrative
 # The selected technology catalog must have localized sources with consistent
 # metadata. The CLI validates this at runtime; also fail early during catalog
 # hygiene checks, without requiring a .NET SDK.
-PROFILE_KEYS = ("id", "name", "status", "category", "requires", "files")
 profile_ids = [profile["id"] for profile in profiles]
 if len(profile_ids) != len(set(profile_ids)):
     errors.append("Duplicate profile IDs in catalog/profiles.json")
