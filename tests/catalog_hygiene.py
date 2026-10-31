@@ -297,6 +297,59 @@ authoring = (CATALOG / "base/docs/standards/documentation.md").read_text(encodin
 for phrase in ("Code examples and verification evidence", "label it illustrative or partial", "build/test command"):
     if phrase not in authoring:
         errors.append(f"Code-example verification policy missing: {phrase}")
+# The selected technology catalog must have localized sources with consistent
+# metadata. The CLI validates this at runtime; also fail early during catalog
+# hygiene checks, without requiring a .NET SDK.
+PROFILE_KEYS = ("id", "name", "status", "category", "requires", "files")
+profile_ids = [profile["id"] for profile in profiles]
+if len(profile_ids) != len(set(profile_ids)):
+    errors.append("Duplicate profile IDs in catalog/profiles.json")
+all_profile_ids = set(profile_ids)
+for profile in profiles:
+    missing_dependencies = set(profile.get("requires", [])) - all_profile_ids
+    if missing_dependencies:
+        errors.append(f"{profile['id']}: missing dependencies {sorted(missing_dependencies)}")
+    if profile["status"] != "available":
+        continue
+    for source_path in profile["files"]:
+        source = CATALOG / source_path
+        translated = CATALOG / "locales/ru" / source_path
+        for file_path in (source, translated):
+            if not file_path.is_file():
+                errors.append(f"{profile['id']}: missing source: {file_path.relative_to(ROOT)}")
+                continue
+            body = file_path.read_text(encoding="utf-8")
+            if not body.startswith("---\n") or "\n---\n" not in body[4:]:
+                errors.append(f"{profile['id']}: invalid frontmatter: {file_path.relative_to(ROOT)}")
+            if not re.search(r"(?m)^# \S", body):
+                errors.append(f"{profile['id']}: missing H1: {file_path.relative_to(ROOT)}")
+
+# Regression protection for the engineering content enriched in both locales.
+# These markers are intentionally structural, not a forced translation of wording.
+AUDITED_STANDARDS = {
+    "docs/standards/dotnet/specification-manual.md": ("## Expression composition", "## Композиция выражений"),
+    "docs/standards/postgresql/pgbouncer.md": ("## Pooling contract", "## Контракт пулера"),
+    "docs/standards/postgresql/odyssey.md": ("## Pooling and routing contract", "## Контракт маршрутизации и пула"),
+    "docs/standards/dotnet/dapper.md": ("## Query boundaries and consistency", "## Границы запросов и согласованность"),
+    "docs/standards/architecture/hybrid.md": ("## Ownership and deployment boundaries", "## Владение данными и границы развёртывания"),
+    "docs/standards/architecture/microservices.md": ("## Service and data boundaries", "## Границы сервисов и владение данными"),
+    "docs/standards/dotnet/ef-core.md": ("## Query execution and context boundaries", "## Выполнение запросов и границы контекста"),
+    "docs/standards/dotnet/masstransit.md": ("## Transport-specific composition and guarantees", "## Компоновка транспорта и гарантии"),
+    "docs/standards/messaging/rabbitmq.md": ("## Delivery and topology checks", "## Доставка и проверка топологии"),
+    "docs/standards/messaging/kafka.md": ("## Consumption verification", "## Проверки потребления и контрактов"),
+    "docs/standards/dotnet/wolverine-rabbitmq.md": ("## Reliability contract", "## Контракт надёжности"),
+    "docs/standards/dotnet/wolverine-kafka.md": ("## Reliability contract", "## Контракт надёжности"),
+    "docs/standards/dotnet/manual-rabbitmq.md": ("## Client boundary and failure tests", "## Граница клиента и проверки отказов"),
+    "docs/standards/dotnet/manual-kafka.md": ("## Client boundary and failure tests", "## Граница клиента и проверки отказов"),
+    "docs/standards/messaging/organization-inline.md": ("## Contract and ownership boundaries", "## Границы контрактов и ответственности"),
+    "docs/standards/messaging/organization-separate.md": ("## Dependency and compatibility boundaries", "## Зависимости и совместимость"),
+}
+for relative, markers in AUDITED_STANDARDS.items():
+    for root, heading in zip((CATALOG, CATALOG / "locales/ru"), markers):
+        file_path = root / relative
+        if file_path.is_file() and heading not in file_path.read_text(encoding="utf-8"):
+            errors.append(f"Audited standard lost content {heading!r}: {file_path.relative_to(ROOT)}")
+
 for error in errors:
     print("ERROR", error)
 print(f"Active catalog hygiene: {checked} Markdown files examined; {len(errors)} findings.")
